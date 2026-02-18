@@ -17,7 +17,14 @@ extern "C" {
 
 char * Gets ( char * str, int num )
 {
-	fgets(str, num, stdin);
+	if (str==0 || num<=0)
+		return str;
+
+	if (fgets(str, num, stdin)==0)
+	{
+		str[0]=0;
+		return str;
+	}
 	if (str[0]=='\n' || str[0]=='\r')
 		str[0]=0;
 

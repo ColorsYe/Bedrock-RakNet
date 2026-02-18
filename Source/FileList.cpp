@@ -46,6 +46,19 @@
 #define MAX_FILENAME_LENGTH 512
 static const unsigned HASH_LENGTH=4;
 
+static bool ReadFileBytes(FILE *fp, char *buffer, size_t bytesToRead)
+{
+	if (bytesToRead==0)
+		return true;
+
+	const size_t bytesRead = fread(buffer, 1, bytesToRead, fp);
+	if (bytesRead==bytesToRead)
+		return true;
+
+	RakAssert(0);
+	return false;
+}
+
 using namespace RakNet;
 
 // alloca
@@ -150,7 +163,15 @@ void FileList::AddFile(const char *filepath, const char *filename, FileListNodeC
 		RakAssert(data);
 	}
 
-	fread(data, 1, length, fp);
+	if (!ReadFileBytes(fp, data, (size_t) length))
+	{
+		fclose(fp);
+#if USE_ALLOCA==1
+		if (usedAlloca==false)
+#endif
+			rakFree_Ex(data, _FILE_AND_LINE_ );
+		return;
+	}
 	AddFile(filename, filepath, data, length, length, context);
 	fclose(fp);
 
@@ -309,8 +330,14 @@ void FileList::AddFilesFromDirectory(const char *applicationDirectory, const cha
 					{
 						fileData= (char*) rakMalloc_Ex( fileInfo.size+HASH_LENGTH, _FILE_AND_LINE_ );
 						RakAssert(fileData);
-						fread(fileData+HASH_LENGTH, fileInfo.size, 1, fp);
-						fclose(fp);
+							if (!ReadFileBytes(fp, fileData+HASH_LENGTH, (size_t) fileInfo.size))
+							{
+								fclose(fp);
+								rakFree_Ex(fileData, _FILE_AND_LINE_ );
+								fileData=0;
+								continue;
+							}
+							fclose(fp);
 
 						unsigned int hash = SuperFastHash(fileData+HASH_LENGTH, fileInfo.size);
 						if (RakNet::BitStream::DoEndianSwap())
@@ -341,11 +368,23 @@ void FileList::AddFilesFromDirectory(const char *applicationDirectory, const cha
 				}
 				else if (writeData)
 				{
-					fileData= (char*) rakMalloc_Ex( fileInfo.size, _FILE_AND_LINE_ );
-					RakAssert(fileData);
-					fp = fopen(fullPath, "rb");
-					fread(fileData, fileInfo.size, 1, fp);
-					fclose(fp);
+						fileData= (char*) rakMalloc_Ex( fileInfo.size, _FILE_AND_LINE_ );
+						RakAssert(fileData);
+						fp = fopen(fullPath, "rb");
+						if (fp==0)
+						{
+							rakFree_Ex(fileData, _FILE_AND_LINE_ );
+							fileData=0;
+							continue;
+						}
+						if (!ReadFileBytes(fp, fileData, (size_t) fileInfo.size))
+						{
+							fclose(fp);
+							rakFree_Ex(fileData, _FILE_AND_LINE_ );
+							fileData=0;
+							continue;
+						}
+						fclose(fp);
 
 					// File data only
 					AddFile(fullPath+rootLen, fullPath, fileData, fileInfo.size, fileInfo.size, context);
@@ -629,7 +668,18 @@ void FileList::PopulateDataFromDisk(const char *applicationDirectory, bool write
 						// Hash + data so offset the data by HASH_LENGTH
 						fileList[i].data=(char*) rakMalloc_Ex( fileList[i].fileLengthBytes+HASH_LENGTH, _FILE_AND_LINE_ );
 						RakAssert(fileList[i].data);
-						fread(fileList[i].data+HASH_LENGTH, fileList[i].fileLengthBytes, 1, fp);
+							if (!ReadFileBytes(fp, fileList[i].data+HASH_LENGTH, (size_t) fileList[i].fileLengthBytes))
+							{
+								fclose(fp);
+								rakFree_Ex(fileList[i].data, _FILE_AND_LINE_ );
+								fileList[i].data=0;
+								fileList[i].dataLengthBytes=0;
+								if (removeUnknownFiles)
+									fileList.RemoveAtIndex(i);
+								else
+									i++;
+								continue;
+							}
 //						sha1.Reset();
 //						sha1.Update((unsigned char*)fileList[i].data+HASH_LENGTH, fileList[i].fileLength);
 //						sha1.Final();
@@ -648,10 +698,21 @@ void FileList::PopulateDataFromDisk(const char *applicationDirectory, bool write
 						else
 							fileList[i].data=(char*) rakMalloc_Ex( fileList[i].fileLengthBytes, _FILE_AND_LINE_ );
 						RakAssert(fileList[i].data);
-						fread(fileList[i].data, fileList[i].fileLengthBytes, 1, fp);
-				//		sha1.Reset();
-				//		sha1.Update((unsigned char*)fileList[i].data, fileList[i].fileLength);
-				//		sha1.Final();
+							if (!ReadFileBytes(fp, fileList[i].data, (size_t) fileList[i].fileLengthBytes))
+							{
+								fclose(fp);
+								rakFree_Ex(fileList[i].data, _FILE_AND_LINE_ );
+								fileList[i].data=0;
+								fileList[i].dataLengthBytes=0;
+								if (removeUnknownFiles)
+									fileList.RemoveAtIndex(i);
+								else
+									i++;
+								continue;
+							}
+					//		sha1.Reset();
+					//		sha1.Update((unsigned char*)fileList[i].data, fileList[i].fileLength);
+					//		sha1.Final();
 						unsigned int hash = SuperFastHash(fileList[i].data, fileList[i].fileLengthBytes);
 						if (RakNet::BitStream::DoEndianSwap())
 							RakNet::BitStream::ReverseBytesInPlace((unsigned char*) &hash, sizeof(hash));
@@ -665,8 +726,19 @@ void FileList::PopulateDataFromDisk(const char *applicationDirectory, bool write
 					fileList[i].dataLengthBytes=fileList[i].fileLengthBytes;
 					fileList[i].data=(char*) rakMalloc_Ex( fileList[i].fileLengthBytes, _FILE_AND_LINE_ );
 					RakAssert(fileList[i].data);
-					fread(fileList[i].data, fileList[i].fileLengthBytes, 1, fp);
-				}
+						if (!ReadFileBytes(fp, fileList[i].data, (size_t) fileList[i].fileLengthBytes))
+						{
+							fclose(fp);
+							rakFree_Ex(fileList[i].data, _FILE_AND_LINE_ );
+							fileList[i].data=0;
+							fileList[i].dataLengthBytes=0;
+							if (removeUnknownFiles)
+								fileList.RemoveAtIndex(i);
+							else
+								i++;
+							continue;
+						}
+					}
 
 				fclose(fp);
 				i++;
