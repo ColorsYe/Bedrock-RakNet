@@ -167,7 +167,7 @@ RNS2BindResult RNS2_Berkley::BindSharedIPV4( RNS2_BerkleyBindParameters *bindPar
 	int ret;
 	memset(&boundAddress.address.addr4,0,sizeof(sockaddr_in));
 	boundAddress.address.addr4.sin_port = htons( bindParameters->port );
-	rns2Socket = static_cast<int>(socket__)( bindParameters->addressFamily, bindParameters->type, bindParameters->protocol );
+	rns2Socket = static_cast<int>(socket__( bindParameters->addressFamily, bindParameters->type, bindParameters->protocol ));
 	if (rns2Socket == -1)
 		return BR_FAILED_TO_BIND_SOCKET;
 

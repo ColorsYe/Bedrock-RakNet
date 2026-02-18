@@ -88,7 +88,7 @@ bool RakNetCommandParser::OnCommand(const char *command, unsigned numParameters,
 	if (strcmp(command, "Startup")==0)
 	{
 		RakNet::SocketDescriptor socketDescriptor(static_cast<unsigned short>(atoi(parameterList[1])), parameterList[2]);
-		ReturnResult(peer->Startup(static_cast<unsigned short>(atoi(parameterList[0])), &socketDescriptor, 1), command, transport, systemAddress);
+		ReturnResult(static_cast<int>(peer->Startup(static_cast<unsigned short>(atoi(parameterList[0])), &socketDescriptor, 1)), command, transport, systemAddress);
 	}
 	else if (strcmp(command, "InitializeSecurity")==0)
 	{
@@ -120,7 +120,7 @@ bool RakNetCommandParser::OnCommand(const char *command, unsigned numParameters,
 	}
 	else if (strcmp(command, "GetMaximumIncomingConnections")==0)
 	{
-		ReturnResult(static_cast<int>(peer->GetMaximumIncomingConnections)(), command, transport, systemAddress);
+		ReturnResult(static_cast<int>(peer->GetMaximumIncomingConnections()), command, transport, systemAddress);
 	}
 	else if (strcmp(command, "Connect")==0)
 	{
@@ -167,7 +167,7 @@ bool RakNetCommandParser::OnCommand(const char *command, unsigned numParameters,
 	}
 	else if (strcmp(command, "GetConnectionState")==0)
 	{
-		ReturnResult(static_cast<int>(peer->GetConnectionState)(SystemAddress(parameterList[0])), command, transport, systemAddress);
+		ReturnResult(static_cast<int>(peer->GetConnectionState(SystemAddress(parameterList[0]))), command, transport, systemAddress);
 	}
 	else if (strcmp(command, "GetIndexFromSystemAddress")==0)
 	{
@@ -253,7 +253,7 @@ bool RakNetCommandParser::OnCommand(const char *command, unsigned numParameters,
 	}
 	else if (strcmp(command, "GetNumberOfAddresses")==0)
 	{
-		ReturnResult(static_cast<int>(peer->GetNumberOfAddresses)(), command, transport, systemAddress);
+		ReturnResult(static_cast<int>(peer->GetNumberOfAddresses()), command, transport, systemAddress);
 	}
 	else if (strcmp(command, "GetLocalIP")==0)
 	{

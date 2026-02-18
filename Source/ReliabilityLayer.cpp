@@ -2251,7 +2251,7 @@ void ReliabilityLayer::SendBitStream( RakNetSocket2 *s, SystemAddress &systemAdd
 
 	unsigned int length;
 
-	length = static_cast<unsigned int>(bitStream->GetNumberOfBytesUsed)();
+	length = static_cast<unsigned int>(bitStream->GetNumberOfBytesUsed());
 
 
 #ifdef _DEBUG

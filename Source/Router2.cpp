@@ -818,7 +818,7 @@ void Router2::OnQueryForwarding(Packet *packet)
 	bsOut.Write(endpointGuid);
 	bsOut.Write(true);
 	bsOut.Write(static_cast<unsigned short>(pingToEndpoint));
-	bsOut.Write(static_cast<unsigned short>(udpForwarder->GetUsedForwardEntries)()/2);
+	bsOut.Write(static_cast<unsigned short>(udpForwarder->GetUsedForwardEntries()/2));
 	rakPeerInterface->Send(&bsOut,MEDIUM_PRIORITY,RELIABLE_ORDERED,0,packet->guid,false);
 
 	if (debugInterface)

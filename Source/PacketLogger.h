@@ -81,7 +81,7 @@ public:
 
 	/// Append this string to output logs. (newline is useful here)
 	virtual void SetSuffix(const char *_suffix);
-	static constexpr char* BaseIDTOString(unsigned char Id);
+	static const char* BaseIDTOString(unsigned char Id);
 
 	/// Log the direct sends and receives or not. Default true
 	void SetLogDirectMessages(bool send);

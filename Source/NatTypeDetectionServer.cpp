@@ -259,7 +259,7 @@ void NatTypeDetectionServer::Update()
 		if (time > natDetectionAttempts[i].nextStateTime)
 		{
 			RNS2_SendParameters bsp;
-			natDetectionAttempts[i].detectionState=(NATDetectionState)(static_cast<int>(natDetectionAttempts[i]).detectionState+1);
+			natDetectionAttempts[i].detectionState=(NATDetectionState)(static_cast<int>(natDetectionAttempts[i].detectionState)+1);
 			natDetectionAttempts[i].nextStateTime=time+natDetectionAttempts[i].timeBetweenAttempts;
 			SystemAddress saOut;
 			unsigned char c;

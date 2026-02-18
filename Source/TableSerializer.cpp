@@ -21,7 +21,7 @@ void TableSerializer::SerializeTable(DataStructures::Table *in, RakNet::BitStrea
 	DataStructures::Page<unsigned, DataStructures::Table::Row*, _TABLE_BPLUS_TREE_ORDER> *cur = in->GetRows().GetListHead();
 	const DataStructures::List<DataStructures::Table::ColumnDescriptor> &columns=in->GetColumns();
 	SerializeColumns(in, out);
-	out->Write(static_cast<unsigned>(in->GetRows)().Size());
+	out->Write(static_cast<unsigned>(in->GetRows().Size()));
 	unsigned rowIndex;
 	while (cur)
 	{
@@ -40,7 +40,7 @@ void TableSerializer::SerializeColumns(DataStructures::Table *in, RakNet::BitStr
 	for (i=0; i<columns.Size(); i++)
 	{
 		StringCompressor::Instance()->EncodeString(columns[i].columnName, _TABLE_MAX_COLUMN_NAME_LENGTH, out);
-		out->Write(static_cast<unsigned char>(columns[i]).columnType);
+		out->Write(static_cast<unsigned char>(columns[i].columnType));
 	}
 }
 void TableSerializer::SerializeColumns(DataStructures::Table *in, RakNet::BitStream *out, DataStructures::List<int> &skipColumnIndices)
@@ -53,7 +53,7 @@ void TableSerializer::SerializeColumns(DataStructures::Table *in, RakNet::BitStr
 		if (skipColumnIndices.GetIndexOf(i)==(unsigned)-1)
 		{
 			StringCompressor::Instance()->EncodeString(columns[i].columnName, _TABLE_MAX_COLUMN_NAME_LENGTH, out);
-			out->Write(static_cast<unsigned char>(columns[i]).columnType);
+			out->Write(static_cast<unsigned char>(columns[i].columnType));
 		}		
 	}
 }

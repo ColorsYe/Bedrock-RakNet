@@ -19,7 +19,7 @@ unsigned int IncrementalReadInterface::GetFilePart( const char *filename, unsign
 	if (fp==0)
 		return 0;
 	fseek(fp,startReadBytes,SEEK_SET);
-	unsigned int numRead = static_cast<unsigned int>(fread)(preallocatedDestination,1,numBytesToRead, fp);
+	unsigned int numRead = static_cast<unsigned int>(fread(preallocatedDestination,1,numBytesToRead, fp));
 	fclose(fp);
 	return numRead;
 }

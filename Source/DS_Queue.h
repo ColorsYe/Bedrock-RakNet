@@ -92,7 +92,7 @@ namespace DataStructures
 	}
 
 	template <class queue_type>
-		Queue<queue_type>::~Queue()
+		Queue<queue_type>::~Queue() noexcept
 	{
 		if (allocation_size>0)
 			RakNet::OP_DELETE_ARRAY(array, _FILE_AND_LINE_);

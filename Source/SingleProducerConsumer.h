@@ -118,7 +118,7 @@ namespace DataStructures
 	}
 
 	template <class SingleProducerConsumerType>
-		SingleProducerConsumer<SingleProducerConsumerType>::~SingleProducerConsumer()
+		SingleProducerConsumer<SingleProducerConsumerType>::~SingleProducerConsumer() noexcept
 	{
 		volatile DataPlusPtr *next;
 		readPointer=writeAheadPointer->next;

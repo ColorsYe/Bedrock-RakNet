@@ -81,7 +81,7 @@ namespace DataStructures
 	}
 
 	template <class key_type, class data_type, unsigned int HASH_SIZE, unsigned long (*hashFunction)(const key_type &) >
-	Hash<key_type, data_type, HASH_SIZE, hashFunction>::~Hash()
+	Hash<key_type, data_type, HASH_SIZE, hashFunction>::~Hash() noexcept
 	{
 		Clear(_FILE_AND_LINE_);
 	}

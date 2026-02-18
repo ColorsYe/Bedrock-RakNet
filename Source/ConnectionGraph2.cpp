@@ -94,9 +94,9 @@ uint16_t ConnectionGraph2::GetPingBetweenSystems(RakNetGUID g1, RakNetGUID g2) c
 		return 0;
 
 	if (g1==rakPeerInterface->GetMyGUID())
-		return static_cast<uint16_t>(rakPeerInterface->GetAveragePing)(g2);
+		return static_cast<uint16_t>(rakPeerInterface->GetAveragePing(g2));
 	if (g2==rakPeerInterface->GetMyGUID())
-		return static_cast<uint16_t>(rakPeerInterface->GetAveragePing)(g1);
+		return static_cast<uint16_t>(rakPeerInterface->GetAveragePing(g1));
 
 	bool objectExists;
 	unsigned int idx = remoteSystems.GetIndexFromKey(g1, &objectExists);

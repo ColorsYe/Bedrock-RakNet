@@ -285,8 +285,8 @@ public:
 	/// Static version of the DeserializeCompressed() function
 	static bool DeserializeCompressed(char *str, BitStream *bs, bool readLanguageId=false);
 
-	static constexpr char *ToString(int64_t i);
-	static constexpr char *ToString(uint64_t i);
+	static const char *ToString(int64_t i);
+	static const char *ToString(uint64_t i);
 
 	/// \internal
 	static size_t GetSizeToAllocate(size_t bytes)

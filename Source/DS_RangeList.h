@@ -148,7 +148,7 @@ namespace DataStructures
 	}
 
 	template <class range_type>
-	RangeList<range_type>::~RangeList()
+	RangeList<range_type>::~RangeList() noexcept
 	{
 		Clear();
 	}

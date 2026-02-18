@@ -101,7 +101,7 @@ namespace DataStructures
 	}
 
 	template <class key_type, class data_type, int (*key_comparison_func)(const key_type&,const key_type&)>
-	Map<key_type, data_type, key_comparison_func>::~Map()
+	Map<key_type, data_type, key_comparison_func>::~Map() noexcept
 	{
 		Clear();
 	}

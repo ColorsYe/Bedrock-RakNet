@@ -71,7 +71,7 @@ namespace DataStructures
 	}
 
 	template  <class weight_type, class data_type, bool isMaxHeap>
-		Heap<weight_type, data_type, isMaxHeap>::~Heap()
+		Heap<weight_type, data_type, isMaxHeap>::~Heap() noexcept
 	{
 		//Clear(true, _FILE_AND_LINE_);
 	}

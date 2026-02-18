@@ -139,7 +139,7 @@ namespace DataStructures
 	}
 
 	template <class list_type>
-		List<list_type>::~List()
+		List<list_type>::~List() noexcept
 	{
 		if (allocation_size>0)
 			RakNet::OP_DELETE_ARRAY(listArray, _FILE_AND_LINE_);

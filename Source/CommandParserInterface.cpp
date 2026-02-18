@@ -35,7 +35,7 @@ using namespace RakNet;
 #pragma warning( push )
 #endif
 
-const unsigned char CommandParserInterface::VARIABLE_NUMBER_OF_PARAMETERS=255;
+constexpr unsigned char CommandParserInterface::VARIABLE_NUMBER_OF_PARAMETERS;
 
 int RakNet::RegisteredCommandComp( const char* const & key, const RegisteredCommand &data )
 {

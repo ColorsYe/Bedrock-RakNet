@@ -413,7 +413,7 @@ bool StringCompressor::DecodeString( char *output, int maxCharsToWrite, RakNet::
 	if ( input->ReadCompressed( stringBitLength ) == false )
 		return false;
 
-	if ( static_cast<unsigned>(input->GetNumberOfUnreadBits)() < stringBitLength )
+	if ( static_cast<unsigned>(input->GetNumberOfUnreadBits()) < stringBitLength )
 		return false;
 
 	bytesInStream = huffmanEncodingTree->DecodeArray( input, stringBitLength, maxCharsToWrite, ( unsigned char* ) output );

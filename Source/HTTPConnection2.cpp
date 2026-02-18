@@ -615,7 +615,7 @@ bool HTTPConnection2::IsConnected(SystemAddress sa)
 }
 void HTTPConnection2::SendRequest(Request *request)
 {
-	tcpInterface->Send(request->stringToTransmit.C_String(), static_cast<unsigned int>(request->stringToTransmit).GetLength(), request->hostCompletedAddress, false);
+	tcpInterface->Send(request->stringToTransmit.C_String(), static_cast<unsigned int>(request->stringToTransmit.GetLength()), request->hostCompletedAddress, false);
 }
 
 #endif // #if _RAKNET_SUPPORT_HTTPConnection2==1 && _RAKNET_SUPPORT_TCPInterface==1

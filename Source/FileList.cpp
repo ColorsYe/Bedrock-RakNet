@@ -494,7 +494,7 @@ void FileList::GetDeltaToCurrent(FileList *input, FileList *output, const char *
 
 	for (thisIndex=0; thisIndex < fileList.Size(); thisIndex++)
 	{
-		localPathLen = static_cast<unsigned int>(fileList[thisIndex]).filename.GetLength();
+		localPathLen = static_cast<unsigned int>(fileList[thisIndex].filename.GetLength());
 		while (localPathLen>0)
 		{
 			if (IsSlash(fileList[thisIndex].filename[localPathLen-1]))
@@ -521,7 +521,7 @@ void FileList::GetDeltaToCurrent(FileList *input, FileList *output, const char *
 				match=true;
 				if (input->fileList[inputIndex].fileLengthBytes==fileList[thisIndex].fileLengthBytes &&
 					input->fileList[inputIndex].dataLengthBytes==fileList[thisIndex].dataLengthBytes &&
-					memcmp(input->fileList[inputIndex].data,fileList[thisIndex].data,static_cast<size_t>(fileList[thisIndex]).dataLengthBytes)==0)
+					memcmp(input->fileList[inputIndex].data,fileList[thisIndex].data,static_cast<size_t>(fileList[thisIndex].dataLengthBytes))==0)
 				{
 					// File exists on both machines and is the same.
 					break;
@@ -720,7 +720,7 @@ void FileList::WriteDataToDisk(const char *applicationDirectory)
 			}
 		}
 
-		WriteFileWithDirectories(fullPath, fileList[i].data, static_cast<unsigned int>(fileList[i]).dataLengthBytes);
+		WriteFileWithDirectories(fullPath, fileList[i].data, static_cast<unsigned int>(fileList[i].dataLengthBytes));
 	}
 }
 
@@ -773,7 +773,7 @@ void FileList::AddCallback(FileListProgress *cb)
 	if (cb==0)
 		return;
 
-	if (static_cast<unsigned int>(fileListProgressCallbacks.GetIndexOf()cb)==(unsigned int)-1)
+	if (static_cast<unsigned int>(fileListProgressCallbacks.GetIndexOf(cb))==(unsigned int)-1)
 		fileListProgressCallbacks.Push(cb, _FILE_AND_LINE_);
 }
 void FileList::RemoveCallback(FileListProgress *cb)

@@ -169,7 +169,7 @@ const char *EmailSender::Send(const char *hostAddress, unsigned short hostPort, 
 	int i,j;
 	if (attachedFiles && attachedFiles->fileList.Size())
 	{
-		rakNetRandom.SeedMT(static_cast<unsigned int>(RakNet::GetTimeMS)());
+		rakNetRandom.SeedMT(static_cast<unsigned int>(RakNet::GetTimeMS()));
 		// Random multipart message boundary
 		for (i=0; i < boundarySize; i++)
 			boundary[i]=Base64Map()[rakNetRandom.RandomMT()%64];
@@ -270,7 +270,7 @@ const char *EmailSender::Send(const char *hostAddress, unsigned short hostPort, 
 	// What a pain in the rear.  I have to map the binary to printable characters using 6 bits per character.
 	if (attachedFiles && attachedFiles->fileList.Size())
 	{
-		for (i=0; i < static_cast<int>(attachedFiles->fileList).Size(); i++)
+		for (i=0; i < static_cast<int>(attachedFiles->fileList.Size()); i++)
 		{
 			// Write boundary
 			snprintf(query, sizeof(query), "\r\n--%s\r\n", boundary);
@@ -281,7 +281,7 @@ const char *EmailSender::Send(const char *hostAddress, unsigned short hostPort, 
 
 			newBody = (char*) rakMalloc_Ex( static_cast<size_t>(attachedFiles->fileList[i].dataLengthBytes*3)/2, _FILE_AND_LINE_ );
 
-			outputOffset=Base64Encoding((const unsigned char*) attachedFiles->fileList[i].data, static_cast<int>(attachedFiles->fileList[i]).dataLengthBytes, newBody);
+			outputOffset=Base64Encoding((const unsigned char*) attachedFiles->fileList[i].data, static_cast<int>(attachedFiles->fileList[i].dataLengthBytes), newBody);
 
 			// Send the base64 mapped file.
 			tcpInterface.Send(newBody, outputOffset, emailServer,false);

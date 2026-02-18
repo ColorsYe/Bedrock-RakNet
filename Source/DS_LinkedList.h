@@ -349,13 +349,13 @@ namespace DataStructures
 	}
 
 	template <class CircularLinkedListType>
-		CircularLinkedList<CircularLinkedListType>::~CircularLinkedList()
+		CircularLinkedList<CircularLinkedListType>::~CircularLinkedList() noexcept
 	{
 		this->Clear();
 	}
 
 	template <class LinkedListType>
-		LinkedList<LinkedListType>::~LinkedList()
+		LinkedList<LinkedListType>::~LinkedList() noexcept
 	{
 		this->Clear();
 	}

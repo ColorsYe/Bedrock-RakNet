@@ -83,7 +83,7 @@ namespace DataStructures
 #endif
 	}
 	template<class MemoryBlockType>
-	MemoryPool<MemoryBlockType>::~MemoryPool()
+	MemoryPool<MemoryBlockType>::~MemoryPool() noexcept
 	{
 #ifndef _DISABLE_MEMORY_POOL
 		Clear(_FILE_AND_LINE_);

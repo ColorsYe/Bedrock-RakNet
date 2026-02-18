@@ -53,7 +53,7 @@ namespace DataStructures
 	}
 
 	template <class TreeType>
-	Tree<TreeType>::~Tree()
+	Tree<TreeType>::~Tree() noexcept
 	{
 		DeleteDecendants();
 	}

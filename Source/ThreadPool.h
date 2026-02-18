@@ -316,7 +316,7 @@ ThreadPool<InputType, OutputType>::ThreadPool()
 
 }
 template <class InputType, class OutputType>
-ThreadPool<InputType, OutputType>::~ThreadPool()
+ThreadPool<InputType, OutputType>::~ThreadPool() noexcept
 {
 	StopThreads();
 	Clear();

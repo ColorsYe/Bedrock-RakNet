@@ -352,7 +352,7 @@ namespace RakNet
 		void OnClosedConnection(SystemAddress systemAddress);
 
 		/// String representation of each RackspaceEventType
-		static constexpr char * EventTypeToString(RackspaceEventType eventType);
+		static const char * EventTypeToString(RackspaceEventType eventType);
 
 		/// \brief Mostly for internal use, but you can use it to execute an operation with more complex xml if desired
 		/// See the Rackspace.cpp on how to use it

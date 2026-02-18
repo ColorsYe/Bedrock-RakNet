@@ -641,7 +641,7 @@ void RakString::Erase(unsigned int index, unsigned int count)
 }
 void RakString::TerminateAtLastCharacter(char c)
 {
-	int i, len=static_cast<int>(GetLength)();
+	int i, len=static_cast<int>(GetLength());
 	for (i=len-1; i >= 0; i--)
 	{
 		if (sharedString->c_str[i]==c)
@@ -654,7 +654,7 @@ void RakString::TerminateAtLastCharacter(char c)
 }
 void RakString::StartAfterLastCharacter(char c)
 {
-	int i, len=static_cast<int>(GetLength)();
+	int i, len=static_cast<int>(GetLength());
 	for (i=len-1; i >= 0; i--)
 	{
 		if (sharedString->c_str[i]==c)
@@ -670,7 +670,7 @@ void RakString::StartAfterLastCharacter(char c)
 }
 void RakString::TerminateAtFirstCharacter(char c)
 {
-	unsigned int i, len=static_cast<unsigned int>(GetLength)();
+	unsigned int i, len=static_cast<unsigned int>(GetLength());
 	for (i=0; i < len; i++)
 	{
 		if (sharedString->c_str[i]==c)
@@ -685,7 +685,7 @@ void RakString::TerminateAtFirstCharacter(char c)
 }
 void RakString::StartAfterFirstCharacter(char c)
 {
-	unsigned int i, len=static_cast<unsigned int>(GetLength)();
+	unsigned int i, len=static_cast<unsigned int>(GetLength());
 	for (i=0; i < len; i++)
 	{
 		if (sharedString->c_str[i]==c)
@@ -702,7 +702,7 @@ void RakString::StartAfterFirstCharacter(char c)
 int RakString::GetCharacterCount(char c)
 {
 	int count=0;
-	unsigned int i, len=static_cast<unsigned int>(GetLength)();
+	unsigned int i, len=static_cast<unsigned int>(GetLength());
 	for (i=0; i < len; i++)
 	{
 		if (sharedString->c_str[i]==c)
@@ -947,9 +947,9 @@ void RakString::SplitURI(RakNet::RakString &header, RakNet::RakString &domain, R
 	char c;
 	unsigned int i=0;
 	if (strncmp(sharedString->c_str, "http://", 7)==0)
-		i+=static_cast<unsigned int>(strlen("http://");
+		i+=static_cast<unsigned int>(strlen("http://"));
 	else if (strncmp(sharedString->c_str, "https://", 8)==0)
-		i+=static_cast<unsigned int>(strlen("https://");
+		i+=static_cast<unsigned int>(strlen("https://"));
 	
 	if (strncmp(sharedString->c_str, "www.", 4)==0)
 		i+=static_cast<unsigned int>(strlen("www."));
@@ -991,7 +991,7 @@ void RakString::SplitURI(RakNet::RakString &header, RakNet::RakString &domain, R
 }
 RakNet::RakString& RakString::SQLEscape()
 {
-	int strLen=static_cast<int>(GetLength)();
+	int strLen=static_cast<int>(GetLength());
 	int escapedCharacterCount=0;
 	int index;
 	for (index=0; index < strLen; index++)
@@ -1480,7 +1480,7 @@ void RakString::AppendBytes(const char *bytes, unsigned int count)
 	else
 	{
 		Clone();
-		unsigned int length=static_cast<unsigned int>(GetLength)();
+		unsigned int length=static_cast<unsigned int>(GetLength());
 		Realloc(sharedString, count+length+1);
 		memcpy(sharedString->c_str+length, bytes, count);
 		sharedString->c_str[length+count]=0;

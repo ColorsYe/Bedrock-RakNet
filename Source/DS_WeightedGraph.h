@@ -91,7 +91,7 @@ namespace DataStructures
 	}
 
 	template <class node_type, class weight_type, bool allow_unlinkedNodes>
-		WeightedGraph<node_type, weight_type, allow_unlinkedNodes>::~WeightedGraph()
+		WeightedGraph<node_type, weight_type, allow_unlinkedNodes>::~WeightedGraph() noexcept
 	{
 		Clear();
 	}

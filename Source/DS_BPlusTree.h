@@ -130,7 +130,7 @@ namespace DataStructures
 		leftmostLeaf=0;
 	}
 	template<class KeyType, class DataType, int order>
-		BPlusTree<KeyType, DataType, order>::~BPlusTree ()
+		BPlusTree<KeyType, DataType, order>::~BPlusTree () noexcept
 	{
 		Clear();
 	}

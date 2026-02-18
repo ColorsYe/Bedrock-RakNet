@@ -272,7 +272,7 @@ ReadyEventSystemStatus ReadyEvent::GetReadyStatus(int eventId, RakNetGUID guid)
 			return ReadyEventSystemStatus::RES_ALL_READY;
 	}
 
-	return RES_UNKNOWN_EVENT;
+	return ReadyEventSystemStatus::RES_UNKNOWN_EVENT;
 }
 void ReadyEvent::SetSendChannel(unsigned char newChannel)
 {
