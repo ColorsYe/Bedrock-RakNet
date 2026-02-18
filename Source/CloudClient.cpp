@@ -166,7 +166,7 @@ void CloudClient::Unsubscribe(DataStructures::List<CloudKey> &keys, DataStructur
 }
 PluginReceiveResult CloudClient::OnReceive(Packet *packet)
 {
-	(void) packet;
+	static_cast<void>(packet);
 
 	return RR_CONTINUE_PROCESSING;
 }

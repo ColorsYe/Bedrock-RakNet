@@ -9,9 +9,9 @@
  */
 
 #include "StringTable.h"
-#include <string.h>
+#include <cstring>
 #include "RakAssert.h"
-#include <stdio.h>
+#include <cstdio>
 #include "BitStream.h"
 #include "StringCompressor.h"
 using namespace RakNet;
@@ -142,7 +142,7 @@ bool StringTable::DecodeString( char *output, int maxCharsToWrite, RakNet::BitSt
 }
 void StringTable::LogStringNotFound(const char *strName)
 {
-	(void) strName;
+	static_cast<void>(strName);
 
 #ifdef _DEBUG
 	RAKNET_DEBUG_PRINTF("Efficiency Warning! Unregistered String %s sent to StringTable.\n", strName);

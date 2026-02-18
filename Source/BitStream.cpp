@@ -18,9 +18,9 @@
 #else
 
 #include "BitStream.h"
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstring>
+#include <cstdlib>
 
 #include "SocketIncludes.h"
 #include "RakNetDefines.h"
@@ -31,7 +31,7 @@
 #include "WindowsIncludes.h"
 #include <memory.h>
 #include <cmath>
-#include <float.h>
+#include <cfloat>
 
 
 
@@ -40,11 +40,11 @@
 #include <arpa/inet.h>
 #include <memory.h>
 #if defined(ANDROID)
-#include <math.h>
+#include <cmath>
 #else
 #include <cmath>
 #endif
-#include <float.h>
+#include <cfloat>
 #endif
 
 // MSWin uses _copysign, others use copysign...
@@ -885,7 +885,7 @@ void BitStream::PrintHex( char *out ) const
 	BitSize_t i;
 	for ( i=0; i < GetNumberOfBytesUsed(); i++)
 	{
-		sprintf(out+i*3, "%02x ", data[i]);
+		snprintf(out+i*3, 2048-i*3, "%02x ", data[i]);
 	}
 }
 void BitStream::PrintHex( void ) const

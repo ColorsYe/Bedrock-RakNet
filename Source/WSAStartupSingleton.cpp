@@ -24,7 +24,7 @@
 
 #endif
 #include "RakNetDefines.h"
-#include <stdio.h>
+#include <cstdio>
 
 int WSAStartupSingleton::refCount=0;
 

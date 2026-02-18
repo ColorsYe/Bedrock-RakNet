@@ -118,7 +118,7 @@ public:
 	struct ConnnectRequest
 	{
 		ConnnectRequest();
-		~ConnnectRequest();
+		~ConnnectRequest() noexcept;
 
 		DataStructures::List<ConnectionRequestSystem> connectionRequestSystems;
 		SimpleMutex connectionRequestSystemsMutex;

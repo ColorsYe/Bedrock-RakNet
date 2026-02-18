@@ -325,9 +325,9 @@ void MessageFilter::Update()
 }
 void MessageFilter::OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming)
 {
-	(void) systemAddress;
-	(void) rakNetGUID;
-	(void) isIncoming;
+	static_cast<void>(systemAddress);
+	static_cast<void>(rakNetGUID);
+	static_cast<void>(isIncoming);
 
 	AddressOrGUID aog;
 	aog.rakNetGuid=rakNetGUID;
@@ -339,8 +339,8 @@ void MessageFilter::OnNewConnection(const SystemAddress &systemAddress, RakNetGU
 }
 void MessageFilter::OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason )
 {
-	(void) rakNetGUID;
-	(void) lostConnectionReason;
+	static_cast<void>(rakNetGUID);
+	static_cast<void>(lostConnectionReason);
 
 	AddressOrGUID aog;
 	aog.rakNetGuid=rakNetGUID;

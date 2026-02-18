@@ -133,8 +133,8 @@ PluginReceiveResult UDPProxyCoordinator::OnReceive(Packet *packet)
 }
 void UDPProxyCoordinator::OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason )
 {
-	(void) lostConnectionReason;
-	(void) rakNetGUID;
+	static_cast<void>(lostConnectionReason);
+	static_cast<void>(rakNetGUID);
 
 	unsigned int idx, idx2;
 

@@ -122,12 +122,12 @@ void VariableDeltaSerializer::BeginDeserialize(DeserializationContext *context, 
 
 void VariableDeltaSerializer::EndDeserialize(DeserializationContext *context)
 {
-	(void) context;
+	static_cast<void>(context);
 }
 
 void VariableDeltaSerializer::AddRemoteSystemVariableHistory(RakNetGUID guid)
 {
-	(void) guid;
+	static_cast<void>(guid);
 }
 
 void VariableDeltaSerializer::RemoveRemoteSystemVariableHistory(RakNetGUID guid)

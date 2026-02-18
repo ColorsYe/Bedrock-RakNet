@@ -29,9 +29,9 @@
 #include <unistd.h>
 #include <pthread.h>
 #endif
-#include <string.h>
+#include <cstring>
 #include "RakAssert.h"
-#include <stdio.h>
+#include <cstdio>
 #include "RakAssert.h"
 #include "RakSleep.h"
 #include "StringCompressor.h"
@@ -97,8 +97,8 @@ TCPInterface::~TCPInterface()
 #if !defined(WINDOWS_STORE_RT)
 bool TCPInterface::CreateListenSocket(unsigned short port, unsigned short maxIncomingConnections, unsigned short socketFamily, const char *bindAddress)
 {
-	(void) maxIncomingConnections;
-	(void) socketFamily;
+	static_cast<void>(maxIncomingConnections);
+	static_cast<void>(socketFamily);
 #if RAKNET_SUPPORT_IPV6!=1
 	listenSocket = socket__(AF_INET, SOCK_STREAM, 0);
 	if (static_cast<int>(listenSocket) ==-1)
@@ -183,7 +183,7 @@ bool TCPInterface::Start(unsigned short port, unsigned short maxIncomingConnecti
 #ifdef __native_client__
 	return false;
 #else
-	(void) socketFamily;
+	static_cast<void>(socketFamily);
 
 	if (isStarted.GetValue()>0)
 		return false;
@@ -788,8 +788,8 @@ __TCPSOCKET__ TCPInterface::SocketConnect(const char* host, unsigned short remot
 	return 0;
 #else
 	int connectResult;
-	(void) connectResult;
-	(void) socketFamily;
+	static_cast<void>(connectResult);
+	static_cast<void>(socketFamily);
 
 #if RAKNET_SUPPORT_IPV6!=1
 	sockaddr_in serverAddress;
@@ -1051,7 +1051,7 @@ RAK_THREAD_DECLARATION(RakNet::UpdateTCPInterfaceLoop)
 #endif
 
 
-			selectResult=static_cast<int>(select__)(largestDescriptor+1, &readFD, &writeFD, &exceptionFD, &tv);		
+			selectResult=static_cast<int>(select__(largestDescriptor+1, &readFD, &writeFD, &exceptionFD, &tv));		
 
 
 
@@ -1311,7 +1311,7 @@ void RemoteClient::SendOrBuffer(const char **data, const unsigned int *lengths, 
 #if OPEN_SSL_CLIENT_SUPPORT==1
 bool RemoteClient::InitSSL(SSL_CTX* ctx, SSL_METHOD *meth)
 {
-	(void) meth;
+	static_cast<void>(meth);
 
 	ssl = SSL_new (ctx);                         
 	RakAssert(ssl);    

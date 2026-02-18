@@ -12,7 +12,7 @@
 
 #if _RAKNET_SUPPORT_FileOperations==1
 
-#include <stdio.h> // RAKNET_DEBUG_PRINTF
+#include <cstdio> // RAKNET_DEBUG_PRINTF
 #include "RakAssert.h"
 #if defined(ANDROID)
 #include <asm/io.h>
@@ -59,10 +59,10 @@ using namespace RakNet;
 	#include <alloca.h>
 	#endif
 #include <unistd.h>
-#include <stdlib.h>
+#include <cstdlib>
 #include <sys/stat.h>
 #include "_FindFirst.h"
-#include <stdint.h> //defines intptr_t
+#include <cstdint> //defines intptr_t
 #endif
 
 #include "RakAlloca.h"
@@ -83,16 +83,16 @@ STATIC_FACTORY_DEFINITIONS(FileList,FileList)
 
 /// First callback called when FileList::AddFilesFromDirectory() starts
 void FLP_Printf::OnAddFilesFromDirectoryStarted(FileList *fileList, char *dir) {
-	(void) fileList;
+	static_cast<void>(fileList);
 	RAKNET_DEBUG_PRINTF("Adding files from directory %s\n",dir);}
 
 /// Called for each directory, when that directory begins processing
 void FLP_Printf::OnDirectory(FileList *fileList, char *dir, unsigned int directoriesRemaining) {
-	(void) fileList;
+	static_cast<void>(fileList);
 	RAKNET_DEBUG_PRINTF("Adding %s. %i remaining.\n", dir, directoriesRemaining);}	
 void FLP_Printf::OnFilePushesComplete( SystemAddress systemAddress, unsigned short setID )
 {
-	(void) setID;
+	static_cast<void>(setID);
 
 	char str[32];
 	systemAddress.ToString(true, (char*) str);
@@ -242,7 +242,7 @@ void FileList::AddFilesFromDirectory(const char *applicationDirectory, const cha
 	else
 		root[0]=0;
 
-	int rootLen=static_cast<int>(strlen)(root);
+	int rootLen=static_cast<int>(strlen(root));
 	if (rootLen)
 	{
 		strcpy(dirSoFar, root);
@@ -480,12 +480,12 @@ void FileList::GetDeltaToCurrent(FileList *input, FileList *output, const char *
 	unsigned dirSubsetLen, localPathLen, remoteSubdirLen;
 	bool match;
 	if (dirSubset)
-		dirSubsetLen = static_cast<unsigned int>(strlen)(dirSubset);
+		dirSubsetLen = static_cast<unsigned int>(strlen(dirSubset));
 	else
 		dirSubsetLen = 0;
 	if (remoteSubdir && remoteSubdir[0])
 	{
-		remoteSubdirLen=static_cast<unsigned int>(strlen)(remoteSubdir);
+		remoteSubdirLen=static_cast<unsigned int>(strlen(remoteSubdir));
 		if (IsSlash(remoteSubdir[remoteSubdirLen-1]))
 			remoteSubdirLen--;
 	}

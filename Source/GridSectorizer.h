@@ -23,7 +23,7 @@ class GridSectorizer
 {
 public:
 	GridSectorizer();
-	~GridSectorizer();
+	~GridSectorizer() noexcept;
 
 	// _cellWidth, _cellHeight is the width and height of each cell in world units
 	// minX, minY, maxX, maxY are the world dimensions (can be changed to dynamically allocate later if needed)

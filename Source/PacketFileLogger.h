@@ -18,7 +18,7 @@
 
 #pragma once
 #include "PacketLogger.h"
-#include <stdio.h>
+#include <cstdio>
 
 namespace RakNet
 {

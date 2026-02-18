@@ -8,8 +8,8 @@
  *
  */
 
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 
 #ifdef __cplusplus
 extern "C" {

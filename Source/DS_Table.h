@@ -61,7 +61,7 @@ namespace DataStructures
 		struct RAK_DLL_EXPORT Cell
 		{
 			Cell();
-			~Cell();
+			~Cell() noexcept;
 			Cell(double numericValue, char *charValue, void *ptr, ColumnType type);
 			void SetByType(double numericValue, char *charValue, void *ptr, ColumnType type);
 			void Clear();
@@ -110,7 +110,7 @@ namespace DataStructures
 		struct RAK_DLL_EXPORT ColumnDescriptor
 		{
 			ColumnDescriptor();
-			~ColumnDescriptor();
+			~ColumnDescriptor() noexcept;
 			ColumnDescriptor(const char cn[_TABLE_MAX_COLUMN_NAME_LENGTH],ColumnType ct);
 
 			char columnName[_TABLE_MAX_COLUMN_NAME_LENGTH];
@@ -152,7 +152,7 @@ namespace DataStructures
 		struct RAK_DLL_EXPORT FilterQuery
 		{
 			FilterQuery();
-			~FilterQuery();
+			~FilterQuery() noexcept;
 			FilterQuery(unsigned column, Cell *cell, FilterQueryType op);
 
 			// If columnName is specified, columnIndex will be looked up using it.
@@ -184,7 +184,7 @@ namespace DataStructures
 		Table();
 
 		// Destructor
-		~Table();
+		~Table() noexcept;
 
 		/// \brief Adds a column to the table
 		/// \param[in] columnName The name of the column

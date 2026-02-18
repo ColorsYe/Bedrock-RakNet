@@ -35,7 +35,7 @@ namespace DataStructures
 		SingleProducerConsumer();
 
 		// Destructor
-		~SingleProducerConsumer();
+		~SingleProducerConsumer() noexcept;
 
 		/// WriteLock must be immediately followed by WriteUnlock.  These two functions must be called in the same thread.
 		/// \return A pointer to a block of data you can write to.

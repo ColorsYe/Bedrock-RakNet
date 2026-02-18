@@ -321,8 +321,8 @@ PluginReceiveResult TeamBalancer::OnReceive(Packet *packet)
 }
 void TeamBalancer::OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason )
 {
-	(void) systemAddress;
-	(void) lostConnectionReason;
+	static_cast<void>(systemAddress);
+	static_cast<void>(lostConnectionReason);
 
 	RemoveByGuid(rakNetGUID);
 }

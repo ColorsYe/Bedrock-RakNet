@@ -110,7 +110,7 @@ FileListTransfer::~FileListTransfer()
 }
 void FileListTransfer::StartIncrementalReadThreads(int numThreads, int threadPriority)
 {
-	(void) threadPriority;
+	static_cast<void>(threadPriority);
 
 	threadPool.StartThreads(numThreads, 0);
 }
@@ -556,8 +556,8 @@ void FileListTransfer::Clear()
 }
 void FileListTransfer::OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason )
 {
-	(void) lostConnectionReason;
-	(void) rakNetGUID;
+	static_cast<void>(lostConnectionReason);
+	static_cast<void>(rakNetGUID);
 
 	RemoveReceiver(systemAddress);
 }
@@ -935,7 +935,7 @@ Got ID_FILE_LIST_REFERENCE_PUSH_ACK. Calls OnReferencePushAck, calls SendIRIToAd
 
 int SendIRIToAddressCB(FileListTransfer::ThreadData threadData, bool *returnOutput, void* perThreadData)
 {
-	(void) perThreadData;
+	static_cast<void>(perThreadData);
 
 	FileListTransfer *fileListTransfer = threadData.fileListTransfer;
 	SystemAddress systemAddress = threadData.systemAddress;

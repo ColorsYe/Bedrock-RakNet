@@ -162,8 +162,8 @@ PluginReceiveResult NatTypeDetectionClient::OnReceive(Packet *packet)
 }
 void NatTypeDetectionClient::OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason )
 {
-	(void) lostConnectionReason;
-	(void) rakNetGUID;
+	static_cast<void>(lostConnectionReason);
+	static_cast<void>(rakNetGUID);
 
 	if (IsInProgress() && systemAddress==serverAddress)
 		Shutdown();

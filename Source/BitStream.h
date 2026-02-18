@@ -26,8 +26,8 @@
 #include "RakString.h"
 #include "RakWString.h"
 #include "RakAssert.h"
-#include <math.h>
-#include <float.h>
+#include <cmath>
+#include <cfloat>
 
 #ifdef _MSC_VER
 #pragma warning( push )
@@ -71,7 +71,7 @@ namespace RakNet
 		BitStream( unsigned char* _data, const unsigned int lengthInBytes, bool _copyData );
 
 		// Destructor
-		~BitStream();
+		~BitStream() noexcept;
 
 		/// Resets the bitstream for reuse.
 		void Reset( void );
@@ -899,12 +899,12 @@ namespace RakNet
 	private:
 
 		BitStream( const BitStream &invalid) {
-			(void) invalid;
+			static_cast<void>(invalid);
 			RakAssert(0);
 		}
 
 		BitStream& operator = ( const BitStream& invalid ) {
-			(void) invalid;
+			static_cast<void>(invalid);
 			RakAssert(0);
 			static BitStream i;
 			return i;
@@ -1250,7 +1250,7 @@ namespace RakNet
 	template <>
 		inline void BitStream::WriteDelta(const bool &currentValue, const bool &lastValue)
 	{
-		(void) lastValue;
+		static_cast<void>(lastValue);
 
 		Write(currentValue);
 	}
@@ -1413,7 +1413,7 @@ namespace RakNet
 	template <>
 		inline void BitStream::WriteCompressedDelta(const bool &currentValue, const bool &lastValue)
 	{
-		(void) lastValue;
+		static_cast<void>(lastValue);
 
 		Write(currentValue);
 	}
@@ -2029,7 +2029,7 @@ namespace RakNet
 	BitStream& operator>>(BitStream& in, templateType& c)
 	{
 		bool success = in.Read(c);
-		(void)success;
+		static_cast<void>(success);
 
 		RakAssert(success);
 		return in;

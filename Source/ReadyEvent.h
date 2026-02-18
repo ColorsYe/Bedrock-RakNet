@@ -31,7 +31,7 @@ class RakPeerInterface;
 
 /// \ingroup READY_EVENT_GROUP
 /// Returns the status of a remote system when querying with ReadyEvent::GetReadyStatus
-enum ReadyEventSystemStatus
+enum class ReadyEventSystemStatus
 {
 	/// ----------- Normal states ---------------
 	/// The remote system is not in the wait list, and we have never gotten a ready or complete message from it.

@@ -14,8 +14,8 @@
 #include "ConsoleServer.h"
 #include "TransportInterface.h"
 #include "CommandParserInterface.h"
-#include <string.h>
-#include <stdlib.h>
+#include <cstring>
+#include <cstdlib>
 
 #define COMMAND_DELINATOR ' '
 #define COMMAND_DELINATOR_TOGGLE '"'

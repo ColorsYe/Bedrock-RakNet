@@ -32,7 +32,7 @@ namespace RakNet
 		RakWString( const wchar_t *input );
 		RakWString( const RakWString & right);
 		RakWString( const char *input );
-		~RakWString();
+		~RakWString() noexcept;
 
 		/// Implicit return of wchar_t*
 		operator wchar_t* () const {if (c_str) return c_str; return (wchar_t*) L"";}

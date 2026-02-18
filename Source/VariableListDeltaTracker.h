@@ -22,7 +22,7 @@ class VariableListDeltaTracker
 {
 public:
 	VariableListDeltaTracker();
-	~VariableListDeltaTracker();
+	~VariableListDeltaTracker() noexcept;
 
 	// Call before using a series of WriteVar
 	void StartWrite();
@@ -125,7 +125,7 @@ public:
 	{
 		VariableLastValueNode();
 		VariableLastValueNode(const unsigned char *data, int _byteLength);
-		~VariableLastValueNode();
+		~VariableLastValueNode() noexcept;
 		char *lastData;
 		unsigned int byteLength;
 		bool isDirty;

@@ -37,9 +37,9 @@
 * It would be nice to CC: <Cokus@math.washington.edu> when you write.
 */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include "Rand.h"
 
 //
@@ -94,7 +94,7 @@ void fillBufferMT( void *buffer, unsigned int bytes )
 
 void seedMT( unsigned int seed, unsigned int *state, unsigned int *&next, int &left )   // Defined in cokus_c.c
 {
-	(void) next;
+	static_cast<void>(next);
 
 	//
 	// We initialize state[0..(N-1)] via the generator

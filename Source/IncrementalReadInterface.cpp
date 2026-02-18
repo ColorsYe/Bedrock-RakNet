@@ -9,7 +9,7 @@
  */
 
 #include "IncrementalReadInterface.h"
-#include <stdio.h>
+#include <cstdio>
 
 using namespace RakNet;
 

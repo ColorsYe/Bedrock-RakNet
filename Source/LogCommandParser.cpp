@@ -16,9 +16,9 @@
 
 #include <memory.h>
 
-#include <stdio.h>
-#include <string.h>
-#include <stdarg.h>
+#include <cstdio>
+#include <cstring>
+#include <cstdarg>
 
 #include "LinuxStrings.h"
 
@@ -41,7 +41,7 @@ LogCommandParser::~LogCommandParser()
 }
 bool LogCommandParser::OnCommand(const char *command, unsigned numParameters, char **parameterList, TransportInterface *transport, const SystemAddress &systemAddress, const char *originalString)
 {
-	(void) originalString;
+	static_cast<void>(originalString);
 
 	if (strcmp(command, "Subscribe")==0)
 	{
@@ -149,7 +149,7 @@ void LogCommandParser::WriteLog(const char *channelName, const char *format, ...
 
 	// Make sure that text ends in \r\n
 	int textLen;
-	textLen=static_cast<int>(strlen)(text);
+	textLen=static_cast<int>(strlen(text));
 	if (textLen==0)
 		return;
 	if (text[textLen-1]=='\n')
@@ -193,12 +193,12 @@ void LogCommandParser::PrintChannels(const SystemAddress &systemAddress, Transpo
 }
 void LogCommandParser::OnNewIncomingConnection(const SystemAddress &systemAddress, TransportInterface *transport)
 {
-	(void) systemAddress;
-	(void) transport;
+	static_cast<void>(systemAddress);
+	static_cast<void>(transport);
 }
 void LogCommandParser::OnConnectionLost(const SystemAddress &systemAddress, TransportInterface *transport)
 {
-	(void) transport;
+	static_cast<void>(transport);
 	Unsubscribe(systemAddress, 0);
 }
 unsigned LogCommandParser::Unsubscribe(const SystemAddress &systemAddress, const char *channelName)

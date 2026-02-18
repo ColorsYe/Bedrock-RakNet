@@ -14,8 +14,8 @@
 #include "RakSleep.h"
 #include "SocketDefines.h"
 #include "GetTime.h"
-#include <stdio.h>
-#include <string.h> // memcpy
+#include <cstdio>
+#include <cstring> // memcpy
 
 using namespace RakNet;
 
@@ -24,7 +24,7 @@ using namespace RakNet;
 #include <unistd.h>
 #include <fcntl.h>
 #include <arpa/inet.h>
-#include <errno.h>  // error numbers
+#include <cerrno>  // error numbers
 #if !defined(ANDROID)
 #include <ifaddrs.h>
 #endif

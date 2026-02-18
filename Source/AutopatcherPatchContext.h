@@ -9,7 +9,7 @@
  */
 
 #pragma once
-enum PatchContext
+enum class PatchContext
 {
 	PC_HASH_1_WITH_PATCH,
 	PC_HASH_2_WITH_PATCH,

@@ -57,7 +57,7 @@ public:
 	SocketLayer();
 	
 	// Destructor	
-	~SocketLayer();
+	~SocketLayer() noexcept;
 	
 	/*
 	/// Creates a bound socket to listen for incoming connections on the specified port

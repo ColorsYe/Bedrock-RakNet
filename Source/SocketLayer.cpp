@@ -42,12 +42,12 @@ using namespace pp;
 
 #ifdef _WIN32
 #else
-#include <string.h> // memcpy
+#include <cstring> // memcpy
 #include <unistd.h>
 #include <fcntl.h>
 #include <arpa/inet.h>
-#include <errno.h>  // error numbers
-#include <stdio.h> // RAKNET_DEBUG_PRINTF
+#include <cerrno>  // error numbers
+#include <cstdio> // RAKNET_DEBUG_PRINTF
 #if !defined(ANDROID)
 #include <ifaddrs.h>
 #endif
@@ -80,7 +80,7 @@ using namespace pp;
 #endif
 
 #include "RakSleep.h"
-#include <stdio.h>
+#include <cstdio>
 #include "Itoa.h"
 
 #ifdef _MSC_VER
@@ -94,7 +94,7 @@ namespace RakNet
 }
 
 #ifdef _DEBUG
-#include <stdio.h>
+#include <cstdio>
 #endif
 
  
@@ -114,7 +114,7 @@ void PrepareAddrInfoHints(addrinfo *hints)
 void SocketLayer::SetSocketOptions( __UDPSOCKET__ listenSocket, bool blockingSocket, bool setBroadcast)
 {
 #ifdef __native_client__
-	(void) listenSocket;
+	static_cast<void>(listenSocket);
 #else
 	int sock_opt = 1;
 

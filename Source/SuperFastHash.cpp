@@ -10,10 +10,10 @@
 
 #include "SuperFastHash.h"
 #include "NativeTypes.h"
-#include <stdlib.h>
+#include <cstdlib>
 
 #if !defined(_WIN32)
-#include <stdint.h>
+#include <cstdint>
 #endif
 
 #undef get16bits
@@ -114,11 +114,11 @@ uint32_t SuperFastHashFilePtr (FILE *fp)
 	int bytesRemaining=length;
 	unsigned int lastHash = length;
 	char readBlock[INCREMENTAL_READ_BLOCK];
-	while (bytesRemaining>=static_cast<int>(sizeof)(readBlock))
+	while (bytesRemaining>=static_cast<int>(sizeof(readBlock)))
 	{
 		fread(readBlock, sizeof(readBlock), 1, fp);
-		lastHash=SuperFastHashIncremental (readBlock, static_cast<int>(sizeof)(readBlock), lastHash );
-		bytesRemaining-=static_cast<int>(sizeof)(readBlock);
+		lastHash=SuperFastHashIncremental (readBlock, static_cast<int>(sizeof(readBlock)), lastHash );
+		bytesRemaining-=static_cast<int>(sizeof(readBlock));
 	}
 	if (bytesRemaining>0)
 	{

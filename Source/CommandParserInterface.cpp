@@ -10,9 +10,9 @@
 
 #include "CommandParserInterface.h"
 #include "TransportInterface.h"
-#include <string.h>
+#include <cstring>
 #include "RakAssert.h"
-#include <stdio.h>
+#include <cstdio>
 
 
 #if   defined(WINDOWS_STORE_RT)
@@ -51,7 +51,7 @@ void CommandParserInterface::ParseConsoleString(char *str, const char delineator
 	unsigned strLen;
 	bool replaceDelineator=true;
 
-	strLen = static_cast<unsigned>(strlen)(str);
+	strLen = static_cast<unsigned>(strlen(str));
 
 	// Replace every instance of delineator, \n, \r with 0
 	for (strIndex=0; strIndex < strLen; strIndex++)
@@ -126,17 +126,17 @@ bool CommandParserInterface::GetRegisteredCommand(const char *command, Registere
 }
 void CommandParserInterface::OnTransportChange(TransportInterface *transport)
 {
-	(void) transport;
+	static_cast<void>(transport);
 }
 void CommandParserInterface::OnNewIncomingConnection(const SystemAddress &systemAddress, TransportInterface *transport)
 {
-	(void) systemAddress;
-	(void) transport;
+	static_cast<void>(systemAddress);
+	static_cast<void>(transport);
 }
 void CommandParserInterface::OnConnectionLost(const SystemAddress &systemAddress, TransportInterface *transport)
 {
-	(void) systemAddress;
-	(void) transport;
+	static_cast<void>(systemAddress);
+	static_cast<void>(transport);
 }
 void CommandParserInterface::ReturnResult(bool res, const char *command,TransportInterface *transport, const SystemAddress &systemAddress)
 {

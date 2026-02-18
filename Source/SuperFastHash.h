@@ -9,7 +9,7 @@
  */
 
 #pragma once
-#include <stdio.h>
+#include <cstdio>
 #include "NativeTypes.h"
 
 // From http://www.azillionmonkeys.com/qed/hash.html

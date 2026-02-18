@@ -62,7 +62,7 @@ namespace DataStructures
 		}
 
 		Map();
-		~Map();
+		~Map() noexcept;
 		Map( const Map& original_copy );
 		Map& operator= ( const Map& original_copy );
 
@@ -302,8 +302,8 @@ namespace DataStructures
 	template <class key_type, class data_type, int (*key_comparison_func)(const key_type&,const key_type&)>
 	void Map<key_type, data_type, key_comparison_func>::SaveLastSearch(const key_type &key, const unsigned index) const
 	{
-		(void) key;
-		(void) index;
+		static_cast<void>(key);
+		static_cast<void>(index);
 
 		/*
 		lastSearchIndex=index;
@@ -315,7 +315,7 @@ namespace DataStructures
 	template <class key_type, class data_type, int (*key_comparison_func)(const key_type&,const key_type&)>
 	bool Map<key_type, data_type, key_comparison_func>::HasSavedSearchResult(const key_type &key) const
 	{
-		(void) key;
+		static_cast<void>(key);
 
 		// Not threadsafe!
 		return false;

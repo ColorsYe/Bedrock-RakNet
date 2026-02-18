@@ -22,8 +22,8 @@ RNS2SendResult RNS2_Windows_Linux_360::Send_Windows_Linux_360NoVDP( RNS2Socket r
 	int len=0;
 	do
 	{
-		(void) file;
-		(void) line;
+		static_cast<void>(file);
+		static_cast<void>(line);
 
 
 			int oldTTL=-1;

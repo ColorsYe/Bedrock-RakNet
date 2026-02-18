@@ -15,7 +15,7 @@
 #pragma once
 #include "DS_MemoryPool.h"
 #include "DS_Queue.h"
-#include <stdio.h>
+#include <cstdio>
 #include "Export.h"
 
 // Java
@@ -84,7 +84,7 @@ namespace DataStructures
 		};
 
 		BPlusTree();
-		~BPlusTree();
+		~BPlusTree() noexcept;
 		void SetPoolPageSize(int size); // Set the page size for the memory pool.  Optionsl
 		bool Get(const KeyType key, DataType &out) const;
 		bool Delete(const KeyType key);
@@ -635,7 +635,7 @@ namespace DataStructures
 				if (cur->size)
 				{
 					bool b = GetIndexOf(key, cur, &insertionIndex);
-					(void) b;
+					static_cast<void>(b);
 					RakAssert(b==false);
 				}
 				else

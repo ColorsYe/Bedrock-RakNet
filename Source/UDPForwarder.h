@@ -96,7 +96,7 @@ public:
 	struct ForwardEntry
 	{
 		ForwardEntry();
-		~ForwardEntry();
+		~ForwardEntry() noexcept;
 		SystemAddress addr1Unconfirmed, addr2Unconfirmed, addr1Confirmed, addr2Confirmed;
 		RakNet::TimeMS timeLastDatagramForwarded;
 		__UDPSOCKET__ socket;

@@ -10,7 +10,7 @@
 
 #include "RakMemoryOverride.h"
 #include "RakAssert.h"
-#include <stdlib.h>
+#include <cstdlib>
 
 #ifdef _RAKNET_SUPPORT_DL_MALLOC
 #include "rdlmalloc.h"
@@ -46,8 +46,8 @@ using namespace RakNet;
 
 void DefaultOutOfMemoryHandler(const char *file, const long line)
 {
-	(void) file;
-	(void) line;
+	static_cast<void>(file);
+	static_cast<void>(line);
 	RakAssert(0);
 }
 
@@ -155,24 +155,24 @@ void RakNet::_RakFree (void *p)
 
 void* RakNet::_RakMalloc_Ex (size_t size, const char *file, unsigned int line)
 {
-	(void) file;
-	(void) line;
+	static_cast<void>(file);
+	static_cast<void>(line);
 
 	return malloc(size);
 }
 
 void* RakNet::_RakRealloc_Ex (void *p, size_t size, const char *file, unsigned int line)
 {
-	(void) file;
-	(void) line;
+	static_cast<void>(file);
+	static_cast<void>(line);
 
 	return realloc(p,size);
 }
 
 void RakNet::_RakFree_Ex (void *p, const char *file, unsigned int line)
 {
-	(void) file;
-	(void) line;
+	static_cast<void>(file);
+	static_cast<void>(line);
 
 	free(p);
 }
@@ -209,24 +209,24 @@ void _DLFree(void *p)
 }
 void* _DLMalloc_Ex (size_t size, const char *file, unsigned int line)
 {
-	(void) file;
-	(void) line;
+	static_cast<void>(file);
+	static_cast<void>(line);
 
 	return rak_mspace_malloc(rakNetFixedHeapMSpace,size);
 }
 
 void* _DLRealloc_Ex (void *p, size_t size, const char *file, unsigned int line)
 {
-	(void) file;
-	(void) line;
+	static_cast<void>(file);
+	static_cast<void>(line);
 
 	return rak_mspace_realloc(rakNetFixedHeapMSpace,p,size);
 }
 
 void _DLFree_Ex (void *p, const char *file, unsigned int line)
 {
-	(void) file;
-	(void) line;
+	static_cast<void>(file);
+	static_cast<void>(line);
 
 	if (p)
 		rak_mspace_free(rakNetFixedHeapMSpace,p);
@@ -280,10 +280,10 @@ void UseRaknetFixedHeap(size_t initialCapacity,
 						void * (*yourDirectMMapFunction) (size_t size),
 						int (*yourMUnmapFunction) (void *p, size_t size))
 {
-	(void) initialCapacity;
-	(void) yourMMapFunction;
-	(void) yourDirectMMapFunction;
-	(void) yourMUnmapFunction;
+	static_cast<void>(initialCapacity);
+	static_cast<void>(yourMMapFunction);
+	static_cast<void>(yourDirectMMapFunction);
+	static_cast<void>(yourMUnmapFunction);
 }
 void FreeRakNetFixedHeap() {}
 #endif

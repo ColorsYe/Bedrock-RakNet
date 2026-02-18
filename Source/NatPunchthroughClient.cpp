@@ -862,8 +862,8 @@ void NatPunchthroughClient::SendOutOfBand(SystemAddress sa, MessageID oobId)
 }
 void NatPunchthroughClient::OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming)
 {
-	(void) rakNetGUID;
-	(void) isIncoming;
+	static_cast<void>(rakNetGUID);
+	static_cast<void>(isIncoming);
 
 	// Try to track new port mappings on the router. Not reliable, but better than nothing.
 	SystemAddress ourExternalId = rakPeerInterface->GetExternalID(systemAddress);
@@ -895,9 +895,9 @@ void NatPunchthroughClient::OnNewConnection(const SystemAddress &systemAddress, 
 
 void NatPunchthroughClient::OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason )
 {
-	(void) systemAddress;
-	(void) rakNetGUID;
-	(void) lostConnectionReason;
+	static_cast<void>(systemAddress);
+	static_cast<void>(rakNetGUID);
+	static_cast<void>(lostConnectionReason);
 
 	if (sp.facilitator==systemAddress)
 	{

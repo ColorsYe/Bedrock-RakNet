@@ -9,9 +9,9 @@
  */
 
 #include "DS_ByteQueue.h"
-#include <string.h> // Memmove
-#include <stdlib.h> // realloc
-#include <stdio.h>
+#include <cstring> // Memmove
+#include <cstdlib> // realloc
+#include <cstdio>
 
 
 using namespace DataStructures;

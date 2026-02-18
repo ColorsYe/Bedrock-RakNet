@@ -29,7 +29,7 @@ class RAK_DLL_EXPORT HuffmanEncodingTree
 
 public:
 	HuffmanEncodingTree();
-	~HuffmanEncodingTree();
+	~HuffmanEncodingTree() noexcept;
 
 	/// \brief Pass an array of bytes to array and a preallocated BitStream to receive the output.
 	/// \param [in] input Array of bytes to encode

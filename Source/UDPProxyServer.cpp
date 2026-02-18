@@ -126,8 +126,8 @@ PluginReceiveResult UDPProxyServer::OnReceive(Packet *packet)
 }
 void UDPProxyServer::OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason )
 {
-	(void) lostConnectionReason;
-	(void) rakNetGUID;
+	static_cast<void>(lostConnectionReason);
+	static_cast<void>(rakNetGUID);
 
 	loggingInCoordinators.RemoveIfExists(systemAddress);
 	loggedInCoordinators.RemoveIfExists(systemAddress);

@@ -260,10 +260,10 @@ void RPC4::CallLoopback( const char* uniqueID, RakNet::BitStream * bitStream )
 	if (skhi.IsInvalid()==true)
 	{
 		if (rakPeerInterface) 
-			p=AllocatePacketUnified(sizeof(MessageID)+sizeof(unsigned char)+static_cast<unsigned int>(strlen)(uniqueID)+1);
+			p=AllocatePacketUnified(sizeof(MessageID)+sizeof(unsigned char)+static_cast<unsigned int>(strlen(uniqueID))+1);
 #if _RAKNET_SUPPORT_PacketizedTCP==1 && _RAKNET_SUPPORT_TCPInterface==1
 		else
-			p=tcpInterface->AllocatePacket(sizeof(MessageID)+sizeof(unsigned char)+static_cast<unsigned int>(strlen)(uniqueID)+1);
+			p=tcpInterface->AllocatePacket(sizeof(MessageID)+sizeof(unsigned char)+static_cast<unsigned int>(strlen(uniqueID))+1);
 #endif
 
 		if (rakPeerInterface)

@@ -13,7 +13,7 @@
 
 #else
 #include <termios.h>
-#include <stdio.h>
+#include <cstdio>
 #include <unistd.h>
 char getche();
 #endif 

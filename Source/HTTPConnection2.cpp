@@ -408,8 +408,8 @@ PluginReceiveResult HTTPConnection2::OnReceive(Packet *packet)
 
 void HTTPConnection2::OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming)
 {
-	(void) rakNetGUID;
-	(void) isIncoming; // unknown
+	static_cast<void>(rakNetGUID);
+	static_cast<void>(isIncoming); // unknown
 
 	SendPendingRequestToConnectedSystem(systemAddress);
 }
@@ -536,7 +536,7 @@ void HTTPConnection2::SendNextPendingRequest()
 
 void HTTPConnection2::OnFailedConnectionAttempt(Packet *packet, PI2_FailedConnectionAttemptReason failedConnectionAttemptReason)
 {
-	(void) failedConnectionAttemptReason;
+	static_cast<void>(failedConnectionAttemptReason);
 	if (packet->systemAddress==UNASSIGNED_SYSTEM_ADDRESS)
 		return;
 
@@ -546,8 +546,8 @@ void HTTPConnection2::OnFailedConnectionAttempt(Packet *packet, PI2_FailedConnec
 }
 void HTTPConnection2::OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason )
 {
-	(void) lostConnectionReason;
-	(void) rakNetGUID;
+	static_cast<void>(lostConnectionReason);
+	static_cast<void>(rakNetGUID);
 
 	if (systemAddress==UNASSIGNED_SYSTEM_ADDRESS)
 		return;

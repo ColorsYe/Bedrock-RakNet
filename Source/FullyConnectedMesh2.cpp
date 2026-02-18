@@ -313,9 +313,9 @@ void FullyConnectedMesh2::OnRakPeerShutdown()
 }
 void FullyConnectedMesh2::OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason )
 {
-	(void) lostConnectionReason;
-	(void) systemAddress;
-	(void) rakNetGUID;
+	static_cast<void>(lostConnectionReason);
+	static_cast<void>(systemAddress);
+	static_cast<void>(rakNetGUID);
 
 	unsigned int idx;
 	idx=0;
@@ -388,9 +388,9 @@ RakNet::TimeUS FullyConnectedMesh2::GetElapsedRuntime()
 }
 void FullyConnectedMesh2::OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming)
 {
-	(void) isIncoming;
-	(void) rakNetGUID;
-	(void) systemAddress;
+	static_cast<void>(isIncoming);
+	static_cast<void>(rakNetGUID);
+	static_cast<void>(systemAddress);
 
 	UpdateVerifiedJoinInProgressMember(rakNetGUID, rakNetGUID, JIPS_CONNECTED);
 

@@ -150,8 +150,8 @@ void RNS2_Berkley::GetSystemAddressIPV4And6 ( RNS2Socket rns2Socket, SystemAddre
 	}
 
 #else
-	(void) rns2Socket;
-	(void) systemAddressOut;
+	static_cast<void>(rns2Socket);
+	static_cast<void>(systemAddressOut);
 	return;
 #endif
 }
@@ -161,8 +161,8 @@ void RNS2_Berkley::GetSystemAddressIPV4And6 ( RNS2Socket rns2Socket, SystemAddre
 #endif
 RNS2BindResult RNS2_Berkley::BindSharedIPV4( RNS2_BerkleyBindParameters *bindParameters, const char *file, unsigned int line ) {
 
-	(void) file;
-	(void) line;
+	static_cast<void>(file);
+	static_cast<void>(line);
 
 	int ret;
 	memset(&boundAddress.address.addr4,0,sizeof(sockaddr_in));
@@ -265,9 +265,9 @@ RNS2BindResult RNS2_Berkley::BindSharedIPV4( RNS2_BerkleyBindParameters *bindPar
 }
 RNS2BindResult RNS2_Berkley::BindSharedIPV4And6( RNS2_BerkleyBindParameters *bindParameters, const char *file, unsigned int line ) {
 	
-	(void) file;
-	(void) line;
-	(void) bindParameters;
+	static_cast<void>(file);
+	static_cast<void>(line);
+	static_cast<void>(bindParameters);
 
 #if RAKNET_SUPPORT_IPV6==1
 
@@ -439,7 +439,7 @@ void RNS2_Berkley::RecvFromBlockingIPV4And6(RNS2RecvStruct *recvFromStruct)
 
 
 #else
-	(void) recvFromStruct;
+	static_cast<void>(recvFromStruct);
 #endif
 }
 

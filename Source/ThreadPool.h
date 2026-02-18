@@ -37,7 +37,7 @@ template <class InputType, class OutputType>
 struct RAK_DLL_EXPORT ThreadPool
 {
 	ThreadPool();
-	~ThreadPool();
+	~ThreadPool() noexcept;
 
 	/// Start the specified number of threads.
 	/// \param[in] numThreads The number of threads to start
@@ -324,7 +324,7 @@ ThreadPool<InputType, OutputType>::~ThreadPool()
 template <class InputType, class OutputType>
 bool ThreadPool<InputType, OutputType>::StartThreads(int numThreads, int stackSize, void* (*_perThreadDataFactory)(), void (*_perThreadDataDestructor)(void *))
 {
-	(void) stackSize;
+	static_cast<void>(stackSize);
 
 // #if defined(SN_TARGET_PSP2)
 // 	runtime = RakNet::RakThread::AllocRuntime(numThreads);
@@ -350,7 +350,7 @@ bool ThreadPool<InputType, OutputType>::StartThreads(int numThreads, int stackSi
 
 	numThreadsWorking=0;
 	unsigned threadId = 0;
-	(void) threadId;
+	static_cast<void>(threadId);
 	int i;
 	for (i=0; i < numThreads; i++)
 	{

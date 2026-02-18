@@ -10,8 +10,8 @@
 
 #include "RakAssert.h"
 #include "GridSectorizer.h"
-//#include <stdlib.h>
-#include <math.h>
+//#include <cstdlib>
+#include <cmath>
 
 GridSectorizer::GridSectorizer()
 {
@@ -32,8 +32,8 @@ void GridSectorizer::Init(const float _maxCellWidth, const float _maxCellHeight,
 	cellOriginY=minY;
 	gridWidth=maxX-minX;
 	gridHeight=maxY-minY;
-	gridCellWidthCount=static_cast<int>(ceil)(gridWidth/_maxCellWidth);
-	gridCellHeightCount=static_cast<int>(ceil)(gridHeight/_maxCellHeight);
+	gridCellWidthCount=static_cast<int>(ceil(gridWidth/_maxCellWidth));
+	gridCellHeightCount=static_cast<int>(ceil(gridHeight/_maxCellHeight));
 	// Make the cells slightly smaller, so we allocate an extra unneeded cell if on the edge.  This way we don't go outside the array on rounding errors.
 	cellWidth=gridWidth/gridCellWidthCount;
 	cellHeight=gridHeight/gridCellHeightCount;

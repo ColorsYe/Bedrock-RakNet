@@ -19,7 +19,7 @@
 
 #else
 #include <pthread.h>
-#include <time.h>
+#include <ctime>
 #include <sys/time.h>
 pthread_mutex_t fakeMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t fakeCond = PTHREAD_COND_INITIALIZER;

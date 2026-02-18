@@ -68,7 +68,7 @@ public:
 	STATIC_FACTORY_DECLARATIONS(UDPProxyServer)
 
 	UDPProxyServer();
-	~UDPProxyServer();
+	~UDPProxyServer() noexcept;
 
 	/// Sets the socket family to use, either IPV4 or IPV6
 	/// \param[in] socketFamily For IPV4, use AF_INET (default). For IPV6, use AF_INET6. To autoselect, use AF_UNSPEC.

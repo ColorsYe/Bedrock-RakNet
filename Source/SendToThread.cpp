@@ -28,7 +28,7 @@ ThreadPool<SendToThread::SendToThreadBlock*,SendToThread::SendToThreadBlock*> Se
 
 SendToThread::SendToThreadBlock* SendToWorkerThread(SendToThread::SendToThreadBlock* input, bool *returnOutput, void* perThreadData)
 {
-	(void) perThreadData;
+	static_cast<void>(perThreadData);
 	*returnOutput=false;
 //	RakNet::TimeUS *mostRecentTime=(RakNet::TimeUS *)input->data;
 //	*mostRecentTime=RakNet::GetTimeUS();

@@ -21,7 +21,7 @@ using namespace RakNet;
 
 #if   defined(_WIN32)
 	#include "WindowsIncludes.h"
-	#include <stdio.h>
+	#include <cstdio>
 	#if !defined(_WIN32_WCE)
 		#include <process.h>
 	#endif

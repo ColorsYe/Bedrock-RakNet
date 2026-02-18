@@ -41,13 +41,13 @@ inline RakNet::BitStream& operator>>(RakNet::BitStream& in, FileListNodeContext&
 {
 	in.Read(out.op);
 	bool success = in.Read(out.flnc_extraData1);
-	(void) success;
+	static_cast<void>(success);
 	assert(success);
 	success = in.Read(out.flnc_extraData2);
-	(void) success;
+	static_cast<void>(success);
 	assert(success);
 	success = in.Read(out.flnc_extraData3);
-	(void) success;
+	static_cast<void>(success);
 	assert(success);
 	return in;
 }

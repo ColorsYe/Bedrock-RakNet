@@ -12,7 +12,7 @@
 #include "Export.h"
 #include "DS_List.h"
 #include "RakNetTypes.h" // int64_t
-#include <stdio.h>
+#include <cstdio>
 #include "stdarg.h"
 
 
@@ -43,7 +43,7 @@ public:
 	RakString(unsigned char input);
 	RakString(const unsigned char *format, ...);
 	RakString(const char *format, ...);
-	~RakString();
+	~RakString() noexcept;
 	RakString( const RakString & rhs);
 
 	/// Implicit return of const char*

@@ -24,7 +24,7 @@ class SendToThread
 {
 public:
 	SendToThread();
-	~SendToThread();
+	~SendToThread() noexcept;
 
 	struct SendToThreadBlock
 	{

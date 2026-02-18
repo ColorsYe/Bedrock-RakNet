@@ -41,7 +41,7 @@ public:
 	STATIC_FACTORY_DECLARATIONS(ConsoleServer)
 
 	ConsoleServer();
-	~ConsoleServer();
+	~ConsoleServer() noexcept;
 
 	/// \brief Call this with a derivation of TransportInterface so that the console server can send and receive commands
 	/// \param[in] transportInterface Your interface to use.

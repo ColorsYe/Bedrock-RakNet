@@ -117,7 +117,7 @@ OutputStreamAndDataWriter ^ListenerContext::GetOutputStreamAndDataWriter(uint64_
 	//addr = ntohl(addr);
 	char buf[64];
 	unsigned char *ucp = (unsigned char *)&addr;
-	sprintf(buf, "%d.%d.%d.%d",
+	snprintf(buf, sizeof(buf), "%d.%d.%d.%d",
 		ucp[0] & 0xff,
 		ucp[1] & 0xff,
 		ucp[2] & 0xff,

@@ -86,7 +86,7 @@ class CCRakNetUDT
 	public:
 	
 	CCRakNetUDT();
-	~CCRakNetUDT();
+	~CCRakNetUDT() noexcept;
 
 	/// Reset all variables to their initial states, for a new connection
 	void Init(CCTimeType curTime, uint32_t maxDatagramPayload);

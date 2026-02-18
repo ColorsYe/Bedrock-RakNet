@@ -9,9 +9,9 @@
  */
 
 #include "FormatString.h"
-#include <stdio.h>
-#include <string.h>
-#include <stdarg.h>
+#include <cstdio>
+#include <cstring>
+#include <cstdarg>
 #include "LinuxStrings.h"
 
 char * FormatString(const char *format, ...)

@@ -47,7 +47,7 @@ class RAK_DLL_EXPORT RakNetRandom
 {
 public:
 	RakNetRandom();
-	~RakNetRandom();
+	~RakNetRandom() noexcept;
 	void SeedMT( unsigned int seed );
 	unsigned int ReloadMT( void );
 	unsigned int RandomMT( void );

@@ -270,7 +270,7 @@ bool TableSerializer::DeserializeFilterQuery(RakNet::BitStream *out, DataStructu
 }
 void TableSerializer::SerializeFilterQueryList(RakNet::BitStream *in, DataStructures::Table::FilterQuery *query, unsigned int numQueries, unsigned int maxQueries)
 {
-	(void) maxQueries;
+	static_cast<void>(maxQueries);
 	in->Write(static_cast<bool>(query && numQueries>0));
 	if (query==0 || numQueries<=0)
 		return;

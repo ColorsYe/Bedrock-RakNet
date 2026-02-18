@@ -137,7 +137,7 @@ public:
 	STATIC_FACTORY_DECLARATIONS(NatPunchthroughClient)
 
 	NatPunchthroughClient();
-	~NatPunchthroughClient();
+	~NatPunchthroughClient() noexcept;
 
 	/// If the instance of RakPeer running NATPunchthroughServer was bound to two IP addresses, then you can call FindRouterPortStride()
 	/// This will determine the stride that your router uses when assigning ports, if your router is full-cone

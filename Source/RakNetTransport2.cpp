@@ -16,9 +16,9 @@
 #include "RakPeerInterface.h"
 #include "BitStream.h"
 #include "MessageIdentifiers.h"
-#include <stdio.h>
-#include <string.h>
-#include <stdarg.h>
+#include <cstdio>
+#include <cstring>
+#include <cstdarg>
 #include "LinuxStrings.h"
 
 #ifdef _MSC_VER
@@ -38,8 +38,8 @@ RakNetTransport2::~RakNetTransport2()
 }
 bool RakNetTransport2::Start(unsigned short port, bool serverMode)
 {
-	(void) port;
-	(void) serverMode;
+	static_cast<void>(port);
+	static_cast<void>(serverMode);
 	return true;
 }
 void RakNetTransport2::Stop()
@@ -66,7 +66,7 @@ void RakNetTransport2::Send( SystemAddress systemAddress, const char *data, ... 
 
 	RakNet::BitStream str;
 	str.Write((MessageID)ID_TRANSPORT_STRING);
-	str.Write(text, static_cast<int>(strlen)(text));
+	str.Write(text, static_cast<int>(strlen(text)));
 	str.Write(static_cast<unsigned char>(0)); // Null terminate the string
 	rakPeerInterface->Send(&str, MEDIUM_PRIORITY, RELIABLE_ORDERED, 0, systemAddress, (systemAddress==UNASSIGNED_SYSTEM_ADDRESS)!=0);
 }
@@ -121,14 +121,14 @@ PluginReceiveResult RakNetTransport2::OnReceive(Packet *packet)
 }
 void RakNetTransport2::OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason )
 {
-	(void) rakNetGUID;
-	(void) lostConnectionReason;
+	static_cast<void>(rakNetGUID);
+	static_cast<void>(lostConnectionReason);
 	lostConnections.Push(systemAddress, _FILE_AND_LINE_ );
 }
 void RakNetTransport2::OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming)
 {
-	(void) rakNetGUID;
-	(void) isIncoming;
+	static_cast<void>(rakNetGUID);
+	static_cast<void>(isIncoming);
 	newConnections.Push(systemAddress, _FILE_AND_LINE_ );
 }
 #ifdef _MSC_VER

@@ -15,7 +15,7 @@
 
 #pragma once
 #include "RakAssert.h"
-#include <string.h> // memmove
+#include <cstring> // memmove
 #include "Export.h"
 #include "RakMemoryOverride.h"
 #include "RakString.h"
@@ -41,7 +41,7 @@ namespace DataStructures
 		Hash();
 
 		// Destructor
-		~Hash();
+		~Hash() noexcept;
 
 		void Push(key_type key, const data_type &input, const char *file, unsigned int line );
 		data_type* Peek(key_type key );

@@ -10,9 +10,9 @@
 
 #include "RakWString.h"
 #include "BitStream.h"
-#include <string.h>
-#include <wchar.h>
-#include <stdlib.h>
+#include <cstring>
+#include <cwchar>
+#include <cstdlib>
 
 using namespace RakNet;
 

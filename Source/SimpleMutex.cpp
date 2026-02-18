@@ -93,7 +93,7 @@ SimpleMutex::~SimpleMutex()
 
 #ifdef _WIN32
 #ifdef _DEBUG
-#include <stdio.h>
+#include <cstdio>
 #endif
 #endif
 
@@ -141,7 +141,7 @@ void SimpleMutex::Lock()
 
 #else
 	int error = pthread_mutex_lock(&hMutex);
-	(void) error;
+	static_cast<void>(error);
 	RakAssert(error==0);
 #endif
 }
@@ -161,7 +161,7 @@ void SimpleMutex::Unlock()
 
 #else
 	int error = pthread_mutex_unlock(&hMutex);
-	(void) error;
+	static_cast<void>(error);
 	RakAssert(error==0);
 #endif
 }
@@ -184,7 +184,7 @@ void SimpleMutex::Init()
 
 #else
 	int error = pthread_mutex_init(&hMutex, 0);
-	(void) error;
+	static_cast<void>(error);
 	RakAssert(error==0);
 #endif
 //	isInitialized=true;

@@ -804,8 +804,8 @@ void StatisticsHistoryPlugin::OnDirectSocketReceive(const char *data, const BitS
 */
 void StatisticsHistoryPlugin::OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason )
 {
-	(void) lostConnectionReason;
-	(void) systemAddress;
+	static_cast<void>(lostConnectionReason);
+	static_cast<void>(systemAddress);
 
 	if (removeLostConnections)
 	{
@@ -814,8 +814,8 @@ void StatisticsHistoryPlugin::OnClosedConnection(const SystemAddress &systemAddr
 }
 void StatisticsHistoryPlugin::OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming)
 {
-	(void) systemAddress;
-	(void) isIncoming;
+	static_cast<void>(systemAddress);
+	static_cast<void>(isIncoming);
 
 	if (addNewConnections)
 	{

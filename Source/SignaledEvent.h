@@ -33,7 +33,7 @@ class RAK_DLL_EXPORT SignaledEvent
 {
 public:
 	SignaledEvent();
-	~SignaledEvent();
+	~SignaledEvent() noexcept;
 
 	void InitEvent();
 	void CloseEvent();

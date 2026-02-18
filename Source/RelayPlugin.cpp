@@ -221,8 +221,8 @@ PluginReceiveResult RelayPlugin::OnReceive(Packet *packet)
 
 void RelayPlugin::OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason )
 {
-	(void) lostConnectionReason;
-	(void) systemAddress;
+	static_cast<void>(lostConnectionReason);
+	static_cast<void>(systemAddress);
 
 	RemoveParticipantOnServer(rakNetGUID);
 }

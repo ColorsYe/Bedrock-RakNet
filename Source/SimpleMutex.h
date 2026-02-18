@@ -43,7 +43,7 @@ public:
 	SimpleMutex();
 
 	// Destructor
-	~SimpleMutex();
+	~SimpleMutex() noexcept;
 
 	// Locks the mutex.  Slow!
 	void Lock();

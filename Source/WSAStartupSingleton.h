@@ -13,7 +13,7 @@ class WSAStartupSingleton
 {
 public:
 	WSAStartupSingleton();
-	~WSAStartupSingleton();
+	~WSAStartupSingleton() noexcept;
 	static void AddRef();
 	static void Deref();
 

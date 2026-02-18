@@ -105,11 +105,11 @@
 #pragma once
 // KevinJ:
 #include "RakMemoryOverride.h"
-#include <stdio.h> // Needed for file access
+#include <cstdio> // Needed for file access
 
 #include <memory.h> // Needed for memset and memcpy
 
-#include <string.h> // Needed for strcat and strcpy
+#include <cstring> // Needed for strcat and strcpy
 #include "Export.h"
 //#define MAX_FILE_READ_BUFFER 8000 
 #define SHA1_LENGTH 20
@@ -130,11 +130,11 @@
 
 #include <memory.h>
 
-#include <limits.h>
+#include <climits>
 
 #ifdef SHA1_UTILITY_FUNCTIONS
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 #endif
 
 #ifdef SHA1_STL_FUNCTIONS
@@ -142,7 +142,7 @@
 #endif
 
 #ifdef _MSC_VER
-#include <stdlib.h>
+#include <cstdlib>
 #endif
 
 // You can define the endian mode in your files without modifying the SHA-1
@@ -248,7 +248,7 @@ public:
 	CSHA1();
 
 #ifdef SHA1_WIPE_VARIABLES
-	~CSHA1();
+	~CSHA1() noexcept;
 #endif
 
 	void Reset();

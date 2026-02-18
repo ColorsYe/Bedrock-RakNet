@@ -472,8 +472,8 @@ void Router2::Update()
 }
 void Router2::OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason )
 {
-	(void) lostConnectionReason;
-	(void) systemAddress;
+	static_cast<void>(lostConnectionReason);
+	static_cast<void>(systemAddress);
 
 
 	unsigned int forwardedConnectionIndex=0;
@@ -589,8 +589,8 @@ void Router2::OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID 
 }
 void Router2::OnFailedConnectionAttempt(Packet *packet, PI2_FailedConnectionAttemptReason failedConnectionAttemptReason)
 {
-	(void) failedConnectionAttemptReason;
-	(void) packet;
+	static_cast<void>(failedConnectionAttemptReason);
+	static_cast<void>(packet);
 
 	unsigned int forwardedConnectionIndex=0;
 	forwardedConnectionListMutex.Lock();

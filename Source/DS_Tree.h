@@ -31,7 +31,7 @@ namespace DataStructures
 	public:
 		Tree();
 		Tree(TreeType &inputData);
-		~Tree();
+		~Tree() noexcept;
 		void LevelOrderTraversal(DataStructures::List<Tree*> &output);
 		void AddChild(TreeType &newData);
 		void DeleteDecendants();

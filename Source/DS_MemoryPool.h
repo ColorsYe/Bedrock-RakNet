@@ -15,7 +15,7 @@
 #pragma once
 #ifndef __APPLE__
 // Use stdlib and not malloc for compatibility
-#include <stdlib.h>
+#include <cstdlib>
 #endif
 #include "RakAssert.h"
 #include "Export.h"
@@ -50,7 +50,7 @@ namespace DataStructures
 		};
 
 		MemoryPool();
-		~MemoryPool();
+		~MemoryPool() noexcept;
 		void SetPageSize(int size); // Defaults to 16384 bytes
 		MemoryBlockType *Allocate(const char *file, unsigned int line);
 		void Release(MemoryBlockType *m, const char *file, unsigned int line);

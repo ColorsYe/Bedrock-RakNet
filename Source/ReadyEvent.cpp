@@ -263,13 +263,13 @@ ReadyEventSystemStatus ReadyEvent::GetReadyStatus(int eventId, RakNetGUID guid)
 		ReadyEventNode *ren = readyEventNodeList[readyIndex];
 		unsigned systemIndex = ren->systemList.GetIndexFromKey(guid, &objectExists);
 		if (objectExists==false)
-			return RES_NOT_WAITING;		
+			return ReadyEventSystemStatus::RES_NOT_WAITING;		
 		if (ren->systemList[systemIndex].lastReceivedStatus==ID_READY_EVENT_SET)
-			return RES_READY;
+			return ReadyEventSystemStatus::RES_READY;
 		if (ren->systemList[systemIndex].lastReceivedStatus==ID_READY_EVENT_UNSET)
-			return RES_WAITING;
+			return ReadyEventSystemStatus::RES_WAITING;
 		if (ren->systemList[systemIndex].lastReceivedStatus==ID_READY_EVENT_ALL_SET)
-			return RES_ALL_READY;
+			return ReadyEventSystemStatus::RES_ALL_READY;
 	}
 
 	return RES_UNKNOWN_EVENT;
@@ -388,9 +388,9 @@ void ReadyEvent::OnReadyEventQuery(Packet *packet)
 }
 void ReadyEvent::OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason )
 {
-	(void) systemAddress;
-	(void) rakNetGUID;
-	(void) lostConnectionReason;
+	static_cast<void>(systemAddress);
+	static_cast<void>(rakNetGUID);
+	static_cast<void>(lostConnectionReason);
 
 	RemoveFromAllLists(rakNetGUID);
 }
@@ -553,7 +553,7 @@ void ReadyEvent::RemoveFromAllLists(RakNetGUID guid)
 }
 void ReadyEvent::PushCompletionPacket(unsigned eventId)
 {
-	(void) eventId;
+	static_cast<void>(eventId);
 	// Not necessary
 	/*
 	// Pass a packet to the user that we are now completed, as setting ourselves to signaled was the last thing being waited on

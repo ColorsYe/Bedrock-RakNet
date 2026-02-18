@@ -31,7 +31,7 @@ public:
 	STATIC_FACTORY_DECLARATIONS(RakNetCommandParser)
 
 	RakNetCommandParser();
-	~RakNetCommandParser();
+	~RakNetCommandParser() noexcept;
 
 	/// Given \a command with parameters \a parameterList , do whatever processing you wish.
 	/// \param[in] command The command to process

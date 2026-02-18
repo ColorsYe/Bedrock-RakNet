@@ -62,7 +62,7 @@ void HuffmanEncodingTree::FreeMemory( void )
 }
 
 
-////#include <stdio.h>
+////#include <cstdio>
 
 // Given a frequency table of 256 elements, all with a frequency of 1 or more, generate the tree
 void HuffmanEncodingTree::GenerateFromFrequencyTable( unsigned int frequencyTable[ 256 ] )

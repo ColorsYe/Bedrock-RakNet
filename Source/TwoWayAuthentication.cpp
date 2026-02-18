@@ -231,7 +231,7 @@ void TwoWayAuthentication::OnRakPeerShutdown()
 }
 void TwoWayAuthentication::OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason )
 {
-	(void) lostConnectionReason;
+	static_cast<void>(lostConnectionReason);
 
 	// Remove from pending challenges
 	unsigned int i=0;

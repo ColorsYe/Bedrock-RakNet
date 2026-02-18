@@ -61,7 +61,7 @@ class RAK_DLL_EXPORT DynDNS
 {
 public:
 	DynDNS();
-	~DynDNS();
+	~DynDNS() noexcept;
 
 	// Pass 0 for newIPAddress to autodetect whatever you are uploading from
 	// usernameAndPassword should be in the format username:password

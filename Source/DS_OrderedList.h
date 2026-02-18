@@ -36,7 +36,7 @@ namespace DataStructures
 		static void IMPLEMENT_DEFAULT_COMPARISON() {DataStructures::defaultOrderedListComparison<key_type, data_type>(key_type(),data_type());}
 
 		OrderedList();
-		~OrderedList();
+		~OrderedList() noexcept;
 		OrderedList( const OrderedList& original_copy );
 		OrderedList& operator= ( const OrderedList& original_copy );
 
@@ -171,7 +171,7 @@ namespace DataStructures
 	template <class key_type, class data_type, int (*default_comparison_function)(const key_type&, const data_type&)>
 	unsigned OrderedList<key_type, data_type, default_comparison_function>::Insert(const key_type &key, const data_type &data, bool assertOnDuplicate, const char *file, unsigned int line, int (*cf)(const key_type&, const data_type&))
 	{
-		(void) assertOnDuplicate;
+		static_cast<void>(assertOnDuplicate);
 		bool objectExists;
 		unsigned index;
 		index = GetIndexFromKey(key, &objectExists, cf);

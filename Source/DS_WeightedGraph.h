@@ -24,7 +24,7 @@
 #include "RakAssert.h"
 #include "RakMemoryOverride.h"
 #ifdef _DEBUG
-#include <stdio.h>
+#include <cstdio>
 #endif
 
 #ifdef _MSC_VER
@@ -42,7 +42,7 @@ namespace DataStructures
 		static void IMPLEMENT_DEFAULT_COMPARISON() {DataStructures::defaultMapKeyComparison<node_type>(node_type(),node_type());}
 
 		WeightedGraph();
-		~WeightedGraph();
+		~WeightedGraph() noexcept;
 		WeightedGraph( const WeightedGraph& original_copy );
 		WeightedGraph& operator= ( const WeightedGraph& original_copy );
 		void AddNode(const node_type &node);

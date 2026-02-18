@@ -18,7 +18,7 @@
 #include "BitStream.h"
 #include "RakString.h"
 #include "RakAssert.h"
-#include <string.h>
+#include <cstring>
 
 #include <memory.h>
 

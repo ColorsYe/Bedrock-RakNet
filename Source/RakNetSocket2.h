@@ -147,7 +147,7 @@ class RNS2_WindowsStore8 : public RakNetSocket2
 {
 public:
 	RNS2_WindowsStore8();
-	~RNS2_WindowsStore8();
+	~RNS2_WindowsStore8() noexcept;
 
 	virtual RNS2SendResult Send( RNS2_SendParameters *sendParameters, const char *file, unsigned int line );
 	RNS2BindResult Bind( Platform::String ^localServiceName );

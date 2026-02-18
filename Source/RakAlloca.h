@@ -9,7 +9,7 @@
  */
 
 #if defined(__FreeBSD__)
-#include <stdlib.h>
+#include <cstdlib>
 
 
 

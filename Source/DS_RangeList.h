@@ -48,7 +48,7 @@ namespace DataStructures
 	{
 	public:
 		RangeList();
-		~RangeList();
+		~RangeList() noexcept;
 		void Insert(range_type index);
 		void Clear();
 		[[nodiscard]] unsigned Size(void) const;
@@ -71,7 +71,7 @@ namespace DataStructures
 		bitsWritten=0;
 		for (i=0; i < ranges.Size(); i++)
 		{
-			if (static_cast<int>(sizeof)(unsigned short)*8+bitsWritten+static_cast<int>(sizeof)(range_type)*8*2+1>maxBits)
+			if (static_cast<int>(sizeof(unsigned short))*8+bitsWritten+static_cast<int>(sizeof(range_type))*8*2+1>maxBits)
 				break;
 			unsigned char minEqualsMax;
 			if (ranges[i].minIndex==ranges[i].maxIndex)

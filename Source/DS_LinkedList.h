@@ -161,7 +161,7 @@ namespace DataStructures
 		};
 
 		CircularLinkedList();
-		~CircularLinkedList();
+		~CircularLinkedList() noexcept;
 		CircularLinkedList( const CircularLinkedList& original_copy );
 		// CircularLinkedList(LinkedList<CircularLinkedListType> original_copy) {CircularLinkedList(original_copy);}  // Converts linked list to circular type
 		bool operator= ( const CircularLinkedList& original_copy );
@@ -221,7 +221,7 @@ namespace DataStructures
 		{}
 
 		LinkedList( const LinkedList& original_copy );
-		~LinkedList();
+		~LinkedList() noexcept;
 		bool operator= ( const LinkedList<LinkedListType>& original_copy );
 		LinkedList& operator++();  // LinkedList A; ++A;
 		LinkedList& operator++( int );  // Linked List A; A++;

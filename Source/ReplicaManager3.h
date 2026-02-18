@@ -360,7 +360,7 @@ struct LastSerializationResultBS
 struct LastSerializationResult
 {
 	LastSerializationResult();
-	~LastSerializationResult();
+	~LastSerializationResult() noexcept;
 	
 	/// The replica instance we serialized
 	/// \note replica MUST be the first member of this struct because I cast from replica to LastSerializationResult in Update()

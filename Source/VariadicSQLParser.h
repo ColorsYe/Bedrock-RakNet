@@ -11,7 +11,7 @@
 #pragma once
 #include "DS_List.h"
 
-#include <stdarg.h>
+#include <cstdarg>
 
 namespace VariadicSQLParser
 {

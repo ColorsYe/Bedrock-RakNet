@@ -12,10 +12,10 @@ You can do whatever you want with it.
 #include <sys/time.h> /* struct timeval, select() */
 /* ICANON, ECHO, TCSANOW, struct termios */
 #include <termios.h> /* tcgetattr(), tcsetattr() */
-#include <stdlib.h> /* atexit(), exit() */
+#include <cstdlib> /* atexit(), exit() */
 #include <unistd.h> /* read() */
-#include <stdio.h> /* printf() */
-#include <string.h> /* memcpy */
+#include <cstdio> /* printf() */
+#include <cstring> /* memcpy */
 
 static struct termios g_old_kbd_mode;
 /*****************************************************************************

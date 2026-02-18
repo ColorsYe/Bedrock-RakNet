@@ -25,7 +25,7 @@
 #include "RakString.h"
 #include "DS_Queue.h"
 #include "DS_Hash.h"
-#include <float.h>
+#include <cfloat>
 
 namespace RakNet
 {
@@ -128,7 +128,7 @@ public:
 	struct TimeAndValueQueue
 	{
 		TimeAndValueQueue();
-		~TimeAndValueQueue();
+		~TimeAndValueQueue() noexcept;
 
 		DataStructures::Queue<TimeAndValue> values;
 
@@ -186,7 +186,7 @@ protected:
 	struct TrackedObject
 	{
 		TrackedObject();
-		~TrackedObject();
+		~TrackedObject() noexcept;
 		TrackedObjectData trackedObjectData;
 		DataStructures::Hash<RakNet::RakString, TimeAndValueQueue*, 32, RakNet::RakString::ToInteger> dataQueues;
 	};

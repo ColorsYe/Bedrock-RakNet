@@ -200,7 +200,7 @@ void NatPunchthroughServer::Update()
 							// 8/01/09 Fixed bug where this was after DeleteConnectionAttempt()
 							connectionAttempt->sender->systemAddress.ToString(true,addr1);
 							connectionAttempt->recipient->systemAddress.ToString(true,addr2);
-							sprintf(str, "Sending ID_NAT_TARGET_UNRESPONSIVE to sender %s and recipient %s.", addr1, addr2);
+							snprintf(str, sizeof(str), "Sending ID_NAT_TARGET_UNRESPONSIVE to sender %s and recipient %s.", addr1, addr2);
 							natPunchthroughServerDebugInterface->OnServerMessage(str);
 							RakNet::RakString log;
 							connectionAttempt->sender->LogConnectionAttempts(log);
@@ -285,8 +285,8 @@ PluginReceiveResult NatPunchthroughServer::OnReceive(Packet *packet)
 }
 void NatPunchthroughServer::OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason )
 {
-	(void) lostConnectionReason;
-	(void) systemAddress;
+	static_cast<void>(lostConnectionReason);
+	static_cast<void>(systemAddress);
 
 	unsigned int i=0;
 	bool objectExists;
@@ -363,8 +363,8 @@ void NatPunchthroughServer::OnClosedConnection(const SystemAddress &systemAddres
 
 void NatPunchthroughServer::OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming)
 {
-	(void) systemAddress;
-	(void) isIncoming;
+	static_cast<void>(systemAddress);
+	static_cast<void>(isIncoming);
 
 	User *user = RakNet::OP_NEW<User>(_FILE_AND_LINE_);
 	user->guid=rakNetGUID;
@@ -596,7 +596,7 @@ void NatPunchthroughServer::StartPunchthroughForUser(User *user)
 				char addr1[128], addr2[128];
 				sender->systemAddress.ToString(true,addr1);
 				recipient->systemAddress.ToString(true,addr2);
-				sprintf(str, "Sending NAT_ATTEMPT_PHASE_GETTING_RECENT_PORTS to sender %s and recipient %s.", addr1, addr2);
+				snprintf(str, sizeof(str), "Sending NAT_ATTEMPT_PHASE_GETTING_RECENT_PORTS to sender %s and recipient %s.", addr1, addr2);
 				natPunchthroughServerDebugInterface->OnServerMessage(str);
 			}
 

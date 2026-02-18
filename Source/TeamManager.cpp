@@ -1373,8 +1373,8 @@ void TM_World::Clear()
 
 void TM_World::OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason )
 {
-	(void) lostConnectionReason;
-	(void) systemAddress;
+	static_cast<void>(lostConnectionReason);
+	static_cast<void>(systemAddress);
 
 	RemoveParticipant(rakNetGUID);
 }
@@ -1383,8 +1383,8 @@ void TM_World::OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID
 
 void TM_World::OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming)
 {
-	(void) isIncoming;
-	(void) systemAddress;
+	static_cast<void>(isIncoming);
+	static_cast<void>(systemAddress);
 
 	if (autoAddParticipants)
 		AddParticipant(rakNetGUID);

@@ -33,7 +33,7 @@ namespace DataStructures
 		static void IMPLEMENT_DEFAULT_COMPARISON() {DataStructures::defaultMapKeyComparison<channel_key_type>(channel_key_type(),channel_key_type());}
 
 		OrderedChannelHeap();
-		~OrderedChannelHeap();
+		~OrderedChannelHeap() noexcept;
 		void Push(const channel_key_type &channelID, const heap_data_type &data);
 		void PushAtHead(const unsigned index, const channel_key_type &channelID, const heap_data_type &data);
 		heap_data_type Pop(const unsigned startingIndex=0);

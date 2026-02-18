@@ -125,7 +125,7 @@ UDPForwarderResult UDPForwarder::StartForwarding(SystemAddress source, SystemAdd
 	if (isRunning.GetValue()==0)
 		return UDPFORWARDER_NOT_RUNNING;
 
-	(void) socketFamily;
+	static_cast<void>(socketFamily);
 
 	unsigned int inputId = nextInputId++;
 

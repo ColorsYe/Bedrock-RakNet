@@ -12,12 +12,12 @@
 #include "RakAssert.h"
 #include "RakMemoryOverride.h"
 #include "BitStream.h"
-#include <stdarg.h>
-#include <string.h>
+#include <cstdarg>
+#include <cstring>
 #include "LinuxStrings.h"
 #include "StringCompressor.h"
 #include "SimpleMutex.h"
-#include <stdlib.h>
+#include <cstdlib>
 #include "Itoa.h"
 
 using namespace RakNet;
@@ -1217,7 +1217,7 @@ void RakString::Serialize(BitStream *bs) const
 }
 void RakString::Serialize(const char *str, BitStream *bs)
 {
-	unsigned short l = static_cast<unsigned short>(strlen)(str);
+	unsigned short l = static_cast<unsigned short>(strlen(str));
 	bs->Write(l);
 	bs->WriteAlignedBytes((const unsigned char*) str, (const unsigned int) l);
 }
@@ -1288,9 +1288,9 @@ const char *RakString::ToString(int64_t i)
 	static int index=0;
 	static char buff[64][64];
 #if defined(_WIN32)
-	sprintf(buff[index], "%I64d", i);
+	snprintf(buff[index], 64, "%I64d", i);
 #else
-	sprintf(buff[index], "%lld", (long long unsigned int) i);
+	snprintf(buff[index], 64, "%lld", (long long unsigned int) i);
 #endif
 	int lastIndex=index;
 	if (++index==64)
@@ -1302,9 +1302,9 @@ const char *RakString::ToString(uint64_t i)
 	static int index=0;
 	static char buff[64][64];
 #if defined(_WIN32)
-	sprintf(buff[index], "%I64u", i);
+	snprintf(buff[index], 64, "%I64u", i);
 #else
-	sprintf(buff[index], "%llu", (long long unsigned int) i);
+	snprintf(buff[index], 64, "%llu", (long long unsigned int) i);
 #endif
 	int lastIndex=index;
 	if (++index==64)

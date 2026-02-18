@@ -12,8 +12,8 @@
 #if _RAKNET_SUPPORT_FileOperations==1
 #include "RakMemoryOverride.h"
 #include "_FindFirst.h" // For linux
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 #ifdef _WIN32 
 // For mkdir
 #include <direct.h>
@@ -116,7 +116,7 @@ void AddSlash( char *input )
 	if (input==0 || input[0]==0)
 		return;
 
-	int lastCharIndex=static_cast<int>(strlen)(input)-1;
+	int lastCharIndex=static_cast<int>(strlen(input))-1;
 	if (input[lastCharIndex]=='\\')
 		input[lastCharIndex]='/';
 	else if (input[lastCharIndex]!='/')
@@ -153,7 +153,7 @@ void QuoteIfSpaces(char *str)
 	}
 	if (hasSpace)
 	{
-		int len=static_cast<int>(strlen)(str);
+		int len=static_cast<int>(strlen(str));
 		memmove(str+1, str, len);
 		str[0]='\"';
 		str[len]='\"';

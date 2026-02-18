@@ -257,7 +257,7 @@ void ConnectionGraph2::GetParticipantList(DataStructures::OrderedList<RakNetGUID
 }
 void ConnectionGraph2::OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming)
 {
-	(void) isIncoming;
+	static_cast<void>(isIncoming);
 	if (autoProcessNewConnections)
 		AddParticipant(systemAddress, rakNetGUID);
 }

@@ -32,7 +32,7 @@ class RakPeerInterface;
 class BitStream;
 struct Packet;
 
-enum StartupResult
+enum class StartupResult
 {
 	RAKNET_STARTED,
 	RAKNET_ALREADY_STARTED,
@@ -49,7 +49,7 @@ enum StartupResult
 };
 
 
-enum ConnectionAttemptResult
+enum class ConnectionAttemptResult
 {
 	CONNECTION_ATTEMPT_STARTED,
 	INVALID_PARAMETER,
@@ -340,7 +340,7 @@ struct RAK_DLL_EXPORT RakNetGUID
 
 	// Used internally for fast lookup. Optional (use -1 to do regular lookup). Don't transmit this.
 	SystemIndex systemIndex;
-	static int size() {return static_cast<int>(sizeof)(uint64_t);}
+	static int size() {return static_cast<int>(sizeof(uint64_t));}
 
 	bool operator==( const RakNetGUID& right ) const;
 	bool operator!=( const RakNetGUID& right ) const;

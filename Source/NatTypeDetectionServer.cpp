@@ -359,8 +359,8 @@ PluginReceiveResult NatTypeDetectionServer::OnReceive(Packet *packet)
 }
 void NatTypeDetectionServer::OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason )
 {
-	(void) lostConnectionReason;
-	(void) rakNetGUID;
+	static_cast<void>(lostConnectionReason);
+	static_cast<void>(rakNetGUID);
 
 	unsigned int i = GetDetectionAttemptIndex(systemAddress);
 	if (i==(unsigned int)-1)

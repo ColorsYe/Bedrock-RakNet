@@ -26,7 +26,7 @@ namespace DataStructures
 	{
 	public:
 		ByteQueue();
-		~ByteQueue();
+		~ByteQueue() noexcept;
 		void WriteBytes(const char *in, unsigned length, const char *file, unsigned int line);
 		bool ReadBytes(char *out, unsigned maxLengthToRead, bool peek);
 		unsigned GetBytesWritten(void) const;

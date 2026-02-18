@@ -17,7 +17,7 @@
 
 #pragma once
 #include "RakAssert.h"
-#include <string.h> // memmove
+#include <cstring> // memmove
 #include "Export.h"
 #include "RakMemoryOverride.h"
 
@@ -38,7 +38,7 @@ namespace DataStructures
 		List();
 
 		// Destructor
-		~List();
+		~List() noexcept;
 		
 		/// \brief Copy constructor.
 		/// \param[in]  original_copy The list to duplicate 

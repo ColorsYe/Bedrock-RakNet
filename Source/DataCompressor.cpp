@@ -11,7 +11,7 @@
 #include "DataCompressor.h"
 #include "DS_HuffmanEncodingTree.h"
 #include "RakAssert.h"
-#include <string.h> // Use string.h rather than memory.h for a console
+#include <cstring> // Use string.h rather than memory.h for a console
 
 using namespace RakNet;
 

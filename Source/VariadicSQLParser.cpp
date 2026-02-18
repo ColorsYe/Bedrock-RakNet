@@ -10,7 +10,7 @@
 
 #include "VariadicSQLParser.h"
 #include "BitStream.h"
-#include <stdarg.h>
+#include <cstdarg>
 
 using namespace VariadicSQLParser;
 
@@ -48,7 +48,7 @@ void VariadicSQLParser::GetTypeMappingIndices( const char *format, DataStructure
 	unsigned int i;
 	unsigned int typeMappingIndex;
 	indices.Clear(false, _FILE_AND_LINE_);
-	unsigned int len = static_cast<unsigned int>(strlen)(format);
+	unsigned int len = static_cast<unsigned int>(strlen(format));
 	previousCharWasPercentSign=false;
 	for (i=0; i < len; i++)
 	{
@@ -97,7 +97,7 @@ void VariadicSQLParser::ExtractArguments( va_list argptr, const DataStructures::
 		case 's':
 			{
 				char* val = va_arg( argptr, char* );
-				paramLength[i]=static_cast<int>(strlen)(val);
+				paramLength[i]=static_cast<int>(strlen(val));
 				paramData[i]=(char*) rakMalloc_Ex(paramLength[i]+1, _FILE_AND_LINE_);
 				memcpy(paramData[i], val, paramLength[i]+1);
 			}
@@ -115,7 +115,7 @@ void VariadicSQLParser::ExtractArguments( va_list argptr, const DataStructures::
 		case 'f':
 			{
 				// On MSVC at least, this only works with double as the 2nd param
-				float val = static_cast<float>(va_arg)( argptr, double );
+				float val = static_cast<float>(va_arg( argptr, double ));
 				//float val = va_arg( argptr, float );
 				paramLength[i]=sizeof(val);
 				paramData[i]=(char*) rakMalloc_Ex(paramLength[i], _FILE_AND_LINE_);

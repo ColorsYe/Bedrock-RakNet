@@ -10,11 +10,11 @@
 
 #include "FormatString.h"
 #include "EpochTimeToString.h"
-#include <stdio.h>
-#include <string.h>
-#include <stdarg.h>
+#include <cstdio>
+#include <cstring>
+#include <cstdarg>
 // localtime
-#include <time.h>
+#include <ctime>
 #include "LinuxStrings.h"
 
 char * EpochTimeToString(long long time)

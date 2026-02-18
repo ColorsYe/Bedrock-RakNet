@@ -165,7 +165,7 @@ namespace RakNet
 	{
 	public:
 		Rackspace();
-		~Rackspace();
+		~Rackspace() noexcept;
 
 		/// \brief Authenticate with Rackspace servers, required before executing any commands.
 		/// \details All requests to authenticate and operate against Cloud Servers are performed using SSL over HTTP (HTTPS) on TCP port 443.

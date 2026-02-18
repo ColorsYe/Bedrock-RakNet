@@ -43,7 +43,7 @@ public:
 	STATIC_FACTORY_DECLARATIONS(ConnectionGraph2)
 
 	ConnectionGraph2();
-	~ConnectionGraph2();
+	~ConnectionGraph2() noexcept;
 
 	/// \brief Given a remote system identified by RakNetGUID, return the list of SystemAddresses and RakNetGUIDs they are connected to 
 	/// \param[in] remoteSystemGuid Which system we are referring to. This only works for remote systems, not ourselves.

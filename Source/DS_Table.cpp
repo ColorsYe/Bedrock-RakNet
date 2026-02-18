@@ -10,7 +10,7 @@
 
 #include "DS_Table.h"
 #include "DS_OrderedList.h"
-#include <string.h>
+#include <cstring>
 #include "RakAssert.h"
 #include "RakAssert.h"
 #include "Itoa.h"
@@ -23,12 +23,12 @@ using namespace DataStructures;
 
 void ExtendRows(Table::Row* input, int index)
 {
-	(void) index;
+	static_cast<void>(index);
 	input->cells.Insert(RakNet::OP_NEW<Table::Cell>(_FILE_AND_LINE_), _FILE_AND_LINE_ );
 }
 void FreeRow(Table::Row* input, int index)
 {
-	(void) index;
+	static_cast<void>(index);
 
 	unsigned i;
 	for (i=0; i < input->cells.Size(); i++)
@@ -104,7 +104,7 @@ void Table::Cell::Set(const char *input)
 		
 	if (input)
 	{
-		i=static_cast<int>(strlen)(input)+1;
+		i=static_cast<int>(strlen(input))+1;
 		c =  (char*) rakMalloc_Ex( static_cast<int>(i), _FILE_AND_LINE_ );
 		strcpy(c, input);
 	}
@@ -951,16 +951,16 @@ void Table::PrintColumnHeaders(char *out, int outLength, char columnDelineator) 
 	{
 		if (i!=0)
 		{
-			len = static_cast<int>(strlen)(out);
+			len = static_cast<int>(strlen(out));
 			if (len < outLength-1)
-				sprintf(out+len, "%c", columnDelineator);
+				snprintf(out+len, outLength-len, "%c", columnDelineator);
 			else
 				return;
 		}
 
-		len = static_cast<int>(strlen)(out);
-		if (len < outLength-static_cast<int>(strlen)(columns[i].columnName))
-			sprintf(out+len, "%s", columns[i].columnName);
+		len = static_cast<int>(strlen(out));
+		if (len < outLength-static_cast<int>(strlen(columns[i].columnName)))
+			snprintf(out+len, outLength-len, "%s", columns[i].columnName);
 		else
 			return;
 	}
@@ -992,8 +992,8 @@ void Table::PrintRow(char *out, int outLength, char columnDelineator, bool print
 		{
 			if (inputRow->cells[i]->isEmpty==false)
 			{
-				sprintf(buff, "%f", inputRow->cells[i]->i);
-				len=static_cast<int>(strlen)(buff);
+				snprintf(buff, sizeof(buff), "%f", inputRow->cells[i]->i);
+				len=static_cast<int>(strlen(buff));
 			}
 			else
 				len=0;
@@ -1007,7 +1007,7 @@ void Table::PrintRow(char *out, int outLength, char columnDelineator, bool print
 			{
 				strncpy(buff, inputRow->cells[i]->c, 512-2);
 				buff[512-2]=0;
-				len=static_cast<int>(strlen)(buff);
+				len=static_cast<int>(strlen(buff));
 			}
 			else
 				len=0;
@@ -1019,8 +1019,8 @@ void Table::PrintRow(char *out, int outLength, char columnDelineator, bool print
 		{
 			if (inputRow->cells[i]->isEmpty==false && inputRow->cells[i]->ptr)
 			{
-				sprintf(buff, "%p", inputRow->cells[i]->ptr);
-				len=static_cast<int>(strlen)(buff);
+				snprintf(buff, sizeof(buff), "%p", inputRow->cells[i]->ptr);
+				len=static_cast<int>(strlen(buff));
 			}
 			else
 				len=0;
@@ -1041,7 +1041,7 @@ void Table::PrintRow(char *out, int outLength, char columnDelineator, bool print
 
 		}
 
-		len=static_cast<int>(strlen)(out);
+		len=static_cast<int>(strlen(out));
 		if (outLength==len+1)
 			break;
 		strncpy(out+len, buff, outLength-len);

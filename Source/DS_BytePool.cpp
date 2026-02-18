@@ -12,7 +12,7 @@
 #include "RakAssert.h"
 #ifndef __APPLE__
 // Use stdlib and not malloc for compatibility
-#include <stdlib.h>
+#include <cstdlib>
 #endif
 
 using namespace DataStructures;
@@ -147,8 +147,8 @@ void BytePool::Release(unsigned char *data, const char *file, unsigned int line)
 }
 void BytePool::Clear(const char *file, unsigned int line)
 {
-	(void) file;
-	(void) line;
+	static_cast<void>(file);
+	static_cast<void>(line);
 
 #ifdef _THREADSAFE_BYTE_POOL
 	pool128.Clear(file, line);

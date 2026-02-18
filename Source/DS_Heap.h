@@ -42,7 +42,7 @@ namespace DataStructures
 		};
 
 		Heap();
-		~Heap();
+		~Heap() noexcept;
 		void Push(const weight_type &weight, const data_type &data, const char *file, unsigned int line);
 		/// Call before calling PushSeries, for a new series of items
 		void StartSeries() {optimizeNextSeriesPush=false;}

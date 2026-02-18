@@ -112,7 +112,7 @@ public:
 	STATIC_FACTORY_DECLARATIONS(UDPProxyClient)
 
 	UDPProxyClient();
-	~UDPProxyClient();
+	~UDPProxyClient() noexcept;
 
 	/// Receives the results of calling RequestForwarding()
 	/// Set before calling RequestForwarding or you won't know what happened

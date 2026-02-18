@@ -985,8 +985,8 @@ void ReplicaManager3::Update()
 
 void ReplicaManager3::OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason )
 {
-	(void) lostConnectionReason;
-	(void) systemAddress;
+	static_cast<void>(lostConnectionReason);
+	static_cast<void>(systemAddress);
 	if (autoDestroyConnections)
 	{
 		Connection_RM3 *connection = PopConnection(rakNetGUID);
@@ -999,7 +999,7 @@ void ReplicaManager3::OnClosedConnection(const SystemAddress &systemAddress, Rak
 
 void ReplicaManager3::OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming)
 {
-	(void) isIncoming;
+	static_cast<void>(isIncoming);
 	if (autoCreateConnections)
 	{
 		Connection_RM3 *connection = AllocConnection(systemAddress, rakNetGUID);
@@ -1207,7 +1207,7 @@ PluginReceiveResult ReplicaManager3::OnConstruction(Packet *packet, unsigned cha
 
 	// Destructions
 	bool b = bsIn.Read(destructionObjectListSize);
-	(void) b;
+	static_cast<void>(b);
 	RakAssert(b);
 	for (index=0; index < destructionObjectListSize; index++)
 	{
@@ -1772,8 +1772,8 @@ void Connection_RM3::OnLocalReference(Replica3* replica3, ReplicaManager3 *repli
 	ConstructionMode constructionMode = QueryConstructionMode();
 	RakAssert(constructionMode==QUERY_REPLICA_FOR_CONSTRUCTION || constructionMode==QUERY_REPLICA_FOR_CONSTRUCTION_AND_DESTRUCTION);
 	RakAssert(replica3);
-	(void) replicaManager;
-	(void) constructionMode;
+	static_cast<void>(replicaManager);
+	static_cast<void>(constructionMode);
 
 #ifdef _DEBUG
 	for (unsigned int i=0; i < queryToConstructReplicaList.Size(); i++)
@@ -1914,7 +1914,7 @@ void Connection_RM3::OnNeverConstruct(unsigned int queryToConstructIdx, ReplicaM
 {
 	ConstructionMode constructionMode = QueryConstructionMode();
 	RakAssert(constructionMode==QUERY_REPLICA_FOR_CONSTRUCTION || constructionMode==QUERY_REPLICA_FOR_CONSTRUCTION_AND_DESTRUCTION);
-	(void) constructionMode;
+	static_cast<void>(constructionMode);
 
 	ValidateLists(replicaManager);
 	LastSerializationResult* lsr = queryToConstructReplicaList[queryToConstructIdx];
@@ -1929,7 +1929,7 @@ void Connection_RM3::OnConstructToThisConnection(unsigned int queryToConstructId
 {
 	ConstructionMode constructionMode = QueryConstructionMode();
 	RakAssert(constructionMode==QUERY_REPLICA_FOR_CONSTRUCTION || constructionMode==QUERY_REPLICA_FOR_CONSTRUCTION_AND_DESTRUCTION);
-	(void) constructionMode;
+	static_cast<void>(constructionMode);
 
 	ValidateLists(replicaManager);
 	LastSerializationResult* lsr = queryToConstructReplicaList[queryToConstructIdx];
@@ -1949,7 +1949,7 @@ void Connection_RM3::OnConstructToThisConnection(Replica3 *replica, ReplicaManag
 {
 	RakAssert(replica);
 	RakAssert(QueryConstructionMode()==QUERY_CONNECTION_FOR_REPLICA_LIST);
-	(void) replicaManager;
+	static_cast<void>(replicaManager);
 
 	LastSerializationResult* lsr=RakNet::OP_NEW<LastSerializationResult>(_FILE_AND_LINE_);
 	lsr->replica=replica;
@@ -1982,7 +1982,7 @@ void Connection_RM3::OnReplicaAlreadyExists(unsigned int queryToConstructIdx, Re
 {
 	ConstructionMode constructionMode = QueryConstructionMode();
 	RakAssert(constructionMode==QUERY_REPLICA_FOR_CONSTRUCTION || constructionMode==QUERY_REPLICA_FOR_CONSTRUCTION_AND_DESTRUCTION);
-	(void) constructionMode;
+	static_cast<void>(constructionMode);
 
 	ValidateLists(replicaManager);
 	LastSerializationResult* lsr = queryToConstructReplicaList[queryToConstructIdx];
@@ -2026,7 +2026,7 @@ void Connection_RM3::OnSendDestructionFromQuery(unsigned int queryToDestructIdx,
 {
 	ConstructionMode constructionMode = QueryConstructionMode();
 	RakAssert(constructionMode==QUERY_REPLICA_FOR_CONSTRUCTION || constructionMode==QUERY_REPLICA_FOR_CONSTRUCTION_AND_DESTRUCTION);
-	(void) constructionMode;
+	static_cast<void>(constructionMode);
 
 	ValidateLists(replicaManager);
 	LastSerializationResult* lsr = queryToDestructReplicaList[queryToDestructIdx];
@@ -2066,7 +2066,7 @@ void Connection_RM3::OnDoNotQueryDestruction(unsigned int queryToDestructIdx, Re
 
 void Connection_RM3::ValidateLists(ReplicaManager3 *replicaManager) const
 {
-	(void) replicaManager;
+	static_cast<void>(replicaManager);
 	/*
 #ifdef _DEBUG
 	// Each object should exist only once in either constructedReplicaList or queryToConstructReplicaList
@@ -2418,7 +2418,7 @@ RakNetGUID Replica3::GetCreatingSystemGUID(void) const
 
 RM3ConstructionState Replica3::QueryConstruction_ClientConstruction(RakNet::Connection_RM3 *destinationConnection, bool isThisTheServer)
 {
-	(void) destinationConnection;
+	static_cast<void>(destinationConnection);
 	if (creatingSystemGUID==replicaManager->GetRakPeerInterface()->GetGuidFromSystemAddress(UNASSIGNED_SYSTEM_ADDRESS))
 		return RM3CS_SEND_CONSTRUCTION;
 	// Send back to the owner client too, because they couldn't assign the network ID
@@ -2431,8 +2431,8 @@ RM3ConstructionState Replica3::QueryConstruction_ClientConstruction(RakNet::Conn
 
 bool Replica3::QueryRemoteConstruction_ClientConstruction(RakNet::Connection_RM3 *sourceConnection, bool isThisTheServer)
 {
-	(void) sourceConnection;
-	(void) isThisTheServer;
+	static_cast<void>(sourceConnection);
+	static_cast<void>(isThisTheServer);
 
 	// OK to create
 	return true;
@@ -2442,7 +2442,7 @@ bool Replica3::QueryRemoteConstruction_ClientConstruction(RakNet::Connection_RM3
 
 RM3ConstructionState Replica3::QueryConstruction_ServerConstruction(RakNet::Connection_RM3 *destinationConnection, bool isThisTheServer)
 {
-	(void) destinationConnection;
+	static_cast<void>(destinationConnection);
 
 	if (isThisTheServer)
 		return RM3CS_SEND_CONSTRUCTION;
@@ -2453,7 +2453,7 @@ RM3ConstructionState Replica3::QueryConstruction_ServerConstruction(RakNet::Conn
 
 bool Replica3::QueryRemoteConstruction_ServerConstruction(RakNet::Connection_RM3 *sourceConnection, bool isThisTheServer)
 {
-	(void) sourceConnection;
+	static_cast<void>(sourceConnection);
 	if (isThisTheServer)
 		return false;
 	return true;
@@ -2463,7 +2463,7 @@ bool Replica3::QueryRemoteConstruction_ServerConstruction(RakNet::Connection_RM3
 
 RM3ConstructionState Replica3::QueryConstruction_PeerToPeer(RakNet::Connection_RM3 *destinationConnection, Replica3P2PMode p2pMode)
 {
-	(void) destinationConnection;
+	static_cast<void>(destinationConnection);
 
 	if (p2pMode==R3P2PM_SINGLE_OWNER)
 	{
@@ -2499,7 +2499,7 @@ RM3ConstructionState Replica3::QueryConstruction_PeerToPeer(RakNet::Connection_R
 
 bool Replica3::QueryRemoteConstruction_PeerToPeer(RakNet::Connection_RM3 *sourceConnection)
 {
-	(void) sourceConnection;
+	static_cast<void>(sourceConnection);
 
 	return true;
 }
@@ -2522,7 +2522,7 @@ RM3QuerySerializationResult Replica3::QuerySerialization_ClientSerializable(RakN
 
 RM3QuerySerializationResult Replica3::QuerySerialization_ServerSerializable(RakNet::Connection_RM3 *destinationConnection, bool isThisTheServer)
 {
-	(void) destinationConnection;
+	static_cast<void>(destinationConnection);
 	// Server sends to all
 	if (isThisTheServer)
 		return RM3QSR_CALL_SERIALIZE;
@@ -2535,7 +2535,7 @@ RM3QuerySerializationResult Replica3::QuerySerialization_ServerSerializable(RakN
 
 RM3QuerySerializationResult Replica3::QuerySerialization_PeerToPeer(RakNet::Connection_RM3 *destinationConnection, Replica3P2PMode p2pMode)
 {
-	(void) destinationConnection;
+	static_cast<void>(destinationConnection);
 
 	if (p2pMode==R3P2PM_SINGLE_OWNER)
 	{
@@ -2569,7 +2569,7 @@ RM3QuerySerializationResult Replica3::QuerySerialization_PeerToPeer(RakNet::Conn
 
 RM3ActionOnPopConnection Replica3::QueryActionOnPopConnection_Client(RakNet::Connection_RM3 *droppedConnection) const
 {
-	(void) droppedConnection;
+	static_cast<void>(droppedConnection);
 	return RM3AOPC_DELETE_REPLICA;
 }
 
@@ -2577,7 +2577,7 @@ RM3ActionOnPopConnection Replica3::QueryActionOnPopConnection_Client(RakNet::Con
 
 RM3ActionOnPopConnection Replica3::QueryActionOnPopConnection_Server(RakNet::Connection_RM3 *droppedConnection) const
 {
-	(void) droppedConnection;
+	static_cast<void>(droppedConnection);
 	return RM3AOPC_DELETE_REPLICA_AND_BROADCAST_DESTRUCTION;
 }
 
@@ -2585,7 +2585,7 @@ RM3ActionOnPopConnection Replica3::QueryActionOnPopConnection_Server(RakNet::Con
 
 RM3ActionOnPopConnection Replica3::QueryActionOnPopConnection_PeerToPeer(RakNet::Connection_RM3 *droppedConnection) const
 {
-	(void) droppedConnection;
+	static_cast<void>(droppedConnection);
 	return RM3AOPC_DELETE_REPLICA;
 }
 

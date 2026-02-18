@@ -62,8 +62,8 @@ void DomainNameToIP_Berkley_IPV4And6( const char *domainName, char ip[65] )
 		freeaddrinfo(res); // free the linked list
 //	}
 #else
-	(void) domainName;
-	(void) ip;
+	static_cast<void>(domainName);
+	static_cast<void>(ip);
 #endif // #if RAKNET_SUPPORT_IPV6==1
 }
 

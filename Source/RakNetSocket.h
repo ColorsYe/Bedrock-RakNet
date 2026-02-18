@@ -25,7 +25,7 @@ struct RAK_DLL_EXPORT RakNetSocket
 {
 public:
 	RakNetSocket();
-	~RakNetSocket();
+	~RakNetSocket() noexcept;
 
 // 	void Accept(
 // 		struct sockaddr *addr,

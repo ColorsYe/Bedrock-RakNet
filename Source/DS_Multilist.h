@@ -15,7 +15,7 @@
 
 #pragma once
 #include "RakAssert.h"
-#include <string.h> // memmove
+#include <cstring> // memmove
 #include "Export.h"
 #include "RakMemoryOverride.h"
 #include "NativeTypes.h"
@@ -96,7 +96,7 @@ namespace DataStructures
 	{
 	public:
 		Multilist();
-		~Multilist();
+		~Multilist() noexcept;
 		Multilist( const Multilist& source );
 		Multilist& operator= ( const Multilist& source );
 		_DataType& operator[] ( const _IndexType position ) const;

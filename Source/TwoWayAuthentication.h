@@ -117,7 +117,7 @@ public:
 	struct RAK_DLL_EXPORT NonceGenerator
 	{
 		NonceGenerator();
-		~NonceGenerator();
+		~NonceGenerator() noexcept;
 		void GetNonce(char nonce[TWO_WAY_AUTHENTICATION_NONCE_LENGTH], unsigned short *requestId, RakNet::AddressOrGUID remoteSystem);
 		void GenerateNonce(char nonce[TWO_WAY_AUTHENTICATION_NONCE_LENGTH]);
 		bool GetNonceById(char nonce[TWO_WAY_AUTHENTICATION_NONCE_LENGTH], unsigned short requestId, RakNet::AddressOrGUID remoteSystem, bool popIfFound);

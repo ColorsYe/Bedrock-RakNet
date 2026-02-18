@@ -82,7 +82,7 @@ int RAK_DLL_EXPORT SplitPacketChannelComp( SplitPacketIdType const &key, SplitPa
 struct BPSTracker
 {
 	BPSTracker();
-	~BPSTracker();
+	~BPSTracker() noexcept;
 	void Reset(const char *file, unsigned int line);
 	inline void Push1(CCTimeType time, uint64_t value1) {dataQueue.Push(TimeAndValue2(time,value1),_FILE_AND_LINE_); total1+=value1; lastSec1+=value1;}
 //	void Push2(RakNet::TimeUS time, uint64_t value1, uint64_t value2);
@@ -96,7 +96,7 @@ struct BPSTracker
 	struct TimeAndValue2
 	{
 		TimeAndValue2();
-		~TimeAndValue2();
+		~TimeAndValue2() noexcept;
 		TimeAndValue2(CCTimeType t, uint64_t v1);
 	//	TimeAndValue2(RakNet::TimeUS t, uint64_t v1, uint64_t v2);
 	//	uint64_t value1, value2;
@@ -120,7 +120,7 @@ public:
 	ReliabilityLayer();
 
 	// Destructor
-	~ReliabilityLayer();
+	~ReliabilityLayer() noexcept;
 
 	/// Resets the layer for reuse
 	void Reset( bool resetVariables, int MTUSize, bool _useSecurity );

@@ -84,8 +84,8 @@ namespace RakNet
 		Type *t = new (buffer) Type;
 		return t;
 #else
-		(void) file;
-		(void) line;
+		static_cast<void>(file);
+		static_cast<void>(line);
 		return new Type;
 #endif
 	}
@@ -98,8 +98,8 @@ namespace RakNet
 		Type *t = new (buffer) Type(p1);
 		return t;
 #else
-		(void) file;
-		(void) line;
+		static_cast<void>(file);
+		static_cast<void>(line);
 		return new Type(p1);
 #endif
 	}
@@ -112,8 +112,8 @@ namespace RakNet
 		Type *t = new (buffer) Type(p1, p2);
 		return t;
 #else
-		(void) file;
-		(void) line;
+		static_cast<void>(file);
+		static_cast<void>(line);
 		return new Type(p1, p2);
 #endif
 	}
@@ -126,8 +126,8 @@ namespace RakNet
 		Type *t = new (buffer) Type(p1, p2, p3);
 		return t;
 #else
-		(void) file;
-		(void) line;
+		static_cast<void>(file);
+		static_cast<void>(line);
 		return new Type(p1, p2, p3);
 #endif
 	}
@@ -140,8 +140,8 @@ namespace RakNet
 		Type *t = new (buffer) Type(p1, p2, p3, p4);
 		return t;
 #else
-		(void) file;
-		(void) line;
+		static_cast<void>(file);
+		static_cast<void>(line);
 		return new Type(p1, p2, p3, p4);
 #endif
 	}
@@ -164,8 +164,8 @@ namespace RakNet
 		}
 		return (Type *) (buffer+sizeof(int));
 #else
-		(void) file;
-		(void) line;
+		static_cast<void>(file);
+		static_cast<void>(line);
 		return new Type[count];
 #endif
 
@@ -179,8 +179,8 @@ namespace RakNet
 		buff->~Type();
 		(GetFree_Ex())((char*)buff, file, line );
 #else
-		(void) file;
-		(void) line;
+		static_cast<void>(file);
+		static_cast<void>(line);
 		delete buff;
 #endif
 
@@ -202,8 +202,8 @@ namespace RakNet
 		}
 		(GetFree_Ex())((char*)buff-sizeof(int), file, line );
 #else
-		(void) file;
-		(void) line;
+		static_cast<void>(file);
+		static_cast<void>(line);
 		delete [] buff;
 #endif
 

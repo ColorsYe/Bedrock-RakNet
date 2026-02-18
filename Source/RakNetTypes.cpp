@@ -14,8 +14,8 @@
 
 #include "RakNetTypes.h"
 #include "RakAssert.h"
-#include <string.h>
-#include <stdio.h>
+#include <cstring>
+#include <cstdio>
 #include "WindowsIncludes.h"
 #include "WSAStartupSingleton.h"
 #include "SocketDefines.h"
@@ -34,11 +34,11 @@
 #include <arpa/inet.h>
 #endif
 
-#include <string.h> // strncasecmp
+#include <cstring> // strncasecmp
 #include "Itoa.h"
 #include "SocketLayer.h"
 #include "SuperFastHash.h"
-#include <stdlib.h>
+#include <cstdlib>
 
 using namespace RakNet;
 
@@ -319,7 +319,7 @@ const char *SystemAddress::ToString(bool writePort, char portDelineator) const
 void SystemAddress::ToString_New(bool writePort, char *dest, char portDelineator) const
 {
 	int ret;
-	(void) ret;
+	static_cast<void>(ret);
 
 	if (*this==UNASSIGNED_SYSTEM_ADDRESS)
 	{
@@ -494,7 +494,7 @@ bool SystemAddress::SetBinaryAddress(const char *str, char portDelineator)
 
 			if (str[9])
 			{
-				SetPortHostOrder(static_cast<unsigned short>(atoi)(str+9));
+				SetPortHostOrder(static_cast<unsigned short>(atoi(str+9)));
 			}
 			return true;
 		}
@@ -578,7 +578,7 @@ bool SystemAddress::SetBinaryAddress(const char *str, char portDelineator)
 
 		if (portPart[0])
 		{
-			address.addr4.sin_port=htons(static_cast<unsigned short>(atoi)(portPart));
+			address.addr4.sin_port=htons(static_cast<unsigned short>(atoi(portPart)));
 			debugPort=ntohs(address.addr4.sin_port);
 		}
 		//#endif
@@ -592,7 +592,7 @@ bool SystemAddress::SetBinaryAddress(const char *str, char portDelineator)
 bool SystemAddress::FromString(const char *str, char portDelineator, int ipVersion)
 {
 #if RAKNET_SUPPORT_IPV6!=1
-	(void) ipVersion;
+	static_cast<void>(ipVersion);
 	return SetBinaryAddress(str,portDelineator);
 #else
 	if (str==0)
@@ -720,7 +720,7 @@ bool SystemAddress::FromString(const char *str, char portDelineator, int ipVersi
 	// PORT
 	if (portPart[0])
 	{
-		address.addr4.sin_port=htons(static_cast<unsigned short>(atoi)(portPart));
+		address.addr4.sin_port=htons(static_cast<unsigned short>(atoi(portPart)));
 		debugPort=ntohs(address.addr4.sin_port);
 	}
 	else
@@ -785,7 +785,7 @@ void RakNetGUID::ToString(char *dest) const
 		strcpy(dest, "UNASSIGNED_RAKNET_GUID");
 	else
 		//sprintf(dest, "%u.%u.%u.%u.%u.%u", g[0], g[1], g[2], g[3], g[4], g[5]);
-		sprintf(dest, "%" PRINTF_64_BIT_MODIFIER "u", (long long unsigned int) g);
+		snprintf(dest, 22, "%" PRINTF_64_BIT_MODIFIER "u", (long long unsigned int) g);
 		// sprintf(dest, "%u.%u.%u.%u.%u.%u", g[0], g[1], g[2], g[3], g[4], g[5]);
 }
 bool RakNetGUID::FromString(const char *source)

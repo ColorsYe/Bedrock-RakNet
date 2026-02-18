@@ -14,9 +14,9 @@
 
 #include "Rand.h"
 #include "MTUSize.h"
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cmath>
+#include <cstdlib>
 //#include <memory.h>
 #include "RakAssert.h"
 #include "RakAlloca.h"
@@ -62,7 +62,7 @@ CCRakNetUDT::~CCRakNetUDT()
 // ----------------------------------------------------------------------------------------------------------------------------
 void CCRakNetUDT::Init(CCTimeType curTime, uint32_t maxDatagramPayload)
 {
-	(void) curTime;
+	static_cast<void>(curTime);
 
 	nextSYNUpdate=0;
 	packetPairRecieptHistoryWriteIndex=0;
@@ -130,8 +130,8 @@ uint32_t CCRakNetUDT::GetMTU(void) const
 // ----------------------------------------------------------------------------------------------------------------------------
 void CCRakNetUDT::Update(CCTimeType curTime, bool hasDataToSendOrResend)
 {
-	(void) hasDataToSendOrResend;
-	(void) curTime;
+	static_cast<void>(hasDataToSendOrResend);
+	static_cast<void>(curTime);
 
 	return;
 
@@ -167,7 +167,7 @@ void CCRakNetUDT::Update(CCTimeType curTime, bool hasDataToSendOrResend)
 // ----------------------------------------------------------------------------------------------------------------------------
 int CCRakNetUDT::GetRetransmissionBandwidth(CCTimeType curTime, CCTimeType timeSinceLastTick, uint32_t unacknowledgedBytes, bool isContinuousSend)
 {
-	(void) curTime;
+	static_cast<void>(curTime);
 
 	if (isInSlowStart)
 	{
@@ -179,7 +179,7 @@ int CCRakNetUDT::GetRetransmissionBandwidth(CCTimeType curTime, CCTimeType timeS
 // ----------------------------------------------------------------------------------------------------------------------------
 int CCRakNetUDT::GetTransmissionBandwidth(CCTimeType curTime, CCTimeType timeSinceLastTick, uint32_t unacknowledgedBytes, bool isContinuousSend)
 {
-	(void) curTime;
+	static_cast<void>(curTime);
 
 	if (isInSlowStart)
 	{
@@ -249,7 +249,7 @@ DatagramSequenceNumberType CCRakNetUDT::GetAndIncrementNextDatagramSequenceNumbe
 // ----------------------------------------------------------------------------------------------------------------------------
 void CCRakNetUDT::OnSendBytes(CCTimeType curTime, uint32_t numBytes)
 {
-	(void) curTime;
+	static_cast<void>(curTime);
 
 	totalUserDataBytesSent+=numBytes;
 	if (isInSlowStart==false)
@@ -267,7 +267,7 @@ void CCRakNetUDT::SetNextSYNUpdate(CCTimeType currentTime)
 // ----------------------------------------------------------------------------------------------------------------------------
 BytesPerMicrosecond CCRakNetUDT::ReceiverCalculateDataArrivalRate(CCTimeType curTime) const
 {
-	(void) curTime;
+	static_cast<void>(curTime);
 	// Not an instantaneous measurement
 	/*
 	if (continuousBytesReceivedStartTime!=0 && curTime>continuousBytesReceivedStartTime)
@@ -394,7 +394,7 @@ CCTimeType CCRakNetUDT::GetRTOForRetransmission(unsigned char timesSent) const
 // ----------------------------------------------------------------------------------------------------------------------------
 void CCRakNetUDT::OnResend(CCTimeType curTime, RakNet::TimeUS nextActionTime)
 {
-	(void) curTime;
+	static_cast<void>(curTime);
 
 	if (isInSlowStart)
 	{
@@ -415,8 +415,8 @@ void CCRakNetUDT::OnResend(CCTimeType curTime, RakNet::TimeUS nextActionTime)
 // ----------------------------------------------------------------------------------------------------------------------------
 void CCRakNetUDT::OnNAK(CCTimeType curTime, DatagramSequenceNumberType nakSequenceNumber)
 {
-	(void) nakSequenceNumber;
-	(void) curTime;
+	static_cast<void>(nakSequenceNumber);
+	static_cast<void>(curTime);
 
 	if (isInSlowStart)
 	{
@@ -465,9 +465,9 @@ void CCRakNetUDT::EndSlowStart()
 // ----------------------------------------------------------------------------------------------------------------------------
 void CCRakNetUDT::OnGotPacketPair(DatagramSequenceNumberType datagramSequenceNumber, uint32_t sizeInBytes, CCTimeType curTime)
 {
-	(void) datagramSequenceNumber;
-	(void) sizeInBytes;
-	(void) curTime;
+	static_cast<void>(datagramSequenceNumber);
+	static_cast<void>(sizeInBytes);
+	static_cast<void>(curTime);
 
 }
 // ----------------------------------------------------------------------------------------------------------------------------
@@ -545,7 +545,7 @@ void CCRakNetUDT::OnAck(CCTimeType curTime, CCTimeType rtt, bool hasBAndAS, Byte
 #else
 	RakAssert(rtt < 10000000);
 #endif
-	(void) _B;
+	static_cast<void>(_B);
 
 	if (hasBAndAS)
 	{
@@ -598,8 +598,8 @@ void CCRakNetUDT::OnSendAckGetBAndAS(CCTimeType curTime, bool *hasBAndAS, BytesP
 // ----------------------------------------------------------------------------------------------------------------------------
 void CCRakNetUDT::OnSendAck(CCTimeType curTime, uint32_t numBytes)
 {
-	(void) numBytes;
-	(void) curTime;
+	static_cast<void>(numBytes);
+	static_cast<void>(curTime);
 
 	// This is not accounted for on the remote system, and thus causes bandwidth to be underutilized
 	//UpdateNextAllowedSend(curTime, numBytes+UDP_HEADER_SIZE);
@@ -609,8 +609,8 @@ void CCRakNetUDT::OnSendAck(CCTimeType curTime, uint32_t numBytes)
 // ----------------------------------------------------------------------------------------------------------------------------
 void CCRakNetUDT::OnSendNACK(CCTimeType curTime, uint32_t numBytes)
 {
-	(void) numBytes;
-	(void) curTime;
+	static_cast<void>(numBytes);
+	static_cast<void>(curTime);
 
 	// This is not accounted for on the remote system, and thus causes bandwidth to be underutilized
 	//	UpdateNextAllowedSend(curTime, numBytes+UDP_HEADER_SIZE);
@@ -635,8 +635,8 @@ void CCRakNetUDT::UpdateWindowSizeAndAckOnAckPreSlowStart(double totalUserDataBy
 // ----------------------------------------------------------------------------------------------------------------------------
 void CCRakNetUDT::UpdateWindowSizeAndAckOnAckPerSyn(CCTimeType curTime, CCTimeType rtt, bool isContinuousSend, DatagramSequenceNumberType sequenceNumber)
 {	
-	(void) curTime;
-	(void) sequenceNumber;
+	static_cast<void>(curTime);
+	static_cast<void>(sequenceNumber);
 	if (isContinuousSend==false)
 	{
 		nextCongestionControlBlock=nextDatagramSequenceNumber;
@@ -749,8 +749,8 @@ double CCRakNetUDT::GetRTT(void) const
 }
 void CCRakNetUDT::CapMinSnd(const char *file, int line)
 {
-	(void) file;
-	(void) line;
+	static_cast<void>(file);
+	static_cast<void>(line);
 
 	if (SND > 500)
 	{

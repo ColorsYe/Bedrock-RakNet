@@ -30,7 +30,7 @@ namespace DataStructures
 	{
 	public:
 		Queue();
-		~Queue();
+		~Queue() noexcept;
 		Queue( Queue& original_copy );
 		bool operator= ( const Queue& original_copy );
 		void Push( const queue_type& input, const char *file, unsigned int line );

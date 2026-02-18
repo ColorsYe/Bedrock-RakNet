@@ -76,23 +76,23 @@ public:
 
 	/// First callback called when FileList::AddFilesFromDirectory() starts
 	virtual void OnAddFilesFromDirectoryStarted(FileList *fileList, char *dir) {
-		(void) fileList;
-		(void) dir;
+		static_cast<void>(fileList);
+		static_cast<void>(dir);
 	}
 
 	/// Called for each directory, when that directory begins processing
 	virtual void OnDirectory(FileList *fileList, char *dir, unsigned int directoriesRemaining) {
-		(void) fileList;
-		(void) dir;
-		(void) directoriesRemaining;
+		static_cast<void>(fileList);
+		static_cast<void>(dir);
+		static_cast<void>(directoriesRemaining);
 	}
 
 	/// Called for each file, when that file begins processing
 	virtual void OnFile(FileList *fileList, char *dir, char *fileName, unsigned int fileSize) {
-		(void) fileList;
-		(void) dir;
-		(void) fileName;
-		(void) fileSize;
+		static_cast<void>(fileList);
+		static_cast<void>(dir);
+		static_cast<void>(fileName);
+		static_cast<void>(fileSize);
 	}
 
 	/// \brief This function is called when we are sending a file to a remote system.
@@ -104,26 +104,26 @@ public:
 	/// \param[in] targetSystem Who we are sending to
 	virtual void OnFilePush(const char *fileName, unsigned int fileLengthBytes, unsigned int offset, unsigned int bytesBeingSent, bool done, SystemAddress targetSystem, unsigned short setId)
 	{
-		(void) fileName;
-		(void) fileLengthBytes;
-		(void) offset;
-		(void) bytesBeingSent;
-		(void) done;
-		(void) targetSystem;
-        (void) setId;
+		static_cast<void>(fileName);
+		static_cast<void>(fileLengthBytes);
+		static_cast<void>(offset);
+		static_cast<void>(bytesBeingSent);
+		static_cast<void>(done);
+		static_cast<void>(targetSystem);
+        static_cast<void>(setId);
 	}
 
 	/// \brief This function is called when all files have been read and are being transferred to a remote system
 	virtual void OnFilePushesComplete( SystemAddress systemAddress, unsigned short setId )
 	{
-		(void) systemAddress;
-        (void) setId;
+		static_cast<void>(systemAddress);
+        static_cast<void>(setId);
 	}
 
 	/// \brief This function is called when a send to a system was aborted (probably due to disconnection)
 	virtual void OnSendAborted( SystemAddress systemAddress )
 	{
-		(void) systemAddress;
+		static_cast<void>(systemAddress);
 	}
 };
 
@@ -157,7 +157,7 @@ public:
 	STATIC_FACTORY_DECLARATIONS(FileList)
 
 	FileList();
-	~FileList();
+	~FileList() noexcept;
 	/// \brief Add all the files at a given directory.
 	/// \param[in] applicationDirectory The first part of the path. This is not stored as part of the filename.  Use \ as the path delineator.
 	/// \param[in] subDirectory The rest of the path to the file. This is stored as a prefix to the filename

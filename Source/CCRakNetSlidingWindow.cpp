@@ -21,9 +21,9 @@ static constexpr CCTimeType SYN=10000;
 #endif
 
 #include "MTUSize.h"
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cmath>
+#include <cstdlib>
 #include "RakAssert.h"
 #include "RakAlloca.h"
 
@@ -42,7 +42,7 @@ CCRakNetSlidingWindow::~CCRakNetSlidingWindow()
 // ----------------------------------------------------------------------------------------------------------------------------
 void CCRakNetSlidingWindow::Init(CCTimeType curTime, uint32_t maxDatagramPayload)
 {
-	(void) curTime;
+	static_cast<void>(curTime);
 
 	lastRtt=estimatedRTT=deviationRtt=UNSET_TIME_US;
 	RakAssert(maxDatagramPayload <= MAXIMUM_MTU_SIZE);
@@ -59,23 +59,23 @@ void CCRakNetSlidingWindow::Init(CCTimeType curTime, uint32_t maxDatagramPayload
 // ----------------------------------------------------------------------------------------------------------------------------
 void CCRakNetSlidingWindow::Update(CCTimeType curTime, bool hasDataToSendOrResend)
 {
-	(void) curTime;
-	(void) hasDataToSendOrResend;
+	static_cast<void>(curTime);
+	static_cast<void>(hasDataToSendOrResend);
 }
 // ----------------------------------------------------------------------------------------------------------------------------
 int CCRakNetSlidingWindow::GetRetransmissionBandwidth(CCTimeType curTime, CCTimeType timeSinceLastTick, uint32_t unacknowledgedBytes, bool isContinuousSend)
 {
-	(void) curTime;
-	(void) isContinuousSend;
-	(void) timeSinceLastTick;
+	static_cast<void>(curTime);
+	static_cast<void>(isContinuousSend);
+	static_cast<void>(timeSinceLastTick);
 
 	return unacknowledgedBytes;
 }
 // ----------------------------------------------------------------------------------------------------------------------------
 int CCRakNetSlidingWindow::GetTransmissionBandwidth(CCTimeType curTime, CCTimeType timeSinceLastTick, uint32_t unacknowledgedBytes, bool isContinuousSend)
 {
-	(void) curTime;
-	(void) timeSinceLastTick;
+	static_cast<void>(curTime);
+	static_cast<void>(timeSinceLastTick);
 
 	_isContinuousSend=isContinuousSend;
 
@@ -88,7 +88,7 @@ int CCRakNetSlidingWindow::GetTransmissionBandwidth(CCTimeType curTime, CCTimeTy
 bool CCRakNetSlidingWindow::ShouldSendACKs(CCTimeType curTime, CCTimeType estimatedTimeToNextTick)
 {
 	CCTimeType rto = GetSenderRTOForACK();
-	(void) estimatedTimeToNextTick;
+	static_cast<void>(estimatedTimeToNextTick);
 
 	// iphone crashes on comparison between double and int64 http://www.jenkinssoftware.com/forum/index.php?topic=2717.0
 	if (rto==static_cast<CCTimeType>(UNSET_TIME_US))
@@ -114,22 +114,22 @@ DatagramSequenceNumberType CCRakNetSlidingWindow::GetAndIncrementNextDatagramSeq
 // ----------------------------------------------------------------------------------------------------------------------------
 void CCRakNetSlidingWindow::OnSendBytes(CCTimeType curTime, uint32_t numBytes)
 {
-	(void) curTime;
-	(void) numBytes;
+	static_cast<void>(curTime);
+	static_cast<void>(numBytes);
 }
 // ----------------------------------------------------------------------------------------------------------------------------
 void CCRakNetSlidingWindow::OnGotPacketPair(DatagramSequenceNumberType datagramSequenceNumber, uint32_t sizeInBytes, CCTimeType curTime)
 {
-	(void) curTime;
-	(void) sizeInBytes;
-	(void) datagramSequenceNumber;
+	static_cast<void>(curTime);
+	static_cast<void>(sizeInBytes);
+	static_cast<void>(datagramSequenceNumber);
 }
 // ----------------------------------------------------------------------------------------------------------------------------
 bool CCRakNetSlidingWindow::OnGotPacket(DatagramSequenceNumberType datagramSequenceNumber, bool isContinuousSend, CCTimeType curTime, uint32_t sizeInBytes, uint32_t *skippedMessageCount)
 {
-	(void) curTime;
-	(void) sizeInBytes;
-	(void) isContinuousSend;
+	static_cast<void>(curTime);
+	static_cast<void>(sizeInBytes);
+	static_cast<void>(isContinuousSend);
 
 	if (oldestUnsentAck==0)
 		oldestUnsentAck=curTime;
@@ -162,8 +162,8 @@ bool CCRakNetSlidingWindow::OnGotPacket(DatagramSequenceNumberType datagramSeque
 // ----------------------------------------------------------------------------------------------------------------------------
 void CCRakNetSlidingWindow::OnResend(CCTimeType curTime, RakNet::TimeUS nextActionTime)
 {
-	(void) curTime;
-	(void) nextActionTime;
+	static_cast<void>(curTime);
+	static_cast<void>(nextActionTime);
 
 	if (_isContinuousSend && backoffThisBlock==false && cwnd>MAXIMUM_MTU_INCLUDING_UDP_HEADER*2)
 	{
@@ -185,8 +185,8 @@ void CCRakNetSlidingWindow::OnResend(CCTimeType curTime, RakNet::TimeUS nextActi
 // ----------------------------------------------------------------------------------------------------------------------------
 void CCRakNetSlidingWindow::OnNAK(CCTimeType curTime, DatagramSequenceNumberType nakSequenceNumber)
 {
-	(void) nakSequenceNumber;
-	(void) curTime;
+	static_cast<void>(nakSequenceNumber);
+	static_cast<void>(curTime);
 
 	if (_isContinuousSend && backoffThisBlock==false)
 	{
@@ -200,12 +200,12 @@ void CCRakNetSlidingWindow::OnNAK(CCTimeType curTime, DatagramSequenceNumberType
 // ----------------------------------------------------------------------------------------------------------------------------
 void CCRakNetSlidingWindow::OnAck(CCTimeType curTime, CCTimeType rtt, bool hasBAndAS, BytesPerMicrosecond _B, BytesPerMicrosecond _AS, double totalUserDataBytesAcked, bool isContinuousSend, DatagramSequenceNumberType sequenceNumber )
 {
-	(void) _B;
-	(void) totalUserDataBytesAcked;
-	(void) _AS;
-	(void) hasBAndAS;
-	(void) curTime;
-	(void) rtt;
+	static_cast<void>(_B);
+	static_cast<void>(totalUserDataBytesAcked);
+	static_cast<void>(_AS);
+	static_cast<void>(hasBAndAS);
+	static_cast<void>(curTime);
+	static_cast<void>(rtt);
 
 	lastRtt=static_cast<double>(rtt);
 	if (estimatedRTT==UNSET_TIME_US)
@@ -257,37 +257,37 @@ void CCRakNetSlidingWindow::OnAck(CCTimeType curTime, CCTimeType rtt, bool hasBA
 // ----------------------------------------------------------------------------------------------------------------------------
 void CCRakNetSlidingWindow::OnDuplicateAck( CCTimeType curTime, DatagramSequenceNumberType sequenceNumber )
 {
-	(void) curTime;
-	(void) sequenceNumber;
+	static_cast<void>(curTime);
+	static_cast<void>(sequenceNumber);
 }
 // ----------------------------------------------------------------------------------------------------------------------------
 void CCRakNetSlidingWindow::OnSendAckGetBAndAS(CCTimeType curTime, bool *hasBAndAS, BytesPerMicrosecond *_B, BytesPerMicrosecond *_AS)
 {
-	(void) curTime;
-	(void) _B;
-	(void) _AS;
+	static_cast<void>(curTime);
+	static_cast<void>(_B);
+	static_cast<void>(_AS);
 
 	*hasBAndAS=false;
 }
 // ----------------------------------------------------------------------------------------------------------------------------
 void CCRakNetSlidingWindow::OnSendAck(CCTimeType curTime, uint32_t numBytes)
 {
-	(void) curTime;
-	(void) numBytes;
+	static_cast<void>(curTime);
+	static_cast<void>(numBytes);
 
 	oldestUnsentAck=0;
 }
 // ----------------------------------------------------------------------------------------------------------------------------
 void CCRakNetSlidingWindow::OnSendNACK(CCTimeType curTime, uint32_t numBytes)
 {
-	(void) curTime;
-	(void) numBytes;
+	static_cast<void>(curTime);
+	static_cast<void>(numBytes);
 
 }
 // ----------------------------------------------------------------------------------------------------------------------------
 CCTimeType CCRakNetSlidingWindow::GetRTOForRetransmission(unsigned char timesSent) const
 {
-	(void) timesSent;
+	static_cast<void>(timesSent);
 
 #if CC_TIME_TYPE_BYTES==4
 	const CCTimeType maxThreshold=2000;
@@ -326,7 +326,7 @@ uint32_t CCRakNetSlidingWindow::GetMTU(void) const
 // ----------------------------------------------------------------------------------------------------------------------------
 BytesPerMicrosecond CCRakNetSlidingWindow::GetLocalReceiveRate(CCTimeType currentTime) const
 {
-	(void) currentTime;
+	static_cast<void>(currentTime);
 
 	return 0; // TODO
 }

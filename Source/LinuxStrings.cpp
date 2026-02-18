@@ -9,7 +9,7 @@
  */
 
 #if (defined(__GNUC__) || defined(__ARMCC_VERSION) || defined(__GCCXML__) || defined(__S3E__) ) && !defined(_WIN32)
-#include <string.h>
+#include <cstring>
 #ifndef _stricmp
 int _stricmp(const char* s1, const char* s2)
 {

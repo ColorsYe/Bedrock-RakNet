@@ -23,7 +23,7 @@
 #ifdef USE_THREADED_SEND
 #include "SendToThread.h"
 #endif
-#include <math.h>
+#include <cmath>
 
 using namespace RakNet;
 
@@ -356,7 +356,7 @@ void ReliabilityLayer::Reset( bool resetVariables, int MTUSize, bool _useSecurit
 		if (_useSecurity)
 			MTUSize -= cat::AuthenticatedEncryption::OVERHEAD_BYTES;
 #else
-		(void) _useSecurity;
+		static_cast<void>(_useSecurity);
 #endif // LIBCAT_SECURITY
 		congestionManager.Init(RakNet::GetTimeUS(), MTUSize - UDP_HEADER_SIZE);
 	}
@@ -461,7 +461,7 @@ void ReliabilityLayer::InitializeVariables( void )
 //-------------------------------------------------------------------------------------------------------
 void ReliabilityLayer::FreeMemory( bool freeAllImmediately )
 {
-	(void) freeAllImmediately;
+	static_cast<void>(freeAllImmediately);
 	FreeThreadSafeMemory();
 }
 
@@ -648,7 +648,7 @@ bool ReliabilityLayer::HandleSocketReceiveFromConnectedPlayer(
 
 	bpsMetrics[static_cast<int>(ACTUAL_BYTES_RECEIVED)].Push1(timeRead,length);
 
-	(void) MTUSize;
+	static_cast<void>(MTUSize);
 
 	if ( length <= 2 || buffer == 0 )   // Length of 1 is a connection request resend that we just ignore
 	{
@@ -1549,7 +1549,7 @@ bool ReliabilityLayer::Send( char *data, BitSize_t numberOfBitsToSend, PacketPri
 	currentTime/=1000;
 #endif
 
-	(void) MTUSize;
+	static_cast<void>(MTUSize);
 
 	//	int a = BITS_TO_BYTES(numberOfBitsToSend);
 
@@ -1691,7 +1691,7 @@ void ReliabilityLayer::Update( RakNetSocket2 *s, SystemAddress &systemAddress, i
 							  BitStream &updateBitStream)
 
 {
-	(void) MTUSize;
+	static_cast<void>(MTUSize);
 
 	RakNet::TimeMS timeMs;
 #if CC_TIME_TYPE_BYTES==4
@@ -2246,8 +2246,8 @@ void ReliabilityLayer::Update( RakNetSocket2 *s, SystemAddress &systemAddress, i
 //-------------------------------------------------------------------------------------------------------
 void ReliabilityLayer::SendBitStream( RakNetSocket2 *s, SystemAddress &systemAddress, RakNet::BitStream *bitStream, RakNetRandom *rnr, CCTimeType currentTime)
 {
-	(void) systemAddress;
-	(void) rnr;
+	static_cast<void>(systemAddress);
+	static_cast<void>(rnr);
 
 	unsigned int length;
 
@@ -2394,7 +2394,7 @@ void ReliabilityLayer::SetUnreliableTimeout(RakNet::TimeMS timeoutMS)
 //-------------------------------------------------------------------------------------------------------
 bool ReliabilityLayer::IsSendThrottled( int MTUSize )
 {
-	(void) MTUSize;
+	static_cast<void>(MTUSize);
 
 	return false;
 	//	return resendList.Size() > windowSize;
@@ -2420,7 +2420,7 @@ bool ReliabilityLayer::IsSendThrottled( int MTUSize )
 //-------------------------------------------------------------------------------------------------------
 void ReliabilityLayer::UpdateWindowFromPacketloss( CCTimeType time )
 {
-	(void) time;
+	static_cast<void>(time);
 }
 
 //-------------------------------------------------------------------------------------------------------
@@ -2428,7 +2428,7 @@ void ReliabilityLayer::UpdateWindowFromPacketloss( CCTimeType time )
 //-------------------------------------------------------------------------------------------------------
 void ReliabilityLayer::UpdateWindowFromAck( CCTimeType time )
 {
-	(void) time;
+	static_cast<void>(time);
 }
 
 //-------------------------------------------------------------------------------------------------------
@@ -2436,8 +2436,8 @@ void ReliabilityLayer::UpdateWindowFromAck( CCTimeType time )
 //-------------------------------------------------------------------------------------------------------
 unsigned ReliabilityLayer::RemovePacketFromResendListAndDeleteOlderReliableSequenced( const MessageNumberType messageNumber, CCTimeType time, DataStructures::List<PluginInterface2*> &messageHandlerList, const SystemAddress &systemAddress )
 {
-	(void) time;
-	(void) messageNumber;
+	static_cast<void>(time);
+	static_cast<void>(messageNumber);
 	InternalPacket * internalPacket;
 	//InternalPacket *temp;
 //	PacketReliability reliability; // What type of reliability algorithm to use with this packet
@@ -2609,7 +2609,7 @@ BitSize_t ReliabilityLayer::GetMessageHeaderLengthBits( const InternalPacket *co
 //-------------------------------------------------------------------------------------------------------
 BitSize_t ReliabilityLayer::WriteToBitStreamFromInternalPacket( RakNet::BitStream *bitStream, const InternalPacket *const internalPacket, CCTimeType curTime )
 {
-	(void) curTime;
+	static_cast<void>(curTime);
 
 	BitSize_t start = bitStream->GetNumberOfBitsUsed();
 	unsigned char tempChar;
@@ -2687,7 +2687,7 @@ InternalPacket* ReliabilityLayer::CreateInternalPacketFromBitStream( RakNet::Bit
 	bool hasSplitPacket=false;
 	bool readSuccess;
 
-	if ( bitStream->GetNumberOfUnreadBits() < static_cast<int>(sizeof)( internalPacket->reliableMessageNumber ) * 8 )
+	if ( bitStream->GetNumberOfUnreadBits() < static_cast<int>(sizeof( internalPacket->reliableMessageNumber )) * 8 )
 		return 0; // leftover bits
 
 	internalPacket = AllocateFromInternalPacketPool();
@@ -3186,7 +3186,7 @@ InternalPacket * ReliabilityLayer::BuildPacketFromSplitPacketList( SplitPacketCh
 #if PREALLOCATE_LARGE_MESSAGES==1
 	InternalPacket *returnedPacket=splitPacketChannel->returnedPacket;
 	RakNet::OP_DELETE(splitPacketChannel, __FILE__, __LINE__);
-	(void) time;
+	static_cast<void>(time);
 	return returnedPacket;
 #else
 	unsigned int j;
@@ -3346,9 +3346,9 @@ void ReliabilityLayer::AddToOrderingList( InternalPacket * internalPacket )
 //-------------------------------------------------------------------------------------------------------
 void ReliabilityLayer::InsertPacketIntoResendList( InternalPacket *internalPacket, CCTimeType time, bool firstResend, bool modifyUnacknowledgedBytes )
 {
-	(void) firstResend;
-	(void) time;
-	(void) internalPacket;
+	static_cast<void>(firstResend);
+	static_cast<void>(time);
+	static_cast<void>(internalPacket);
 
 	AddToListTail(internalPacket, modifyUnacknowledgedBytes);
 	RakAssert(internalPacket->nextActionTime!=0);
@@ -3796,7 +3796,7 @@ void ReliabilityLayer::RemoveFromDatagramHistory(DatagramSequenceNumberType inde
 //-------------------------------------------------------------------------------------------------------
 void ReliabilityLayer::AddFirstToDatagramHistory(DatagramSequenceNumberType datagramNumber, CCTimeType timeSent)
 {
-	(void) datagramNumber;
+	static_cast<void>(datagramNumber);
 	if (datagramHistory.Size()>DATAGRAM_MESSAGE_ID_ARRAY_LENGTH)
 	{
 		RemoveFromDatagramHistory(datagramHistoryPopCount);
@@ -3810,7 +3810,7 @@ void ReliabilityLayer::AddFirstToDatagramHistory(DatagramSequenceNumberType data
 //-------------------------------------------------------------------------------------------------------
 ReliabilityLayer::MessageNumberNode* ReliabilityLayer::AddFirstToDatagramHistory(DatagramSequenceNumberType datagramNumber, DatagramSequenceNumberType messageNumber, CCTimeType timeSent)
 {
-	(void) datagramNumber;
+	static_cast<void>(datagramNumber);
 //	RakAssert(datagramHistoryPopCount+(unsigned int) datagramHistory.Size()==datagramNumber);
 	if (datagramHistory.Size()>DATAGRAM_MESSAGE_ID_ARRAY_LENGTH)
 	{

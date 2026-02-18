@@ -43,12 +43,12 @@ protected:
 
 public:
 	VariableDeltaSerializer();
-	~VariableDeltaSerializer();
+	~VariableDeltaSerializer() noexcept;
 
 	struct SerializationContext
 	{
 		SerializationContext();
-		~SerializationContext();
+		~SerializationContext() noexcept;
 
 		RakNetGUID guid;
 		BitStream *bitStream;

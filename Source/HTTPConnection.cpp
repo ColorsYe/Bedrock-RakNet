@@ -20,10 +20,10 @@
 #include "RakSleep.h"
 #include "RakString.h"
 #include "RakAssert.h"
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstring>
+#include <cstdlib>
+#include <cstdio>
+#include <cstdlib>
 
 using namespace RakNet;
 
