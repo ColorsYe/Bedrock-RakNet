@@ -11,9 +11,7 @@
 #include "NativeFeatureIncludes.h"
 #if _RAKNET_SUPPORT_CloudClient==1 || _RAKNET_SUPPORT_CloudServer==1
 
-#ifndef __CLOUD_COMMON_H
-#define __CLOUD_COMMON_H
-
+#pragma once
 #include "RakNetTypes.h"
 #include "RakString.h"
 
@@ -32,7 +30,7 @@ public:
 	virtual ~CloudAllocator() {}
 
 	/// \brief Allocate a row
-	virtual CloudQueryRow* AllocateCloudQueryRow(void);
+	virtual CloudQueryRow* AllocateCloudQueryRow();
 	/// \brief Free a row
 	virtual void DeallocateCloudQueryRow(CloudQueryRow *row);
 	/// \brief Allocate CloudQueryRow::data
@@ -146,5 +144,3 @@ struct RAK_DLL_EXPORT CloudQueryResult
 } // Namespace RakNet
 
 #endif // __CLOUD_COMMON_H
-
-#endif // #if _RAKNET_SUPPORT_CloudClient==1 || _RAKNET_SUPPORT_CloudServer==1

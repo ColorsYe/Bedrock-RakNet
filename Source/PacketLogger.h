@@ -16,9 +16,7 @@
 #include "NativeFeatureIncludes.h"
 #if _RAKNET_SUPPORT_PacketLogger==1
 
-#ifndef __PACKET_LOGGER_H
-#define __PACKET_LOGGER_H
-
+#pragma once
 #include "RakNetTypes.h"
 #include "PluginInterface2.h"
 #include "Export.h"
@@ -64,7 +62,7 @@ public:
 	virtual void OnPushBackPacket(const char *data, const BitSize_t bitsUsed, SystemAddress remoteSystemAddress);
 
 	/// Logs out a header for all the data
-	virtual void LogHeader(void);
+	virtual void LogHeader();
 
 	/// Override this to log strings to wherever.  Log should be threadsafe
 	virtual void WriteLog(const char *str);
@@ -83,7 +81,7 @@ public:
 
 	/// Append this string to output logs. (newline is useful here)
 	virtual void SetSuffix(const char *_suffix);
-	static const char* BaseIDTOString(unsigned char Id);
+	static constexpr char* BaseIDTOString(unsigned char Id);
 
 	/// Log the direct sends and receives or not. Default true
 	void SetLogDirectMessages(bool send);
@@ -105,5 +103,3 @@ protected:
 } // namespace RakNet
 
 #endif
-
-#endif // _RAKNET_SUPPORT_*

@@ -8,9 +8,7 @@
  *
  */
 
-#ifndef __RAK_W_STRING_H
-#define __RAK_W_STRING_H 
-
+#pragma once
 #include "Export.h"
 #include "RakNetTypes.h" // int64_t
 #include "RakString.h"
@@ -86,10 +84,10 @@ namespace RakNet
 		int StrICmp(const RakWString &right) const;
 
 		/// Clear the string
-		void Clear(void);
+		void Clear();
 
 		/// Print the string to the screen
-		void Printf(void);
+		void Printf();
 
 		/// Print the string to a file
 		void FPrintf(FILE *fp);
@@ -118,6 +116,3 @@ namespace RakNet
 }
 
 const RakNet::RakWString RAK_DLL_EXPORT operator+(const RakNet::RakWString &lhs, const RakNet::RakWString &rhs);
-
-
-#endif

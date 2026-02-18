@@ -11,7 +11,7 @@
 #include "Base64Encoder.h"
 #include "RakMemoryOverride.h"
 
-const char *Base64Map(void) {return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";}
+const char *Base64Map() {return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";}
 const char *base64Map = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 // 3/17/2013 must be unsigned char or else it will use negative indices

@@ -102,9 +102,7 @@
     C4609560 A108A0C6 26AA7F2B 38A65566 739353C5
 */
 
-#ifndef SHA1_H_A545E61D43E9404E8D736869AB3CBFE7
-#define SHA1_H_A545E61D43E9404E8D736869AB3CBFE7
-
+#pragma once
 // KevinJ:
 #include "RakMemoryOverride.h"
 #include <stdio.h> // Needed for file access
@@ -297,5 +295,3 @@ private:
 	UINT_8 m_workspace[64];
 	SHA1_WORKSPACE_BLOCK* m_block; // SHA1 pointer to the byte array above
 };
-
-#endif // SHA1_H_A545E61D43E9404E8D736869AB3CBFE7

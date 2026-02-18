@@ -16,9 +16,7 @@
 #include "NativeFeatureIncludes.h"
 #if _RAKNET_SUPPORT_PacketLogger==1
 
-#ifndef __THREADSAFE_PACKET_LOGGER_H
-#define __THREADSAFE_PACKET_LOGGER_H
-
+#pragma once
 #include "PacketLogger.h"
 #include "SingleProducerConsumer.h"
 
@@ -33,7 +31,7 @@ public:
 	ThreadsafePacketLogger();
 	virtual ~ThreadsafePacketLogger();
 
-	virtual void Update(void);
+	virtual void Update();
 
 protected:
 	virtual void AddToLog(const char *str);
@@ -44,5 +42,3 @@ protected:
 } // namespace RakNet
 
 #endif
-
-#endif // _RAKNET_SUPPORT_*

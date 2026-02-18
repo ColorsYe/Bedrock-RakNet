@@ -40,14 +40,14 @@ StringTable::~StringTable()
 	}
 }
 
-void StringTable::AddReference(void)
+void StringTable::AddReference()
 {
 	if (++referenceCount==1)
 	{
 		instance = RakNet::OP_NEW<StringTable>( _FILE_AND_LINE_ );
 	}
 }
-void StringTable::RemoveReference(void)
+void StringTable::RemoveReference()
 {
 	RakAssert(referenceCount > 0);
 
@@ -61,7 +61,7 @@ void StringTable::RemoveReference(void)
 	}
 }
 
-StringTable* StringTable::Instance(void)
+StringTable* StringTable::Instance()
 {
 	return instance;
 }

@@ -14,9 +14,7 @@
 
 
 
-#ifndef __SIMPLE_MUTEX_H
-#define __SIMPLE_MUTEX_H
-
+#pragma once
 #include "RakMemoryOverride.h"
 
 
@@ -48,10 +46,10 @@ public:
 	~SimpleMutex();
 
 	// Locks the mutex.  Slow!
-	void Lock(void);
+	void Lock();
 
 	// Unlocks the mutex.
-	void Unlock(void);
+	void Unlock();
 
 
 
@@ -60,7 +58,7 @@ public:
 
 
 private:
-	void Init(void);
+	void Init();
 #ifdef _WIN32
 	CRITICAL_SECTION criticalSection; /// Docs say this is faster than a mutex for single process access
 
@@ -73,6 +71,3 @@ private:
 };
 
 } // namespace RakNet
-
-#endif
-

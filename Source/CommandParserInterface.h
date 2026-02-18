@@ -13,9 +13,7 @@
 ///
 
 
-#ifndef __COMMAND_PARSER_INTERFACE
-#define __COMMAND_PARSER_INTERFACE
-
+#pragma once
 #include "RakMemoryOverride.h"
 #include "RakNetTypes.h"
 #include "DS_OrderedList.h"
@@ -106,7 +104,7 @@ public:
 	/// \param[in] systemAddress The player to write to
 	virtual void SendCommandList(TransportInterface *transport, const SystemAddress &systemAddress);
 
-	static const unsigned char VARIABLE_NUMBER_OF_PARAMETERS;
+	static constexpr unsigned char VARIABLE_NUMBER_OF_PARAMETERS;
 
 	// Currently only takes static strings - doesn't make a copy of what you pass.
 	// parameterCount is the number of parameters that the sender has to include with the command.
@@ -142,6 +140,3 @@ protected:
 };
 
 } // namespace RakNet
-
-#endif
-

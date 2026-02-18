@@ -8,11 +8,7 @@
  *
  */
 
-#ifndef __SIGNALED_EVENT_H
-#define __SIGNALED_EVENT_H
-
-
-
+#pragma once
 #if   defined(_WIN32)
 #include "WindowsIncludes.h"
 
@@ -39,9 +35,9 @@ public:
 	SignaledEvent();
 	~SignaledEvent();
 
-	void InitEvent(void);
-	void CloseEvent(void);
-	void SetEvent(void);
+	void InitEvent();
+	void CloseEvent();
+	void SetEvent();
 	void WaitOnEvent(int timeoutMs);
 
 protected:
@@ -65,5 +61,3 @@ protected:
 };
 
 } // namespace RakNet
-
-#endif

@@ -326,7 +326,7 @@ void TeamBalancer::OnClosedConnection(const SystemAddress &systemAddress, RakNet
 
 	RemoveByGuid(rakNetGUID);
 }
-void TeamBalancer::OnAttach(void)
+void TeamBalancer::OnAttach()
 {
 	hostGuid = rakPeerInterface->GetGuidFromSystemAddress(UNASSIGNED_SYSTEM_ADDRESS);
 }
@@ -602,7 +602,7 @@ void TeamBalancer::GetMinMaxTeamMembers(int &minMembersOnASingleTeam, int &maxMe
 	else
 		maxMembersOnASingleTeam = minMembersOnASingleTeam+1;
 }
-void TeamBalancer::EvenTeams(void)
+void TeamBalancer::EvenTeams()
 {
 	// Ensure all teams are even. If not, pick players at random from overpopulated teams, and move to underpopulated teams.
 	int minMembersOnASingleTeam;
@@ -741,7 +741,7 @@ PluginReceiveResult TeamBalancer::OnTeamsLocked(Packet *packet)
 
 	return RR_CONTINUE_PROCESSING;
 }
-TeamId TeamBalancer::GetNextDefaultTeam(void)
+TeamId TeamBalancer::GetNextDefaultTeam()
 {
 	// Accounting for team balancing and team limits, get the team a player should be placed on
 	switch (defaultAssigmentAlgorithm)

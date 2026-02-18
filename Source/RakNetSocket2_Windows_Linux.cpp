@@ -38,7 +38,7 @@ void GetMyIP_Windows_Linux_IPV4And6( SystemAddress addresses[MAXIMUM_NUMBER_OF_I
 	PrepareAddrInfoHints2(&hints);
 	getaddrinfo(ac, "", &hints, &servinfo);
 
-	for (idx=0, aip = servinfo; aip != NULL && idx < MAXIMUM_NUMBER_OF_INTERNAL_IDS; aip = aip->ai_next, idx++)
+	for (idx=0, aip = servinfo; aip != nullptr && idx < MAXIMUM_NUMBER_OF_INTERNAL_IDS; aip = aip->ai_next, idx++)
 	{
 		if (aip->ai_family == AF_INET)
 		{

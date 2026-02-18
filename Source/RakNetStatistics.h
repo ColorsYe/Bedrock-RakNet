@@ -14,9 +14,7 @@
 
 
 
-#ifndef __RAK_NET_STATISTICS_H
-#define __RAK_NET_STATISTICS_H
-
+#pragma once
 #include "PacketPriority.h"
 #include "Export.h"
 #include "RakNetTypes.h"
@@ -129,5 +127,3 @@ struct RAK_DLL_EXPORT RakNetStatistics
 void RAK_DLL_EXPORT StatisticsToString( RakNetStatistics *s, char *buffer, int verbosityLevel );
 
 } // namespace RakNet
-
-#endif

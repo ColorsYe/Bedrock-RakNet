@@ -84,29 +84,29 @@ RAK_THREAD_DECLARATION(UDTConnect);
 /*
 #include <alloca.h> // Console 2
 #include <stdlib.h>
-extern bool _extern_Console2LoadModules(void);
-extern int _extern_Console2GetConnectionStatus(void);
-extern int _extern_Console2GetLobbyStatus(void);
+extern bool _extern_Console2LoadModules();
+extern int _extern_Console2GetConnectionStatus();
+extern int _extern_Console2GetLobbyStatus();
 //extern bool Console2StartupFluff(unsigned int *);
-extern void Console2ShutdownFluff(void);
+extern void Console2ShutdownFluff();
 //extern unsigned int Console2ActivateConnection(unsigned int, void *);
-//extern bool Console2BlockOnEstablished(void);
+//extern bool Console2BlockOnEstablished();
 extern void Console2GetIPAndPort(unsigned int, char *, unsigned short *, unsigned int );
 //extern void Console2DeactivateConnection(unsigned int, unsigned int);
 */
 #endif
 
 
-static const int NUM_MTU_SIZES=3;
+static constexpr int NUM_MTU_SIZES=3;
 
 
 
-static const int mtuSizes[NUM_MTU_SIZES]={MAXIMUM_MTU_SIZE, 1200, 576};
+static constexpr int mtuSizes[NUM_MTU_SIZES]={MAXIMUM_MTU_SIZE, 1200, 576};
 
 
 // Note to self - if I change this it might affect RECIPIENT_OFFLINE_MESSAGE_INTERVAL in Natpunchthrough.cpp
-//static const int MAX_OPEN_CONNECTION_REQUESTS=8;
-//static const int TIME_BETWEEN_OPEN_CONNECTION_REQUESTS=500;
+//static constexpr int MAX_OPEN_CONNECTION_REQUESTS=8;
+//static constexpr int TIME_BETWEEN_OPEN_CONNECTION_REQUESTS=500;
 
 #ifdef _MSC_VER
 #pragma warning( push )
@@ -124,7 +124,7 @@ struct RakPeerAndIndex
 };
 */
 
-static const unsigned int MAX_OFFLINE_DATA_LENGTH=400; // I set this because I limit ID_CONNECTION_REQUEST to 512 bytes, and the password is appended to that packet.
+static constexpr unsigned int MAX_OFFLINE_DATA_LENGTH=400; // I set this because I limit ID_CONNECTION_REQUEST to 512 bytes, and the password is appended to that packet.
 
 // Used to distinguish between offline messages with data, and messages from the reliability layer
 // Should be different than any message that could result from messages from the reliability layer
@@ -132,7 +132,7 @@ static const unsigned int MAX_OFFLINE_DATA_LENGTH=400; // I set this because I l
 #pragma warning(disable:4309) // 'initializing' : truncation of constant value
 #endif
 // Make sure highest bit is 0, so isValid in DatagramHeaderFormat is false
-static const unsigned char OFFLINE_MESSAGE_DATA_ID[16]={0x00,0xFF,0xFF,0x00,0xFE,0xFE,0xFE,0xFE,0xFD,0xFD,0xFD,0xFD,0x12,0x34,0x56,0x78};
+static constexpr unsigned char OFFLINE_MESSAGE_DATA_ID[16]={0x00,0xFF,0xFF,0x00,0xFE,0xFE,0xFE,0xFE,0xFD,0xFD,0xFD,0xFD,0x12,0x34,0x56,0x78};
 
 struct PacketFollowedByData
 {
@@ -1268,7 +1268,7 @@ bool RakPeer::GetConnectionList( SystemAddress *remoteSystems, unsigned short *n
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-uint32_t RakPeer::GetNextSendReceipt(void)
+uint32_t RakPeer::GetNextSendReceipt()
 {
 	sendReceiptSerialMutex.Lock();
 	uint32_t retVal = sendReceiptSerial;
@@ -1276,7 +1276,7 @@ uint32_t RakPeer::GetNextSendReceipt(void)
 	return retVal;
 }
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-uint32_t RakPeer::IncrementNextSendReceipt(void)
+uint32_t RakPeer::IncrementNextSendReceipt()
 {
 	sendReceiptSerialMutex.Lock();
 	uint32_t returned = sendReceiptSerial;
@@ -3127,7 +3127,7 @@ bool RakPeer::GetStatistics( const unsigned int index, RakNetStatistics *rns )
 	return false;
 }
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-unsigned int RakPeer::GetReceiveBufferSize(void)
+unsigned int RakPeer::GetReceiveBufferSize()
 {
 	unsigned int size;
 	packetReturnMutex.Lock();
@@ -3930,7 +3930,7 @@ RakPeer::RemoteSystemStruct* RakPeer::GetRemoteSystem(const SystemAddress &sa) c
 	return remoteSystemList + remoteSystemIndex;
 }
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void RakPeer::ClearRemoteSystemLookup(void)
+void RakPeer::ClearRemoteSystemLookup()
 {
 	remoteSystemIndexPool.Clear(_FILE_AND_LINE_);
 	RakNet::OP_DELETE_ARRAY(remoteSystemLookup,_FILE_AND_LINE_);
@@ -4063,7 +4063,7 @@ RNS2RecvStruct *RakPeer::AllocRNS2RecvStruct(const char *file, unsigned int line
 	}
 }
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void RakPeer::ClearBufferedPackets(void)
+void RakPeer::ClearBufferedPackets()
 {
 	bufferedPacketsFreePoolMutex.Lock();
 	while (bufferedPacketsFreePool.Size()>0)
@@ -4076,7 +4076,7 @@ void RakPeer::ClearBufferedPackets(void)
 	bufferedPacketsQueueMutex.Unlock();
 }
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void RakPeer::SetupBufferedPackets(void)
+void RakPeer::SetupBufferedPackets()
 {
 }
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -4087,7 +4087,7 @@ void RakPeer::PushBufferedPacket(RNS2RecvStruct * p)
 	bufferedPacketsQueueMutex.Unlock();
 }
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-RNS2RecvStruct *RakPeer::PopBufferedPacket(void)
+RNS2RecvStruct *RakPeer::PopBufferedPacket()
 {
 	bufferedPacketsQueueMutex.Lock();
 	if (bufferedPacketsQueue.Size()>0)
@@ -4383,7 +4383,7 @@ bool RakPeer::SendImmediate( char *data, BitSize_t numberOfBitsToSend, PacketPri
 	return callerDataAllocationUsed;
 }
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void RakPeer::ResetSendReceipt(void)
+void RakPeer::ResetSendReceipt()
 {
 	sendReceiptSerialMutex.Lock();
 	sendReceiptSerial=1;
@@ -4414,7 +4414,7 @@ void RakPeer::OnConnectedPong(RakNet::Time sendPingTime, RakNet::Time sendPongTi
 		remoteSystem->pingAndClockDifferentialWriteIndex = 0;
 }
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void RakPeer::ClearBufferedCommands(void)
+void RakPeer::ClearBufferedCommands()
 {
 	BufferedCommandStruct *bcs;
 
@@ -4428,12 +4428,12 @@ void RakPeer::ClearBufferedCommands(void)
 	bufferedCommands.Clear(_FILE_AND_LINE_);
 }
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void RakPeer::ClearSocketQueryOutput(void)
+void RakPeer::ClearSocketQueryOutput()
 {
 	socketQueryOutput.Clear(_FILE_AND_LINE_);
 }
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void RakPeer::ClearRequestedConnectionList(void)
+void RakPeer::ClearRequestedConnectionList()
 {
 	DataStructures::Queue<RequestedConnectionStruct*> freeQueue;
 	requestedConnectionQueueMutex.Lock();
@@ -4462,7 +4462,7 @@ union Buff6AndBuff8
 	unsigned char buff6[6];
 	uint64_t buff8;
 };
-uint64_t RakPeerInterface::Get64BitUniqueRandomNumber(void)
+uint64_t RakPeerInterface::Get64BitUniqueRandomNumber()
 {
 	// Mac address is a poor solution because you can't have multiple connections from the same system
 
@@ -4517,12 +4517,12 @@ uint64_t RakPeerInterface::Get64BitUniqueRandomNumber(void)
 
 #else
 	struct timeval tv;
-	gettimeofday(&tv, NULL);
+	gettimeofday(&tv, nullptr);
 	return tv.tv_usec + tv.tv_sec * 1000000;
 #endif
 }
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void RakPeer::GenerateGUID(void)
+void RakPeer::GenerateGUID()
 {
 	myGuid.g=Get64BitUniqueRandomNumber();
 
@@ -5471,7 +5471,7 @@ void ProcessNetworkPacket( SystemAddress systemAddress, const char *data, const 
 
 }
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-unsigned int RakPeer::GenerateSeedFromGuid(void)
+unsigned int RakPeer::GenerateSeedFromGuid()
 {
 	/*
 	// Construct a random seed based on the initial guid value, and the last digits of the difference to each subsequent number
@@ -5492,7 +5492,7 @@ unsigned int RakPeer::GenerateSeedFromGuid(void)
 	return (unsigned int) ((myGuid.g >> 32) ^ myGuid.g);
 }
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void RakPeer::DerefAllSockets(void)
+void RakPeer::DerefAllSockets()
 {
 	unsigned int i;
 	for (i=0; i < socketList.Size(); i++)
@@ -5540,7 +5540,7 @@ bool RakPeer::RunRecvFromOnce( RakNetSocket *s )
 	RakPeer::RecvFromStruct *recvFromStruct;
 
 	recvFromStruct=bufferedPackets.Allocate( _FILE_AND_LINE_ );
-	if (recvFromStruct != NULL)
+	if (recvFromStruct != nullptr)
 	{
 		recvFromStruct->s=s;
 		SocketLayer::RecvFromBlocking(s, this, recvFromStruct->data, &recvFromStruct->bytesRead, &recvFromStruct->systemAddress, &recvFromStruct->timeRead);
@@ -6319,13 +6319,13 @@ RAK_THREAD_DECLARATION(RakNet::UpdateNetworkLoop)
 		rakPeer->threadSleepTimer = 1;
 
 	// 2nd parameter of false means synchronization timer instead of manual-reset timer
-	timerHandle = CreateWaitableTimer( NULL, FALSE, 0 );
+	timerHandle = CreateWaitableTimer( nullptr, FALSE, 0 );
 
 	RakAssert( timerHandle );
 
 	dueTime.QuadPart = -10000 * rakPeer->threadSleepTimer; // 10000 is 1 ms?
 
-	BOOL success = SetWaitableTimer( timerHandle, &dueTime, rakPeer->threadSleepTimer, NULL, NULL, FALSE );
+	BOOL success = SetWaitableTimer( timerHandle, &dueTime, rakPeer->threadSleepTimer, nullptr, nullptr, FALSE );
     (void) success;
 	RakAssert( success );
 
@@ -6460,7 +6460,7 @@ void RakPeer::CallPluginCallbacks(DataStructures::List<PluginInterface2*> &plugi
 	}
 }
 
-void RakPeer::FillIPList(void)
+void RakPeer::FillIPList()
 {
 	if (ipList[0]!=UNASSIGNED_SYSTEM_ADDRESS)
 		return;

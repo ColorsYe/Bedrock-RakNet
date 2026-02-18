@@ -28,7 +28,7 @@ ThreadsafePacketLogger::~ThreadsafePacketLogger()
 		rakFree_Ex((*msg), _FILE_AND_LINE_ );
 	}
 }
-void ThreadsafePacketLogger::Update(void)
+void ThreadsafePacketLogger::Update()
 {
 	char **msg;
 	while ((msg = logMessages.ReadLock()) != 0)

@@ -8,9 +8,7 @@
  *
  */
 
-#ifndef _GCC_WIN_STRINGS
-#define _GCC_WIN_STRINGS
-
+#pragma once
 #if  defined(__native_client__)
 	#ifndef _stricmp
 		int _stricmp(const char* s1, const char* s2);
@@ -36,5 +34,3 @@
 
 	#endif
 #endif
-
-#endif // _GCC_WIN_STRINGS

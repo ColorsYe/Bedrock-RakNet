@@ -16,9 +16,7 @@
 #include "NativeFeatureIncludes.h"
 #if _RAKNET_SUPPORT_ReplicaManager3==1
 
-#ifndef __REPLICA_MANAGER_3
-#define __REPLICA_MANAGER_3
-
+#pragma once
 #include "RakNetTypes.h"
 #include "RakNetTime.h"
 #include "BitStream.h"
@@ -40,7 +38,7 @@ class Replica3;
 
 /// \ingroup REPLICA_MANAGER_GROUP3
 /// Used for multiple worlds. World 0 is created automatically by default
-typedef uint8_t WorldId;
+using WorldId = uint8_t;
 
 
 /// \internal
@@ -301,7 +299,7 @@ public:
 	PRO GetDefaultSendParameters(void) const;
 
 	/// Call interfaces, send data
-	virtual void Update(void);
+	virtual void Update();
 
 	/// \internal
 	struct RM3World
@@ -318,8 +316,8 @@ protected:
 	virtual PluginReceiveResult OnReceive(Packet *packet);
 	virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
 	virtual void OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming);
-	virtual void OnRakPeerShutdown(void);
-	virtual void OnDetach(void);
+	virtual void OnRakPeerShutdown();
+	virtual void OnDetach();
 
 	PluginReceiveResult OnConstruction(Packet *packet, unsigned char *packetData, int packetDataLength, RakNetGUID senderGuid, unsigned char packetDataOffset, WorldId worldId);
 	PluginReceiveResult OnSerialize(Packet *packet, unsigned char *packetData, int packetDataLength, RakNetGUID senderGuid, RakNet::Time timestamp, unsigned char packetDataOffset, WorldId worldId);
@@ -348,7 +346,7 @@ protected:
 	friend class Connection_RM3;
 };
 
-static const int RM3_NUM_OUTPUT_BITSTREAM_CHANNELS=16;
+static constexpr int RM3_NUM_OUTPUT_BITSTREAM_CHANNELS=16;
 
 /// \ingroup REPLICA_MANAGER_GROUP3
 struct LastSerializationResultBS
@@ -371,7 +369,7 @@ struct LastSerializationResult
 //	bool isConstructed;
 	RakNet::Time whenLastSerialized;
 
-	void AllocBS(void);
+	void AllocBS();
 	LastSerializationResultBS* lastSerializationResultBS;
 };
 
@@ -958,7 +956,7 @@ public:
 
 	/// \brief Called for each replica owned by the user, once per Serialization tick, before Serialize() is called.
 	/// If you want to do some kind of operation on the Replica objects that you own, just before Serialization(), then overload this function
-	virtual void OnUserReplicaPreSerializeTick(void) {}
+	virtual void OnUserReplicaPreSerializeTick() {}
 
 	/// \brief Serialize our class to a bitstream
 	/// \details User should implement this function to write the contents of this class to SerializationParamters::serializationBitstream.<BR>
@@ -1066,7 +1064,7 @@ public:
 
 	/// Call to send a network message to delete this object on other systems.<BR>
 	/// Call it before deleting the object
-	virtual void BroadcastDestruction(void);
+	virtual void BroadcastDestruction();
 
 	/// creatingSystemGUID is set the first time Reference() is called, or if we get the object from another system
 	/// \return System that originally created this object
@@ -1118,7 +1116,7 @@ public:
 	virtual void OnPoppedConnection(RakNet::Connection_RM3 *droppedConnection) {r3CompositeOwner->OnPoppedConnection(droppedConnection);}
 	virtual void DeallocReplica(RakNet::Connection_RM3 *sourceConnection) {r3CompositeOwner->DeallocReplica(sourceConnection);}
 	virtual RakNet::RM3QuerySerializationResult QuerySerialization(RakNet::Connection_RM3 *destinationConnection) {return r3CompositeOwner->QuerySerialization(destinationConnection);}
-	virtual void OnUserReplicaPreSerializeTick(void) {r3CompositeOwner->OnUserReplicaPreSerializeTick();}
+	virtual void OnUserReplicaPreSerializeTick() {r3CompositeOwner->OnUserReplicaPreSerializeTick();}
 	virtual RakNet::RM3SerializationResult Serialize(RakNet::SerializeParameters *serializeParameters) {return r3CompositeOwner->Serialize(serializeParameters);}
 	virtual void OnSerializeTransmission(RakNet::BitStream *bitStream, RakNet::Connection_RM3 *destinationConnection, RakNet::BitSize_t bitsPerChannel[RakNet::RM3_NUM_OUTPUT_BITSTREAM_CHANNELS], RakNet::Time curTime) {r3CompositeOwner->OnSerializeTransmission(bitStream, destinationConnection, bitsPerChannel, curTime);}
 	virtual void Deserialize(RakNet::DeserializeParameters *deserializeParameters) {r3CompositeOwner->Deserialize(deserializeParameters);}
@@ -1133,5 +1131,3 @@ public:
 
 
 #endif
-
-#endif // _RAKNET_SUPPORT_*

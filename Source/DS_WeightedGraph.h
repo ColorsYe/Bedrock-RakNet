@@ -15,9 +15,7 @@
 ///
 
 
-#ifndef __WEIGHTED_GRAPH_H
-#define __WEIGHTED_GRAPH_H
-
+#pragma once
 #include "DS_OrderedList.h"
 #include "DS_Map.h"
 #include "DS_Heap.h"
@@ -41,7 +39,7 @@ namespace DataStructures
 	class RAK_DLL_EXPORT WeightedGraph
 	{
 	public:
-		static void IMPLEMENT_DEFAULT_COMPARISON(void) {DataStructures::defaultMapKeyComparison<node_type>(node_type(),node_type());}
+		static void IMPLEMENT_DEFAULT_COMPARISON() {DataStructures::defaultMapKeyComparison<node_type>(node_type(),node_type());}
 
 		WeightedGraph();
 		~WeightedGraph();
@@ -52,8 +50,8 @@ namespace DataStructures
 		void AddConnection(const node_type &node1, const node_type &node2, weight_type weight);
 		void RemoveConnection(const node_type &node1, const node_type &node2);
 		bool HasConnection(const node_type &node1, const node_type &node2);
-		void Print(void);
-		void Clear(void);
+		void Print();
+		void Clear();
 		bool GetShortestPath(DataStructures::List<node_type> &path, node_type startNode, node_type endNode, weight_type INFINITE_WEIGHT);
 		bool GetSpanningTree(DataStructures::Tree<node_type> &outTree, DataStructures::List<node_type> *inputNodes, node_type startNode, weight_type INFINITE_WEIGHT );
 		unsigned GetNodeCount(void) const;
@@ -62,7 +60,7 @@ namespace DataStructures
 		node_type GetNodeAtIndex(unsigned nodeIndex) const;
 
 	protected:
-		void ClearDijkstra(void);
+		void ClearDijkstra();
 		void GenerateDisjktraMatrix(node_type startNode, weight_type INFINITE_WEIGHT);
 
 		DataStructures::Map<node_type, DataStructures::Map<node_type, weight_type> *> adjacencyLists;
@@ -212,7 +210,7 @@ namespace DataStructures
 	}
 
 	template <class node_type, class weight_type, bool allow_unlinkedNodes>
-		void WeightedGraph<node_type, weight_type, allow_unlinkedNodes>::Clear(void)
+		void WeightedGraph<node_type, weight_type, allow_unlinkedNodes>::Clear()
 	{
 		unsigned i;
 		for (i=0; i < adjacencyLists.Size(); i++)
@@ -501,7 +499,7 @@ namespace DataStructures
 	}
 
 	template <class node_type, class weight_type, bool allow_unlinkedNodes>
-		void WeightedGraph<node_type, weight_type, allow_unlinkedNodes>::ClearDijkstra(void)
+		void WeightedGraph<node_type, weight_type, allow_unlinkedNodes>::ClearDijkstra()
 	{
 		if (isValidPath)
 		{
@@ -513,7 +511,7 @@ namespace DataStructures
 	}
 
 	template <class node_type, class weight_type, bool allow_unlinkedNodes>
-		void WeightedGraph<node_type, weight_type, allow_unlinkedNodes>::Print(void)
+		void WeightedGraph<node_type, weight_type, allow_unlinkedNodes>::Print()
 	{
 #ifdef _DEBUG
 		unsigned i,j;
@@ -539,6 +537,4 @@ namespace DataStructures
 
 #ifdef _MSC_VER
 #pragma warning( pop )
-#endif
-
 #endif

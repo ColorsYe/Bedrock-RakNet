@@ -16,9 +16,7 @@
 #include "NativeFeatureIncludes.h"
 #if _RAKNET_SUPPORT_NatTypeDetectionClient==1
 
-#ifndef __NAT_TYPE_DETECTION_CLIENT_H
-#define __NAT_TYPE_DETECTION_CLIENT_H
-
+#pragma once
 #include "RakNetTypes.h"
 #include "Export.h"
 #include "PluginInterface2.h"
@@ -62,14 +60,14 @@ struct Packet;
 		void DetectNATType(SystemAddress _serverAddress);
 
 		/// \internal For plugin handling
-		virtual void Update(void);
+		virtual void Update();
 
 		/// \internal For plugin handling
 		virtual PluginReceiveResult OnReceive(Packet *packet);
 
 		virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
-		virtual void OnRakPeerShutdown(void);
-		virtual void OnDetach(void);
+		virtual void OnRakPeerShutdown();
+		virtual void OnDetach();
 
 		virtual void OnRNS2Recv(RNS2RecvStruct *recvStruct);
 		virtual void DeallocRNS2RecvStruct(RNS2RecvStruct *s, const char *file, unsigned int line);
@@ -80,7 +78,7 @@ struct Packet;
 		
 		RakNetSocket2* c2;
 		//unsigned short c2Port;
-		void Shutdown(void);
+		void Shutdown();
 		void OnCompletion(NATTypeDetectionResult result);
 		bool IsInProgress(void) const;
 
@@ -93,5 +91,3 @@ struct Packet;
 
 
 #endif
-
-#endif // _RAKNET_SUPPORT_*

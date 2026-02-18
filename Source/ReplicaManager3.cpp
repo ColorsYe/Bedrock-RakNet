@@ -66,7 +66,7 @@ LastSerializationResult::~LastSerializationResult()
 	if (lastSerializationResultBS)
 		RakNet::OP_DELETE(lastSerializationResultBS,_FILE_AND_LINE_);
 }
-void LastSerializationResult::AllocBS(void)
+void LastSerializationResult::AllocBS()
 {
 	if (lastSerializationResultBS==0)
 	{
@@ -873,7 +873,7 @@ void Connection_RM3::AutoConstructByQuery(ReplicaManager3 *replicaManager3, Worl
 
 	SendConstruction(constructedReplicasCulled,destroyedReplicasCulled,replicaManager3->defaultSendParameters,replicaManager3->rakPeerInterface,worldId,replicaManager3);
 }
-void ReplicaManager3::Update(void)
+void ReplicaManager3::Update()
 {
 	unsigned int index,index2,index3;
 
@@ -1010,7 +1010,7 @@ void ReplicaManager3::OnNewConnection(const SystemAddress &systemAddress, RakNet
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-void ReplicaManager3::OnRakPeerShutdown(void)
+void ReplicaManager3::OnRakPeerShutdown()
 {
 	if (autoDestroyConnections)
 	{
@@ -1035,7 +1035,7 @@ void ReplicaManager3::OnRakPeerShutdown(void)
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-void ReplicaManager3::OnDetach(void)
+void ReplicaManager3::OnDetach()
 {
 	OnRakPeerShutdown();
 }
@@ -2402,7 +2402,7 @@ Replica3::~Replica3()
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-void Replica3::BroadcastDestruction(void)
+void Replica3::BroadcastDestruction()
 {
 	replicaManager->BroadcastDestruction(this,UNASSIGNED_SYSTEM_ADDRESS);
 }

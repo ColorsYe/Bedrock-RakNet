@@ -14,9 +14,7 @@
 
 
 
-#ifndef __REF_COUNTED_OBJ_H
-#define __REF_COUNTED_OBJ_H
-
+#pragma once
 #include "RakMemoryOverride.h"
 
 /// World's simplest class :)
@@ -25,9 +23,7 @@ class RefCountedObj
 	public:
 		RefCountedObj() {refCount=1;}
 		virtual ~RefCountedObj() {}
-		void AddRef(void) {refCount++;}
-		void Deref(void) {if (--refCount==0) RakNet::OP_DELETE(this, _FILE_AND_LINE_);}
+		void AddRef() {refCount++;}
+		void Deref() {if (--refCount==0) RakNet::OP_DELETE(this, _FILE_AND_LINE_);}
 		int refCount;
 };
-
-#endif

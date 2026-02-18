@@ -12,12 +12,12 @@
 
 #if USE_SLIDING_WINDOW_CONGESTION_CONTROL==1
 
-static const double UNSET_TIME_US=-1;
+static constexpr double UNSET_TIME_US=-1;
 
 #if CC_TIME_TYPE_BYTES==4
-static const CCTimeType SYN=10;
+static constexpr CCTimeType SYN=10;
 #else
-static const CCTimeType SYN=10000;
+static constexpr CCTimeType SYN=10000;
 #endif
 
 #include "MTUSize.h"
@@ -100,12 +100,12 @@ bool CCRakNetSlidingWindow::ShouldSendACKs(CCTimeType curTime, CCTimeType estima
 	return curTime >= oldestUnsentAck + SYN;
 }
 // ----------------------------------------------------------------------------------------------------------------------------
-DatagramSequenceNumberType CCRakNetSlidingWindow::GetNextDatagramSequenceNumber(void)
+DatagramSequenceNumberType CCRakNetSlidingWindow::GetNextDatagramSequenceNumber()
 {
 	return nextDatagramSequenceNumber;
 }
 // ----------------------------------------------------------------------------------------------------------------------------
-DatagramSequenceNumberType CCRakNetSlidingWindow::GetAndIncrementNextDatagramSequenceNumber(void)
+DatagramSequenceNumberType CCRakNetSlidingWindow::GetAndIncrementNextDatagramSequenceNumber()
 {
 	DatagramSequenceNumberType dsnt=nextDatagramSequenceNumber;
 	nextDatagramSequenceNumber++;

@@ -15,9 +15,7 @@
 #include "NativeFeatureIncludes.h"
 #if _RAKNET_SUPPORT_UDPProxyClient==1
 
-#ifndef __UDP_PROXY_CLIENT_H
-#define __UDP_PROXY_CLIENT_H
-
+#pragma once
 #include "Export.h"
 #include "RakNetTypes.h"
 #include "PluginInterface2.h"
@@ -140,9 +138,9 @@ public:
 	bool RequestForwarding(SystemAddress proxyCoordinator, SystemAddress sourceAddress, RakNetGUID targetGuid, RakNet::TimeMS timeoutOnNoDataMS, RakNet::BitStream *serverSelectionBitstream=0);
 
 	/// \internal
-	virtual void Update(void);
+	virtual void Update();
 	virtual PluginReceiveResult OnReceive(Packet *packet);
-	virtual void OnRakPeerShutdown(void);
+	virtual void OnRakPeerShutdown();
 	
 	struct ServerWithPing
 	{
@@ -169,7 +167,7 @@ public:
 protected:
 
 	void OnPingServers(Packet *packet);
-	void Clear(void);
+	void Clear();
 	UDPProxyClientResultHandler *resultHandler;
 
 };
@@ -177,5 +175,3 @@ protected:
 } // End namespace
 
 #endif
-
-#endif // _RAKNET_SUPPORT_*

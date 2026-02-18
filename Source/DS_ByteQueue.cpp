@@ -128,7 +128,7 @@ void ByteQueue::DecrementReadOffset(unsigned length)
 	else
 		readOffset-=length;
 }
-void ByteQueue::Print(void)
+void ByteQueue::Print()
 {
 	unsigned i;
 	for (i=readOffset; i!=writeOffset; i++)

@@ -52,7 +52,7 @@ char* into, const char* dir, const char* type, unsigned int reliableMessageNumbe
 unsigned int splitPacketId, unsigned int splitPacketIndex, unsigned int splitPacketCount, unsigned int orderingIndex)
 {
 	char numericID[16];
-	const char* idToPrint = NULL;
+	const char* idToPrint = nullptr;
 	if(printId)
 	{
 		if (splitPacketCount>0 && splitPacketCount!=(unsigned int)-1)
@@ -60,10 +60,10 @@ unsigned int splitPacketId, unsigned int splitPacketIndex, unsigned int splitPac
 		else
 			idToPrint =	IDTOString(id);
 	}
-	// If printId is false, idToPrint will be NULL, as it will
+	// If printId is false, idToPrint will be nullptr, as it will
 	// in the case of an unrecognized id. Testing printId for false
 	// would just be redundant.
-	if(idToPrint == NULL)
+	if(idToPrint == nullptr)
 	{
 		sprintf(numericID, "%5u", id);
 		idToPrint = numericID;
@@ -124,7 +124,7 @@ void PacketLogger::OnDirectSocketSend(const char *data, const BitSize_t bitsUsed
 	AddToLog(str);
 }
 
-void PacketLogger::LogHeader(void)
+void PacketLogger::LogHeader()
 {
 	// Last 5 are splitpacket id, split packet index, split packet count, ordering index, suffix
 	AddToLog("Clock,S|R,Typ,Reliable#,Frm #,PktID,BitLn,Time     ,Local IP:Port   ,RemoteIP:Port,SPID,SPIN,SPCO,OI,Suffix,Miscellaneous\n");

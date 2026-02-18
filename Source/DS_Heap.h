@@ -15,9 +15,7 @@
 
 
 
-#ifndef __RAKNET_HEAP_H
-#define __RAKNET_HEAP_H
-
+#pragma once
 #include "RakMemoryOverride.h"
 #include "DS_List.h"
 #include "Export.h"
@@ -47,7 +45,7 @@ namespace DataStructures
 		~Heap();
 		void Push(const weight_type &weight, const data_type &data, const char *file, unsigned int line);
 		/// Call before calling PushSeries, for a new series of items
-		void StartSeries(void) {optimizeNextSeriesPush=false;}
+		void StartSeries() {optimizeNextSeriesPush=false;}
 		/// If you are going to push a list of items, where the weights of the items on the list are in order and follow the heap order, PushSeries is faster than Push()
 		void PushSeries(const weight_type &weight, const data_type &data, const char *file, unsigned int line);
 		data_type Pop(const unsigned startingIndex);
@@ -300,6 +298,4 @@ namespace DataStructures
 
 #ifdef _MSC_VER
 #pragma warning( pop )
-#endif
-
 #endif

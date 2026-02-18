@@ -96,7 +96,7 @@ void StatisticsHistory::RemoveObjectAtIndex(unsigned int index)
 	objects.RemoveAtIndex(index);
 	RakNet::OP_DELETE(to, _FILE_AND_LINE_);
 }
-void StatisticsHistory::Clear(void)
+void StatisticsHistory::Clear()
 {
 	for (unsigned int idx=0; idx < objects.Size(); idx++)
 	{
@@ -668,7 +668,7 @@ SHValueType StatisticsHistory::TimeAndValueQueue::Interpolate(StatisticsHistory:
 // 		return t2.val + slope * (SHValueType) (time - t2.time);
 // 	}
 }
-void StatisticsHistory::TimeAndValueQueue::Clear(void)
+void StatisticsHistory::TimeAndValueQueue::Clear()
 {
 	recentSum = 0;
 	recentSumOfSquares = 0;
@@ -722,7 +722,7 @@ void StatisticsHistoryPlugin::SetTrackConnections(bool _addNewConnections, int _
 	removeLostConnections = _removeLostConnections;
 	newConnectionsObjectType = _newConnectionsObjectType;
 }
-void StatisticsHistoryPlugin::Update(void)
+void StatisticsHistoryPlugin::Update()
 {
 	DataStructures::List<SystemAddress> addresses;
 	DataStructures::List<RakNetGUID> guids;

@@ -117,7 +117,7 @@ void NatTypeDetectionServer::Shutdown()
 		RakNet::OP_DELETE(bufferedPackets.Pop(), _FILE_AND_LINE_);
 	bufferedPacketsMutex.Unlock();
 }
-void NatTypeDetectionServer::Update(void)
+void NatTypeDetectionServer::Update()
 {
 	int i=0;
 	RakNet::TimeMS time = RakNet::GetTimeMS();

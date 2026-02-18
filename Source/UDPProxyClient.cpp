@@ -19,7 +19,7 @@
 #include "GetTime.h"
 
 using namespace RakNet;
-static const int DEFAULT_UNRESPONSIVE_PING_TIME_COORDINATOR=1000;
+static constexpr int DEFAULT_UNRESPONSIVE_PING_TIME_COORDINATOR=1000;
 
 // bool operator<( const DataStructures::MLKeyRef<UDPProxyClient::ServerWithPing> &inputKey, const UDPProxyClient::ServerWithPing &cls ) {return inputKey.Get().serverAddress < cls.serverAddress;}
 // bool operator>( const DataStructures::MLKeyRef<UDPProxyClient::ServerWithPing> &inputKey, const UDPProxyClient::ServerWithPing &cls ) {return inputKey.Get().serverAddress > cls.serverAddress;}
@@ -103,7 +103,7 @@ bool UDPProxyClient::RequestForwarding(SystemAddress proxyCoordinator, SystemAdd
 
 	return true;
 }
-void UDPProxyClient::Update(void)
+void UDPProxyClient::Update()
 {
 	unsigned int idx1=0;
 	while (idx1 < pingServerGroups.Size())
@@ -241,7 +241,7 @@ PluginReceiveResult UDPProxyClient::OnReceive(Packet *packet)
 	}
 	return RR_CONTINUE_PROCESSING;
 }
-void UDPProxyClient::OnRakPeerShutdown(void)
+void UDPProxyClient::OnRakPeerShutdown()
 {
 	Clear();
 }
@@ -301,7 +301,7 @@ void UDPProxyClient::PingServerGroup::SendPingedServersToCoordinator(RakPeerInte
 	}
 	rakPeerInterface->Send(&outgoingBs, MEDIUM_PRIORITY, RELIABLE_ORDERED, 0, coordinatorAddressForPings, false);
 }
-void UDPProxyClient::Clear(void)
+void UDPProxyClient::Clear()
 {
 	for (unsigned int i=0; i < pingServerGroups.Size(); i++)
 		RakNet::OP_DELETE(pingServerGroups[i],_FILE_AND_LINE_);

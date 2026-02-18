@@ -9,9 +9,7 @@
  */
 
 /*
-#ifndef __RAKNET_SOCKET_H
-#define __RAKNET_SOCKET_H
-
+#pragma once
 #include "RakNetTypes.h"
 #include "RakNetDefines.h"
 #include "Export.h"
@@ -142,7 +140,7 @@ public:
 
 	inline SystemAddress GetBoundAddress(void) const {return boundAddress;}
 	inline unsigned short GetRemotePortRakNetWasStartedOn(void) const {return remotePortRakNetWasStartedOn_PS3_PSP2;}
-	inline bool GetBlockingSocket(void) {return blockingSocket;}
+	inline bool GetBlockingSocket() {return blockingSocket;}
 	inline unsigned int GetExtraSocketOptions(void) const {return extraSocketOptions;}
 	inline unsigned short GetSocketFamily(void) const {return socketFamily;}
 	inline _PP_Instance_ GetChromeInstance(void) const {return chromeInstance;}
@@ -189,6 +187,3 @@ protected:
 };
 
 } // namespace RakNet
-
-#endif
-*/

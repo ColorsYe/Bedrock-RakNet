@@ -8,9 +8,7 @@
  *
  */
 
-#ifndef __LOCKLESS_TYPES_H
-#define __LOCKLESS_TYPES_H
-
+#pragma once
 #include "Export.h"
 #include "NativeTypes.h"
 #include "WindowsIncludes.h"
@@ -28,9 +26,9 @@ public:
 	LocklessUint32_t();
 	explicit LocklessUint32_t(uint32_t initial);
 	// Returns variable value after changing it
-	uint32_t Increment(void);
+	uint32_t Increment();
 	// Returns variable value after changing it
-	uint32_t Decrement(void);
+	uint32_t Decrement();
 	uint32_t GetValue(void) const {return value;}
 
 protected:
@@ -46,5 +44,3 @@ protected:
 };
 
 }
-
-#endif

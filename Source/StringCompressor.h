@@ -14,9 +14,7 @@
 
 
 
-#ifndef __STRING_COMPRESSOR_H
-#define __STRING_COMPRESSOR_H
-
+#pragma once
 #include "Export.h"
 #include "DS_Map.h"
 #include "RakMemoryOverride.h"
@@ -53,7 +51,7 @@ public:
 	/// static function because only static functions can access static members
 	/// The RakPeer constructor adds a reference to this class, so don't call this until an instance of RakPeer exists, or unless you call AddReference yourself.
 	/// \return the unique instance of the StringCompressor 
-	static StringCompressor* Instance(void);
+	static StringCompressor* Instance();
 
 	/// Given an array of strings, such as a chat log, generate the optimal encoding tree for it.
 	/// This function is optional and if it is not called a default tree will be used instead.
@@ -71,7 +69,7 @@ public:
 	
 	/// Writes input to output, uncompressed.  Takes care of the null terminator for you.
 	/// \param[out] output A block of bytes to receive the output
-	/// \param[in] maxCharsToWrite Size, in bytes, of \a output .  A NULL terminator will always be appended to the output string.  If the maxCharsToWrite is not large enough, the string will be truncated.
+	/// \param[in] maxCharsToWrite Size, in bytes, of \a output .  A nullptr terminator will always be appended to the output string.  If the maxCharsToWrite is not large enough, the string will be truncated.
 	/// \param[in] input The bitstream containing the compressed string
 	/// \param[in] languageID Which language to use
 	bool DecodeString( char *output, int maxCharsToWrite, RakNet::BitStream *input, uint8_t languageId=0 );
@@ -90,10 +88,10 @@ public:
 	bool DecodeString( RakNet::RakString *output, int maxCharsToWrite, RakNet::BitStream *input, uint8_t languageId=0 );
 
 	/// Used so I can allocate and deallocate this singleton at runtime
-	static void AddReference(void);
+	static void AddReference();
 	
 	/// Used so I can allocate and deallocate this singleton at runtime
-	static void RemoveReference(void);
+	static void RemoveReference();
 
 	StringCompressor();
 
@@ -109,5 +107,3 @@ private:
 };
 
 } // namespace RakNet
-
-#endif

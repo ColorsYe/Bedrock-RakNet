@@ -13,9 +13,7 @@
 /// \brief ADT that can represent an unordered list, ordered list, stack, or queue with a common interface
 ///
 
-#ifndef __MULTILIST_H
-#define __MULTILIST_H 
-
+#pragma once
 #include "RakAssert.h"
 #include <string.h> // memmove
 #include "Export.h"
@@ -86,7 +84,7 @@ namespace DataStructures
 	bool operator>( const DataStructures::MLKeyRef<_KEY_TYPE_> &inputKey, const _CLASS_NAME_ *cls ) {return inputKey.Get() > cls->_MEMBER_VARIABLE_NAME_;} \
 	bool operator==( const DataStructures::MLKeyRef<_KEY_TYPE_> &inputKey, const _CLASS_NAME_ *cls ) {return inputKey.Get() == cls->_MEMBER_VARIABLE_NAME_;}
 
-	typedef uint32_t DefaultIndexType;
+	using DefaultIndexType = uint32_t;
 
 	/// \brief The multilist, representing an abstract data type that generally holds lists.
 	/// \param[in] _MultilistType What type of list this is, \sa MultilistType
@@ -168,7 +166,7 @@ namespace DataStructures
 
 		/// \brief Reverses the elements in the list, and flips the sort order 
 		/// returned by GetSortOrder() if IsSorted() returns true at the time the function is called
-		void ReverseList(void);
+		void ReverseList();
 
 		/// \brief Reallocates the list to a larger size.
 		/// If \a size is smaller than the value returned by GetSize(), the call does nothing.
@@ -181,7 +179,7 @@ namespace DataStructures
 
 		/// \brief Sets the list to be remembered as sorted.
 		/// \details Optimization if the source is sorted already
-		void TagSorted(void);
+		void TagSorted();
 
 		/// \brief Defaults to ascending.
 		/// \details Used by Sort(), and by ML_ORDERED_LIST
@@ -216,7 +214,7 @@ namespace DataStructures
 		void ReallocateIfNeeded(const char *file, unsigned int line);
 		void DeallocateIfNeeded(const char *file, unsigned int line);
 		void ReallocToSize(_IndexType newAllocationSize, const char *file, unsigned int line);
-		void ReverseListInternal(void);
+		void ReverseListInternal();
 		void InsertInOrderedList(const _DataType &d, const _KeyType &key);
 		_IndexType GetIndexFromKeyInSortedList(const _KeyType &key, bool *objectExists) const;
 		void InsertShiftArrayRight(const _DataType &d, _IndexType index);
@@ -819,7 +817,7 @@ namespace DataStructures
 	}
 
 	template <const MultilistType _MultilistType, class _DataType, class _KeyType, class _IndexType>
-	void Multilist<_MultilistType, _DataType, _KeyType, _IndexType>::ReverseList(void)
+	void Multilist<_MultilistType, _DataType, _KeyType, _IndexType>::ReverseList()
 	{
 		if (IsSorted())
 			ascendingSort=!ascendingSort;
@@ -857,7 +855,7 @@ namespace DataStructures
 	}
 
 	template <const MultilistType _MultilistType, class _DataType, class _KeyType, class _IndexType>
-	void Multilist<_MultilistType, _DataType, _KeyType, _IndexType>::TagSorted(void)
+	void Multilist<_MultilistType, _DataType, _KeyType, _IndexType>::TagSorted()
 	{
 		if (ascendingSort)
 			sortState=ML_SORTED_ASCENDING;
@@ -1196,7 +1194,7 @@ namespace DataStructures
 	}
 
 	template <const MultilistType _MultilistType, class _DataType, class _KeyType, class _IndexType>
-	void Multilist<_MultilistType, _DataType, _KeyType, _IndexType>::ReverseListInternal(void)
+	void Multilist<_MultilistType, _DataType, _KeyType, _IndexType>::ReverseListInternal()
 	{
 		_DataType temp;
 		_IndexType i;
@@ -1326,7 +1324,7 @@ struct KeyAndValue
 
 DEFINE_MULTILIST_PTR_TO_MEMBER_COMPARISONS(KeyAndValue,int,key)
 
-void MultilistUnitTest(void)
+void MultilistUnitTest()
 {
 	DataStructures::DefaultIndexType oldSize;
 	DataStructures::Multilist<ML_UNORDERED_LIST, int> ml1;
@@ -1646,5 +1644,3 @@ void MultilistUnitTest(void)
 #pragma warning( pop )
 #endif
 */
-
-#endif

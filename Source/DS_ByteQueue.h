@@ -14,9 +14,7 @@
 ///
 
 
-#ifndef __BYTE_QUEUE_H
-#define __BYTE_QUEUE_H
-
+#pragma once
 #include "RakMemoryOverride.h"
 #include "Export.h"
 
@@ -36,12 +34,10 @@ namespace DataStructures
 		void IncrementReadOffset(unsigned length);
 		void DecrementReadOffset(unsigned length);
 		void Clear(const char *file, unsigned int line);
-		void Print(void);
+		void Print();
 
 	protected:
 		char *data;
 		unsigned readOffset, writeOffset, lengthAllocated;
 	};
 }
-
-#endif

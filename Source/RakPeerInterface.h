@@ -14,9 +14,7 @@
 
 
 
-#ifndef __RAK_PEER_INTERFACE_H
-#define __RAK_PEER_INTERFACE_H
-
+#pragma once
 #include "PacketPriority.h"
 #include "RakNetTypes.h"
 #include "RakMemoryOverride.h"
@@ -176,12 +174,12 @@ public:
 	/// Returns the next uint32_t that Send() will return
 	/// \note If using RakPeer from multiple threads, this may not be accurate for your thread. Use IncrementNextSendReceipt() in that case.
 	/// \return The next uint32_t that Send() or SendList will return
-	virtual uint32_t GetNextSendReceipt(void)=0;
+	virtual uint32_t GetNextSendReceipt()=0;
 
 	/// Returns the next uint32_t that Send() will return, and increments the value by one
 	/// \note If using RakPeer from multiple threads, pass this to forceReceipt in the send function
 	/// \return The next uint32_t that Send() or SendList will return
-	virtual uint32_t IncrementNextSendReceipt(void)=0;
+	virtual uint32_t IncrementNextSendReceipt()=0;
 
 	/// Sends a block of data to the specified system that you are connected to.
 	/// This function only works while connected
@@ -397,7 +395,7 @@ public:
 	virtual SystemAddress GetMyBoundAddress(const int socketIndex=0)=0;
 
 	/// Get a random number (to generate a GUID)
-	static uint64_t Get64BitUniqueRandomNumber(void);
+	static uint64_t Get64BitUniqueRandomNumber();
 
 	/// Given a connected system, give us the unique GUID representing that instance of RakPeer.
 	/// This will be the same on all systems connected to that instance of RakPeer, even if the external system addresses are different
@@ -588,7 +586,7 @@ public:
 	virtual void GetStatisticsList(DataStructures::List<SystemAddress> &addresses, DataStructures::List<RakNetGUID> &guids, DataStructures::List<RakNetStatistics> &statistics)=0;
 
 	/// \Returns how many messages are waiting when you call Receive()
-	virtual unsigned int GetReceiveBufferSize(void)=0;
+	virtual unsigned int GetReceiveBufferSize()=0;
 
 	// --------------------------------------------------------------------------------------------EVERYTHING AFTER THIS COMMENT IS FOR INTERNAL USE ONLY--------------------------------------------------------------------------------------------
 	
@@ -612,5 +610,3 @@ public:
 ;
 
 } // namespace RakNet
-
-#endif

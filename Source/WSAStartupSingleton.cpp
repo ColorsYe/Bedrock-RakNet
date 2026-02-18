@@ -30,7 +30,7 @@ int WSAStartupSingleton::refCount=0;
 
 WSAStartupSingleton::WSAStartupSingleton() {}
 WSAStartupSingleton::~WSAStartupSingleton() {}
-void WSAStartupSingleton::AddRef(void)
+void WSAStartupSingleton::AddRef()
 {
 #if defined(_WIN32) && !defined(WINDOWS_STORE_RT)
 
@@ -50,8 +50,8 @@ void WSAStartupSingleton::AddRef(void)
 		DWORD dwIOError = GetLastError();
 		LPVOID messageBuffer;
 		FormatMessage( FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-			NULL, dwIOError, MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ),  // Default language
-			( LPTSTR ) & messageBuffer, 0, NULL );
+			nullptr, dwIOError, MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ),  // Default language
+			( LPTSTR ) & messageBuffer, 0, nullptr );
 		// something has gone wrong here...
 		RAKNET_DEBUG_PRINTF( "WSAStartup failed:Error code - %d\n%s", dwIOError, messageBuffer );
 		//Free the buffer.
@@ -61,7 +61,7 @@ void WSAStartupSingleton::AddRef(void)
 
 #endif
 }
-void WSAStartupSingleton::Deref(void)
+void WSAStartupSingleton::Deref()
 {
 #if defined(_WIN32) && !defined(WINDOWS_STORE_RT)
 	if (refCount==0)

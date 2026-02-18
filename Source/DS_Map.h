@@ -14,9 +14,7 @@
 ///
 
 
-#ifndef __RAKNET_MAP_H
-#define __RAKNET_MAP_H
-
+#pragma once
 #include "DS_OrderedList.h"
 #include "Export.h"
 #include "RakMemoryOverride.h"
@@ -42,7 +40,7 @@ namespace DataStructures
 	class RAK_DLL_EXPORT Map
 	{
 	public:
-		static void IMPLEMENT_DEFAULT_COMPARISON(void) {DataStructures::defaultMapKeyComparison<key_type>(key_type(),key_type());}
+		static void IMPLEMENT_DEFAULT_COMPARISON() {DataStructures::defaultMapKeyComparison<key_type>(key_type(),key_type());}
 
 		struct MapNode
 		{
@@ -82,7 +80,7 @@ namespace DataStructures
 		key_type GetKeyAtIndex( const unsigned int position ) const;
 		unsigned GetIndexAtKey( const key_type &key );
 		void RemoveAtIndex(const unsigned index);
-		void Clear(void);
+		void Clear();
 		unsigned Size(void) const;
 
 	protected:
@@ -277,7 +275,7 @@ namespace DataStructures
 	}
 
 	template <class key_type, class data_type, int (*key_comparison_func)(const key_type&,const key_type&)>
-	void Map<key_type, data_type, key_comparison_func>::Clear(void)
+	void Map<key_type, data_type, key_comparison_func>::Clear()
 	{
 		lastSearchIndexValid=false;
 		mapNodeList.Clear(false, _FILE_AND_LINE_);
@@ -324,5 +322,3 @@ namespace DataStructures
 		// return lastSearchIndexValid && key_comparison_func(key,lastSearchKey)==0;
 	}
 }
-
-#endif

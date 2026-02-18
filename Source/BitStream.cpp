@@ -992,7 +992,7 @@ void BitStream::AssertCopyData( void )
 			data = 0;
 	}
 }
-bool BitStream::IsNetworkOrderInternal(void)
+bool BitStream::IsNetworkOrderInternal()
 {
 
 

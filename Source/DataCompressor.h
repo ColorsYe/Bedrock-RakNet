@@ -14,9 +14,7 @@
 ///
 
 
-#ifndef __DATA_COMPRESSOR_H
-#define __DATA_COMPRESSOR_H
-
+#pragma once
 #include "RakMemoryOverride.h"
 #include "DS_HuffmanEncodingTree.h"
 #include "Export.h"
@@ -36,5 +34,3 @@ public:
 };
 
 } // namespace RakNet
-
-#endif

@@ -15,9 +15,7 @@
 #include "NativeFeatureIncludes.h"
 #if _RAKNET_SUPPORT_FileOperations==1
 
-#ifndef __FILE_OPERATIONS_H
-#define __FILE_OPERATIONS_H
-
+#pragma once
 #include "Export.h"
 
 bool RAK_DLL_EXPORT WriteFileWithDirectories( const char *path, char *data, unsigned dataLength );
@@ -28,5 +26,3 @@ bool RAK_DLL_EXPORT DirectoryExists(const char *directory);
 unsigned int RAK_DLL_EXPORT GetFileLength(const char *path);
 
 #endif
-
-#endif // _RAKNET_SUPPORT_FileOperations

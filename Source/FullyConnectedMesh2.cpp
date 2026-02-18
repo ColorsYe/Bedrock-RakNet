@@ -109,7 +109,7 @@ void FullyConnectedMesh2::SetAutoparticipateConnections(bool b)
 {
 	autoParticipateConnections=b;
 }
-void FullyConnectedMesh2::ResetHostCalculation(void)
+void FullyConnectedMesh2::ResetHostCalculation()
 {
 	hostRakNetGuid=UNASSIGNED_RAKNET_GUID;
 	startupTime=RakNet::GetTimeUS();
@@ -294,19 +294,19 @@ PluginReceiveResult FullyConnectedMesh2::OnReceive(Packet *packet)
 
 	return RR_CONTINUE_PROCESSING;
 }
-void FullyConnectedMesh2::OnRakPeerStartup(void)
+void FullyConnectedMesh2::OnRakPeerStartup()
 {
 	Clear();
 	startupTime=RakNet::GetTimeUS();
 }
-void FullyConnectedMesh2::OnAttach(void)
+void FullyConnectedMesh2::OnAttach()
 {
 	Clear();
 	// In case Startup() was called first
 	if (rakPeerInterface->IsActive())
 		startupTime=RakNet::GetTimeUS();
 }
-void FullyConnectedMesh2::OnRakPeerShutdown(void)
+void FullyConnectedMesh2::OnRakPeerShutdown()
 {
 	Clear();
 	startupTime=0;
@@ -378,7 +378,7 @@ void FullyConnectedMesh2::OnClosedConnection(const SystemAddress &systemAddress,
 	}
 
 }
-RakNet::TimeUS FullyConnectedMesh2::GetElapsedRuntime(void)
+RakNet::TimeUS FullyConnectedMesh2::GetElapsedRuntime()
 {
 	RakNet::TimeUS curTime=RakNet::GetTimeUS();
 	if (curTime>startupTime)
@@ -408,7 +408,7 @@ void FullyConnectedMesh2::OnFailedConnectionAttempt(Packet *packet, PI2_FailedCo
 		UpdateVerifiedJoinInProgressMember(packet->systemAddress, UNASSIGNED_RAKNET_GUID, JIPS_FAILED);
 	}
 }
-void FullyConnectedMesh2::Clear(void)
+void FullyConnectedMesh2::Clear()
 {
 	for (unsigned int i=0; i < fcm2ParticipantList.Size(); i++)
 	{
@@ -491,7 +491,7 @@ void FullyConnectedMesh2::SendConnectionCountResponse(SystemAddress addr, unsign
 	//myContext.ResetReadPointer();
 	rakPeerInterface->Send(&bsOut,HIGH_PRIORITY,RELIABLE_ORDERED,0,addr,false);
 }
-void FullyConnectedMesh2::AssignOurFCMGuid(void)
+void FullyConnectedMesh2::AssignOurFCMGuid()
 {
 	// Only assigned once ever
 	RakAssert(ourFCMGuid==0);
@@ -716,7 +716,7 @@ unsigned int FullyConnectedMesh2::GetParticipantCount(void) const
 {
 	return fcm2ParticipantList.Size();
 }
-void FullyConnectedMesh2::CalculateAndPushHost(void)
+void FullyConnectedMesh2::CalculateAndPushHost()
 {
 	RakNetGUID newHostGuid;
 	FCM2Guid newFcmGuid;
@@ -731,7 +731,7 @@ void FullyConnectedMesh2::CalculateAndPushHost(void)
 		}
 	}
 }
-bool FullyConnectedMesh2::ParticipantListComplete(void)
+bool FullyConnectedMesh2::ParticipantListComplete()
 {
 	for (unsigned int i=0; i < fcm2ParticipantList.Size(); i++)
 	{

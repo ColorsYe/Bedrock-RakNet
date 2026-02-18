@@ -67,7 +67,7 @@ bool RakNetSocket2::IsBerkleySocket(void) const {
 }
 SystemAddress RakNetSocket2::GetBoundAddress(void) const {return boundAddress;}
 
-RakNetSocket2* RakNetSocket2Allocator::AllocRNS2(void)
+RakNetSocket2* RakNetSocket2Allocator::AllocRNS2()
 {
 	RakNetSocket2* s2;
 #if defined(WINDOWS_STORE_RT)
@@ -177,7 +177,7 @@ void RNS2_NativeClient::onSocketBound(void* pData, int32_t dataSize)
 	csc->ProcessBufferedSend();
 	csc->IssueReceiveCall();
 }
-void RNS2_NativeClient::ProcessBufferedSend(void)
+void RNS2_NativeClient::ProcessBufferedSend()
 {
 	// Don't send until bound
 	if (bindState!=BS_BOUND)
@@ -266,7 +266,7 @@ void RNS2_NativeClient::BufferSend( RNS2_SendParameters *sendParameters, const c
 }
 void RNS2_NativeClient::GetMyIP( SystemAddress addresses[MAXIMUM_NUMBER_OF_INTERNAL_IDS] ) {addresses[0]=UNASSIGNED_SYSTEM_ADDRESS; RakAssert("GetMyIP Unsupported?" && 0);}
 const NativeClientBindParameters *RNS2_NativeClient::GetBindings(void) const {return &binding;}
-void RNS2_NativeClient::Update(void)
+void RNS2_NativeClient::Update()
 {
 	// Don't send until bound
 	if (bindState==BS_BOUND)
@@ -325,8 +325,8 @@ RNS2BindResult RNS2_Berkley::BindShared( RNS2_BerkleyBindParameters *bindParamet
 
 	/*
 #if defined(__APPLE__)
-	const CFSocketContext   context = { 0, this, NULL, NULL, NULL };
-	_cfSocket = CFSocketCreateWithNative(NULL, rns2Socket, kCFSocketReadCallBack, SocketReadCallback, &context);
+	const CFSocketContext   context = { 0, this, nullptr, nullptr, nullptr };
+	_cfSocket = CFSocketCreateWithNative(nullptr, rns2Socket, kCFSocketReadCallBack, SocketReadCallback, &context);
 #endif
 	*/
 
@@ -343,7 +343,7 @@ RAK_THREAD_DECLARATION(RNS2_Berkley::RecvFromLoop)
 	b->RecvFromLoopInt();
 	return 0;
 }
-unsigned RNS2_Berkley::RecvFromLoopInt(void)
+unsigned RNS2_Berkley::RecvFromLoopInt()
 {
 	isRecvFromLoopThreadActive.Increment();
 	
@@ -351,7 +351,7 @@ unsigned RNS2_Berkley::RecvFromLoopInt(void)
 	{
 		RNS2RecvStruct *recvFromStruct;
 		recvFromStruct=binding.eventHandler->AllocRNS2RecvStruct(_FILE_AND_LINE_);
-		if (recvFromStruct != NULL)
+		if (recvFromStruct != nullptr)
 		{
 			recvFromStruct->socket=this;
 			RecvFromBlocking(recvFromStruct);
@@ -407,11 +407,11 @@ int RNS2_Berkley::CreateRecvPollingThread(int threadPriority)
 
 	return errorCode;
 }
-void RNS2_Berkley::SignalStopRecvPollingThread(void)
+void RNS2_Berkley::SignalStopRecvPollingThread()
 {
 	endThreads=true;
 }
-void RNS2_Berkley::BlockOnStopRecvPollingThread(void)
+void RNS2_Berkley::BlockOnStopRecvPollingThread()
 {
 	endThreads=true;
 
@@ -503,7 +503,7 @@ RNS2SendResult RNS2_Windows::Send( RNS2_SendParameters *sendParameters, const ch
 }
 void RNS2_Windows::GetMyIP( SystemAddress addresses[MAXIMUM_NUMBER_OF_INTERNAL_IDS] ) {return GetMyIP_Windows_Linux(addresses);}
 void RNS2_Windows::SetSocketLayerOverride(SocketLayerOverride *_slo) {slo = _slo;}
-SocketLayerOverride* RNS2_Windows::GetSocketLayerOverride(void) {return slo;}
+SocketLayerOverride* RNS2_Windows::GetSocketLayerOverride() {return slo;}
 #else
 RNS2BindResult RNS2_Linux::Bind( RNS2_BerkleyBindParameters *bindParameters, const char *file, unsigned int line ) {return BindShared(bindParameters, file, line);}
 RNS2SendResult RNS2_Linux::Send( RNS2_SendParameters *sendParameters, const char *file, unsigned int line ) {return Send_Windows_Linux_360NoVDP(rns2Socket,sendParameters, file, line);}

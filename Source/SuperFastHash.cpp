@@ -26,7 +26,7 @@
 	+(uint32_t)(((const uint8_t *)(d))[0]) )
 #endif
 
-static const int INCREMENTAL_READ_BLOCK=65536;
+static constexpr int INCREMENTAL_READ_BLOCK=65536;
 
 uint32_t SuperFastHash (const char * data, int length)
 {
@@ -54,7 +54,7 @@ uint32_t SuperFastHashIncremental (const char * data, int len, unsigned int last
 	uint32_t tmp;
 	int rem;
 
-	if (len <= 0 || data == NULL) return 0;
+	if (len <= 0 || data == nullptr) return 0;
 
 	rem = len & 3;
 	len >>= 2;

@@ -8,9 +8,7 @@
  *
  */
 
-#ifndef __RAK_THREAD_H
-#define __RAK_THREAD_H
-
+#pragma once
 #if defined(_WIN32_WCE)
 #include "WindowsIncludes.h"
 #endif
@@ -102,5 +100,3 @@ public:
 };
 
 }
-
-#endif

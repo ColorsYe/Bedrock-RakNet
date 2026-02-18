@@ -14,9 +14,7 @@
 ///
 
 
-#ifndef __RANGE_LIST_H
-#define __RANGE_LIST_H
-
+#pragma once
 #include "DS_OrderedList.h"
 #include "BitStream.h"
 #include "RakMemoryOverride.h"
@@ -52,7 +50,7 @@ namespace DataStructures
 		RangeList();
 		~RangeList();
 		void Insert(range_type index);
-		void Clear(void);
+		void Clear();
 		unsigned Size(void) const;
 		unsigned RangeSum(void) const;
 		RakNet::BitSize_t Serialize(RakNet::BitStream *in, RakNet::BitSize_t maxBits, bool clearSerialized);
@@ -218,7 +216,7 @@ namespace DataStructures
 	}
 
 	template <class range_type>
-	void RangeList<range_type>::Clear(void)
+	void RangeList<range_type>::Clear()
 	{
 		ranges.Clear(true, _FILE_AND_LINE_);
 	}
@@ -239,5 +237,3 @@ namespace DataStructures
 	}
 
 }
-
-#endif

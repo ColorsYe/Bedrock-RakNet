@@ -22,9 +22,7 @@
 #include "NativeFeatureIncludes.h"
 #if _RAKNET_SUPPORT_TeamManager==1
 
-#ifndef __TEAM_MANAGER_H
-#define __TEAM_MANAGER_H
-
+#pragma once
 #include "PluginInterface2.h"
 #include "RakMemoryOverride.h"
 #include "NativeTypes.h"
@@ -45,15 +43,15 @@ class RakPeerInterface;
 
 /// \ingroup TEAM_MANAGER_GROUP
 /// \brief A subcategory of not being on a team. For example, 0 may mean no team for a player, while 1 may mean no team for a spectator. Defined by the user.
-typedef unsigned char NoTeamId;
+using NoTeamId = unsigned char;
 
 /// \ingroup TEAM_MANAGER_GROUP
 /// Used for multiple worlds.
-typedef uint8_t WorldId;
+using WorldId = uint8_t;
 
 /// \ingroup TEAM_MANAGER_GROUP
 /// Maximum number of members on one team. Use 65535 for unlimited.
-typedef uint16_t TeamMemberLimit;
+using TeamMemberLimit = uint16_t;
 
 /// Allow members to join this team when they specify TeamSelection::JOIN_ANY_AVAILABLE_TEAM
 #define ALLOW_JOIN_ANY_AVAILABLE_TEAM (1<<0)
@@ -63,7 +61,7 @@ typedef uint16_t TeamMemberLimit;
 #define ALLOW_JOIN_REBALANCING (1<<2)
 
 // Bitwise combination of ALLOW_JOIN_ANY_AVAILABLE_TEAM, ALLOW_JOIN_SPECIFIC_TEAM, ALLOW_JOIN_REBALANCING
-typedef uint8_t JoinPermissions;
+using JoinPermissions = uint8_t;
 
 // Forward declarations
 class TM_Team;
@@ -111,7 +109,7 @@ struct TeamSelection
 	
 	/// \brief Join any team that has available slots and is tagged with ALLOW_JOIN_ANY_AVAILABLE_TEAM
 	/// \details ID_TEAM_BALANCER_TEAM_ASSIGNED, ID_TEAM_BALANCER_REQUESTED_TEAM_FULL, or ID_TEAM_BALANCER_REQUESTED_TEAM_LOCKED will be returned to all systems.
-	static TeamSelection AnyAvailable(void);
+	static TeamSelection AnyAvailable();
 	/// \brief Join a specific team if it has available slots, and is tagged with JOIN_SPECIFIC_TEAMS
 	/// \details ID_TEAM_BALANCER_TEAM_ASSIGNED, ID_TEAM_BALANCER_REQUESTED_TEAM_FULL, or ID_TEAM_BALANCER_REQUESTED_TEAM_LOCKED will be returned to all systems.
 	/// \param[in] specificTeamToJoin Which team to attempt to join.
@@ -287,15 +285,15 @@ protected:
 	bool JoinSpecificTeamCheck(TM_Team *specificTeamToJoin, bool ignoreRequested) const;
 	bool SwitchSpecificTeamCheck(TM_Team *teamToJoin, TM_Team *teamToLeave, bool ignoreRequested) const;
 	bool LeaveTeamCheck(TM_Team *team) const;
-	void UpdateTeamsRequestedToAny(void);
-	void UpdateTeamsRequestedToNone(void);
+	void UpdateTeamsRequestedToAny();
+	void UpdateTeamsRequestedToNone();
 	void AddToRequestedTeams(TM_Team *teamToJoin);
 	void AddToRequestedTeams(TM_Team *teamToJoin, TM_Team *teamToLeave);
 	bool RemoveFromRequestedTeams(TM_Team *team);
 	void AddToTeamList(TM_Team *team);
 	void RemoveFromSpecificTeamInternal(TM_Team *team);
-	void RemoveFromAllTeamsInternal(void);
-	void StoreLastTeams(void);
+	void RemoveFromAllTeamsInternal();
+	void StoreLastTeams();
 
 	friend class TM_World;
 	friend class TM_Team;
@@ -538,7 +536,7 @@ public:
 
 	/// \brief Clear all memory and reset everything.
 	/// \details It is up to the user to deallocate pointers passed to ReferenceTeamMember() or ReferenceTeam(), if so desired.
-	void Clear(void);
+	void Clear();
 
 	/// \internal
 	struct JoinRequestHelper
@@ -558,7 +556,7 @@ protected:
 	// Teams with too many members have those members go to other teams.
 	void EnforceTeamBalance(NoTeamId noTeamSubcategory);
 	void KickExcessMembers(NoTeamId noTeamSubcategory);
-	void FillRequestedSlots(void);
+	void FillRequestedSlots();
 	unsigned int GetAvailableTeamIndexWithFewestMembers(TeamMemberLimit secondaryLimit, JoinPermissions joinPermissions);
 
 	void GetSortedJoinRequests(DataStructures::OrderedList<JoinRequestHelper, JoinRequestHelper, JoinRequestHelperComp> &joinRequests);
@@ -677,7 +675,7 @@ public:
 
 	/// \brief Clear all memory and reset everything.
 	/// \details Deallocates TM_World instances. It is up to the user to deallocate pointers passed to ReferenceTeamMember() or ReferenceTeam(), if so desired.
-	void Clear(void);
+	void Clear();
 	
 	/// \brief Reads out the world and teamMember from ID_TEAM_BALANCER_TEAM_ASSIGNED
 	/// \note You can get the current and prior team list from the teamMember itself
@@ -696,7 +694,7 @@ public:
 
 protected:
 
-	virtual void Update(void);
+	virtual void Update();
 	virtual PluginReceiveResult OnReceive(Packet *packet);
 	virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
 	virtual void OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming);
@@ -752,6 +750,3 @@ protected:
 } // namespace RakNet
 
 #endif // __TEAM_MANAGER_H
-
-#endif // _RAKNET_SUPPORT_*
-

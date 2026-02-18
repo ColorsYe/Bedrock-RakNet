@@ -42,7 +42,7 @@ bool RakNetTransport2::Start(unsigned short port, bool serverMode)
 	(void) serverMode;
 	return true;
 }
-void RakNetTransport2::Stop(void)
+void RakNetTransport2::Stop()
 {
 	newConnections.Clear(_FILE_AND_LINE_);
 	lostConnections.Clear(_FILE_AND_LINE_);
@@ -80,13 +80,13 @@ Packet* RakNetTransport2::Receive( void )
 		return 0;
 	return packetQueue.Pop();
 }
-SystemAddress RakNetTransport2::HasNewIncomingConnection(void)
+SystemAddress RakNetTransport2::HasNewIncomingConnection()
 {
 	if (newConnections.Size())
 		return newConnections.Pop();
 	return UNASSIGNED_SYSTEM_ADDRESS;
 }
-SystemAddress RakNetTransport2::HasLostConnection(void)
+SystemAddress RakNetTransport2::HasLostConnection()
 {
 	if (lostConnections.Size())
 		return lostConnections.Pop();

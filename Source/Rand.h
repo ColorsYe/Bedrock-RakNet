@@ -14,9 +14,7 @@
 
 
 
-#ifndef __RAND_H
-#define __RAND_H 
-
+#pragma once
 #include "Export.h"
 
 /// Initialise seed for Random Generator
@@ -63,5 +61,3 @@ protected:
 };
 
 } // namespace RakNet
-
-#endif

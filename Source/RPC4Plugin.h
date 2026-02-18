@@ -16,9 +16,7 @@
 #include "NativeFeatureIncludes.h"
 #if _RAKNET_SUPPORT_RPC4Plugin==1
 
-#ifndef __RPC_4_PLUGIN_H
-#define __RPC_4_PLUGIN_H
-
+#pragma once
 #include "PluginInterface2.h"
 #include "PacketPriority.h"
 #include "RakNetTypes.h"
@@ -174,7 +172,7 @@ class NetworkIDManager;
 		void Signal(const char *sharedIdentifier, RakNet::BitStream * bitStream, PacketPriority priority, PacketReliability reliability, char orderingChannel, const AddressOrGUID systemIdentifier, bool broadcast, bool invokeLocal);
 
 		/// If called while processing a slot, no further slots for the currently executing signal will be executed
-		void InterruptSignal(void);
+		void InterruptSignal();
 
 		/// \internal
 		struct LocalCallback
@@ -213,7 +211,7 @@ class NetworkIDManager;
 		// --------------------------------------------------------------------------------------------
 		// Packet handling functions
 		// --------------------------------------------------------------------------------------------
-		virtual void OnAttach(void);
+		virtual void OnAttach();
 		virtual PluginReceiveResult OnReceive(Packet *packet);
 
 		DataStructures::Hash<RakNet::RakString, void ( * ) ( RakNet::BitStream *, Packet * ),64, RakNet::RakString::ToInteger> registeredNonblockingFunctions;
@@ -240,5 +238,3 @@ class NetworkIDManager;
 #ifdef _MSC_VER
 #pragma warning( pop )
 #endif
-
-#endif // _RAKNET_SUPPORT_*

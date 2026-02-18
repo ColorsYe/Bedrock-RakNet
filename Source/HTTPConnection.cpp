@@ -75,7 +75,7 @@ void HTTPConnection::CloseConnection()
 {
 	connectionState=CS_DISCONNECTING;
 }
-void HTTPConnection::Update(void)
+void HTTPConnection::Update()
 {
 	SystemAddress sa;
 	sa = tcp->HasCompletedConnectionAttempt();
@@ -196,7 +196,7 @@ bool HTTPConnection::HasRead(void) const
 {
 	return results.IsEmpty()==false;
 }
-RakString HTTPConnection::Read(void)
+RakString HTTPConnection::Read()
 {
 	if (results.IsEmpty())
 		return RakString();
@@ -300,7 +300,7 @@ int HTTPConnection::GetState(void) const
 }
 
 
-HTTPConnection::~HTTPConnection(void)
+HTTPConnection::~HTTPConnection()
 {
 	if (tcp)
 		tcp->CloseConnection(server);

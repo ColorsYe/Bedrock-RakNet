@@ -1,6 +1,4 @@
-#ifndef RAKNET_SOCKETINCLUDES_H
-#define RAKNET_SOCKETINCLUDES_H
-
+#pragma once
 // All this crap just to include type SOCKET
 
 #ifdef __native_client__
@@ -31,9 +29,9 @@
 #if   defined(WINDOWS_STORE_RT)
 	#include <windows.h>
 	#include "WinRTSockAddr.h"
-	typedef Windows::Networking::Sockets::DatagramSocket^ __UDPSOCKET__;
-	typedef Windows::Networking::Sockets::StreamSocket^ __TCPSOCKET__;
-	typedef unsigned int socklen_t;
+	using __UDPSOCKET__ = Windows::Networking::Sockets::DatagramSocket^;
+	using __TCPSOCKET__ = Windows::Networking::Sockets::StreamSocket^;
+	using socklen_t = unsigned int;
 	#define FORMAT_MESSAGE_ALLOCATE_BUFFER 0
 	#define FIONBIO 0
 	#define LocalFree(x)
@@ -46,9 +44,9 @@
 	// WinRT: http://msdn.microsoft.com/en-us/library/windows/apps/windows.networking.sockets
 	// Sample code: http://stackoverflow.com/questions/10290945/correct-use-of-udp-datagramsocket
 	#include <winsock2.h>
-	typedef SOCKET __UDPSOCKET__;
-	typedef SOCKET __TCPSOCKET__;
-	typedef int socklen_t;
+	using __UDPSOCKET__ = SOCKET;
+	using __TCPSOCKET__ = SOCKET;
+	using socklen_t = int;
 #else
 	#define closesocket close
 	#include <unistd.h>
@@ -84,15 +82,13 @@
 		//UDP specific - the 'private' folder was copied from the chromium src/ppapi/c headers folder
 		#include "ppapi/c/private/ppb_udp_socket_private.h"
 		#include "ppapi/cpp/private/net_address_private.h"
-		typedef PP_Resource __UDPSOCKET__;
-		typedef PP_Resource __TCPSOCKET__;
+		using __UDPSOCKET__ = PP_Resource;
+		using __TCPSOCKET__ = PP_Resource;
 	#else
 		//#include "RakMemoryOverride.h"
 		/// Unix/Linux uses ints for sockets
-		typedef int __UDPSOCKET__;
-		typedef int __TCPSOCKET__;
+		using __UDPSOCKET__ = int;
+		using __TCPSOCKET__ = int;
 #endif
 
 #endif
-
-#endif  // RAKNET_SOCKETINCLUDES_H

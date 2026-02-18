@@ -16,9 +16,7 @@
 #include "NativeFeatureIncludes.h"
 #if _RAKNET_SUPPORT_ConsoleServer==1
 
-#ifndef __CONSOLE_SERVER_H
-#define __CONSOLE_SERVER_H
-
+#pragma once
 #include "RakMemoryOverride.h"
 #include "DS_List.h"
 #include "RakNetTypes.h"
@@ -60,7 +58,7 @@ public:
 
 	/// \brief Call update to read packet sent from your TransportInterface.
 	/// You should do this fairly frequently.
-	void Update(void);
+	void Update();
 
 	/// \brief Sets a prompt to show when waiting for user input.
 	/// \details Pass an empty string to clear the prompt
@@ -80,5 +78,3 @@ protected:
 } // namespace RakNet
 
 #endif
-
-#endif // _RAKNET_SUPPORT_*

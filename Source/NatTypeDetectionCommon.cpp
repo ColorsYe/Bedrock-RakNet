@@ -190,7 +190,7 @@ int RakNet::NatTypeRecvFrom(char *data, RakNetSocket2* socket, SystemAddress &se
 	{
 		RNS2RecvStruct *recvFromStruct;
 		recvFromStruct=AllocRNS2RecvStruct(_FILE_AND_LINE_);
-		if (recvFromStruct != NULL)
+		if (recvFromStruct != nullptr)
 		{
 			recvFromStruct->socket=this;
 			socket->RecvFromBlocking(recvFromStruct);

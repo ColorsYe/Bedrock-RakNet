@@ -8,9 +8,7 @@
  *
  */
 
-#ifndef __VARIADIC_SQL_PARSER_H
-#define __VARIADIC_SQL_PARSER_H
-
+#pragma once
 #include "DS_List.h"
 
 #include <stdarg.h>
@@ -29,6 +27,3 @@ namespace VariadicSQLParser
 	void ExtractArguments( va_list argptr, const DataStructures::List<IndexAndType> &indices, char ***argumentBinary, int **argumentLengths );
 	void FreeArguments(const DataStructures::List<IndexAndType> &indices, char **argumentBinary, int *argumentLengths);
 }
-
-
-#endif

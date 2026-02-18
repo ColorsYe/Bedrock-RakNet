@@ -15,16 +15,14 @@
 ///
 
 
-#ifndef __LIST_H
-#define __LIST_H 
-
+#pragma once
 #include "RakAssert.h"
 #include <string.h> // memmove
 #include "Export.h"
 #include "RakMemoryOverride.h"
 
 /// Maximum unsigned long
-static const unsigned int MAX_UNSIGNED_LONG = 4294967295U;
+static constexpr unsigned int MAX_UNSIGNED_LONG = 4294967295U;
 
 /// The namespace DataStructures was only added to avoid compiler errors for commonly named data structures
 /// As these data structures are stand-alone, you can use them outside of RakNet for your own projects if you wish.
@@ -66,7 +64,7 @@ namespace DataStructures
 		/// \brief Pop an element from the end of the stack.
 		/// \pre Size()>0
 		/// \return The element at the end. 
-		list_type& Pop(void);
+		list_type& Pop();
 		
 		/// \brief Insert an element at position \a position in the list.
 		/// \param[in] input The new element. 
@@ -230,7 +228,7 @@ namespace DataStructures
 		}
 
 		template <class list_type>
-		inline list_type& List<list_type>::Pop(void)
+		inline list_type& List<list_type>::Pop()
 		{
 #ifdef _DEBUG
 			RakAssert(list_size>0);
@@ -521,5 +519,3 @@ namespace DataStructures
 	}
 	
 } // End namespace
-
-#endif

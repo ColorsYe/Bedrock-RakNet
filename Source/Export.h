@@ -16,8 +16,8 @@
 #define RAK_DLL_EXPORT  
 #endif
 
-#define STATIC_FACTORY_DECLARATIONS(x) static x* GetInstance(void); \
+#define STATIC_FACTORY_DECLARATIONS(x) static x* GetInstance(); \
 static void DestroyInstance( x *i);
 
-#define STATIC_FACTORY_DEFINITIONS(x,y) x* x::GetInstance(void) {return RakNet::OP_NEW<y>( _FILE_AND_LINE_ );} \
+#define STATIC_FACTORY_DEFINITIONS(x,y) x* x::GetInstance() {return RakNet::OP_NEW<y>( _FILE_AND_LINE_ );} \
 void x::DestroyInstance( x *i) {RakNet::OP_DELETE(( y* ) i, _FILE_AND_LINE_);}

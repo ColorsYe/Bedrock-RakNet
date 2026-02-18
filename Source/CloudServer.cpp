@@ -159,7 +159,7 @@ void CloudServer::SetMaxBytesPerDownload(uint64_t bytes)
 {
 	maxBytesPerDowload=bytes;
 }
-void CloudServer::Update(void)
+void CloudServer::Update()
 {
 	// Timeout getRequests
 	RakNet::Time time = RakNet::Time();
@@ -995,11 +995,11 @@ void CloudServer::OnClosedConnection(const SystemAddress &systemAddress, RakNetG
 		remoteSystems.RemoveAtIndex(remoteSystemIndex, _FILE_AND_LINE_);
 	}
 }
-void CloudServer::OnRakPeerShutdown(void)
+void CloudServer::OnRakPeerShutdown()
 {
 	Clear();
 }
-void CloudServer::Clear(void)
+void CloudServer::Clear()
 {
 	unsigned int i,j;
 	for (i=0; i < dataRepository.Size(); i++)
@@ -1677,7 +1677,7 @@ void CloudServer::RemoveQueryFilter(CloudServerQueryFilter* filter)
 	if (index != (unsigned int) -1)
 		queryFilters.RemoveAtIndex(index);
 }
-void CloudServer::RemoveAllQueryFilters(void)
+void CloudServer::RemoveAllQueryFilters()
 {
 	queryFilters.Clear(true, _FILE_AND_LINE_);
 }

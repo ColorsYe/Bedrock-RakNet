@@ -15,9 +15,7 @@
 #include "NativeFeatureIncludes.h"
 #if _RAKNET_SUPPORT_NatPunchthroughClient==1
 
-#ifndef __NAT_PUNCHTHROUGH_CLIENT_H
-#define __NAT_PUNCHTHROUGH_CLIENT_H
-
+#pragma once
 #include "RakNetTypes.h"
 #include "Export.h"
 #include "PluginInterface2.h"
@@ -169,7 +167,7 @@ public:
 
 	/// Modify the system configuration if desired
 	/// Don't modify the variables in the structure while punchthrough is in progress
-	PunchthroughConfiguration* GetPunchthroughConfiguration(void);
+	PunchthroughConfiguration* GetPunchthroughConfiguration();
 
 	/// Sets a callback to be called with debug messages
 	/// \param[in] i Pointer to an interface. The pointer is stored, so don't delete it while in progress. Pass 0 to clear.
@@ -179,7 +177,7 @@ public:
 	void GetUPNPPortMappings(char *externalPort, char *internalPort, const SystemAddress &natPunchthroughServerAddress);
 
 	/// \internal For plugin handling
-	virtual void Update(void);
+	virtual void Update();
 
 	/// \internal For plugin handling
 	virtual PluginReceiveResult OnReceive(Packet *packet);
@@ -190,10 +188,10 @@ public:
 	/// \internal For plugin handling
 	virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
 
-	virtual void OnAttach(void);
-	virtual void OnDetach(void);
-	virtual void OnRakPeerShutdown(void);
-	void Clear(void);
+	virtual void OnAttach();
+	virtual void OnDetach();
+	virtual void OnRakPeerShutdown();
+	void Clear();
 
 	struct SendPing
 	{
@@ -238,14 +236,14 @@ protected:
 	unsigned int GetPendingOpenNATIndex(RakNetGUID destination, const SystemAddress &facilitator);
 	void SendPunchthrough(RakNetGUID destination, const SystemAddress &facilitator);
 	void QueueOpenNAT(RakNetGUID destination, const SystemAddress &facilitator);
-	void SendQueuedOpenNAT(void);
+	void SendQueuedOpenNAT();
 	void SendTTL(const SystemAddress &sa);
 	void SendOutOfBand(SystemAddress sa, MessageID oobId);
-	void OnPunchthroughFailure(void);
-	void OnReadyForNextPunchthrough(void);
-	void PushFailure(void);
-	bool RemoveFromFailureQueue(void);
-	void PushSuccess(void);
+	void OnPunchthroughFailure();
+	void OnReadyForNextPunchthrough();
+	void PushFailure();
+	bool RemoveFromFailureQueue();
+	void PushSuccess();
 
 	PunchthroughConfiguration pc;
 	NatPunchthroughDebugInterface *natPunchthroughDebugInterface;
@@ -302,5 +300,3 @@ protected:
 } // namespace RakNet
 
 #endif
-
-#endif // _RAKNET_SUPPORT_*

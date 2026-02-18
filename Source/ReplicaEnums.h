@@ -14,9 +14,7 @@
 
 
 
-#ifndef __REPLICA_ENUMS_H
-#define __REPLICA_ENUMS_H
-
+#pragma once
 /// Replica interface flags, used to enable and disable function calls on the Replica object
 /// Passed to ReplicaManager::EnableReplicaInterfaces and ReplicaManager::DisableReplicaInterfaces
 enum
@@ -47,5 +45,3 @@ enum ReplicaReturnResult
 	/// Send a construction packet.  This way you will still send scope and serialize packets to that system
 	REPLICA_PROCESS_IMPLICIT
 };
-
-#endif

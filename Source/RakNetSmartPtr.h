@@ -8,9 +8,7 @@
  *
  */
 
-#ifndef __RAKNET_SMART_PTR_H
-#define __RAKNET_SMART_PTR_H
-
+#pragma once
 // From http://www.codeproject.com/KB/cpp/SmartPointers.aspx
 // with bugs fixed
 
@@ -80,7 +78,7 @@ public:
 		return ptr==0;
 	}
 
-	void SetNull(void)
+	void SetNull()
 	{
 		if(reference && reference->Release() == 0)
 		{
@@ -179,5 +177,3 @@ public:
 };
 
 } // namespace RakNet
-
-#endif

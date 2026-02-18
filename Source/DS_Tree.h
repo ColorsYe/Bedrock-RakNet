@@ -15,9 +15,7 @@
 
 
 
-#ifndef __DS_TREE_H
-#define __DS_TREE_H
-
+#pragma once
 #include "Export.h"
 #include "DS_List.h"
 #include "DS_Queue.h"
@@ -36,7 +34,7 @@ namespace DataStructures
 		~Tree();
 		void LevelOrderTraversal(DataStructures::List<Tree*> &output);
 		void AddChild(TreeType &newData);
-		void DeleteDecendants(void);
+		void DeleteDecendants();
 
 		TreeType data;
 		DataStructures::List<Tree *> children;
@@ -86,7 +84,7 @@ namespace DataStructures
 	}
 
 	template <class TreeType>
-	void Tree<TreeType>::DeleteDecendants(void)
+	void Tree<TreeType>::DeleteDecendants()
 	{
 		/*
         DataStructures::List<Tree*> output;
@@ -102,5 +100,3 @@ namespace DataStructures
 			RakNet::OP_DELETE(children[i], _FILE_AND_LINE_);
 	}
 }
-
-#endif

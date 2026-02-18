@@ -17,9 +17,7 @@
 #include "RakMemoryOverride.h"
 #include "Export.h"
 
-#ifndef __ORDERED_LIST_H
-#define __ORDERED_LIST_H
-
+#pragma once
 /// The namespace DataStructures was only added to avoid compiler errors for commonly named data structures
 /// As these data structures are stand-alone, you can use them outside of RakNet for your own projects if you wish.
 namespace DataStructures
@@ -35,7 +33,7 @@ namespace DataStructures
 	class RAK_DLL_EXPORT OrderedList
 	{
 	public:
-		static void IMPLEMENT_DEFAULT_COMPARISON(void) {DataStructures::defaultOrderedListComparison<key_type, data_type>(key_type(),data_type());}
+		static void IMPLEMENT_DEFAULT_COMPARISON() {DataStructures::defaultOrderedListComparison<key_type, data_type>(key_type(),data_type());}
 
 		OrderedList();
 		~OrderedList();
@@ -274,5 +272,3 @@ namespace DataStructures
 		return orderedList.Size();
 	}
 }
-
-#endif

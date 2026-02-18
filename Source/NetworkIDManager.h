@@ -12,9 +12,7 @@
 ///
 
 
-#ifndef __NETWORK_ID_MANAGER_H
-#define __NETWORK_ID_MANAGER_H
-
+#pragma once
 #include "RakNetTypes.h"
 #include "Export.h"
 #include "RakMemoryOverride.h"
@@ -39,7 +37,7 @@ public:
 	STATIC_FACTORY_DECLARATIONS(NetworkIDManager)
 
 	NetworkIDManager();
-	virtual ~NetworkIDManager(void);
+	virtual ~NetworkIDManager();
 
 	/// Returns the parent object, or this instance if you don't use a parent.
 	/// Supports NetworkIDObject anywhere in the inheritance hierarchy
@@ -55,7 +53,7 @@ public:
 	}
 
 	// Stop tracking all NetworkID objects
-	void Clear(void);
+	void Clear();
 
 	/// \internal
 	NetworkIDObject *GET_BASE_OBJECT_FROM_ID(NetworkID x);
@@ -71,10 +69,8 @@ protected:
 	unsigned int NetworkIDToHashIndex(NetworkID networkId);
 	uint64_t startingOffset;
 	/// \internal
-	NetworkID GetNewNetworkID(void);
+	NetworkID GetNewNetworkID();
 
 };
 
 } // namespace RakNet
-
-#endif

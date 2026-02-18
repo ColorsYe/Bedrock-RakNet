@@ -16,9 +16,7 @@
 #include "NativeFeatureIncludes.h"
 #if _RAKNET_SUPPORT_PacketLogger==1
 
-#ifndef __PACKET_OUTPUT_WINDOW_LOGGER_H_
-#define __PACKET_OUTPUT_WINDOW_LOGGER_H_
-
+#pragma once
 #include "PacketLogger.h"
 
 namespace RakNet
@@ -38,5 +36,3 @@ protected:
 } // namespace RakNet
 
 #endif
-
-#endif // _RAKNET_SUPPORT_*

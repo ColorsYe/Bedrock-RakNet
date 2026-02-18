@@ -13,9 +13,7 @@
 /// \brief [Internal] CheckSum implementation from http://www.flounder.com/checksum.htm
 ///
 
-#ifndef __CHECKSUM_H
-#define __CHECKSUM_H
-
+#pragma once
 #include "RakMemoryOverride.h"
 
 /// Generates and validates checksums
@@ -59,5 +57,3 @@ protected:
 	unsigned short c2;
 	unsigned int sum;
 };
-
-#endif

@@ -15,9 +15,7 @@
 #include "NativeFeatureIncludes.h"
 #if _RAKNET_SUPPORT_HTTPConnection2==1 && _RAKNET_SUPPORT_TCPInterface==1
 
-#ifndef __HTTP_CONNECTION_2
-#define __HTTP_CONNECTION_2
-
+#pragma once
 #include "Export.h"
 #include "RakString.h"
 #include "RakMemoryOverride.h"
@@ -106,7 +104,7 @@ protected:
 	bool IsConnected(SystemAddress sa);
 	void SendRequest(Request *request);
 	void RemovePendingRequest(SystemAddress sa);
-	void SendNextPendingRequest(void);
+	void SendNextPendingRequest();
 	void SendPendingRequestToConnectedSystem(SystemAddress sa);
 
 	DataStructures::Queue<Request*> pendingRequests;
@@ -120,5 +118,3 @@ protected:
 } // namespace RakNet
 
 #endif
-
-#endif // _RAKNET_SUPPORT_*

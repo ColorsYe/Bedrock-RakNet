@@ -15,9 +15,7 @@
 #include "NativeFeatureIncludes.h"
 #if _RAKNET_SUPPORT_EmailSender==1 && _RAKNET_SUPPORT_TCPInterface==1 && _RAKNET_SUPPORT_FileOperations==1
 
-#ifndef __EMAIL_SENDER_H
-#define __EMAIL_SENDER_H
-
+#pragma once
 #include "RakNetTypes.h"
 #include "RakMemoryOverride.h"
 #include "Export.h"
@@ -60,6 +58,3 @@ protected:
 } // namespace RakNet
 
 #endif
-
-
-#endif // _RAKNET_SUPPORT_*

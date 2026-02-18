@@ -25,7 +25,7 @@ namespace RakNet
 /// Forward declarations
 class NetworkIDManager;
 
-typedef uint32_t NetworkIDType;
+using NetworkIDType = uint32_t;
 
 /// \brief Unique shared ids for each object instance
 /// \details A class you can derive from to make it easier to represent every networked object with an integer.  This way you can refer to objects over the network.

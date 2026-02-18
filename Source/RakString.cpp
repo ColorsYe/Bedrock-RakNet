@@ -39,7 +39,7 @@ public:
 
 static RakStringCleanup cleanup;
 
-SimpleMutex& GetPoolMutex(void)
+SimpleMutex& GetPoolMutex()
 {
 	static SimpleMutex poolMutex;
 	return poolMutex;
@@ -351,7 +351,7 @@ const RakNet::RakString operator+(const RakNet::RakString &lhs, const RakNet::Ra
 
 	return RakString(sharedString);
 }
-const char * RakString::ToLower(void)
+const char * RakString::ToLower()
 {
 	Clone();
 
@@ -361,7 +361,7 @@ const char * RakString::ToLower(void)
 		sharedString->c_str[i]=ToLower(sharedString->c_str[i]);
 	return sharedString->c_str;
 }
-const char * RakString::ToUpper(void)
+const char * RakString::ToUpper()
 {
 	Clone();
 
@@ -450,12 +450,12 @@ void RakString::SetChar( unsigned index, RakNet::RakString s )
 }
 
 #ifdef _WIN32
-WCHAR * RakString::ToWideChar(void)
+WCHAR * RakString::ToWideChar()
 {
 	//
-	// Special case of NULL or empty input string
+	// Special case of nullptr or empty input string
 	//
-	if ( (sharedString->c_str == NULL) || (*sharedString->c_str == '\0') )
+	if ( (sharedString->c_str == nullptr) || (*sharedString->c_str == '\0') )
 	{
 		// Return empty string
 		return L"";
@@ -470,7 +470,7 @@ WCHAR * RakString::ToWideChar(void)
 		sharedString->c_str,            // source UTF-8 string
 		GetLength()+1,                 // total length of source UTF-8 string,
 		// in CHAR's (= bytes), including end-of-string \0
-		NULL,                   // unused - no conversion done in this step
+		nullptr,                   // unused - no conversion done in this step
 		0                       // request size of destination buffer, in WCHAR's
 		);
 
@@ -525,8 +525,8 @@ void RakString::FromWideChar(const wchar_t *source)
                           -1,                    // -1 means string is zero-terminated
                           sharedString->c_str,          // Destination char string
                           bufSize,  // Size of buffer
-                          NULL,                  // No default character
-                          NULL );                // Don't care about this flag
+                          nullptr,                  // No default character
+                          nullptr );                // Don't care about this flag
 
 
 }
@@ -741,7 +741,7 @@ int RakString::StrICmp(const RakString &rhs) const
 {
 	return _stricmp(sharedString->c_str, rhs.C_String());
 }
-void RakString::Printf(void)
+void RakString::Printf()
 {
 	RAKNET_DEBUG_PRINTF("%s", sharedString->c_str);
 }
@@ -851,7 +851,7 @@ bool RakString::IsEmailAddress(void) const
 	// There's more I could check, but this is good enough
 	return true;
 }
-RakNet::RakString& RakString::URLEncode(void)
+RakNet::RakString& RakString::URLEncode()
 {
 	RakString result;
 	size_t strLen = strlen(sharedString->c_str);
@@ -887,7 +887,7 @@ RakNet::RakString& RakString::URLEncode(void)
 	*this = result;
 	return *this;
 }
-RakNet::RakString& RakString::URLDecode(void)
+RakNet::RakString& RakString::URLDecode()
 {
 	RakString result;
 	size_t strLen = strlen(sharedString->c_str);
@@ -989,7 +989,7 @@ void RakString::SplitURI(RakNet::RakString &header, RakNet::RakString &domain, R
 	}
 	pathOutput[outputIndex]=0;
 }
-RakNet::RakString& RakString::SQLEscape(void)
+RakNet::RakString& RakString::SQLEscape()
 {
 	int strLen=(int)GetLength();
 	int escapedCharacterCount=0;
@@ -1162,7 +1162,7 @@ RakString RakString::FormatForDELETE(const char* uri, const char* extraHeaders)
 
 	return out;
 }
-RakNet::RakString& RakString::MakeFilePath(void)
+RakNet::RakString& RakString::MakeFilePath()
 {
 	if (IsEmpty())
 		return *this;
@@ -1196,13 +1196,13 @@ RakNet::RakString& RakString::MakeFilePath(void)
 		*this = fixedString;
 	return *this;
 }
-void RakString::FreeMemory(void)
+void RakString::FreeMemory()
 {
 	LockMutex();
 	FreeMemoryNoMutex();
 	UnlockMutex();
 }
-void RakString::FreeMemoryNoMutex(void)
+void RakString::FreeMemoryNoMutex()
 {
 	for (unsigned int i=0; i < freeList.Size(); i++)
 	{
@@ -1311,7 +1311,7 @@ const char *RakString::ToString(uint64_t i)
 		index=0;
 	return buff[lastIndex];
 }
-void RakString::Clear(void)
+void RakString::Clear()
 {
 	Free();
 }
@@ -1488,7 +1488,7 @@ void RakString::AppendBytes(const char *bytes, unsigned int count)
 
 	
 }
-void RakString::Clone(void)
+void RakString::Clone()
 {
 	RakAssert(sharedString!=&emptyString);
 	if (sharedString==&emptyString)
@@ -1508,7 +1508,7 @@ void RakString::Clone(void)
 	sharedString->refCountMutex->Unlock();
 	Assign(sharedString->c_str);
 }
-void RakString::Free(void)
+void RakString::Free()
 {
 	if (sharedString==&emptyString)
 		return;
@@ -1550,11 +1550,11 @@ unsigned char RakString::ToUpper(unsigned char c)
 		return c-'a'+'A';
 	return c;
 }
-void RakString::LockMutex(void)
+void RakString::LockMutex()
 {
 	GetPoolMutex().Lock();
 }
-void RakString::UnlockMutex(void)
+void RakString::UnlockMutex()
 {
 	GetPoolMutex().Unlock();
 }
@@ -1566,7 +1566,7 @@ void RakString::UnlockMutex(void)
 
 using namespace RakNet;
 
-int main(void)
+int main()
 {
 	RakString s3("Hello world");
 	RakString s5=s3;
@@ -1603,7 +1603,7 @@ int main(void)
 	s7.Printf();
 	RAKNET_DEBUG_PRINTF("\n");
 
-	static const int repeatCount=750;
+	static constexpr int repeatCount=750;
 	DataStructures::List<RakString> rakStringList;
 	DataStructures::List<std::string> stdStringList;
 	DataStructures::List<char*> referenceStringList;

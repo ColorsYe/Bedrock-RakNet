@@ -51,7 +51,7 @@ bool TelnetTransport::Start(unsigned short port, bool serverMode)
 	RakAssert(serverMode);
 	return tcpInterface->Start(port, 64);
 }
-void TelnetTransport::Stop(void)
+void TelnetTransport::Stop()
 {
 	if (tcpInterface==0) return;
 	tcpInterface->Stop();
@@ -225,7 +225,7 @@ void TelnetTransport::DeallocatePacket( Packet *packet )
 	rakFree_Ex(packet->data, _FILE_AND_LINE_ );
 	rakFree_Ex(packet, _FILE_AND_LINE_ );
 }
-SystemAddress TelnetTransport::HasNewIncomingConnection(void)
+SystemAddress TelnetTransport::HasNewIncomingConnection()
 {
 	unsigned i;
 	SystemAddress newConnection;
@@ -279,7 +279,7 @@ SystemAddress TelnetTransport::HasNewIncomingConnection(void)
 	}
 	return newConnection;
 }
-SystemAddress TelnetTransport::HasLostConnection(void)
+SystemAddress TelnetTransport::HasLostConnection()
 {
 	SystemAddress systemAddress;
 	unsigned i;
@@ -298,7 +298,7 @@ SystemAddress TelnetTransport::HasLostConnection(void)
 	}
 	return systemAddress;
 }
-CommandParserInterface* TelnetTransport::GetCommandParser(void)
+CommandParserInterface* TelnetTransport::GetCommandParser()
 {
 	return 0;
 }
@@ -328,7 +328,7 @@ void TelnetTransport::SetSendPrefix(const char *prefix)
 		strcpy(sendPrefix, prefix);
 	}
 }
-void TelnetTransport::AutoAllocate(void)
+void TelnetTransport::AutoAllocate()
 {
 	if (tcpInterface==0)
 		tcpInterface=new TCPInterface;

@@ -16,9 +16,7 @@
 #include "NativeFeatureIncludes.h"
 #if _RAKNET_SUPPORT_TelnetTransport==1
 
-#ifndef __RAKNET_TRANSPORT_2
-#define __RAKNET_TRANSPORT_2
-
+#pragma once
 #include "TransportInterface.h"
 #include "DS_Queue.h"
 #include "CommandParserInterface.h"
@@ -57,7 +55,7 @@ public:
 	bool Start(unsigned short port, bool serverMode);
 
 	/// Stop the transport provider.  You can clear memory and shutdown threads here.
-	void Stop(void);
+	void Stop();
 
 	/// Send a null-terminated string to \a systemAddress
 	/// If your transport method requires particular formatting of the outgoing data (e.g. you don't just send strings) you can do it here
@@ -84,13 +82,13 @@ public:
 
 	/// If a new system connects to you, you should queue that event and return the systemAddress/address of that player in this function.
 	/// \return The SystemAddress/address of the system
-	SystemAddress HasNewIncomingConnection(void);
+	SystemAddress HasNewIncomingConnection();
 
 	/// If a system loses the connection, you should queue that event and return the systemAddress/address of that player in this function.
 	/// \return The SystemAddress/address of the system
-	SystemAddress HasLostConnection(void);
+	SystemAddress HasLostConnection();
 
-	virtual CommandParserInterface* GetCommandParser(void) {return 0;}
+	virtual CommandParserInterface* GetCommandParser() {return 0;}
 
 	/// \internal
 	virtual PluginReceiveResult OnReceive(Packet *packet);
@@ -106,5 +104,3 @@ protected:
 } // namespace RakNet
 
 #endif
-
-#endif // _RAKNET_SUPPORT_*

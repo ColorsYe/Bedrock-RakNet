@@ -18,9 +18,7 @@
 #include "NativeFeatureIncludes.h"
 #if _RAKNET_SUPPORT_TeamBalancer==1
 
-#ifndef __TEAM_BALANCER_H
-#define __TEAM_BALANCER_H
-
+#pragma once
 #include "PluginInterface2.h"
 #include "RakMemoryOverride.h"
 #include "NativeTypes.h"
@@ -41,7 +39,7 @@ class RakPeerInterface;
 /// 0...254 for your team number identifiers. 255 is reserved as undefined.
 /// \deprecated Use TeamManager intead
 /// \ingroup TEAM_BALANCER_GROUP
-typedef unsigned char TeamId;
+using TeamId = unsigned char;
 
 #define UNASSIGNED_TEAM_ID 255
 
@@ -153,7 +151,7 @@ protected:
 	/// \internal
 	virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
 	/// \internal
-	void OnAttach(void);
+	void OnAttach();
 
 	void OnStatusUpdateToNewHost(Packet *packet);
 	void OnCancelTeamRequest(Packet *packet);
@@ -173,7 +171,7 @@ protected:
 	unsigned int GetMemberIndex(NetworkID memberId, RakNetGUID guid) const;
 	unsigned int AddTeamMember(const TeamMember &tm); // Returns index of new member
 	void RemoveTeamMember(unsigned int index);
-	void EvenTeams(void);
+	void EvenTeams();
 	unsigned int GetMemberIndexToSwitchTeams(const DataStructures::List<TeamId> &sourceTeamNumbers, TeamId targetTeamNumber);
 	void GetOverpopulatedTeams(DataStructures::List<TeamId> &overpopulatedTeams, int maxTeamSize);
 	void SwitchMemberTeam(unsigned int teamMemberIndex, TeamId destinationTeam);
@@ -183,7 +181,7 @@ protected:
 	PluginReceiveResult OnRequestedTeamChangePending(Packet *packet);
 	PluginReceiveResult OnTeamsLocked(Packet *packet);
 	void GetMinMaxTeamMembers(int &minMembersOnASingleTeam, int &maxMembersOnASingleTeam);
-	TeamId GetNextDefaultTeam(void); // Accounting for team balancing and team limits, get the team a player should be placed on
+	TeamId GetNextDefaultTeam(); // Accounting for team balancing and team limits, get the team a player should be placed on
 	bool TeamWouldBeOverpopulatedOnAddition(TeamId teamId, unsigned int teamMemberSize); // Accounting for team balancing and team limits, would this team be overpopulated if a member was added to it?
 	bool TeamWouldBeUnderpopulatedOnLeave(TeamId teamId, unsigned int teamMemberSize);
 	TeamId GetSmallestNonFullTeam(void) const;
@@ -202,5 +200,3 @@ protected:
 } // namespace RakNet
 
 #endif
-
-#endif // _RAKNET_SUPPORT_*

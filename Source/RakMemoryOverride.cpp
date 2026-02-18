@@ -249,7 +249,7 @@ void UseRaknetFixedHeap(size_t initialCapacity,
 
 	rakNetFixedHeapMSpace=rak_create_mspace(initialCapacity, 0);
 }
-void FreeRakNetFixedHeap(void)
+void FreeRakNetFixedHeap()
 {
 	if (rakNetFixedHeapMSpace)
 	{
@@ -285,7 +285,7 @@ void UseRaknetFixedHeap(size_t initialCapacity,
 	(void) yourDirectMMapFunction;
 	(void) yourMUnmapFunction;
 }
-void FreeRakNetFixedHeap(void) {}
+void FreeRakNetFixedHeap() {}
 #endif
 
 #if _USE_RAK_MEMORY_OVERRIDE==1

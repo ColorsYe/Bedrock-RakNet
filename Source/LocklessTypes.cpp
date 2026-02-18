@@ -20,7 +20,7 @@ LocklessUint32_t::LocklessUint32_t(uint32_t initial)
 {
 	value=initial;
 }
-uint32_t LocklessUint32_t::Increment(void)
+uint32_t LocklessUint32_t::Increment()
 {
 #ifdef _WIN32
 	return (uint32_t) InterlockedIncrement(&value);
@@ -35,7 +35,7 @@ uint32_t LocklessUint32_t::Increment(void)
 	return __sync_fetch_and_add (&value, (uint32_t) 1);
 #endif
 }
-uint32_t LocklessUint32_t::Decrement(void)
+uint32_t LocklessUint32_t::Decrement()
 {
 #ifdef _WIN32
 	return (uint32_t) InterlockedDecrement(&value);

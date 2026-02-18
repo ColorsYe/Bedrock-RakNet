@@ -21,7 +21,7 @@ VariableListDeltaTracker::~VariableListDeltaTracker()
 }
 
 // Call before using a series of WriteVar
-void VariableListDeltaTracker::StartWrite(void) {nextWriteIndex=0;}
+void VariableListDeltaTracker::StartWrite() {nextWriteIndex=0;}
 
 void VariableListDeltaTracker::FlagDirtyFromBitArray(unsigned char *bArray)
 {

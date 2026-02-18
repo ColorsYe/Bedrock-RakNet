@@ -14,9 +14,7 @@
 
 
 
-#ifndef __PACKET_PRIORITY_H
-#define __PACKET_PRIORITY_H 
-
+#pragma once
 /// These enumerations are used to describe when packets are delivered.
 enum PacketPriority
 {
@@ -83,5 +81,3 @@ enum PacketReliability
 	/// \internal
 	NUMBER_OF_RELIABILITIES
 };
-
-#endif

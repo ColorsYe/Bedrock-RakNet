@@ -40,18 +40,18 @@ double Ceil(double d) {if (((double)((int)d))==d) return d; return (int) (d+1.0)
 //#define _DEBUG_LOGGER
 
 #if CC_TIME_TYPE_BYTES==4
-static const CCTimeType MAX_TIME_BETWEEN_PACKETS= 350; // 350 milliseconds
-static const CCTimeType HISTOGRAM_RESTART_CYCLE=10000; // Every 10 seconds reset the histogram
+static constexpr CCTimeType MAX_TIME_BETWEEN_PACKETS= 350; // 350 milliseconds
+static constexpr CCTimeType HISTOGRAM_RESTART_CYCLE=10000; // Every 10 seconds reset the histogram
 #else
-static const CCTimeType MAX_TIME_BETWEEN_PACKETS= 350000; // 350 milliseconds
-//static const CCTimeType HISTOGRAM_RESTART_CYCLE=10000000; // Every 10 seconds reset the histogram
+static constexpr CCTimeType MAX_TIME_BETWEEN_PACKETS= 350000; // 350 milliseconds
+//static constexpr CCTimeType HISTOGRAM_RESTART_CYCLE=10000000; // Every 10 seconds reset the histogram
 #endif
-static const int DEFAULT_HAS_RECEIVED_PACKET_QUEUE_SIZE=512;
-static const CCTimeType STARTING_TIME_BETWEEN_PACKETS=MAX_TIME_BETWEEN_PACKETS;
-//static const long double TIME_BETWEEN_PACKETS_INCREASE_MULTIPLIER_DEFAULT=.02;
-//static const long double TIME_BETWEEN_PACKETS_DECREASE_MULTIPLIER_DEFAULT=1.0 / 9.0;
+static constexpr int DEFAULT_HAS_RECEIVED_PACKET_QUEUE_SIZE=512;
+static constexpr CCTimeType STARTING_TIME_BETWEEN_PACKETS=MAX_TIME_BETWEEN_PACKETS;
+//static constexpr long double TIME_BETWEEN_PACKETS_INCREASE_MULTIPLIER_DEFAULT=.02;
+//static constexpr long double TIME_BETWEEN_PACKETS_DECREASE_MULTIPLIER_DEFAULT=1.0 / 9.0;
 
-typedef uint32_t BitstreamLengthEncoding;
+using BitstreamLengthEncoding = uint32_t;
 
 #ifdef _MSC_VER
 #pragma warning( push )
@@ -373,7 +373,7 @@ void ReliabilityLayer::SetTimeoutTime( RakNet::TimeMS time )
 //-------------------------------------------------------------------------------------------------------
 // Returns the value passed to SetTimeoutTime. or the default if it was never called
 //-------------------------------------------------------------------------------------------------------
-RakNet::TimeMS ReliabilityLayer::GetTimeoutTime(void)
+RakNet::TimeMS ReliabilityLayer::GetTimeoutTime()
 {
 	return timeoutTime;
 }
@@ -2342,7 +2342,7 @@ void ReliabilityLayer::SendBitStream( RakNetSocket2 *s, SystemAddress &systemAdd
 //-------------------------------------------------------------------------------------------------------
 // Are we waiting for any data to be sent out or be processed by the player?
 //-------------------------------------------------------------------------------------------------------
-bool ReliabilityLayer::IsOutgoingDataWaiting(void)
+bool ReliabilityLayer::IsOutgoingDataWaiting()
 {
 	if (outgoingPacketBuffer.Size()>0)
 		return true;
@@ -2359,7 +2359,7 @@ bool ReliabilityLayer::IsOutgoingDataWaiting(void)
 		//resendTree.IsEmpty()==false;// || outputQueue.Size() > 0 || orderingList.Size() > 0 || splitPacketChannelList.Size() > 0;
 		statistics.messagesInResendBuffer!=0;
 }
-bool ReliabilityLayer::AreAcksWaiting(void)
+bool ReliabilityLayer::AreAcksWaiting()
 {
 	return acknowlegements.Size() > 0;
 }
@@ -3449,7 +3449,7 @@ CCTimeType ReliabilityLayer::GetAckPing(void) const
 }
 #endif
 //-------------------------------------------------------------------------------------------------------
-void ReliabilityLayer::ResetPacketsAndDatagrams(void)
+void ReliabilityLayer::ResetPacketsAndDatagrams()
 {
 	packetsToSendThisUpdate.Clear(true, _FILE_AND_LINE_);
 	packetsToDeallocThisUpdate.Clear(true, _FILE_AND_LINE_);
@@ -3482,7 +3482,7 @@ void ReliabilityLayer::PushPacket(CCTimeType time, InternalPacket *internalPacke
 	congestionManager.OnSendBytes(time, BITS_TO_BYTES(internalPacket->dataBitLength)+BITS_TO_BYTES(internalPacket->headerLength));
 }
 //-------------------------------------------------------------------------------------------------------
-void ReliabilityLayer::PushDatagram(void)
+void ReliabilityLayer::PushDatagram()
 {
 	if (datagramSizeSoFar>0)
 	{
@@ -3505,7 +3505,7 @@ void ReliabilityLayer::PushDatagram(void)
 	}
 }
 //-------------------------------------------------------------------------------------------------------
-bool ReliabilityLayer::TagMostRecentPushAsSecondOfPacketPair(void)
+bool ReliabilityLayer::TagMostRecentPushAsSecondOfPacketPair()
 {
 	if (datagramsToSendThisUpdateIsPair.Size()>=2)
 	{
@@ -3516,7 +3516,7 @@ bool ReliabilityLayer::TagMostRecentPushAsSecondOfPacketPair(void)
 	return false;
 }
 //-------------------------------------------------------------------------------------------------------
-void ReliabilityLayer::ClearPacketsAndDatagrams(void)
+void ReliabilityLayer::ClearPacketsAndDatagrams()
 {
 	unsigned int i;
 	for (i=0; i < packetsToDeallocThisUpdate.Size(); i++)
@@ -3656,7 +3656,7 @@ void ReliabilityLayer::SendACKs(RakNetSocket2 *s, SystemAddress &systemAddress, 
 }
 /*
 //-------------------------------------------------------------------------------------------------------
-ReliabilityLayer::DatagramMessageIDList* ReliabilityLayer::AllocateFromDatagramMessageIDPool(void)
+ReliabilityLayer::DatagramMessageIDList* ReliabilityLayer::AllocateFromDatagramMessageIDPool()
 {
 DatagramMessageIDList*s;
 s=datagramMessageIDPool.Allocate( _FILE_AND_LINE_ );
@@ -3672,7 +3672,7 @@ datagramMessageIDPool.Release(d);
 }
 */
 //-------------------------------------------------------------------------------------------------------
-InternalPacket* ReliabilityLayer::AllocateFromInternalPacketPool(void)
+InternalPacket* ReliabilityLayer::AllocateFromInternalPacketPool()
 {
 	InternalPacket *ip = internalPacketPool.Allocate( _FILE_AND_LINE_ );
 	ip->reliableMessageNumber = (MessageNumberType) (const uint32_t)-1;
@@ -3906,7 +3906,7 @@ void ReliabilityLayer::FreeInternalPacketData(InternalPacket *internalPacket, co
 	}
 }
 //-------------------------------------------------------------------------------------------------------
-unsigned int ReliabilityLayer::GetMaxDatagramSizeExcludingMessageHeaderBytes(void)
+unsigned int ReliabilityLayer::GetMaxDatagramSizeExcludingMessageHeaderBytes()
 {
 	unsigned int val = congestionManager.GetMTU() - DatagramHeaderFormat::GetDataHeaderByteLength();
 
@@ -3918,12 +3918,12 @@ unsigned int ReliabilityLayer::GetMaxDatagramSizeExcludingMessageHeaderBytes(voi
 	return val;
 }
 //-------------------------------------------------------------------------------------------------------
-BitSize_t ReliabilityLayer::GetMaxDatagramSizeExcludingMessageHeaderBits(void)
+BitSize_t ReliabilityLayer::GetMaxDatagramSizeExcludingMessageHeaderBits()
 {
 	return BYTES_TO_BITS(GetMaxDatagramSizeExcludingMessageHeaderBytes());
 }
 //-------------------------------------------------------------------------------------------------------
-void ReliabilityLayer::InitHeapWeights(void)
+void ReliabilityLayer::InitHeapWeights()
 {
 	for (int priorityLevel=0; priorityLevel < NUMBER_OF_PRIORITIES; priorityLevel++)
 		outgoingPacketBufferNextWeights[priorityLevel]=(1<<priorityLevel)*priorityLevel+priorityLevel;

@@ -39,9 +39,7 @@ else use congestion avoidance
 
 #if USE_SLIDING_WINDOW_CONGESTION_CONTROL==1
 
-#ifndef __CONGESTION_CONTROL_SLIDING_WINDOW_H
-#define __CONGESTION_CONTROL_SLIDING_WINDOW_H
-
+#pragma once
 #include "NativeTypes.h"
 #include "RakNetTime.h"
 #include "RakNetTypes.h"
@@ -65,15 +63,15 @@ else use congestion avoidance
 #define CC_TIME_TYPE_BYTES 8
 
 #if CC_TIME_TYPE_BYTES==8
-typedef RakNet::TimeUS CCTimeType;
+using CCTimeType = RakNet::TimeUS;
 #else
-typedef RakNet::TimeMS CCTimeType;
+using CCTimeType = RakNet::TimeMS;
 #endif
 
-typedef RakNet::uint24_t DatagramSequenceNumberType;
-typedef double BytesPerMicrosecond;
-typedef double BytesPerSecond;
-typedef double MicrosecondsPerByte;
+using DatagramSequenceNumberType = RakNet::uint24_t;
+using BytesPerMicrosecond = double;
+using BytesPerSecond = double;
+using MicrosecondsPerByte = double;
 
 namespace RakNet
 {
@@ -102,8 +100,8 @@ class CCRakNetSlidingWindow
 
 	/// Every data packet sent must contain a sequence number
 	/// Call this function to get it. The sequence number is passed into OnGotPacketPair()
-	DatagramSequenceNumberType GetAndIncrementNextDatagramSequenceNumber(void);
-	DatagramSequenceNumberType GetNextDatagramSequenceNumber(void);
+	DatagramSequenceNumberType GetAndIncrementNextDatagramSequenceNumber();
+	DatagramSequenceNumberType GetNextDatagramSequenceNumber();
 
 	/// Call this when you send packets
 	/// Every 15th and 16th packets should be sent as a packet pair if possible
@@ -214,7 +212,5 @@ class CCRakNetSlidingWindow
 };
 
 }
-
-#endif
 
 #endif

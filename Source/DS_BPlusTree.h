@@ -12,9 +12,7 @@
 ///
 
 
-#ifndef __B_PLUS_TREE_CPP
-#define __B_PLUS_TREE_CPP
-
+#pragma once
 #include "DS_MemoryPool.h"
 #include "DS_Queue.h"
 #include <stdio.h>
@@ -92,20 +90,20 @@ namespace DataStructures
 		bool Delete(const KeyType key);
 		bool Delete(const KeyType key, DataType &out);
 		bool Insert(const KeyType key, const DataType &data);
-		void Clear(void);
+		void Clear();
 		unsigned Size(void) const;
 		bool IsEmpty(void) const;
 		Page<KeyType, DataType, order> *GetListHead(void) const;
 		DataType GetDataHead(void) const;
-		void PrintLeaves(void);
+		void PrintLeaves();
 		void ForEachLeaf(void (*func)(Page<KeyType, DataType, order> * leaf, int index));
 		void ForEachData(void (*func)(DataType input, int index));
-		void PrintGraph(void);
+		void PrintGraph();
 	protected:
 		void ValidateTreeRecursive(Page<KeyType, DataType, order> *cur);
 		void DeleteFromPageAtIndex(const int index, Page<KeyType, DataType, order> *cur);
 		static void PrintLeaf(Page<KeyType, DataType, order> * leaf, int index);
-		void FreePages(void);
+		void FreePages();
 		bool GetIndexOf(const KeyType key, Page<KeyType, DataType, order> *page, int *out) const;
 		void ShiftKeysLeft(Page<KeyType, DataType, order> *cur);
 		bool CanRotateLeft(Page<KeyType, DataType, order> *cur, int childIndex);
@@ -882,7 +880,7 @@ namespace DataStructures
 			cur->keys[i]=cur->keys[i+1];
 	}
 	template<class KeyType, class DataType, int order>
-		void BPlusTree<KeyType, DataType, order>::Clear(void)
+		void BPlusTree<KeyType, DataType, order>::Clear()
 	{
 		if (root)
 		{
@@ -943,7 +941,7 @@ namespace DataStructures
 		}
 	}
 	template<class KeyType, class DataType, int order>
-		void BPlusTree<KeyType, DataType, order>::FreePages(void)
+		void BPlusTree<KeyType, DataType, order>::FreePages()
 	{
 		DataStructures::Queue<DataStructures::Page<KeyType, DataType, order> *> queue;
 		DataStructures::Page<KeyType, DataType, order> *ptr;
@@ -1003,7 +1001,7 @@ namespace DataStructures
 			RAKNET_DEBUG_PRINTF(" %i. %i\n", i+1, leaf->data[i]);
 	}
 	template<class KeyType, class DataType, int order>
-		void BPlusTree<KeyType, DataType, order>::PrintLeaves(void)
+		void BPlusTree<KeyType, DataType, order>::PrintLeaves()
 	{
 		ForEachLeaf(PrintLeaf);
 	}
@@ -1029,7 +1027,7 @@ namespace DataStructures
 	}
 
 	template<class KeyType, class DataType, int order>
-	void BPlusTree<KeyType, DataType, order>::PrintGraph(void)
+	void BPlusTree<KeyType, DataType, order>::PrintGraph()
 	{
 		DataStructures::Queue<DataStructures::Page<KeyType, DataType, order> *> queue;
 		queue.Push(root,_FILE_AND_LINE_);
@@ -1072,83 +1070,3 @@ namespace DataStructures
 #ifdef _MSC_VER
 #pragma warning( pop )
 #endif
-
-#endif
-
-// Code to test this hellish data structure.
-/*
-#include "DS_BPlusTree.h"
-#include <stdio.h>
-
-// Handle underflow on root.  If there is only one item left then I can go downwards.
-// Make sure I keep the leftmost pointer valid by traversing it
-// When I free a leaf, be sure to adjust the pointers around it.
-
-#include "Rand.h"
-
-void main(void)
-{
-	DataStructures::BPlusTree<int, int, 16> btree;
-	DataStructures::List<int> haveList, removedList;
-	int temp;
-	int i, j, index;
-	int testSize;
-	bool b;
-
-	for (testSize=0; testSize < 514; testSize++)
-	{
-		RAKNET_DEBUG_PRINTF("TestSize=%i\n", testSize);
-
-		for (i=0; i < testSize; i++)
-			haveList.Insert(i);
-
-		for (i=0; i < testSize; i++)
-		{
-			index=i+randomMT()%(testSize-i);
-			temp=haveList[index];
-			haveList[index]=haveList[i];
-			haveList[i]=temp;
-		}
-
-		for (i=0; i<testSize; i++)
-		{
-			btree.Insert(haveList[i], haveList[i]);
-			btree.ValidateTree();
-		}
-
-		for (i=0; i < testSize; i++)
-		{
-			index=i+randomMT()%(testSize-i);
-			temp=haveList[index];
-			haveList[index]=haveList[i];
-			haveList[i]=temp;
-		}
-		for (i=0; i<testSize; i++)
-		{
-			btree.Delete(haveList[0]); // Asserts on 8th call.  Fails on going to remove 8 (7th call)
-			removedList.Insert(haveList[0]);
-			haveList.RemoveAtIndex(0);
-			for (j=0; j < removedList.Size(); j++)
-			{
-				b=btree.Get(removedList[j], temp);
-				RakAssert(b==false);
-			}
-			for (j=0; j < haveList.Size(); j++)
-			{
-				b=btree.Get(haveList[j], temp);
-				RakAssert(b==true);
-				RakAssert(haveList[j]==temp);
-			}
-			RakAssert(btree.Size()==haveList.Size());
-			btree.ValidateTree();
-		}
-		btree.Clear(_FILE_AND_LINE_);
-		removedList.Clear(_FILE_AND_LINE_);
-		haveList.Clear(_FILE_AND_LINE_);
-	}
-
-	RAKNET_DEBUG_PRINTF("Done. %i\n", btree.Size());
-	char ch[256];
-	Gets(ch, sizeof(ch));
-}
-*/

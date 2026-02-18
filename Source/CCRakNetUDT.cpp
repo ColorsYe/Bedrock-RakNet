@@ -23,17 +23,17 @@
 
 using namespace RakNet;
 
-static const double UNSET_TIME_US=-1;
-static const double CWND_MIN_THRESHOLD=2.0;
-static const double UNDEFINED_TRANSFER_RATE=0.0;
+static constexpr double UNSET_TIME_US=-1;
+static constexpr double CWND_MIN_THRESHOLD=2.0;
+static constexpr double UNDEFINED_TRANSFER_RATE=0.0;
 /// Interval at which to update aspects of the system
 /// 1. send acks
 /// 2. update time interval between outgoing packets
 /// 3, Yodate retransmit timeout
 #if CC_TIME_TYPE_BYTES==4
-static const CCTimeType SYN=10;
+static constexpr CCTimeType SYN=10;
 #else
-static const CCTimeType SYN=10000;
+static constexpr CCTimeType SYN=10000;
 #endif
 
 #if CC_TIME_TYPE_BYTES==4
@@ -235,12 +235,12 @@ bool CCRakNetUDT::ShouldSendACKs(CCTimeType curTime, CCTimeType estimatedTimeToN
 		estimatedTimeToNextTick+curTime < oldestUnsentAck+rto-RTT;
 }
 // ----------------------------------------------------------------------------------------------------------------------------
-DatagramSequenceNumberType CCRakNetUDT::GetNextDatagramSequenceNumber(void)
+DatagramSequenceNumberType CCRakNetUDT::GetNextDatagramSequenceNumber()
 {
 	return nextDatagramSequenceNumber;
 }
 // ----------------------------------------------------------------------------------------------------------------------------
-DatagramSequenceNumberType CCRakNetUDT::GetAndIncrementNextDatagramSequenceNumber(void)
+DatagramSequenceNumberType CCRakNetUDT::GetAndIncrementNextDatagramSequenceNumber()
 {
 	DatagramSequenceNumberType dsnt=nextDatagramSequenceNumber;
 	nextDatagramSequenceNumber++;
@@ -441,7 +441,7 @@ void CCRakNetUDT::OnNAK(CCTimeType curTime, DatagramSequenceNumberType nakSequen
 	}
 }
 // ----------------------------------------------------------------------------------------------------------------------------
-void CCRakNetUDT::EndSlowStart(void)
+void CCRakNetUDT::EndSlowStart()
 {
 	RakAssert(isInSlowStart==true);
 	RakAssert(AS!=UNDEFINED_TRANSFER_RATE);
@@ -645,7 +645,7 @@ void CCRakNetUDT::UpdateWindowSizeAndAckOnAckPerSyn(CCTimeType curTime, CCTimeTy
 	}
 
 	pingsLastInterval.Push(rtt,__FILE__,__LINE__);
-	static const int intervalSize=33; // Should be odd
+	static constexpr int intervalSize=33; // Should be odd
 	if (pingsLastInterval.Size()>intervalSize)
 		pingsLastInterval.Pop();
 	if (GreaterThan(sequenceNumber, nextCongestionControlBlock) &&
@@ -705,7 +705,7 @@ double CCRakNetUDT::BytesPerMicrosecondToPacketsPerMillisecond(BytesPerMicroseco
 	return in * factor;
 }
 // ----------------------------------------------------------------------------------------------------------------------------
-void CCRakNetUDT::InitPacketArrivalHistory(void)
+void CCRakNetUDT::InitPacketArrivalHistory()
 {
 	unsigned int i;
 	for (i=0; i < CC_RAKNET_UDT_PACKET_HISTORY_LENGTH; i++)
@@ -719,7 +719,7 @@ void CCRakNetUDT::InitPacketArrivalHistory(void)
 	continuousBytesReceivedStartTime=0;
 }
 // ----------------------------------------------------------------------------------------------------------------------------
-void CCRakNetUDT::PrintLowBandwidthWarning(void)
+void CCRakNetUDT::PrintLowBandwidthWarning()
 {
 
 	/*
@@ -758,7 +758,7 @@ void CCRakNetUDT::CapMinSnd(const char *file, int line)
 		CC_DEBUG_PRINTF_3("%s:%i LIKELY BUG: SND has gotten above 500 microseconds between messages (28.8 modem)\nReport to rakkar@jenkinssoftware.com with file and line number\n", file, line);
 	}
 }
-void CCRakNetUDT::IncreaseTimeBetweenSends(void)
+void CCRakNetUDT::IncreaseTimeBetweenSends()
 {
 	// In order to converge, bigger numbers have to increase slower and decrease faster
 	// SND==500 then increment is .02
@@ -777,7 +777,7 @@ void CCRakNetUDT::IncreaseTimeBetweenSends(void)
 	// SND=500 then slow increase, fast decrease
 	CapMinSnd(__FILE__,__LINE__);
 }
-void CCRakNetUDT::DecreaseTimeBetweenSends(void)
+void CCRakNetUDT::DecreaseTimeBetweenSends()
 {
 	double increment;
 	increment = .01 * ((SND+1.0) * (SND+1.0)) / (501.0*501.0) ;

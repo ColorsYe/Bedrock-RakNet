@@ -18,9 +18,7 @@
 #include "NativeFeatureIncludes.h"
 #if _RAKNET_SUPPORT_TwoWayAuthentication==1
 
-#ifndef __TWO_WAY_AUTHENTICATION_H
-#define __TWO_WAY_AUTHENTICATION_H
-
+#pragma once
 // How often to change the nonce.
 #define NONCE_TIMEOUT_MS 10000
 // How often to check for ID_TWO_WAY_AUTHENTICATION_OUTGOING_CHALLENGE_TIMEOUT, and the minimum timeout time. Maximum is double this value.
@@ -28,9 +26,9 @@
 
 #if LIBCAT_SECURITY==1
 // From CPP FILE:
-// static const int HASH_BITS = 256;
-// static const int HASH_BYTES = HASH_BITS / 8;
-// static const int STRENGTHENING_FACTOR = 1000;
+// static constexpr int HASH_BITS = 256;
+// static constexpr int HASH_BYTES = HASH_BITS / 8;
+// static constexpr int STRENGTHENING_FACTOR = 1000;
 #define TWO_WAY_AUTHENTICATION_NONCE_LENGTH 32
 #define HASHED_NONCE_AND_PW_LENGTH 32
 #else
@@ -46,7 +44,7 @@
 #include "DS_Hash.h"
 #include "DS_Queue.h"
 
-typedef int64_t FCM2Guid;
+using FCM2Guid = int64_t;
 
 namespace RakNet
 {
@@ -85,14 +83,14 @@ public:
 	bool Challenge(RakNet::RakString identifier, AddressOrGUID remoteSystem);
 
 	/// \brief Free all memory
-	void Clear(void);
+	void Clear();
 
 	/// \internal
-	virtual void Update(void);
+	virtual void Update();
 	/// \internal
 	virtual PluginReceiveResult OnReceive(Packet *packet);
 	/// \internal
-	virtual void OnRakPeerShutdown(void);
+	virtual void OnRakPeerShutdown();
 	/// \internal
 	virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
 
@@ -123,7 +121,7 @@ public:
 		void GetNonce(char nonce[TWO_WAY_AUTHENTICATION_NONCE_LENGTH], unsigned short *requestId, RakNet::AddressOrGUID remoteSystem);
 		void GenerateNonce(char nonce[TWO_WAY_AUTHENTICATION_NONCE_LENGTH]);
 		bool GetNonceById(char nonce[TWO_WAY_AUTHENTICATION_NONCE_LENGTH], unsigned short requestId, RakNet::AddressOrGUID remoteSystem, bool popIfFound);
-		void Clear(void);
+		void Clear();
 		void ClearByAddress(RakNet::AddressOrGUID remoteSystem);
 		void Update(RakNet::Time curTime);
 
@@ -150,5 +148,3 @@ protected:
 } // namespace RakNet
 
 #endif
-
-#endif // _RAKNET_SUPPORT_*

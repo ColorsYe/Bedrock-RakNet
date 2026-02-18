@@ -17,9 +17,7 @@
 #include "NativeFeatureIncludes.h"
 #if _RAKNET_SUPPORT_CloudServer==1
 
-#ifndef __CLOUD_SERVER_H
-#define __CLOUD_SERVER_H
-
+#pragma once
 #include "PluginInterface2.h"
 #include "RakMemoryOverride.h"
 #include "NativeTypes.h"
@@ -103,7 +101,7 @@ public:
 	void GetRemoteServers(DataStructures::List<RakNetGUID> &remoteServersOut);
 
 	/// \brief Frees all memory. Does not remove query filters
-	void Clear(void);
+	void Clear();
 
 	/// \brief Report the specified SystemAddress to client queries, rather than what RakPeer reads.
 	/// This is useful if you already know your public IP
@@ -123,13 +121,13 @@ public:
 
 	/// \brief Removes all instances of CloudServerQueryFilter added with AddQueryFilter().
 	/// The instances are not deleted, only unreferenced. It is up to the user to delete the instances, if necessary
-	void RemoveAllQueryFilters(void);
+	void RemoveAllQueryFilters();
 
 protected:
-	virtual void Update(void);
+	virtual void Update();
 	virtual PluginReceiveResult OnReceive(Packet *packet);
 	virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
-	virtual void OnRakPeerShutdown(void);
+	virtual void OnRakPeerShutdown();
 
 
 	virtual void OnPostRequest(Packet *packet);
@@ -149,7 +147,7 @@ protected:
 		CloudData() {}
 		~CloudData() {if (allocatedData) rakFree_Ex(allocatedData, _FILE_AND_LINE_);}
 		bool IsUnused(void) const {return isUploaded==false && specificSubscribers.Size()==0;}
-		void Clear(void) {if (dataPtr==allocatedData) rakFree_Ex(allocatedData, _FILE_AND_LINE_); allocatedData=0; dataPtr=0; dataLengthBytes=0; isUploaded=false;}
+		void Clear() {if (dataPtr==allocatedData) rakFree_Ex(allocatedData, _FILE_AND_LINE_); allocatedData=0; dataPtr=0; dataLengthBytes=0; isUploaded=false;}
 
 		unsigned char stackData[CLOUD_SERVER_DATA_STACK_SIZE];
 		unsigned char *allocatedData; // Uses allocatedData instead of stackData if length of data exceeds CLOUD_SERVER_DATA_STACK_SIZE
@@ -379,5 +377,3 @@ protected:
 // A. This is so when the key is updated or deleted, we know who to send it to
 //
 // 4. For a given client (such as on disconnect), remove all records of their subscriptions
-
-#endif // _RAKNET_SUPPORT_*

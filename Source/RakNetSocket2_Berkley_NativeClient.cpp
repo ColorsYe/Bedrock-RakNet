@@ -32,13 +32,13 @@ void DomainNameToIP_Berkley_IPV4And6( const char *domainName, char ip[65] )
 	hints.ai_family = AF_UNSPEC; // AF_INET or AF_INET6 to force version
 	hints.ai_socktype = SOCK_DGRAM;
 
-	if ((status = getaddrinfo(domainName, NULL, &hints, &res)) != 0) {
+	if ((status = getaddrinfo(domainName, nullptr, &hints, &res)) != 0) {
 		memset(ip, 0, sizeof(ip));
 		return;
 	}
 
 	p=res;
-// 	for(p = res;p != NULL; p = p->ai_next) {
+// 	for(p = res;p != nullptr; p = p->ai_next) {
 		void *addr;
 //		char *ipver;
 
@@ -57,7 +57,7 @@ void DomainNameToIP_Berkley_IPV4And6( const char *domainName, char ip[65] )
 			addr = &(ipv6->sin6_addr);
 			// inet_ntop function does not exist on windows
 			// http://www.mail-archive.com/users@ipv6.org/msg02107.html
-			getnameinfo((struct sockaddr *)ipv6, sizeof(struct sockaddr_in6), ip, 1, NULL, 0, NI_NUMERICHOST);
+			getnameinfo((struct sockaddr *)ipv6, sizeof(struct sockaddr_in6), ip, 1, nullptr, 0, NI_NUMERICHOST);
 		}
 		freeaddrinfo(res); // free the linked list
 //	}

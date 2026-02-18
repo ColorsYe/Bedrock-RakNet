@@ -17,9 +17,7 @@
 #include "NativeFeatureIncludes.h"
 #if _RAKNET_SUPPORT_FullyConnectedMesh2==1
 
-#ifndef __FULLY_CONNECTED_MESH_2_H
-#define __FULLY_CONNECTED_MESH_2_H
-
+#pragma once
 #include "PluginInterface2.h"
 #include "RakMemoryOverride.h"
 #include "NativeTypes.h"
@@ -27,7 +25,7 @@
 #include "RakString.h"
 #include "BitStream.h"
 
-typedef int64_t FCM2Guid;
+using FCM2Guid = int64_t;
 
 namespace RakNet
 {
@@ -86,7 +84,7 @@ public:
 
 	/// Clear our own host order, and recalculate as if we had just reconnected
 	/// Call this to reset the running time of the host just before joining/creating a game room for networking
-	void ResetHostCalculation(void);
+	void ResetHostCalculation();
 
 	/// \brief if SetAutoparticipateConnections() is called with false, then you need to use AddParticipant before these systems will be added to the mesh 
 	/// FullyConnectedMesh2 will track who is the who host among a fully connected mesh of participants
@@ -123,7 +121,7 @@ public:
 	void ConnectToRemoteNewIncomingConnections(Packet *packet);
 
 	/// \brief Clear all memory and reset everything
-	void Clear(void);
+	void Clear();
 
 	unsigned int GetParticipantCount(void) const;
 	void GetParticipantCount(unsigned int *participantListSize) const;
@@ -221,16 +219,16 @@ public:
 	virtual void WriteVJSUserData(RakNet::BitStream *bsOut, RakNetGUID userGuid) {(void) bsOut; (void) userGuid;}
 
 	/// \internal
-	RakNet::TimeUS GetElapsedRuntime(void);
+	RakNet::TimeUS GetElapsedRuntime();
 
 	/// \internal
 	virtual PluginReceiveResult OnReceive(Packet *packet);
 	/// \internal
-	virtual void OnRakPeerStartup(void);
+	virtual void OnRakPeerStartup();
 	/// \internal
-	virtual void OnAttach(void);
+	virtual void OnAttach();
 	/// \internal
-	virtual void OnRakPeerShutdown(void);
+	virtual void OnRakPeerShutdown();
 	/// \internal
 	virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
 	/// \internal
@@ -290,12 +288,12 @@ protected:
 	void OnRespondConnectionCount(Packet *packet);
 	void OnInformFCMGuid(Packet *packet);
 	void OnUpdateMinTotalConnectionCount(Packet *packet);
-	void AssignOurFCMGuid(void);
+	void AssignOurFCMGuid();
 	void CalculateHost(RakNetGUID *rakNetGuid, FCM2Guid *fcm2Guid);
 	// bool AddParticipantInternal( RakNetGUID rakNetGuid, FCM2Guid theirFCMGuid, BitStream *userContext );
 	bool AddParticipantInternal( RakNetGUID rakNetGuid, FCM2Guid theirFCMGuid );
-	void CalculateAndPushHost(void);
-	bool ParticipantListComplete(void);
+	void CalculateAndPushHost();
+	bool ParticipantListComplete();
 	void IncrementTotalConnectionCount(unsigned int i);
 	PluginReceiveResult OnVerifiedJoinStart(Packet *packet);
 	PluginReceiveResult OnVerifiedJoinCapable(Packet *packet);
@@ -420,5 +418,3 @@ AssignTheirGuid()
 */
 
 #endif
-
-#endif // _RAKNET_SUPPORT_*

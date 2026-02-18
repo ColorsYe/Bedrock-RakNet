@@ -225,7 +225,7 @@ void MessageFilter::DeleteFilterSet(int filterSetID)
 		*/
 	}
 }
-void MessageFilter::Clear(void)
+void MessageFilter::Clear()
 {
 	unsigned i;
 	systemList.Clear(_FILE_AND_LINE_);
@@ -283,7 +283,7 @@ void MessageFilter::OnInvalidMessage(FilterSet *filterSet, AddressOrGUID systemA
 #endif
 	}
 }
-void MessageFilter::Update(void)
+void MessageFilter::Update()
 {
 	// Update all timers for all systems.  If those systems' filter sets are expired, take the appropriate action.
 	RakNet::Time curTime = RakNet::GetTime();

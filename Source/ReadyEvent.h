@@ -16,9 +16,7 @@
 #include "NativeFeatureIncludes.h"
 #if _RAKNET_SUPPORT_ReadyEvent==1
 
-#ifndef __READY_EVENT_H
-#define __READY_EVENT_H
-
+#pragma once
 #include "PluginInterface2.h"
 #include "DS_OrderedList.h"
 
@@ -201,9 +199,9 @@ protected:
 	// --------------------------------------------------------------------------------------------
 	virtual PluginReceiveResult OnReceive(Packet *packet);
 	virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
-	virtual void OnRakPeerShutdown(void);
+	virtual void OnRakPeerShutdown();
 	
-	void Clear(void);
+	void Clear();
 	/*
 	bool AnyWaitersCompleted(unsigned eventIndex) const;
 	bool AllWaitersCompleted(unsigned eventIndex) const;
@@ -238,5 +236,3 @@ protected:
 } // namespace RakNet
 
 #endif
-
-#endif // _RAKNET_SUPPORT_*

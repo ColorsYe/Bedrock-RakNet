@@ -189,7 +189,7 @@ void DirectoryDeltaTransfer::GenerateHashes(FileList &localFiles, const char *ou
 {
 	localFiles.AddFilesFromDirectory(prependAppDirToOutputSubdir ? applicationDirectory : 0, outputSubdir, true, false, true, FileListNodeContext(0,0,0,0));
 }
-void DirectoryDeltaTransfer::ClearUploads(void)
+void DirectoryDeltaTransfer::ClearUploads()
 {
 	availableUploads->Clear();
 }

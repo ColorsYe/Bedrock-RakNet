@@ -188,7 +188,7 @@ bool SystemAddress::operator<( const SystemAddress& right ) const
 	}
 	return address.addr4.sin_port<right.address.addr4.sin_port;
 }
-int SystemAddress::size(void)
+int SystemAddress::size()
 {
 #if RAKNET_SUPPORT_IPV6==1
 	return sizeof(sockaddr_in6) + sizeof(char);
@@ -224,7 +224,7 @@ unsigned int SystemAddress::GetIPPROTO(void) const
 	return IPPROTO_IP;
 #endif
 }
-void SystemAddress::SetToLoopback(void)
+void SystemAddress::SetToLoopback()
 {
 	SetToLoopback(GetIPVersion());
 }
@@ -344,11 +344,11 @@ void SystemAddress::ToString_New(bool writePort, char *dest, char portDelineator
 
 	if (address.addr4.sin_family==AF_INET)
 	{
-		ret=getnameinfo((struct sockaddr *) &address.addr4, sizeof(struct sockaddr_in), dest, 22, NULL, 0, NI_NUMERICHOST);
+		ret=getnameinfo((struct sockaddr *) &address.addr4, sizeof(struct sockaddr_in), dest, 22, nullptr, 0, NI_NUMERICHOST);
 	}
 	else
 	{
-		ret=getnameinfo((struct sockaddr *) &address.addr6, sizeof(struct sockaddr_in6), dest, INET6_ADDRSTRLEN, NULL, 0, NI_NUMERICHOST);
+		ret=getnameinfo((struct sockaddr *) &address.addr6, sizeof(struct sockaddr_in6), dest, INET6_ADDRSTRLEN, nullptr, 0, NI_NUMERICHOST);
 	}
 	if (ret!=0)
 	{
@@ -465,7 +465,7 @@ void SystemAddress::FixForIPVersion(const SystemAddress &boundAddressToSocket)
 // 		}
 	}
 }
-bool SystemAddress::IsLANAddress(void)
+bool SystemAddress::IsLANAddress()
 {
 //	return address.addr4.sin_addr.S_un.S_un_b.s_b1==10 || address.addr4.sin_addr.S_un.s_b1==192;
 #if defined(__WIN32__)
@@ -796,12 +796,12 @@ bool RakNetGUID::FromString(const char *source)
 
 
 #if   defined(WIN32)
-	g=_strtoui64(source, NULL, 10);
+	g=_strtoui64(source, nullptr, 10);
 
 
 #else
 	// Changed from g=strtoull(source,0,10); for android
-	g=strtoull(source, (char **)NULL, 10);
+	g=strtoull(source, (char **)nullptr, 10);
 #endif
 	return true;
 

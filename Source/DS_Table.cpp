@@ -229,7 +229,7 @@ Table::ColumnType Table::Cell::EstimateColumnType(void) const
 		return POINTER;
 	return NUMERIC;
 }
-void Table::Cell::Clear(void)
+void Table::Cell::Clear()
 {
 	if (isEmpty==false && c)
 	{
@@ -1049,7 +1049,7 @@ void Table::PrintRow(char *out, int outLength, char columnDelineator, bool print
 	}
 }
 
-void Table::Clear(void)
+void Table::Clear()
 {
 	rows.ForEachData(FreeRow);
 	rows.Clear();
@@ -1063,7 +1063,7 @@ const DataStructures::BPlusTree<unsigned, Table::Row*, _TABLE_BPLUS_TREE_ORDER>&
 {
 	return rows;
 }
-DataStructures::Page<unsigned, DataStructures::Table::Row*, _TABLE_BPLUS_TREE_ORDER> * Table::GetListHead(void)
+DataStructures::Page<unsigned, DataStructures::Table::Row*, _TABLE_BPLUS_TREE_ORDER> * Table::GetListHead()
 {
 	return rows.GetListHead();
 }

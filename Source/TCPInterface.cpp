@@ -20,7 +20,7 @@
 #include "TCPInterface.h"
 #ifdef _WIN32
 	#if !defined (WINDOWS_STORE_RT)
-		typedef int socklen_t;
+		using socklen_t = int;
 	#endif
 
 
@@ -139,7 +139,7 @@ bool TCPInterface::CreateListenSocket(unsigned short port, unsigned short maxInc
 	Itoa(port,portStr,10);
 
 	getaddrinfo(0, portStr, &hints, &servinfo);
-	for (aip = servinfo; aip != NULL; aip = aip->ai_next)
+	for (aip = servinfo; aip != nullptr; aip = aip->ai_next)
 	{
 		// Open socket. The address type depends on what
 		// getaddrinfo() gave us.
@@ -246,7 +246,7 @@ bool TCPInterface::Start(unsigned short port, unsigned short maxIncomingConnecti
 	return true;
 #endif  // __native_client__
 }
-void TCPInterface::Stop(void)
+void TCPInterface::Stop()
 {
 	unsigned int i;
 	for (i=0; i < messageHandlerList.Size(); i++)
@@ -651,7 +651,7 @@ bool TCPInterface::WasStarted(void) const
 {
 	return threadRunning.GetValue()>0;
 }
-SystemAddress TCPInterface::HasCompletedConnectionAttempt(void)
+SystemAddress TCPInterface::HasCompletedConnectionAttempt()
 {
 	SystemAddress sysAddr=UNASSIGNED_SYSTEM_ADDRESS;
 	completedConnectionAttemptMutex.Lock();
@@ -668,7 +668,7 @@ SystemAddress TCPInterface::HasCompletedConnectionAttempt(void)
 
 	return sysAddr;
 }
-SystemAddress TCPInterface::HasFailedConnectionAttempt(void)
+SystemAddress TCPInterface::HasFailedConnectionAttempt()
 {
 	SystemAddress sysAddr=UNASSIGNED_SYSTEM_ADDRESS;
 	failedConnectionAttemptMutex.Lock();
@@ -692,7 +692,7 @@ SystemAddress TCPInterface::HasFailedConnectionAttempt(void)
 
 	return sysAddr;
 }
-SystemAddress TCPInterface::HasNewIncomingConnection(void)
+SystemAddress TCPInterface::HasNewIncomingConnection()
 {
 	SystemAddress *out, out2;
 	out = newIncomingConnections.PopInaccurate();
@@ -712,7 +712,7 @@ SystemAddress TCPInterface::HasNewIncomingConnection(void)
 		return UNASSIGNED_SYSTEM_ADDRESS;
 	}
 }
-SystemAddress TCPInterface::HasLostConnection(void)
+SystemAddress TCPInterface::HasLostConnection()
 {
 	SystemAddress *out, out2;
 	out = lostConnections.PopInaccurate();
@@ -797,7 +797,7 @@ __TCPSOCKET__ TCPInterface::SocketConnect(const char* host, unsigned short remot
 
 	struct hostent * server;
 	server = gethostbyname(host);
-	if (server == NULL)
+	if (server == nullptr)
 		return 0;
 
 
@@ -1031,7 +1031,7 @@ RAK_THREAD_DECLARATION(RakNet::UpdateTCPInterfaceLoop)
 				sts->remoteClients[i].isActiveMutex.Lock();
 				if (sts->remoteClients[i].isActive)
 				{
-					// calling FD_ISSET with -1 as socket (that’s what 0 is set to) produces a bus error under Linux 64-Bit
+					// calling FD_ISSET with -1 as socket (thatï¿½s what 0 is set to) produces a bus error under Linux 64-Bit
 					__TCPSOCKET__ socketCopy = sts->remoteClients[i].socket;
 					if (socketCopy != 0)
 					{
@@ -1133,7 +1133,7 @@ RAK_THREAD_DECLARATION(RakNet::UpdateTCPInterfaceLoop)
 						i++;
 						continue;
 					}
-					// calling FD_ISSET with -1 as socket (that’s what 0 is set to) produces a bus error under Linux 64-Bit
+					// calling FD_ISSET with -1 as socket (thatï¿½s what 0 is set to) produces a bus error under Linux 64-Bit
 					__TCPSOCKET__ socketCopy = sts->remoteClients[i].socket;
 					if (socketCopy == 0)
 					{
@@ -1389,12 +1389,12 @@ bool RemoteClient::InitSSL(SSL_CTX* ctx, SSL_METHOD *meth)
 	}
 	return true;
 }
-void RemoteClient::DisconnectSSL(void)
+void RemoteClient::DisconnectSSL()
 {
 	if (ssl)
 		SSL_shutdown (ssl);  /* send SSL/TLS close_notify */
 }
-void RemoteClient::FreeSSL(void)
+void RemoteClient::FreeSSL()
 {
 	if (ssl)
 		SSL_free (ssl);

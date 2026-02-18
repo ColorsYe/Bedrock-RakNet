@@ -16,9 +16,7 @@
 #include "NativeFeatureIncludes.h"
 #if _RAKNET_SUPPORT_CloudClient==1
 
-#ifndef __CLOUD_CLIENT_H
-#define __CLOUD_CLIENT_H
-
+#pragma once
 #include "PluginInterface2.h"
 #include "CloudCommon.h"
 #include "RakMemoryOverride.h"
@@ -167,5 +165,3 @@ public:
 } // namespace RakNet
 
 #endif
-
-#endif // _RAKNET_SUPPORT_*

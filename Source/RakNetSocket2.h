@@ -8,9 +8,7 @@
  *
  */
 
-#ifndef __RAKNET_SOCKET_2_H
-#define __RAKNET_SOCKET_2_H
-
+#pragma once
 #include "RakNetTypes.h"
 #include "MTUSize.h"
 #include "LocklessTypes.h"
@@ -31,7 +29,7 @@
 
 #ifdef TEST_NATIVE_CLIENT_ON_WINDOWS
 #define __native_client__
-typedef int PP_Resource;
+using PP_Resource = int;
 #endif
 
 namespace RakNet
@@ -40,7 +38,7 @@ namespace RakNet
 class RakNetSocket2;
 struct RNS2_BerkleyBindParameters;
 struct RNS2_SendParameters;
-typedef int RNS2Socket;
+using RNS2Socket = int;
 
 enum RNS2BindResult
 {
@@ -50,7 +48,7 @@ enum RNS2BindResult
 	BR_FAILED_SEND_TEST,
 };
 
-typedef int RNS2SendResult;
+using RNS2SendResult = int;
 
 enum RNS2Type
 {
@@ -90,7 +88,7 @@ struct RNS2RecvStruct
 class RakNetSocket2Allocator
 {
 public:
-	static RakNetSocket2* AllocRNS2(void);
+	static RakNetSocket2* AllocRNS2();
 	static void DeallocRNS2(RakNetSocket2 *s);
 };
 
@@ -224,14 +222,14 @@ public:
 	//   ((RNS2_NativeClient*)sockets[i])->Update();
 	// }
 
-	void Update(void);
+	void Update();
 protected:
-	void ProcessBufferedSend(void);
+	void ProcessBufferedSend();
 	static void SendImmediate(RNS2_SendParameters_NativeClient *sp);
 	static void DeallocSP(RNS2_SendParameters_NativeClient *sp);
 	static RNS2_SendParameters_NativeClient* CloneSP(RNS2_SendParameters *sp, RNS2_NativeClient *socket2, const char *file, unsigned int line);
 	static void onRecvFrom(void* pData, int32_t dataSize);
-	void IssueReceiveCall(void);
+	void IssueReceiveCall();
 	static void onSocketBound(void* pData, int32_t dataSize);
 	static void onSendTo(void* pData, int32_t dataSize);
 	void BufferSend( RNS2_SendParameters *sendParameters, const char *file, unsigned int line );
@@ -288,8 +286,8 @@ public:
 	RNS2_Berkley();
 	virtual ~RNS2_Berkley();
 	int CreateRecvPollingThread(int threadPriority);
-	void SignalStopRecvPollingThread(void);
-	void BlockOnStopRecvPollingThread(void);
+	void SignalStopRecvPollingThread();
+	void BlockOnStopRecvPollingThread();
 	const RNS2_BerkleyBindParameters *GetBindings(void) const;
 	RNS2Socket GetSocket(void) const;
 	void SetDoNotFragment( int opt );
@@ -305,7 +303,7 @@ protected:
 
 	// Internal
 	void SetNonBlockingSocket(unsigned long nonblocking);
-	void SetSocketOptions(void);
+	void SetSocketOptions();
 	void SetBroadcastSocket(int broadcast);
 	void SetIPHdrIncl(int ipHdrIncl);
 	void RecvFromBlocking(RNS2RecvStruct *recvFromStruct);
@@ -315,7 +313,7 @@ protected:
 	RNS2Socket rns2Socket;
 	RNS2_BerkleyBindParameters binding;
 
-	unsigned RecvFromLoopInt(void);
+	unsigned RecvFromLoopInt();
 	RakNet::LocklessUint32_t isRecvFromLoopThreadActive;
 	volatile bool endThreads;
 	// Constructor not called!
@@ -421,7 +419,7 @@ public:
 	RNS2BindResult Bind( RNS2_BerkleyBindParameters *bindParameters, const char *file, unsigned int line );
 	RNS2SendResult Send( RNS2_SendParameters *sendParameters, const char *file, unsigned int line );
 	void SetSocketLayerOverride(SocketLayerOverride *_slo);
-	SocketLayerOverride* GetSocketLayerOverride(void);
+	SocketLayerOverride* GetSocketLayerOverride();
 	// ----------- STATICS ------------
 	static void GetMyIP( SystemAddress addresses[MAXIMUM_NUMBER_OF_INTERNAL_IDS] );
 protected:
@@ -449,5 +447,3 @@ protected:
 #endif // #elif !defined(WINDOWS_STORE_RT)
 
 } // namespace RakNet
-
-#endif // __RAKNET_SOCKET_2_H

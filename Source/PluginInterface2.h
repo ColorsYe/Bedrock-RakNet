@@ -13,9 +13,7 @@
 ///
 
 
-#ifndef __PLUGIN_INTERFACE_2_H
-#define __PLUGIN_INTERFACE_2_H
-
+#pragma once
 #include "NativeFeatureIncludes.h"
 #include "RakNetTypes.h"
 #include "Export.h"
@@ -93,13 +91,13 @@ public:
 	virtual ~PluginInterface2();
 
 	/// Called when the interface is attached
-	virtual void OnAttach(void) {}
+	virtual void OnAttach() {}
 
 	/// Called when the interface is detached
-	virtual void OnDetach(void) {}
+	virtual void OnDetach() {}
 
 	/// Update is called every time a packet is checked for .
-	virtual void Update(void) {}
+	virtual void Update() {}
 
 	/// OnReceive is called for every packet.
 	/// \param[in] packet the packet that is being returned to the user
@@ -107,10 +105,10 @@ public:
 	virtual PluginReceiveResult OnReceive(Packet *packet) {(void) packet; return RR_CONTINUE_PROCESSING;}
 
 	/// Called when RakPeer is initialized
-	virtual void OnRakPeerStartup(void) {}
+	virtual void OnRakPeerStartup() {}
 
 	/// Called when RakPeer is shutdown
-	virtual void OnRakPeerShutdown(void) {}
+	virtual void OnRakPeerShutdown() {}
 
 	/// Called when a connection is dropped because the user called RakPeer::CloseConnection() for a particular system
 	/// \param[in] systemAddress The system whose connection was closed
@@ -206,6 +204,3 @@ protected:
 };
 
 } // namespace RakNet
-
-#endif
-

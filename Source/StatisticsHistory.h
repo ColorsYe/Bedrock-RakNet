@@ -15,9 +15,7 @@
 #include "NativeFeatureIncludes.h"
 #if _RAKNET_SUPPORT_StatisticsHistory==1
 
-#ifndef __STATISTICS_HISTORY_H
-#define __STATISTICS_HISTORY_H
-
+#pragma once
 #include "PluginInterface2.h"
 #include "RakMemoryOverride.h"
 #include "NativeTypes.h"
@@ -35,7 +33,7 @@ namespace RakNet
 class RakPeerInterface;
 
 // Type used to track values. If needed, change to double and recompile
-typedef double SHValueType;
+using SHValueType = double;
 #define SH_TYPE_MAX DBL_MAX
 
 /// \brief Input numerical values over time. Get sum, average, highest, lowest, standard deviation on recent or all-time values
@@ -110,7 +108,7 @@ public:
 	bool AddObject(TrackedObjectData tod);
 	bool RemoveObject(uint64_t objectId, void **userData);
 	void RemoveObjectAtIndex(unsigned int index);
-	void Clear(void);
+	void Clear();
 	unsigned int GetObjectCount(void) const;
 	StatisticsHistory::TrackedObjectData * GetObjectAtIndex(unsigned int index) const;
 	unsigned int GetObjectIndex(uint64_t objectId) const;
@@ -167,7 +165,7 @@ public:
 		void ResizeSampleSet( int approximateSamples, DataStructures::Queue<StatisticsHistory::TimeAndValue> &blendedSamples, SHDataCategory dataCategory, Time timeClipStart=0, Time timeClipEnd=0 );
 
 		// Clear out all values
-		void Clear(void);
+		void Clear();
 
 		TimeAndValueQueue& operator = ( const TimeAndValueQueue& input );
 
@@ -213,7 +211,7 @@ public:
 	void SetTrackConnections(bool _addNewConnections, int newConnectionsObjectType, bool _removeLostConnections);
 	
 protected:
-	virtual void Update(void);
+	virtual void Update();
 	virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
 	virtual void OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming);
 
@@ -231,5 +229,3 @@ protected:
 } // namespace RakNet
 
 #endif // __STATISTICS_HISTORY_H
-
-#endif // _RAKNET_SUPPORT_*

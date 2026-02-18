@@ -16,9 +16,7 @@
 #include "NativeFeatureIncludes.h"
 #if _RAKNET_SUPPORT_UDPProxyServer==1 && _RAKNET_SUPPORT_UDPForwarder==1
 
-#ifndef __UDP_PROXY_SERVER_H
-#define __UDP_PROXY_SERVER_H
-
+#pragma once
 #include "Export.h"
 #include "RakNetTypes.h"
 #include "PluginInterface2.h"
@@ -97,15 +95,15 @@ public:
 	/// UDPForwarder::Startup(), UDPForwarder::Shutdown(), and UDPForwarder::Update() are called automatically by the plugin
 	UDPForwarder udpForwarder;
 
-	virtual void OnAttach(void);
-	virtual void OnDetach(void);
+	virtual void OnAttach();
+	virtual void OnDetach();
 
 	/// \internal
-	virtual void Update(void);
+	virtual void Update();
 	virtual PluginReceiveResult OnReceive(Packet *packet);
 	virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
-	virtual void OnRakPeerStartup(void);
-	virtual void OnRakPeerShutdown(void);
+	virtual void OnRakPeerStartup();
+	virtual void OnRakPeerShutdown();
 
 protected:
 	void OnForwardingRequestFromCoordinatorToServer(Packet *packet);
@@ -122,5 +120,3 @@ protected:
 } // End namespace
 
 #endif
-
-#endif // _RAKNET_SUPPORT_*

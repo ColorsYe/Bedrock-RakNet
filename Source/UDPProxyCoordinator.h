@@ -16,9 +16,7 @@
 #include "NativeFeatureIncludes.h"
 #if _RAKNET_SUPPORT_UDPProxyCoordinator==1 && _RAKNET_SUPPORT_UDPForwarder==1
 
-#ifndef __UDP_PROXY_COORDINATOR_H
-#define __UDP_PROXY_COORDINATOR_H
-
+#pragma once
 #include "Export.h"
 #include "RakNetTypes.h"
 #include "PluginInterface2.h"
@@ -49,7 +47,7 @@ namespace RakNet
 		void SetRemoteLoginPassword(RakNet::RakString password);
 
 		/// \internal
-		virtual void Update(void);
+		virtual void Update();
 		virtual PluginReceiveResult OnReceive(Packet *packet);
 		virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
 
@@ -80,7 +78,7 @@ namespace RakNet
 			DataStructures::List<ServerWithPing> sourceServerPings, targetServerPings;
 			RakNet::TimeMS timeRequestedPings;
 			// Order based on sourceServerPings and targetServerPings
-			void OrderRemainingServersToTry(void);
+			void OrderRemainingServersToTry();
 		
 		};
 	protected:
@@ -94,7 +92,7 @@ namespace RakNet
 		void OnPingServersReplyFromClientToCoordinator(Packet *packet);
 		void TryNextServer(SenderAndTargetAddress sata, ForwardingRequest *fw);
 		void SendAllBusy(SystemAddress senderClientAddress, SystemAddress targetClientAddress, RakNetGUID targetClientGuid, SystemAddress requestingAddress);
-		void Clear(void);
+		void Clear();
 
 		void SendForwardingRequest(SystemAddress sourceAddress, SystemAddress targetAddress, SystemAddress serverAddress, RakNet::TimeMS timeoutOnNoDataMS);
 
@@ -113,5 +111,3 @@ namespace RakNet
 } // End namespace
 
 #endif
-
-#endif // _RAKNET_SUPPORT_*

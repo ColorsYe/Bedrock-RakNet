@@ -13,9 +13,7 @@
 ///
 
 
-#ifndef __GET_TIME_H
-#define __GET_TIME_H
-
+#pragma once
 #include "Export.h"
 #include "RakNetTime.h" // For RakNet::TimeMS
 
@@ -38,5 +36,3 @@ namespace RakNet
 	/// a < b?
 	extern RAK_DLL_EXPORT bool LessThan(RakNet::Time a, RakNet::Time b);
 }
-
-#endif

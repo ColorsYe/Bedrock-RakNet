@@ -14,9 +14,7 @@
 ///
 
 
-#ifndef __BINARY_SEARCH_TREE_H
-#define __BINARY_SEARCH_TREE_H
-
+#pragma once
 #include "DS_QueueLinkedList.h"
 #include "RakMemoryOverride.h"
 #include "Export.h"
@@ -59,7 +57,7 @@ namespace DataStructures
 	 * unsigned int Height() - Returns the height of the tree
 	 * unsigned int size() - returns the size of the BinarySearchTree
 	 * GetPointerToNode(element) - returns a pointer to the comparision element in the tree, allowing for direct modification when necessary with complex data types.
-	 * Be warned, it is possible to corrupt the tree if the element used for comparisons is modified.  Returns NULL if the item is not found
+	 * Be warned, it is possible to corrupt the tree if the element used for comparisons is modified.  Returns nullptr if the item is not found
 	 *
 	 *
 	 * EXAMPLE
@@ -1138,4 +1136,3 @@ namespace DataStructures
 
 #ifdef _MSC_VER
 #pragma warning( pop )
-#endif

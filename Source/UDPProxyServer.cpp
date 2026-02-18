@@ -60,7 +60,7 @@ void UDPProxyServer::SetServerPublicIP(RakString ip)
 {
 	serverPublicIp = ip;
 }
-void UDPProxyServer::Update(void)
+void UDPProxyServer::Update()
 {
 }
 PluginReceiveResult UDPProxyServer::OnReceive(Packet *packet)
@@ -132,22 +132,22 @@ void UDPProxyServer::OnClosedConnection(const SystemAddress &systemAddress, RakN
 	loggingInCoordinators.RemoveIfExists(systemAddress);
 	loggedInCoordinators.RemoveIfExists(systemAddress);
 }
-void UDPProxyServer::OnRakPeerStartup(void)
+void UDPProxyServer::OnRakPeerStartup()
 {
 	udpForwarder.Startup();
 }
-void UDPProxyServer::OnRakPeerShutdown(void)
+void UDPProxyServer::OnRakPeerShutdown()
 {
 	udpForwarder.Shutdown();
 	loggingInCoordinators.Clear(true,_FILE_AND_LINE_);
 	loggedInCoordinators.Clear(true,_FILE_AND_LINE_);
 }
-void UDPProxyServer::OnAttach(void)
+void UDPProxyServer::OnAttach()
 {
 	if (rakPeerInterface->IsActive())
 		OnRakPeerStartup();
 }
-void UDPProxyServer::OnDetach(void)
+void UDPProxyServer::OnDetach()
 {
 	OnRakPeerShutdown();
 }

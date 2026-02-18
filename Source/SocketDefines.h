@@ -8,9 +8,7 @@
  *
  */
 
-#ifndef __SOCKET_DEFINES_H
-#define __SOCKET_DEFINES_H
-
+#pragma once
 /// Internal
 
 
@@ -117,6 +115,4 @@
 
 	#define shutdown__ shutdown
 	#define WSASendTo__ WSASendTo
-#endif
-
 #endif

@@ -12,9 +12,7 @@
 
 #if USE_SLIDING_WINDOW_CONGESTION_CONTROL!=1
 
-#ifndef __CONGESTION_CONTROL_UDT_H
-#define __CONGESTION_CONTROL_UDT_H
-
+#pragma once
 #include "NativeTypes.h"
 #include "RakNetTime.h"
 #include "RakNetTypes.h"
@@ -27,15 +25,15 @@ namespace RakNet
 {
 
 #if CC_TIME_TYPE_BYTES==8
-typedef uint64_t CCTimeType;
+using CCTimeType = uint64_t;
 #else
-typedef uint32_t CCTimeType;
+using CCTimeType = uint32_t;
 #endif
 
-typedef uint24_t DatagramSequenceNumberType;
-typedef double BytesPerMicrosecond;
-typedef double BytesPerSecond;
-typedef double MicrosecondsPerByte;
+using DatagramSequenceNumberType = uint24_t;
+using BytesPerMicrosecond = double;
+using BytesPerSecond = double;
+using MicrosecondsPerByte = double;
 
 /// CC_RAKNET_UDT_PACKET_HISTORY_LENGTH should be a power of 2 for the writeIndex variables to wrap properly
 #define CC_RAKNET_UDT_PACKET_HISTORY_LENGTH 64
@@ -107,8 +105,8 @@ class CCRakNetUDT
 
 	/// Every data packet sent must contain a sequence number
 	/// Call this function to get it. The sequence number is passed into OnGotPacketPair()
-	DatagramSequenceNumberType GetAndIncrementNextDatagramSequenceNumber(void);
-	DatagramSequenceNumberType GetNextDatagramSequenceNumber(void);
+	DatagramSequenceNumberType GetAndIncrementNextDatagramSequenceNumber();
+	DatagramSequenceNumberType GetNextDatagramSequenceNumber();
 
 	/// Call this when you send packets
 	/// Every 15th and 16th packets should be sent as a packet pair if possible
@@ -357,7 +355,7 @@ class CCRakNetUDT
 	CCTimeType GetSenderRTOForACK(void) const;
 
 	/// Stop slow start, and enter normal transfer rate
-	void EndSlowStart(void);
+	void EndSlowStart();
 
 	/// Does the named conversion
 	inline double BytesPerMicrosecondToPacketsPerMillisecond(BytesPerMicrosecond in);
@@ -376,16 +374,16 @@ class CCRakNetUDT
 	void ResetOnDataArrivalHalveSNDOnNoDataTime(CCTimeType curTime);
 	
 	// Init array
-	void InitPacketArrivalHistory(void);
+	void InitPacketArrivalHistory();
 
 	// Printf
-	void PrintLowBandwidthWarning(void);
+	void PrintLowBandwidthWarning();
 
 	// Bug: SND can sometimes get super high - have seen 11693
 	void CapMinSnd(const char *file, int line);
 
-	void DecreaseTimeBetweenSends(void);
-	void IncreaseTimeBetweenSends(void);
+	void DecreaseTimeBetweenSends();
+	void IncreaseTimeBetweenSends();
 
 	int bytesCanSendThisTick;
 
@@ -398,7 +396,5 @@ class CCRakNetUDT
 };
 
 }
-
-#endif
 
 #endif

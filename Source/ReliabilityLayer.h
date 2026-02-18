@@ -13,9 +13,7 @@
 ///
 
 
-#ifndef __RELIABILITY_LAYER_H
-#define __RELIABILITY_LAYER_H
-
+#pragma once
 #include "RakMemoryOverride.h"
 #include "MTUSize.h"
 #include "DS_LinkedList.h"
@@ -58,7 +56,7 @@ namespace RakNet {
 	/// Forward declarations
 class PluginInterface2;
 class RakNetRandom;
-typedef uint64_t reliabilityHeapWeightType;
+using reliabilityHeapWeightType = uint64_t;
 
 // int SplitPacketIndexComp( SplitPacketIndexType const &key, InternalPacket* const &data );
 struct SplitPacketChannel//<SplitPacketChannel>
@@ -134,7 +132,7 @@ public:
 
 	/// Returns the value passed to SetTimeoutTime. or the default if it was never called
 	/// \param[out] the value passed to SetTimeoutTime
-	RakNet::TimeMS GetTimeoutTime(void);
+	RakNet::TimeMS GetTimeoutTime();
 
 	/// Packets are read directly from the socket layer and skip the reliability layer because unconnected players do not use the reliability layer
 	/// This function takes packet data after a player has been confirmed as connected.
@@ -184,15 +182,15 @@ public:
 	bool IsDeadConnection( void ) const;
 
 	/// Causes IsDeadConnection to return true
-	void KillConnection(void);
+	void KillConnection();
 
 	/// Get Statistics
 	/// \return A pointer to a static struct, filled out with current statistical information.
 	RakNetStatistics * GetStatistics( RakNetStatistics *rns );
 
 	///Are we waiting for any data to be sent out or be processed by the player?
-	bool IsOutgoingDataWaiting(void);
-	bool AreAcksWaiting(void);
+	bool IsOutgoingDataWaiting();
+	bool AreAcksWaiting();
 
 	// Set outgoing lag and packet loss properties
 	void ApplyNetworkSimulator( double _maxSendBPS, RakNet::TimeMS _minExtraPing, RakNet::TimeMS _extraPingVariance );
@@ -307,7 +305,7 @@ private:
 	bool IsExpiredTime(unsigned int input, CCTimeType currentTime) const;
 
 	// Make it so we don't do resends within a minimum threshold of time
-	void UpdateNextActionTime(void);
+	void UpdateNextActionTime();
 
 
 	/// Does this packet number represent a packet that was skipped (out of order?)
@@ -320,9 +318,9 @@ private:
 	unsigned int GetResendListDataSize(void) const;
 
 	/// Update all memory which is not threadsafe
-	void UpdateThreadedMemory(void);
+	void UpdateThreadedMemory();
 
-	void CalculateHistogramAckSize(void);
+	void CalculateHistogramAckSize();
 
 	// Used ONLY for RELIABLE_ORDERED
 	// RELIABLE_SEQUENCED just returns the newest one
@@ -400,7 +398,7 @@ private:
 	//DataStructures::Queue<InternalPacket*> sendPacketSet[ NUMBER_OF_PRIORITIES ];
 	DataStructures::Heap<reliabilityHeapWeightType, InternalPacket*, false> outgoingPacketBuffer;
 	reliabilityHeapWeightType outgoingPacketBufferNextWeights[NUMBER_OF_PRIORITIES];
-	void InitHeapWeights(void);
+	void InitHeapWeights();
 	reliabilityHeapWeightType GetNextWeight(int priorityLevel);
 //	unsigned int messageInSendBuffer[NUMBER_OF_PRIORITIES];
 //	double bytesInSendBuffer[NUMBER_OF_PRIORITIES];
@@ -529,11 +527,11 @@ private:
 	
 	bool ResendBufferOverflow(void) const;
 	void ValidateResendList(void) const;
-	void ResetPacketsAndDatagrams(void);
+	void ResetPacketsAndDatagrams();
 	void PushPacket(CCTimeType time, InternalPacket *internalPacket, bool isReliable);
-	void PushDatagram(void);
-	bool TagMostRecentPushAsSecondOfPacketPair(void);
-	void ClearPacketsAndDatagrams(void);
+	void PushDatagram();
+	bool TagMostRecentPushAsSecondOfPacketPair();
+	void ClearPacketsAndDatagrams();
 	void MoveToListHead(InternalPacket *internalPacket);
 	void RemoveFromList(InternalPacket *internalPacket, bool modifyUnacknowledgedBytes);
 	void AddToListTail(InternalPacket *internalPacket, bool modifyUnacknowledgedBytes);
@@ -559,15 +557,15 @@ private:
 
 	// Every 16 datagrams, we make sure the 17th datagram goes out the same update tick, and is the same size as the 16th
 	int countdownToNextPacketPair;
-	InternalPacket* AllocateFromInternalPacketPool(void);
+	InternalPacket* AllocateFromInternalPacketPool();
 	void ReleaseToInternalPacketPool(InternalPacket *ip);
 
 	DataStructures::RangeList<DatagramSequenceNumberType> acknowlegements;
 	DataStructures::RangeList<DatagramSequenceNumberType> NAKs;
 	bool remoteSystemNeedsBAndAS;
 
-	unsigned int GetMaxDatagramSizeExcludingMessageHeaderBytes(void);
-	BitSize_t GetMaxDatagramSizeExcludingMessageHeaderBits(void);
+	unsigned int GetMaxDatagramSizeExcludingMessageHeaderBytes();
+	BitSize_t GetMaxDatagramSizeExcludingMessageHeaderBits();
 
 	// ourOffset refers to a section within externallyAllocatedPtr. Do not deallocate externallyAllocatedPtr until all references are lost
 	void AllocInternalPacketData(InternalPacket *internalPacket, InternalPacketRefCountedData **refCounter, unsigned char *externallyAllocatedPtr, unsigned char *ourOffset);
@@ -583,7 +581,7 @@ private:
 
 #if LIBCAT_SECURITY==1
 public:
-	cat::AuthenticatedEncryption* GetAuthenticatedEncryption(void) { return &auth_enc; }
+	cat::AuthenticatedEncryption* GetAuthenticatedEncryption() { return &auth_enc; }
 
 protected:
 	cat::AuthenticatedEncryption auth_enc;
@@ -592,5 +590,3 @@ protected:
 };
 
 } // namespace RakNet
-
-#endif

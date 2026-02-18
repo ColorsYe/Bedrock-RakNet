@@ -14,9 +14,7 @@
 
 
 
-#ifndef __RAND_SYNC_H
-#define __RAND_SYNC_H 
-
+#pragma once
 #include "Export.h"
 #include "Rand.h"
 #include "DS_Queue.h"
@@ -53,6 +51,3 @@ protected:
 	RakNetRandom rnr;
 };
 } // namespace RakNet
-
-
-#endif

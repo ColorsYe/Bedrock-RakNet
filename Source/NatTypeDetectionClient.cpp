@@ -100,7 +100,7 @@ bool NatTypeDetectionClient::IsInProgress(void) const
 {
 	return serverAddress!=UNASSIGNED_SYSTEM_ADDRESS;
 }
-void NatTypeDetectionClient::Update(void)
+void NatTypeDetectionClient::Update()
 {
 	if (IsInProgress())
 	{
@@ -168,11 +168,11 @@ void NatTypeDetectionClient::OnClosedConnection(const SystemAddress &systemAddre
 	if (IsInProgress() && systemAddress==serverAddress)
 		Shutdown();
 }
-void NatTypeDetectionClient::OnRakPeerShutdown(void)
+void NatTypeDetectionClient::OnRakPeerShutdown()
 {
 	Shutdown();
 }
-void NatTypeDetectionClient::OnDetach(void)
+void NatTypeDetectionClient::OnDetach()
 {
 	Shutdown();
 }
@@ -204,7 +204,7 @@ void NatTypeDetectionClient::OnTestPortRestricted(Packet *packet)
 	sockets[0]->Send(&bsp, _FILE_AND_LINE_);
 
 }
-void NatTypeDetectionClient::Shutdown(void)
+void NatTypeDetectionClient::Shutdown()
 {
 	serverAddress=UNASSIGNED_SYSTEM_ADDRESS;
 	if (c2!=0)

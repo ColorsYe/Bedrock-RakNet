@@ -16,9 +16,7 @@
 #include "NativeFeatureIncludes.h"
 #if _RAKNET_SUPPORT_RelayPlugin==1
 
-#ifndef __RELAY_PLUGIN_H
-#define __RELAY_PLUGIN_H
-
+#pragma once
 #include "PluginInterface2.h"
 #include "RakString.h"
 #include "DS_Hash.h"
@@ -162,5 +160,3 @@ protected:
 #ifdef _MSC_VER
 #pragma warning( pop )
 #endif
-
-#endif // _RAKNET_SUPPORT_*

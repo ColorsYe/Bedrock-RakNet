@@ -73,7 +73,7 @@ TeamSelection::TeamSelection(JoinTeamType itt, NoTeamId param) : joinTeamType(it
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-TeamSelection TeamSelection::AnyAvailable(void) {return TeamSelection(JOIN_ANY_AVAILABLE_TEAM);}
+TeamSelection TeamSelection::AnyAvailable() {return TeamSelection(JOIN_ANY_AVAILABLE_TEAM);}
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -673,7 +673,7 @@ bool TM_TeamMember::LeaveTeamCheck(TM_Team *team) const
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-void TM_TeamMember::UpdateTeamsRequestedToAny(void)
+void TM_TeamMember::UpdateTeamsRequestedToAny()
 {
 	teamsRequested.Clear(true, _FILE_AND_LINE_);
 	joinTeamType=JOIN_ANY_AVAILABLE_TEAM;
@@ -683,7 +683,7 @@ void TM_TeamMember::UpdateTeamsRequestedToAny(void)
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-void TM_TeamMember::UpdateTeamsRequestedToNone(void)
+void TM_TeamMember::UpdateTeamsRequestedToNone()
 {
 	teamsRequested.Clear(true, _FILE_AND_LINE_);
 	joinTeamType=JOIN_NO_TEAM;
@@ -781,7 +781,7 @@ void TM_TeamMember::RemoveFromSpecificTeamInternal(TM_Team *team)
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-void TM_TeamMember::RemoveFromAllTeamsInternal(void)
+void TM_TeamMember::RemoveFromAllTeamsInternal()
 {
 	TM_Team *team;
 	unsigned int i,j;
@@ -803,7 +803,7 @@ void TM_TeamMember::RemoveFromAllTeamsInternal(void)
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-void TM_TeamMember::StoreLastTeams(void)
+void TM_TeamMember::StoreLastTeams()
 {
 	lastTeams=teams;
 }
@@ -1354,7 +1354,7 @@ WorldId TM_World::GetWorldId(void) const
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-void TM_World::Clear(void)
+void TM_World::Clear()
 {
 	for (unsigned int i=0; i < teams.Size(); i++)
 	{
@@ -1459,7 +1459,7 @@ void TM_World::KickExcessMembers(NoTeamId noTeamId)
 }
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-void TM_World::FillRequestedSlots(void)
+void TM_World::FillRequestedSlots()
 {
 	// Host only function
 	RakAssert(GetHost()==GetTeamManager()->GetMyGUIDUnified());
@@ -2145,7 +2145,7 @@ void TeamManager::DecodeTeamAssigned(BitStream *bsIn, TM_World **world, TM_TeamM
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-void TeamManager::Clear(void)
+void TeamManager::Clear()
 {
 	for (unsigned int i=0; i < worldsList.Size(); i++)
 	{
@@ -2158,7 +2158,7 @@ void TeamManager::Clear(void)
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-void TeamManager::Update(void)
+void TeamManager::Update()
 {
 }
 

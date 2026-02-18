@@ -16,9 +16,7 @@
 #include "NativeFeatureIncludes.h"
 #if _RAKNET_SUPPORT_NatPunchthroughServer==1
 
-#ifndef __NAT_PUNCHTHROUGH_SERVER_H
-#define __NAT_PUNCHTHROUGH_SERVER_H
-
+#pragma once
 #include "RakNetTypes.h"
 #include "Export.h"
 #include "PluginInterface2.h"
@@ -92,7 +90,7 @@ public:
 	void SetDebugInterface(NatPunchthroughServerDebugInterface *i);
 
 	/// \internal For plugin handling
-	virtual void Update(void);
+	virtual void Update();
 
 	/// \internal For plugin handling
 	virtual PluginReceiveResult OnReceive(Packet *packet);
@@ -138,8 +136,8 @@ protected:
 	void OnGetMostRecentPort(Packet *packet);
 	void OnClientReady(Packet *packet);
 
-	void SendTimestamps(void);
-	void StartPendingPunchthrough(void);
+	void SendTimestamps();
+	void StartPendingPunchthrough();
 	void StartPunchthroughForUser(User*user);
 	uint16_t sessionId;
 	NatPunchthroughServerDebugInterface *natPunchthroughServerDebugInterface;
@@ -152,5 +150,3 @@ protected:
 } // namespace RakNet
 
 #endif
-
-#endif // _RAKNET_SUPPORT_*

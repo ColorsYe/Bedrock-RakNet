@@ -15,9 +15,7 @@
 
 
 
-#ifndef __SOCKET_LAYER_H
-#define __SOCKET_LAYER_H
-
+#pragma once
 #include "RakMemoryOverride.h"
 #include "RakNetTypes.h"
 #include "RakNetSmartPtr.h"
@@ -89,8 +87,8 @@ public:
 #endif
 	*/
 
-//	static const char* DomainNameToIP_Old( const char *domainName );
-//	static const char* DomainNameToIP( const char *domainName );
+//	static constexpr char* DomainNameToIP_Old( const char *domainName );
+//	static constexpr char* DomainNameToIP( const char *domainName );
 	
 	/// Write \a data of length \a length to \a writeSocket
 	/// \param[in] writeSocket The socket to write to
@@ -169,7 +167,7 @@ public:
 	static void GetSystemAddress ( __UDPSOCKET__ s, SystemAddress *systemAddressOut );
 
 //	static void SetSocketLayerOverride(SocketLayerOverride *_slo);
-//	static SocketLayerOverride* GetSocketLayerOverride(void) {return slo;}
+//	static SocketLayerOverride* GetSocketLayerOverride() {return slo;}
 
 // 	static int SendTo_PS3Lobby( RakNetSocket *s, const char *data, int length, const SystemAddress &systemAddress );
 // 	static int SendTo_PSP2( RakNetSocket *s, const char *data, int length, const SystemAddress &systemAddress );
@@ -193,5 +191,3 @@ private:
 };
 
 } // namespace RakNet
-
-#endif

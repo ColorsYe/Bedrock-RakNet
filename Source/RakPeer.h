@@ -16,9 +16,7 @@
 // TODO - RakNet 4 - Add network simulator
 // TODO - RakNet 4 - Enable disabling flow control per connections
 
-#ifndef __RAK_PEER_H
-#define __RAK_PEER_H
-
+#pragma once
 #include "ReliabilityLayer.h"
 #include "RakPeerInterface.h"
 #include "BitStream.h"
@@ -200,12 +198,12 @@ public:
 	/// Returns the next uint32_t that Send() will return
 	/// \note If using RakPeer from multiple threads, this may not be accurate for your thread. Use IncrementNextSendReceipt() in that case.
 	/// \return The next uint32_t that Send() or SendList will return
-	virtual uint32_t GetNextSendReceipt(void);
+	virtual uint32_t GetNextSendReceipt();
 
 	/// Returns the next uint32_t that Send() will return, and increments the value by one
 	/// \note If using RakPeer from multiple threads, pass this to forceReceipt in the send function
 	/// \return The next uint32_t that Send() or SendList will return
-	virtual uint32_t IncrementNextSendReceipt(void);
+	virtual uint32_t IncrementNextSendReceipt();
 
 	/// \brief Sends a block of data to the specified system that you are connected to.
 	/// \note This function only works while connected.
@@ -624,7 +622,7 @@ public:
 	virtual void GetStatisticsList(DataStructures::List<SystemAddress> &addresses, DataStructures::List<RakNetGUID> &guids, DataStructures::List<RakNetStatistics> &statistics);
 
 	/// \Returns how many messages are waiting when you call Receive()
-	virtual unsigned int GetReceiveBufferSize(void);
+	virtual unsigned int GetReceiveBufferSize();
 
 	// --------------------------------------------------------------------------------------------EVERYTHING AFTER THIS COMMENT IS FOR INTERNAL USE ONLY--------------------------------------------------------------------------------------------
 
@@ -788,7 +786,7 @@ protected:
 	void DereferenceRemoteSystem(const SystemAddress &sa);
 	RemoteSystemStruct* GetRemoteSystem(const SystemAddress &sa) const;
 	unsigned int GetRemoteSystemIndex(const SystemAddress &sa) const;
-	void ClearRemoteSystemLookup(void);
+	void ClearRemoteSystemLookup();
 	DataStructures::MemoryPool<RemoteSystemIndex> remoteSystemIndexPool;
 
 	void AddToActiveSystemList(unsigned int remoteSystemListIndex);
@@ -866,7 +864,7 @@ protected:
 	DataStructures::Queue<RequestedConnectionStruct*> requestedConnectionQueue;
 	SimpleMutex requestedConnectionQueueMutex;
 
-	// void RunMutexedUpdateCycle(void);
+	// void RunMutexedUpdateCycle();
 
 	struct BufferedCommandStruct
 	{
@@ -905,9 +903,9 @@ protected:
 
 	virtual void DeallocRNS2RecvStruct(RNS2RecvStruct *s, const char *file, unsigned int line);
 	virtual RNS2RecvStruct *AllocRNS2RecvStruct(const char *file, unsigned int line);
-	void SetupBufferedPackets(void);
+	void SetupBufferedPackets();
 	void PushBufferedPacket(RNS2RecvStruct * p);
-	RNS2RecvStruct *PopBufferedPacket(void);
+	RNS2RecvStruct *PopBufferedPacket();
 
 	struct SocketQueryOutput
 	{
@@ -928,12 +926,12 @@ protected:
 	void SendBufferedList( const char **data, const int *lengths, const int numParameters, PacketPriority priority, PacketReliability reliability, char orderingChannel, const AddressOrGUID systemIdentifier, bool broadcast, RemoteSystemStruct::ConnectMode connectionMode, uint32_t receipt );
 	bool SendImmediate( char *data, BitSize_t numberOfBitsToSend, PacketPriority priority, PacketReliability reliability, char orderingChannel, const AddressOrGUID systemIdentifier, bool broadcast, bool useCallerDataAllocation, RakNet::TimeUS currentTime, uint32_t receipt );
 	//bool HandleBufferedRPC(BufferedCommandStruct *bcs, RakNet::TimeMS time);
-	void ClearBufferedCommands(void);
-	void ClearBufferedPackets(void);
-	void ClearSocketQueryOutput(void);
-	void ClearRequestedConnectionList(void);
+	void ClearBufferedCommands();
+	void ClearBufferedPackets();
+	void ClearSocketQueryOutput();
+	void ClearRequestedConnectionList();
 	void AddPacketToProducer(RakNet::Packet *p);
-	unsigned int GenerateSeedFromGuid(void);
+	unsigned int GenerateSeedFromGuid();
 	RakNet::Time GetClockDifferentialInt(RemoteSystemStruct *remoteSystem) const;
 	SimpleMutex securityExceptionMutex;
 
@@ -943,7 +941,7 @@ protected:
 
 	// Smart pointer so I can return the object to the user
 	DataStructures::List<RakNetSocket2* > socketList;
-	void DerefAllSockets(void);
+	void DerefAllSockets();
 	unsigned int GetRakNetSocketFromUserConnectionSocketIndex(unsigned int userIndex) const;
 	// Used for RPC replies
 	RakNet::BitStream *replyFromTargetBS;
@@ -953,7 +951,7 @@ protected:
 	RakNet::TimeMS defaultTimeoutTime;
 
 	// Generate and store a unique GUID
-	void GenerateGUID(void);
+	void GenerateGUID();
 	unsigned int GetSystemIndexFromGuid( const RakNetGUID input ) const;
 	RakNetGUID myGuid;
 
@@ -1003,7 +1001,7 @@ protected:
 	/// with the reliability types that contain RECEIPT in the name
 	SimpleMutex sendReceiptSerialMutex;
 	uint32_t sendReceiptSerial;
-	void ResetSendReceipt(void);
+	void ResetSendReceipt();
 	void OnConnectedPong(RakNet::Time sendPingTime, RakNet::Time sendPongTime, RemoteSystemStruct *remoteSystem);
 	void CallPluginCallbacks(DataStructures::List<PluginInterface2*> &pluginList, Packet *packet);
 
@@ -1022,7 +1020,7 @@ protected:
 
 
 	virtual void OnRNS2Recv(RNS2RecvStruct *recvStruct);
-	void FillIPList(void);
+	void FillIPList();
 } 
 // #if defined(SN_TARGET_PSP2)
 // __attribute__((aligned(8)))
@@ -1030,5 +1028,3 @@ protected:
 ;
 
 } // namespace RakNet
-
-#endif

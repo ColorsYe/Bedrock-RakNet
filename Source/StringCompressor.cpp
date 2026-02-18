@@ -33,14 +33,14 @@ using namespace RakNet;
 StringCompressor* StringCompressor::instance=0;
 int StringCompressor::referenceCount=0;
 
-void StringCompressor::AddReference(void)
+void StringCompressor::AddReference()
 {
 	if (++referenceCount==1)
 	{
 		instance = RakNet::OP_NEW<StringCompressor>( _FILE_AND_LINE_ );
 	}
 }
-void StringCompressor::RemoveReference(void)
+void StringCompressor::RemoveReference()
 {
 	RakAssert(referenceCount > 0);
 
@@ -54,7 +54,7 @@ void StringCompressor::RemoveReference(void)
 	}
 }
 
-StringCompressor* StringCompressor::Instance(void)
+StringCompressor* StringCompressor::Instance()
 {
 	return instance;
 }

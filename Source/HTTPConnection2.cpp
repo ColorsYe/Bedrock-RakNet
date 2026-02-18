@@ -202,7 +202,7 @@ PluginReceiveResult HTTPConnection2::OnReceive(Packet *packet)
 				size_t result;
 
 				pFile = fopen ( "string_received.txt" , "rb" );
-				if (pFile==NULL) {fputs ("File error",stderr); exit (1);}
+				if (pFile==nullptr) {fputs ("File error",stderr); exit (1);}
 
 				// obtain file size:
 				fseek (pFile , 0 , SEEK_END);
@@ -211,7 +211,7 @@ PluginReceiveResult HTTPConnection2::OnReceive(Packet *packet)
 
 				// allocate memory to contain the whole file:
 				buffer = (char*) malloc (sizeof(char)*lSize);
-				if (buffer == NULL) {fputs ("Memory error",stderr); exit (2);}
+				if (buffer == nullptr) {fputs ("Memory error",stderr); exit (2);}
 
 				// copy the file into the buffer:
 				result = fread (buffer,1,lSize,pFile);
@@ -506,7 +506,7 @@ void HTTPConnection2::RemovePendingRequest(SystemAddress sa)
 
 	pendingRequestsMutex.Unlock();
 }
-void HTTPConnection2::SendNextPendingRequest(void)
+void HTTPConnection2::SendNextPendingRequest()
 {
 	// Send a pending request
 	pendingRequestsMutex.Lock();

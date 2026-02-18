@@ -12,9 +12,7 @@
 ///
 
 
-#ifndef __TABLE_H
-#define __TABLE_H
-
+#pragma once
 #ifdef _MSC_VER
 #pragma warning( push )
 #endif
@@ -66,7 +64,7 @@ namespace DataStructures
 			~Cell();
 			Cell(double numericValue, char *charValue, void *ptr, ColumnType type);
 			void SetByType(double numericValue, char *charValue, void *ptr, ColumnType type);
-			void Clear(void);
+			void Clear();
 			
 			/// Numeric
 			void Set(int input);
@@ -297,7 +295,7 @@ namespace DataStructures
 		void SortTable(Table::SortQuery *sortQueries, unsigned numSortQueries, Table::Row** out);
 
 		/// \brief Frees all memory in the table.
-		void Clear(void);
+		void Clear();
 
 		/// \brief Prints out the names of all the columns.
 		/// \param[out] out A pointer to an array of bytes which will hold the output.
@@ -320,7 +318,7 @@ namespace DataStructures
 		const DataStructures::BPlusTree<unsigned, Row*, _TABLE_BPLUS_TREE_ORDER>& GetRows(void) const;
 
 		/// \brief Get the head of a linked list containing all the row data.
-		DataStructures::Page<unsigned, Row*, _TABLE_BPLUS_TREE_ORDER> * GetListHead(void);
+		DataStructures::Page<unsigned, Row*, _TABLE_BPLUS_TREE_ORDER> * GetListHead();
 
 		/// \brief Get the first free row id.
 		/// This could be made more efficient.
@@ -346,6 +344,4 @@ namespace DataStructures
 
 #ifdef _MSC_VER
 #pragma warning( pop )
-#endif
-
 #endif

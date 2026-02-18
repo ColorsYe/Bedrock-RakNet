@@ -17,9 +17,7 @@
 #include "NativeFeatureIncludes.h"
 #if _RAKNET_SUPPORT_DirectoryDeltaTransfer==1 && _RAKNET_SUPPORT_FileOperations==1
 
-#ifndef __DIRECTORY_DELTA_TRANSFER_H
-#define __DIRECTORY_DELTA_TRANSFER_H
-
+#pragma once
 #include "RakMemoryOverride.h"
 #include "RakNetTypes.h"
 #include "Export.h"
@@ -139,7 +137,7 @@ public:
 	void GenerateHashes(FileList &localFiles, const char *outputSubdir, bool prependAppDirToOutputSubdir);
 
 	/// \brief Clear all allowed uploads previously set with AddUploadsFromSubdirectory
-	void ClearUploads(void);
+	void ClearUploads();
 
 	/// \brief Returns how many files are available for upload
 	/// \return How many files are available for upload
@@ -168,5 +166,3 @@ protected:
 } // namespace RakNet
 
 #endif
-
-#endif // _RAKNET_SUPPORT_*

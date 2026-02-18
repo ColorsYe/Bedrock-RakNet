@@ -21,8 +21,8 @@
 #include "UDPForwarder.h"
 
 // Larger than the client version
-static const int DEFAULT_CLIENT_UNRESPONSIVE_PING_TIME=2000;
-static const int DEFAULT_UNRESPONSIVE_PING_TIME_COORDINATOR=DEFAULT_CLIENT_UNRESPONSIVE_PING_TIME+1000;
+static constexpr int DEFAULT_CLIENT_UNRESPONSIVE_PING_TIME=2000;
+static constexpr int DEFAULT_UNRESPONSIVE_PING_TIME_COORDINATOR=DEFAULT_CLIENT_UNRESPONSIVE_PING_TIME+1000;
 
 using namespace RakNet;
 
@@ -81,7 +81,7 @@ void UDPProxyCoordinator::SetRemoteLoginPassword(RakNet::RakString password)
 {
 	remoteLoginPassword=password;
 }
-void UDPProxyCoordinator::Update(void)
+void UDPProxyCoordinator::Update()
 {
 	unsigned int idx;
 	RakNet::TimeMS curTime = RakNet::GetTimeMS();
@@ -524,7 +524,7 @@ void UDPProxyCoordinator::SendAllBusy(SystemAddress senderClientAddress, SystemA
 	outgoingBs.Write(targetClientGuid);
 	rakPeerInterface->Send(&outgoingBs, MEDIUM_PRIORITY, RELIABLE_ORDERED, 0, requestingAddress, false);
 }
-void UDPProxyCoordinator::Clear(void)
+void UDPProxyCoordinator::Clear()
 {
 	serverList.Clear(true, _FILE_AND_LINE_);
 	for (unsigned int i=0; i < forwardingRequestList.Size(); i++)
@@ -533,7 +533,7 @@ void UDPProxyCoordinator::Clear(void)
 	}
 	forwardingRequestList.Clear(false, _FILE_AND_LINE_);
 }
-void UDPProxyCoordinator::ForwardingRequest::OrderRemainingServersToTry(void)
+void UDPProxyCoordinator::ForwardingRequest::OrderRemainingServersToTry()
 {
 	//DataStructures::Multilist<ML_ORDERED_LIST,UDPProxyCoordinator::ServerWithPing,unsigned short> swpList;
 	DataStructures::OrderedList<unsigned short, UDPProxyCoordinator::ServerWithPing, ServerWithPingComp> swpList;

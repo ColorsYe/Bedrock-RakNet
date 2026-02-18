@@ -8,9 +8,7 @@
  *
  */
 
-#ifndef __VARIABLE_DELTA_SERIALIZER_H
-#define __VARIABLE_DELTA_SERIALIZER_H
-
+#pragma once
 #include "VariableListDeltaTracker.h"
 #include "DS_MemoryPool.h"
 #include "NativeTypes.h"
@@ -129,7 +127,7 @@ public:
 	/// BeginIdenticalSerialize() requires knowledge of when serialization has started for an object across multiple systems
 	/// This way it can setup the flag to do new comparisons against the last sent values, rather than just resending the last sent bitStream
 	/// For Replica3, overload and call this from Replica3::OnUserReplicaPreSerializeTick()
-	void OnPreSerializeTick(void);
+	void OnPreSerializeTick();
 
 	/// Call when getting ID_SND_RECEIPT_LOSS or ID_SND_RECEIPT_ACKED for a particular system
 	/// Example:
@@ -249,11 +247,11 @@ protected:
 	void FreeVarsAssociatedWithReceipt(RakNetGUID guid, uint32_t receiptId);
 	void DirtyAndFreeVarsAssociatedWithReceipt(RakNetGUID guid, uint32_t receiptId);
 	unsigned int GetVarsWrittenPerRemoteSystemListIndex(RakNetGUID guid);
-	void RemoveRemoteSystemVariableHistory(void);
+	void RemoveRemoteSystemVariableHistory();
 
 	RemoteSystemVariableHistory* GetRemoteSystemVariableHistory(RakNetGUID guid);
 
-	ChangedVariablesList *AllocChangedVariablesList(void);
+	ChangedVariablesList *AllocChangedVariablesList();
 	void FreeChangedVariablesList(ChangedVariablesList *changedVariables);
 	void StoreChangedVariablesList(RemoteSystemVariableHistory *variableHistory, ChangedVariablesList *changedVariables, uint32_t sendReceipt);
 
@@ -263,5 +261,3 @@ protected:
 };
 
 }
-
-#endif

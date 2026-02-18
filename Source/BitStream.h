@@ -18,9 +18,7 @@
 #include "BitStream_NoTemplate.h"
 #else
 
-#ifndef __BITSTREAM_H
-#define __BITSTREAM_H
-
+#pragma once
 #include "RakMemoryOverride.h"
 #include "RakNetDefines.h"
 #include "Export.h"
@@ -881,20 +879,20 @@ namespace RakNet
 			bool ReadCompressedDelta(bool &var);
 #endif
 
-		inline static bool DoEndianSwap(void) {
+		inline static bool DoEndianSwap() {
 #ifndef __BITSTREAM_NATIVE_END
 			return IsNetworkOrder()==false;
 #else
 			return false;
 #endif
 		}
-		inline static bool IsBigEndian(void)
+		inline static bool IsBigEndian()
 		{
 			return IsNetworkOrder();
 		}
-		inline static bool IsNetworkOrder(void) {bool r = IsNetworkOrderInternal(); return r;}
+		inline static bool IsNetworkOrder() {bool r = IsNetworkOrderInternal(); return r;}
 		// Not inline, won't compile on PC due to winsock include errors
-		static bool IsNetworkOrderInternal(void);
+		static bool IsNetworkOrderInternal();
 		static void ReverseBytes(unsigned char *inByteArray, unsigned char *inOutByteArray, const unsigned int length);
 		static void ReverseBytesInPlace(unsigned char *inOutData,const unsigned int length);
 
@@ -2044,5 +2042,3 @@ namespace RakNet
 #endif
 
 #endif
-
-#endif // VC6

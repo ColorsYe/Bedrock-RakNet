@@ -15,9 +15,7 @@
 #include "NativeFeatureIncludes.h"
 #if _RAKNET_SUPPORT_MessageFilter==1
 
-#ifndef __MESSAGE_FILTER_PLUGIN_H
-#define __MESSAGE_FILTER_PLUGIN_H
-
+#pragma once
 #include "RakNetTypes.h"
 #include "PluginInterface2.h"
 #include "DS_OrderedList.h"
@@ -171,14 +169,14 @@ public:
 	// --------------------------------------------------------------------------------------------
 	// Packet handling functions
 	// --------------------------------------------------------------------------------------------
-	virtual void Update(void);
+	virtual void Update();
 	virtual PluginReceiveResult OnReceive(Packet *packet);
 	virtual void OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming);
 	virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
 
 protected:
 
-	void Clear(void);
+	void Clear();
 	void DeallocateFilterSet(FilterSet *filterSet);
 	FilterSet* GetFilterSetByID(int filterSetID);
 	void OnInvalidMessage(FilterSet *filterSet, AddressOrGUID systemAddress, unsigned char messageID);
@@ -194,5 +192,3 @@ protected:
 } // namespace RakNet
 
 #endif
-
-#endif // _RAKNET_SUPPORT_*

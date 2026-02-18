@@ -39,7 +39,7 @@ void Rackspace::RemoveEventCallback(Rackspace2EventCallback *callback)
 	if (idx != (unsigned int)-1)
 		eventCallbacks.RemoveAtIndex(idx);
 }
-void Rackspace::ClearEventCallbacks(void)
+void Rackspace::ClearEventCallbacks()
 {
 	eventCallbacks.Clear(true, _FILE_AND_LINE_);
 }
@@ -144,11 +144,11 @@ void Rackspace::AddOperation(RackspaceOperationType type, RakNet::RakString http
 	else
 		operations.Insert(ro,_FILE_AND_LINE_);
 }
-void Rackspace::ListServers(void)
+void Rackspace::ListServers()
 {
 	AddOperation(RO_LIST_SERVERS, "GET", "servers", "");
 }
-void Rackspace::ListServersWithDetails(void)
+void Rackspace::ListServersWithDetails()
 {
 	AddOperation(RO_LIST_SERVERS_WITH_DETAILS, "GET", "servers/detail", "");
 }
@@ -242,7 +242,7 @@ void Rackspace::RevertResizedServer(RakNet::RakString serverId)
 		"/>");
 	AddOperation(RO_REVERT_RESIZED_SERVER, "POST", RakNet::RakString("servers/%s/action", serverId.C_String()), xml);
 }
-void Rackspace::ListFlavors(void)
+void Rackspace::ListFlavors()
 {
 	AddOperation(RO_LIST_FLAVORS, "GET", "flavors", "");
 }
@@ -250,7 +250,7 @@ void Rackspace::GetFlavorDetails(RakNet::RakString flavorId)
 {
 	AddOperation(RO_GET_FLAVOR_DETAILS, "GET", RakNet::RakString("flavors/%s", flavorId.C_String()), "");
 }
-void Rackspace::ListImages(void)
+void Rackspace::ListImages()
 {
 	AddOperation(RO_LIST_IMAGES, "GET", "images", "");
 }
@@ -272,11 +272,11 @@ void Rackspace::DeleteImage(RakNet::RakString imageId)
 {
 	AddOperation(RO_DELETE_IMAGE, "DELETE", RakNet::RakString("images/%s", imageId.C_String()), "");
 }
-void Rackspace::ListSharedIPGroups(void)
+void Rackspace::ListSharedIPGroups()
 {
 	AddOperation(RO_LIST_SHARED_IP_GROUPS, "GET", "shared_ip_groups", "");
 }
-void Rackspace::ListSharedIPGroupsWithDetails(void)
+void Rackspace::ListSharedIPGroupsWithDetails()
 {
 	AddOperation(RO_LIST_SHARED_IP_GROUPS_WITH_DETAILS, "GET", "shared_ip_groups/detail", "");
 }

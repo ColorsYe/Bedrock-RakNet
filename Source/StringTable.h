@@ -14,9 +14,7 @@
 
 
 
-#ifndef __STRING_TABLE_H
-#define __STRING_TABLE_H
-
+#pragma once
 #include "DS_OrderedList.h"
 #include "Export.h"
 #include "RakMemoryOverride.h"
@@ -28,7 +26,7 @@ namespace RakNet
 };
 
 /// StringTableType should be the smallest type possible, or else it defeats the purpose of the StringTable class, which is to save bandwidth.
-typedef unsigned char StringTableType;
+using StringTableType = unsigned char;
 
 /// The string plus a bool telling us if this string was copied or not.
 struct StrAndBool
@@ -57,7 +55,7 @@ namespace RakNet
 		/// static function because only static functions can access static members
 		/// The RakPeer constructor adds a reference to this class, so don't call this until an instance of RakPeer exists, or unless you call AddReference yourself.
 		/// \return the unique instance of the StringTable
-		static StringTable* Instance(void);
+		static StringTable* Instance();
 
 		/// Add a string to the string table.
 		/// \param[in] str The string to add to the string table
@@ -74,22 +72,22 @@ namespace RakNet
 		/// Writes input to output, uncompressed.  Takes care of the null terminator for you.
 		/// Relies on the StringCompressor class, which is automatically reference counted in the constructor and destructor in RakPeer.  You can call the reference counting functions yourself if you wish too.
 		/// \param[out] output A block of bytes to receive the output
-		/// \param[in] maxCharsToWrite Size, in bytes, of \a output .  A NULL terminator will always be appended to the output string.  If the maxCharsToWrite is not large enough, the string will be truncated.
+		/// \param[in] maxCharsToWrite Size, in bytes, of \a output .  A nullptr terminator will always be appended to the output string.  If the maxCharsToWrite is not large enough, the string will be truncated.
 		/// \param[in] input The bitstream containing the compressed string
 		bool DecodeString( char *output, int maxCharsToWrite, RakNet::BitStream *input );
 
 		/// Used so I can allocate and deallocate this singleton at runtime
-		static void AddReference(void);
+		static void AddReference();
 
 		/// Used so I can allocate and deallocate this singleton at runtime
-		static void RemoveReference(void);
+		static void RemoveReference();
 
 		/// Private Constructor	
 		StringTable();
 
 	protected:
 		/// Called when you mess up and send a string using this class that was not registered with AddString
-		/// \param[in] maxCharsToWrite Size, in bytes, of \a output .  A NULL terminator will always be appended to the output string.  If the maxCharsToWrite is not large enough, the string will be truncated.
+		/// \param[in] maxCharsToWrite Size, in bytes, of \a output .  A nullptr terminator will always be appended to the output string.  If the maxCharsToWrite is not large enough, the string will be truncated.
 		void LogStringNotFound(const char *strName);
 
 		/// Singleton instance
@@ -99,6 +97,3 @@ namespace RakNet
 		DataStructures::OrderedList<char *, StrAndBool, StrAndBoolComp> orderedStringList;
 	};
 }
-
-
-#endif

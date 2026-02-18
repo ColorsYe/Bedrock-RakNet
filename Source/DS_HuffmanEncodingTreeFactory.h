@@ -14,9 +14,7 @@
 ///
 
  
-#ifndef __HUFFMAN_ENCODING_TREE_FACTORY
-#define __HUFFMAN_ENCODING_TREE_FACTORY
-
+#pragma once
 #include "RakMemoryOverride.h"
 
 namespace RakNet {
@@ -60,5 +58,3 @@ private:
 };
 
 } // namespace RakNet
-
-#endif

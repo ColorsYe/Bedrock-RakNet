@@ -17,9 +17,7 @@
 #include "NativeFeatureIncludes.h"
 #if _RAKNET_SUPPORT_UDPForwarder==1
 
-#ifndef __UDP_FORWARDER_H
-#define __UDP_FORWARDER_H
-
+#pragma once
 #include "Export.h"
 #include "RakNetTypes.h"
 #include "SocketIncludes.h"
@@ -56,10 +54,10 @@ public:
 
 	/// Starts the system.
 	/// Required to call before StartForwarding
-	void Startup(void);
+	void Startup();
 
 	/// Stops the system, and frees all sockets
-	void Shutdown(void);
+	void Shutdown();
 
 	/// Sets the maximum number of forwarding entries allowed
 	/// Set according to your available bandwidth and the estimated average bandwidth per forwarded address.
@@ -110,7 +108,7 @@ public:
 protected:
 	friend RAK_THREAD_DECLARATION(UpdateUDPForwarderGlobal);
 
-	void UpdateUDPForwarder(void);
+	void UpdateUDPForwarder();
 	void RecvFrom(RakNet::TimeMS curTime, ForwardEntry *forwardEntry);
 
 	struct StartForwardingInputStruct
@@ -155,5 +153,3 @@ protected:
 } // End namespace
 
 #endif
-
-#endif // #if _RAKNET_SUPPORT_UDPForwarder==1

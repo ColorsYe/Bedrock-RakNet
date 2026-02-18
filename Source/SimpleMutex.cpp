@@ -97,7 +97,7 @@ SimpleMutex::~SimpleMutex()
 #endif
 #endif
 
-void SimpleMutex::Lock(void)
+void SimpleMutex::Lock()
 {
 // 	if (isInitialized==false)
 // 		Init();
@@ -113,17 +113,17 @@ void SimpleMutex::Lock(void)
 	FORMAT_MESSAGE_ALLOCATE_BUFFER |
 	FORMAT_MESSAGE_FROM_SYSTEM |
 	FORMAT_MESSAGE_IGNORE_INSERTS,
-	NULL,
+	nullptr,
 	GetLastError(),
 	MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
 	(LPTSTR) &messageBuffer,
 	0,
-	NULL
+	nullptr
 	);
 	// Process any inserts in messageBuffer.
 	// ...
 	// Display the string.
-	//MessageBox( NULL, (LPCTSTR)messageBuffer, "Error", MB_OK | MB_ICONINFORMATION );
+	//MessageBox( nullptr, (LPCTSTR)messageBuffer, "Error", MB_OK | MB_ICONINFORMATION );
 	RAKNET_DEBUG_PRINTF("SimpleMutex error: %s", messageBuffer);
 	// Free the buffer.
 	LocalFree( messageBuffer );
@@ -146,7 +146,7 @@ void SimpleMutex::Lock(void)
 #endif
 }
 
-void SimpleMutex::Unlock(void)
+void SimpleMutex::Unlock()
 {
 // 	if (isInitialized==false)
 // 		return;
@@ -166,12 +166,12 @@ void SimpleMutex::Unlock(void)
 #endif
 }
 
-void SimpleMutex::Init(void)
+void SimpleMutex::Init()
 {
 #if defined(WINDOWS_PHONE_8) || defined(WINDOWS_STORE_RT)
 	InitializeCriticalSectionEx(&criticalSection,0,CRITICAL_SECTION_NO_DEBUG_INFO);
 #elif defined(_WIN32)
-	//	hMutex = CreateMutex(NULL, FALSE, 0);
+	//	hMutex = CreateMutex(nullptr, FALSE, 0);
 	//	RakAssert(hMutex);
 	InitializeCriticalSection(&criticalSection);
 

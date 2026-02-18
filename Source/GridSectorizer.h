@@ -8,9 +8,7 @@
  *
  */
 
-#ifndef _GRID_SECTORIZER_H
-#define _GRID_SECTORIZER_H
-
+#pragma once
 //#define _USE_ORDERED_LIST
 
 #include "RakMemoryOverride.h"
@@ -48,7 +46,7 @@ public:
 	// Adds to intersectionList all entries in a certain radius
 	void GetEntries(DataStructures::List<void*>& intersectionList, const float minX, const float minY, const float maxX, const float maxY);
 
-	void Clear(void);
+	void Clear();
 
 protected:
 	int WorldToCellX(const float input) const;
@@ -74,5 +72,3 @@ protected:
 	DataStructures::List<void*>* grid;
 #endif
 };
-
-#endif

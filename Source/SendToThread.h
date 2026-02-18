@@ -8,9 +8,7 @@
  *
  */
 
-#ifndef __SENDTO_THREAD
-#define __SENDTO_THREAD
-
+#pragma once
 #include "RakNetDefines.h"
 
 #ifdef USE_THREADED_SEND
@@ -38,11 +36,11 @@ public:
 		unsigned short dataWriteOffset;
 	};
 
-	static SendToThreadBlock* AllocateBlock(void);
+	static SendToThreadBlock* AllocateBlock();
 	static void ProcessBlock(SendToThreadBlock* threadedSend);
 
-	static void AddRef(void);
-	static void Deref(void);
+	static void AddRef();
+	static void Deref();
 	static DataStructures::ThreadsafeAllocatingQueue<SendToThreadBlock> objectQueue;
 protected:
 	static int refCount;
@@ -51,7 +49,5 @@ protected:
 };
 }
 
-
-#endif
 
 #endif

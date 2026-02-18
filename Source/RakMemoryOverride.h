@@ -14,9 +14,7 @@
 
 
 
-#ifndef __RAK_MEMORY_H
-#define __RAK_MEMORY_H
-
+#pragma once
 #include "Export.h"
 #include "RakNetDefines.h"
 #include <new>
@@ -232,7 +230,7 @@ void UseRaknetFixedHeap(size_t initialCapacity,
 						int (*yourMUnmapFunction) (void *p, size_t size) = RakNet::_DLMallocMUnmap);
 
 // Free memory allocated from UseRaknetFixedHeap
-void FreeRakNetFixedHeap(void);
+void FreeRakNetFixedHeap();
 
 // #if _USE_RAK_MEMORY_OVERRIDE==1
 // 	#if defined(RMO_NEW_UNDEF)
@@ -240,5 +238,3 @@ void FreeRakNetFixedHeap(void);
 // 	#undef RMO_NEW_UNDEF
 // 	#endif
 // #endif
-
-#endif

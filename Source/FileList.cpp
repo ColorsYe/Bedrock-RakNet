@@ -376,7 +376,7 @@ void FileList::AddFilesFromDirectory(const char *applicationDirectory, const cha
 	}
 
 }
-void FileList::Clear(void)
+void FileList::Clear()
 {
 	unsigned i;
 	for (i=0; i<fileList.Size(); i++)
@@ -688,7 +688,7 @@ void FileList::PopulateDataFromDisk(const char *applicationDirectory, bool write
 		}
 	}
 }
-void FileList::FlagFilesAsReferences(void)
+void FileList::FlagFilesAsReferences()
 {
 	for (unsigned int i=0; i < fileList.Size(); i++)
 	{
@@ -782,7 +782,7 @@ void FileList::RemoveCallback(FileListProgress *cb)
 	if (idx!=(unsigned int) -1)
 		fileListProgressCallbacks.RemoveAtIndex(idx);
 }
-void FileList::ClearCallbacks(void)
+void FileList::ClearCallbacks()
 {
 	fileListProgressCallbacks.Clear(true, _FILE_AND_LINE_);
 }

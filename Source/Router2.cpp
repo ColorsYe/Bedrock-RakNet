@@ -102,13 +102,13 @@ Router2::~Router2()
 		RakNet::OP_DELETE(udpForwarder,_FILE_AND_LINE_);
 	}
 }
-void Router2::ClearMinipunches(void)
+void Router2::ClearMinipunches()
 {
 	miniPunchesInProgressMutex.Lock();
 	miniPunchesInProgress.Clear(false,_FILE_AND_LINE_);
 	miniPunchesInProgressMutex.Unlock();
 }
-void Router2::ClearConnectionRequests(void)
+void Router2::ClearConnectionRequests()
 {
 	connectionRequestsMutex.Lock();
 	for (unsigned int i=0; i < connectionRequests.Size(); i++)
@@ -389,7 +389,7 @@ PluginReceiveResult Router2::OnReceive(Packet *packet)
 
 	return RR_CONTINUE_PROCESSING;
 }
-void Router2::Update(void)
+void Router2::Update()
 {
 	RakNet::TimeMS curTime = RakNet::GetTimeMS();
 	unsigned int connectionRequestIndex=0;
@@ -613,7 +613,7 @@ void Router2::OnFailedConnectionAttempt(Packet *packet, PI2_FailedConnectionAtte
 	}
 	forwardedConnectionListMutex.Unlock();
 }
-void Router2::OnRakPeerShutdown(void)
+void Router2::OnRakPeerShutdown()
 {
 	ClearAll();
 }
@@ -1344,13 +1344,13 @@ void Router2::ReturnToUser(MessageID messageId, RakNetGUID endpointGuid, const S
 	p->wasGeneratedLocally=wasGeneratedLocally;
 	rakPeerInterface->PushBackPacket(p, true);
 }
-void Router2::ClearForwardedConnections(void)
+void Router2::ClearForwardedConnections()
 {
 	forwardedConnectionListMutex.Lock();
 	forwardedConnectionList.Clear(false,_FILE_AND_LINE_);
 	forwardedConnectionListMutex.Unlock();
 }
-void Router2::ClearAll(void)
+void Router2::ClearAll()
 {
 	ClearConnectionRequests();
 	ClearMinipunches();
