@@ -81,7 +81,7 @@ namespace DataStructures
 		unsigned GetIndexAtKey( const key_type &key );
 		void RemoveAtIndex(const unsigned index);
 		void Clear();
-		unsigned Size(void) const;
+		[[nodiscard]] unsigned Size(void) const;
 
 	protected:
 		DataStructures::OrderedList< key_type,MapNode,&Map::NodeComparisonFunc > mapNodeList;

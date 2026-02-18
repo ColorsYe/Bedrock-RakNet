@@ -39,7 +39,7 @@ void NatPunchthroughServerDebugInterface_PacketLogger::OnServerMessage(const cha
 void NatPunchthroughServer::User::DeleteConnectionAttempt(NatPunchthroughServer::ConnectionAttempt *ca)
 {
 	unsigned int index = connectionAttempts.GetIndexOf(ca);
-	if ((unsigned int)index!=(unsigned int)-1)
+	if (static_cast<unsigned int>(index)!=(unsigned int)-1)
 	{
 		RakNet::OP_DELETE(ca,_FILE_AND_LINE_);
 		connectionAttempts.RemoveAtIndex(index);
@@ -48,7 +48,7 @@ void NatPunchthroughServer::User::DeleteConnectionAttempt(NatPunchthroughServer:
 void NatPunchthroughServer::User::DerefConnectionAttempt(NatPunchthroughServer::ConnectionAttempt *ca)
 {
 	unsigned int index = connectionAttempts.GetIndexOf(ca);
-	if ((unsigned int)index!=(unsigned int)-1)
+	if (static_cast<unsigned int>(index)!=(unsigned int)-1)
 	{
 		connectionAttempts.RemoveAtIndex(index);
 	}

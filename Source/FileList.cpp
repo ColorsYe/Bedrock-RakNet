@@ -127,7 +127,7 @@ void FileList::AddFile(const char *filepath, const char *filename, FileListNodeC
 	int length = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
 
-	if (length > (int) ((unsigned int)-1 / 8))
+	if (length > static_cast<int>((unsigned int)-1 / 8))
 	{
 		// If this assert hits, split up your file. You could also change BitSize_t in RakNetTypes.h to unsigned long long but this is not recommended for performance reasons
 		RakAssert("Cannot add files over 536 MB" && 0);
@@ -242,7 +242,7 @@ void FileList::AddFilesFromDirectory(const char *applicationDirectory, const cha
 	else
 		root[0]=0;
 
-	int rootLen=(int)strlen(root);
+	int rootLen=static_cast<int>(strlen)(root);
 	if (rootLen)
 	{
 		strcpy(dirSoFar, root);
@@ -404,7 +404,7 @@ void FileList::Serialize(RakNet::BitStream *outBitStream)
 			outBitStream->Write(fileList[i].data, fileList[i].dataLengthBytes);
 		}
 
-		outBitStream->Write((bool)(fileList[i].fileLengthBytes==fileList[i].dataLengthBytes));
+		outBitStream->Write(static_cast<bool>(fileList[i].fileLengthBytes==fileList[i].dataLengthBytes));
 		if (fileList[i].fileLengthBytes!=fileList[i].dataLengthBytes)
 			outBitStream->WriteCompressed(fileList[i].fileLengthBytes);
 	}
@@ -442,7 +442,7 @@ bool FileList::Deserialize(RakNet::BitStream *inBitStream)
 #endif
 				return false;
 			}
-			n.data=(char*) rakMalloc_Ex( (size_t) n.dataLengthBytes, _FILE_AND_LINE_ );
+			n.data=(char*) rakMalloc_Ex( static_cast<size_t>(n.dataLengthBytes), _FILE_AND_LINE_ );
 			RakAssert(n.data);
 			inBitStream->Read(n.data, n.dataLengthBytes);
 		}
@@ -454,7 +454,7 @@ bool FileList::Deserialize(RakNet::BitStream *inBitStream)
 		
 		b=inBitStream->Read(fileLenMatchesDataLen);
 		if (fileLenMatchesDataLen)
-			n.fileLengthBytes=(unsigned) n.dataLengthBytes;
+			n.fileLengthBytes=static_cast<unsigned>(n.dataLengthBytes);
 		else
 			b=inBitStream->ReadCompressed(n.fileLengthBytes);
 #ifdef _DEBUG
@@ -480,12 +480,12 @@ void FileList::GetDeltaToCurrent(FileList *input, FileList *output, const char *
 	unsigned dirSubsetLen, localPathLen, remoteSubdirLen;
 	bool match;
 	if (dirSubset)
-		dirSubsetLen = (unsigned int) strlen(dirSubset);
+		dirSubsetLen = static_cast<unsigned int>(strlen)(dirSubset);
 	else
 		dirSubsetLen = 0;
 	if (remoteSubdir && remoteSubdir[0])
 	{
-		remoteSubdirLen=(unsigned int) strlen(remoteSubdir);
+		remoteSubdirLen=static_cast<unsigned int>(strlen)(remoteSubdir);
 		if (IsSlash(remoteSubdir[remoteSubdirLen-1]))
 			remoteSubdirLen--;
 	}
@@ -494,7 +494,7 @@ void FileList::GetDeltaToCurrent(FileList *input, FileList *output, const char *
 
 	for (thisIndex=0; thisIndex < fileList.Size(); thisIndex++)
 	{
-		localPathLen = (unsigned int) fileList[thisIndex].filename.GetLength();
+		localPathLen = static_cast<unsigned int>(fileList[thisIndex]).filename.GetLength();
 		while (localPathLen>0)
 		{
 			if (IsSlash(fileList[thisIndex].filename[localPathLen-1]))
@@ -521,7 +521,7 @@ void FileList::GetDeltaToCurrent(FileList *input, FileList *output, const char *
 				match=true;
 				if (input->fileList[inputIndex].fileLengthBytes==fileList[thisIndex].fileLengthBytes &&
 					input->fileList[inputIndex].dataLengthBytes==fileList[thisIndex].dataLengthBytes &&
-					memcmp(input->fileList[inputIndex].data,fileList[thisIndex].data,(size_t) fileList[thisIndex].dataLengthBytes)==0)
+					memcmp(input->fileList[inputIndex].data,fileList[thisIndex].data,static_cast<size_t>(fileList[thisIndex]).dataLengthBytes)==0)
 				{
 					// File exists on both machines and is the same.
 					break;
@@ -720,7 +720,7 @@ void FileList::WriteDataToDisk(const char *applicationDirectory)
 			}
 		}
 
-		WriteFileWithDirectories(fullPath, fileList[i].data, (unsigned int) fileList[i].dataLengthBytes);
+		WriteFileWithDirectories(fullPath, fileList[i].data, static_cast<unsigned int>(fileList[i]).dataLengthBytes);
 	}
 }
 
@@ -773,7 +773,7 @@ void FileList::AddCallback(FileListProgress *cb)
 	if (cb==0)
 		return;
 
-	if ((unsigned int) fileListProgressCallbacks.GetIndexOf(cb)==(unsigned int)-1)
+	if (static_cast<unsigned int>(fileListProgressCallbacks.GetIndexOf()cb)==(unsigned int)-1)
 		fileListProgressCallbacks.Push(cb, _FILE_AND_LINE_);
 }
 void FileList::RemoveCallback(FileListProgress *cb)

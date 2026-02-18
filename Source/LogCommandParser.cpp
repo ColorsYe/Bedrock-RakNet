@@ -149,7 +149,7 @@ void LogCommandParser::WriteLog(const char *channelName, const char *format, ...
 
 	// Make sure that text ends in \r\n
 	int textLen;
-	textLen=(int)strlen(text);
+	textLen=static_cast<int>(strlen)(text);
 	if (textLen==0)
 		return;
 	if (text[textLen-1]=='\n')

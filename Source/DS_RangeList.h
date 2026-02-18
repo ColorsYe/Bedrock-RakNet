@@ -51,7 +51,7 @@ namespace DataStructures
 		~RangeList();
 		void Insert(range_type index);
 		void Clear();
-		unsigned Size(void) const;
+		[[nodiscard]] unsigned Size(void) const;
 		unsigned RangeSum(void) const;
 		RakNet::BitSize_t Serialize(RakNet::BitStream *in, RakNet::BitSize_t maxBits, bool clearSerialized);
 		bool Deserialize(RakNet::BitStream *out);
@@ -71,7 +71,7 @@ namespace DataStructures
 		bitsWritten=0;
 		for (i=0; i < ranges.Size(); i++)
 		{
-			if ((int)sizeof(unsigned short)*8+bitsWritten+(int)sizeof(range_type)*8*2+1>maxBits)
+			if (static_cast<int>(sizeof)(unsigned short)*8+bitsWritten+static_cast<int>(sizeof)(range_type)*8*2+1>maxBits)
 				break;
 			unsigned char minEqualsMax;
 			if (ranges[i].minIndex==ranges[i].maxIndex)

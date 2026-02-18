@@ -64,7 +64,7 @@ void CloudQuery::Serialize(bool writeToBitstream, BitStream *bitStream)
 	if (maxRowsToReturnIsZero==false)
 		bitStream->Serialize(writeToBitstream,maxRowsToReturn);
 	RakAssert(keys.Size()<(uint16_t)-1);
-	uint16_t numKeys = (uint16_t) keys.Size();
+	uint16_t numKeys = static_cast<uint16_t>(keys.Size());
 	bitStream->Serialize(writeToBitstream,numKeys);
 	if (writeToBitstream)
 	{
@@ -161,7 +161,7 @@ void CloudQueryResult::SerializeCloudQueryRows(bool writeToBitstream, uint32_t &
 void CloudQueryResult::Serialize(bool writeToBitstream, BitStream *bitStream, CloudAllocator *allocator)
 {
 	SerializeHeader(writeToBitstream, bitStream);
-	uint32_t numRows = (uint32_t) rowsReturned.Size();
+	uint32_t numRows = static_cast<uint32_t>(rowsReturned.Size());
 	SerializeNumRows(writeToBitstream, numRows, bitStream);
 	SerializeCloudQueryRows(writeToBitstream, numRows, bitStream, allocator);
 }

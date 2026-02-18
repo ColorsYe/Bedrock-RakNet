@@ -108,7 +108,7 @@ void RNS2_Berkley::GetSystemAddressIPV4And6 ( RNS2Socket rns2Socket, SystemAddre
 	sockaddr_storage ss;
 	slen = sizeof(ss);
 
-	if ( getsockname__(rns2Socket, (struct sockaddr *)&ss, &slen)!=0)
+	if ( getsockname__(rns2Socket, reinterpret_cast<struct sockaddr*>(&ss), &slen)!=0)
 	{
 #if defined(_WIN32) && defined(_DEBUG)
 		DWORD dwIOError = GetLastError();
@@ -167,7 +167,7 @@ RNS2BindResult RNS2_Berkley::BindSharedIPV4( RNS2_BerkleyBindParameters *bindPar
 	int ret;
 	memset(&boundAddress.address.addr4,0,sizeof(sockaddr_in));
 	boundAddress.address.addr4.sin_port = htons( bindParameters->port );
-	rns2Socket = (int) socket__( bindParameters->addressFamily, bindParameters->type, bindParameters->protocol );
+	rns2Socket = static_cast<int>(socket__)( bindParameters->addressFamily, bindParameters->type, bindParameters->protocol );
 	if (rns2Socket == -1)
 		return BR_FAILED_TO_BIND_SOCKET;
 
@@ -319,7 +319,7 @@ RNS2BindResult RNS2_Berkley::BindSharedIPV4And6( RNS2_BerkleyBindParameters *bin
 
 
 
-		ret = bind__(rns2Socket, aip->ai_addr, (int) aip->ai_addrlen );
+		ret = bind__(rns2Socket, aip->ai_addr, static_cast<int>(aip->ai_addrlen) );
 		if (ret>=0)
 		{
 			// Is this valid?

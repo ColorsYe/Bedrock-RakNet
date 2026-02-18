@@ -177,7 +177,7 @@ void NatPunchthroughClient::Update()
 			int ttlSendIndex;
 			for (ttlSendIndex=0; ttlSendIndex <= pc.MAX_PREDICTIVE_PORT_RANGE; ttlSendIndex++)
 			{
-				sa.SetPortHostOrder((unsigned short) (sp.targetAddress.GetPort()+ttlSendIndex));
+				sa.SetPortHostOrder(static_cast<unsigned short>(sp.targetAddress.GetPort()+ttlSendIndex));
 				SendTTL(sa);
 			}
 
@@ -193,7 +193,7 @@ void NatPunchthroughClient::Update()
 			if (sp.sentTTL==false)
 			{
 				SystemAddress sa=sp.targetAddress;
-				sa.SetPortHostOrder((unsigned short) (sa.GetPort()+sp.attemptCount));
+				sa.SetPortHostOrder(static_cast<unsigned short>(sa.GetPort()+sp.attemptCount));
 				SendTTL(sa);
 
 				if (natPunchthroughDebugInterface)
@@ -207,7 +207,7 @@ void NatPunchthroughClient::Update()
 			else
 			{
 				SystemAddress sa=sp.targetAddress;
-				sa.SetPortHostOrder((unsigned short) (sa.GetPort()+sp.attemptCount));
+				sa.SetPortHostOrder(static_cast<unsigned short>(sa.GetPort()+sp.attemptCount));
 				SendOutOfBand(sa,ID_NAT_ESTABLISH_UNIDIRECTIONAL);
 
 				IncrementExternalAttemptCount(time, delta);
@@ -229,9 +229,9 @@ void NatPunchthroughClient::Update()
 		{
 			SystemAddress sa=sp.targetAddress;
 			if ( sp.targetGuid < rakPeerInterface->GetGuidFromSystemAddress(UNASSIGNED_SYSTEM_ADDRESS) )
-				sa.SetPortHostOrder((unsigned short) (1024+sp.attemptCount));
+				sa.SetPortHostOrder(static_cast<unsigned short>(1024+sp.attemptCount));
 			else
-				sa.SetPortHostOrder((unsigned short) (sa.GetPort()+sp.attemptCount));
+				sa.SetPortHostOrder(static_cast<unsigned short>(sa.GetPort()+sp.attemptCount));
 			SendOutOfBand(sa,ID_NAT_ESTABLISH_UNIDIRECTIONAL);
 
 			IncrementExternalAttemptCount(time, delta);
@@ -248,9 +248,9 @@ void NatPunchthroughClient::Update()
 		{
 			SystemAddress sa=sp.targetAddress;
 			if ( sp.targetGuid > rakPeerInterface->GetGuidFromSystemAddress(UNASSIGNED_SYSTEM_ADDRESS) )
-				sa.SetPortHostOrder((unsigned short) (1024+sp.attemptCount));
+				sa.SetPortHostOrder(static_cast<unsigned short>(1024+sp.attemptCount));
 			else
-				sa.SetPortHostOrder((unsigned short) (sa.GetPort()+sp.attemptCount));
+				sa.SetPortHostOrder(static_cast<unsigned short>(sa.GetPort()+sp.attemptCount));
 			SendOutOfBand(sa,ID_NAT_ESTABLISH_UNIDIRECTIONAL);
 
 			IncrementExternalAttemptCount(time, delta);
@@ -265,7 +265,7 @@ void NatPunchthroughClient::Update()
 		else if (sp.testMode==SendPing::TESTING_EXTERNAL_IPS_1024_TO_1024)
 		{
 			SystemAddress sa=sp.targetAddress;
-			sa.SetPortHostOrder((unsigned short) (1024+sp.attemptCount));
+			sa.SetPortHostOrder(static_cast<unsigned short>(1024+sp.attemptCount));
 			SendOutOfBand(sa,ID_NAT_ESTABLISH_UNIDIRECTIONAL);
 
 			IncrementExternalAttemptCount(time, delta);

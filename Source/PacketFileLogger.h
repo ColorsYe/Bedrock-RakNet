@@ -31,7 +31,7 @@ public:
 	PacketFileLogger();
 	virtual ~PacketFileLogger();
 	void StartLog(const char *filenamePrefix);
-	virtual void WriteLog(const char *str);
+	void WriteLog(const char *str) override;
 protected:
 	FILE *packetLogFile;
 };

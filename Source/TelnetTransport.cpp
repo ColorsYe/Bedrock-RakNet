@@ -94,7 +94,7 @@ void TelnetTransport::Send(  SystemAddress systemAddress, const char *data,... )
 		strncat(text, sendSuffix, availableChars);
 	}
 
-	tcpInterface->Send(text, (unsigned int) strlen(text), systemAddress, false);
+	tcpInterface->Send(text, static_cast<unsigned int>(strlen)(text), systemAddress, false);
 }
 void TelnetTransport::CloseConnection( SystemAddress systemAddress )
 {
@@ -145,9 +145,9 @@ Packet* TelnetTransport::Receive( void )
 			for (int i=0; remoteClient->textInput[i]; i++)
 				remoteClient->textInput[i]=8;
 			strcat(remoteClient->textInput, remoteClient->lastSentTextInput);
-			tcpInterface->Send((const char *)remoteClient->textInput, (unsigned int) strlen(remoteClient->textInput), p->systemAddress, false);
+			tcpInterface->Send((const char *)remoteClient->textInput, static_cast<unsigned int>(strlen)(remoteClient->textInput), p->systemAddress, false);
 			strcpy(remoteClient->textInput,remoteClient->lastSentTextInput);
-			remoteClient->cursorPosition=(unsigned int) strlen(remoteClient->textInput);
+			remoteClient->cursorPosition=static_cast<unsigned int>(strlen)(remoteClient->textInput);
 		}
 		
 		return 0;
@@ -201,7 +201,7 @@ Packet* TelnetTransport::Receive( void )
 		{
 
 			Packet *reassembledLine = (Packet*) rakMalloc_Ex(sizeof(Packet), _FILE_AND_LINE_);
-			reassembledLine->length=(unsigned int) strlen(remoteClient->textInput);
+			reassembledLine->length=static_cast<unsigned int>(strlen)(remoteClient->textInput);
 			memcpy(remoteClient->lastSentTextInput, remoteClient->textInput, reassembledLine->length+1);
 			RakAssert(reassembledLine->length < REMOTE_MAX_TEXT_INPUT);
 			reassembledLine->data= (unsigned char*) rakMalloc_Ex( reassembledLine->length+1, _FILE_AND_LINE_ );

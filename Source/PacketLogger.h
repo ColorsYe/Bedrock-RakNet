@@ -54,12 +54,12 @@ public:
 		unsigned int splitPacketId, unsigned int splitPacketIndex, unsigned int splitPacketCount, unsigned int orderingIndex);
 
 	/// Events on low level sends and receives.  These functions may be called from different threads at the same time.
-	virtual void OnDirectSocketSend(const char *data, const BitSize_t bitsUsed, SystemAddress remoteSystemAddress);
-	virtual void OnDirectSocketReceive(const char *data, const BitSize_t bitsUsed, SystemAddress remoteSystemAddress);
-	virtual void OnReliabilityLayerNotification(const char *errorMessage, const BitSize_t bitsUsed, SystemAddress remoteSystemAddress, bool isError);
-	virtual void OnInternalPacket(InternalPacket *internalPacket, unsigned frameNumber, SystemAddress remoteSystemAddress, RakNet::TimeMS time, int isSend);
-	virtual void OnAck(unsigned int messageNumber, SystemAddress remoteSystemAddress, RakNet::TimeMS time);
-	virtual void OnPushBackPacket(const char *data, const BitSize_t bitsUsed, SystemAddress remoteSystemAddress);
+	void OnDirectSocketSend(const char *data, const BitSize_t bitsUsed, SystemAddress remoteSystemAddress) override;
+	void OnDirectSocketReceive(const char *data, const BitSize_t bitsUsed, SystemAddress remoteSystemAddress) override;
+	void OnReliabilityLayerNotification(const char *errorMessage, const BitSize_t bitsUsed, SystemAddress remoteSystemAddress, bool isError) override;
+	void OnInternalPacket(InternalPacket *internalPacket, unsigned frameNumber, SystemAddress remoteSystemAddress, RakNet::TimeMS time, int isSend) override;
+	void OnAck(unsigned int messageNumber, SystemAddress remoteSystemAddress, RakNet::TimeMS time) override;
+	void OnPushBackPacket(const char *data, const BitSize_t bitsUsed, SystemAddress remoteSystemAddress) override;
 
 	/// Logs out a header for all the data
 	virtual void LogHeader();
@@ -87,7 +87,7 @@ public:
 	void SetLogDirectMessages(bool send);
 protected:
 
-	virtual bool UsesReliabilityLayer(void) const {return true;}
+	bool UsesReliabilityLayer(void) const override {return true;}
 	const char* IDTOString(unsigned char Id);
 	virtual void AddToLog(const char *str);
 	// Users should override this

@@ -35,7 +35,7 @@ bool RakNet::CanConnect(NATTypeDetectionResult type1, NATTypeDetectionResult typ
 		{true,		true,		true,					true,				true,		false,		false,		true}		// Supports_UPNP
 	};
 
-	return connectionGraph[(int) type1][(int) type2];
+	return connectionGraph[static_cast<int>(type1)][static_cast<int>(type2)];
 }
 
 const char *RakNet::NATTypeDetectionResultToString(NATTypeDetectionResult type)

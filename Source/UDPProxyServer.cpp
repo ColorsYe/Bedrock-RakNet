@@ -170,7 +170,7 @@ void UDPProxyServer::OnForwardingRequestFromCoordinatorToServer(Packet *packet)
 	outgoingBs.Write(sourceAddress);
 	outgoingBs.Write(targetAddress);
 	outgoingBs.Write(serverPublicIp);
-	outgoingBs.Write((unsigned char) success);
+	outgoingBs.Write(static_cast<unsigned char>(success));
 	outgoingBs.Write(forwardingPort);
 	rakPeerInterface->Send(&outgoingBs, MEDIUM_PRIORITY, RELIABLE_ORDERED, 0, packet->systemAddress, false);
 }

@@ -416,7 +416,7 @@ bool FileListTransfer::DecodeFile(Packet *packet, bool isTheFullFile)
 	if (isTheFullFile)
 	{
 		inBitStream.AlignReadToByteBoundary();
-		onFileStruct.fileData = (char*) rakMalloc_Ex( (size_t) onFileStruct.byteLengthOfThisFile, _FILE_AND_LINE_ );
+		onFileStruct.fileData = (char*) rakMalloc_Ex( static_cast<size_t>(onFileStruct.byteLengthOfThisFile), _FILE_AND_LINE_ );
 		inBitStream.Read((char*)onFileStruct.fileData, onFileStruct.byteLengthOfThisFile);
 
 		FileListTransferCBInterface::FileProgressStruct fps;
@@ -441,7 +441,7 @@ bool FileListTransfer::DecodeFile(Packet *packet, bool isTheFullFile)
 		fileListReceiver->filesReceived++;
 
 		// If this set is done, free the memory for it.
-		if ((int) fileListReceiver->setCount==fileListReceiver->filesReceived)
+		if (static_cast<int>(fileListReceiver->setCount)==fileListReceiver->filesReceived)
 		{
 			FileListTransferCBInterface::DownloadCompleteStruct dcs;
 			dcs.setID=fileListReceiver->setID;
@@ -854,7 +854,7 @@ void FileListTransfer::OnReferencePush(Packet *packet, bool isTheFullFile)
 		fileListReceiver->filesReceived++;
 
 		// If this set is done, free the memory for it.
-		if ((int) fileListReceiver->setCount==fileListReceiver->filesReceived)
+		if (static_cast<int>(fileListReceiver->setCount)==fileListReceiver->filesReceived)
 		{
 			FileListTransferCBInterface::DownloadCompleteStruct dcs;
 			dcs.setID=fileListReceiver->setID;

@@ -1178,7 +1178,7 @@ void CloudServer::ProcessAndTransmitGetRequest(GetRequest *getRequest)
 	ProcessCloudQueryWithAddresses(getRequest->cloudQueryWithAddresses, cloudDataResultList, cloudKeyResultList);
 	bool unlimitedRows=getRequest->cloudQueryWithAddresses.cloudQuery.maxRowsToReturn==0;
 
-	uint32_t localNumRows = (uint32_t) cloudDataResultList.Size();
+	uint32_t localNumRows = static_cast<uint32_t>(cloudDataResultList.Size());
 	if (unlimitedRows==false &&
 		localNumRows > getRequest->cloudQueryWithAddresses.cloudQuery.startingRowIndex &&
 		localNumRows - getRequest->cloudQueryWithAddresses.cloudQuery.startingRowIndex > getRequest->cloudQueryWithAddresses.cloudQuery.maxRowsToReturn )

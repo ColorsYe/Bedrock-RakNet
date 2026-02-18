@@ -113,7 +113,7 @@ OutputStreamAndDataWriter ^ListenerContext::GetOutputStreamAndDataWriter(uint64_
 	}
 	outputStreamMapMutex.Unlock();
 	uint16_t port = s_addr & 0xFFFF;
-	uint32_t addr = (uint32_t) (s_addr >> 32);
+	uint32_t addr = static_cast<uint32_t>(s_addr >> 32);
 	//addr = ntohl(addr);
 	char buf[64];
 	unsigned char *ucp = (unsigned char *)&addr;

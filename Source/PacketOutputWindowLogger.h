@@ -29,7 +29,7 @@ class RAK_DLL_EXPORT  PacketOutputWindowLogger : public PacketLogger
 public:
 	PacketOutputWindowLogger();
 	virtual ~PacketOutputWindowLogger();
-	virtual void WriteLog(const char *str);
+	void WriteLog(const char *str) override;
 protected:
 };
 

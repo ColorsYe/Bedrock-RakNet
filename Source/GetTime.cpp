@@ -169,7 +169,7 @@ RakNet::TimeUS GetTimeUS_Windows( void )
 	__int64 quotient, remainder;
 	quotient=((PerfVal.QuadPart) / yo1.QuadPart);
 	remainder=((PerfVal.QuadPart) % yo1.QuadPart);
-	curTime = (RakNet::TimeUS) quotient*(RakNet::TimeUS)1000000 + (remainder*(RakNet::TimeUS)1000000 / yo1.QuadPart);
+	curTime = static_cast<RakNet::TimeUS>(quotient)*static_cast<RakNet::TimeUS>(1000000) + (remainder*static_cast<RakNet::TimeUS>(1000000) / yo1.QuadPart);
 
 #if defined(GET_TIME_SPIKE_LIMIT) && GET_TIME_SPIKE_LIMIT>0
 	return NormalizeTime(curTime);
@@ -186,14 +186,14 @@ RakNet::TimeUS GetTimeUS_Linux( void )
 		gettimeofday( &tp, 0 );
 		initialized=true;
 		// I do this because otherwise RakNet::Time in milliseconds won't work as it will underflow when dividing by 1000 to do the conversion
-		initialTime = ( tp.tv_sec ) * (RakNet::TimeUS) 1000000 + ( tp.tv_usec );
+		initialTime = ( tp.tv_sec ) * static_cast<RakNet::TimeUS>(1000000) + ( tp.tv_usec );
 	}
 
 	// GCC
 	RakNet::TimeUS curTime;
 	gettimeofday( &tp, 0 );
 
-	curTime = ( tp.tv_sec ) * (RakNet::TimeUS) 1000000 + ( tp.tv_usec );
+	curTime = ( tp.tv_sec ) * static_cast<RakNet::TimeUS>(1000000) + ( tp.tv_usec );
 
 #if defined(GET_TIME_SPIKE_LIMIT) && GET_TIME_SPIKE_LIMIT>0
 	return NormalizeTime(curTime - initialTime);
@@ -220,12 +220,12 @@ RakNet::TimeUS RakNet::GetTimeUS( void )
 bool RakNet::GreaterThan(RakNet::Time a, RakNet::Time b)
 {
 	// a > b?
-	const RakNet::Time halfSpan =(RakNet::Time) (((RakNet::Time)(const RakNet::Time)-1)/(RakNet::Time)2);
+	const RakNet::Time halfSpan =(RakNet::Time) (((RakNet::Time)(const RakNet::Time)-1)/static_cast<RakNet::Time>(2));
 	return b!=a && b-a>halfSpan;
 }
 bool RakNet::LessThan(RakNet::Time a, RakNet::Time b)
 {
 	// a < b?
-	const RakNet::Time halfSpan = ((RakNet::Time)(const RakNet::Time)-1)/(RakNet::Time)2;
+	const RakNet::Time halfSpan = ((RakNet::Time)(const RakNet::Time)-1)/static_cast<RakNet::Time>(2);
 	return b!=a && b-a<halfSpan;
 }

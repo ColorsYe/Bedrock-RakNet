@@ -80,7 +80,7 @@ void HuffmanEncodingTree::GenerateFromFrequencyTable( unsigned int frequencyTabl
 		node = RakNet::OP_NEW<HuffmanEncodingTreeNode>( _FILE_AND_LINE_ );
 		node->left = 0;
 		node->right = 0;
-		node->value = (unsigned char) counter;
+		node->value = static_cast<unsigned char>(counter);
 		node->weight = frequencyTable[ counter ];
 
 		if ( node->weight == 0 )
@@ -182,7 +182,7 @@ void HuffmanEncodingTree::EncodeArray( unsigned char *input, size_t sizeInBytes,
 	if ( output->GetNumberOfBitsUsed() % 8 != 0 )
 	{
 		// Find an input that is longer than the remaining bits.  Write out part of it to pad the output to be byte aligned.
-		unsigned char remainingBits = (unsigned char) ( 8 - ( output->GetNumberOfBitsUsed() % 8 ) );
+		unsigned char remainingBits = static_cast<unsigned char>( 8 - ( output->GetNumberOfBitsUsed() % 8 ) );
 
 		for ( counter = 0; counter < 256; counter++ )
 			if ( encodingTable[ counter ].bitLength > remainingBits )
@@ -253,7 +253,7 @@ void HuffmanEncodingTree::DecodeArray( unsigned char *input, BitSize_t sizeInBit
 
 		if ( currentNode->left == 0 && currentNode->right == 0 )   // Leaf
 		{
-			output->WriteBits( &( currentNode->value ), sizeof( char ) * 8, true ); // Use WriteBits instead of Write(char) because we want to avoid TYPE_CHECKING
+			output->WriteBits( &( currentNode->value ), sizeof( char ) * 8, true ); // Use WriteBits instead of Writestatic_cast<char>(because) we want to avoid TYPE_CHECKING
 			currentNode = root;
 		}
 	}

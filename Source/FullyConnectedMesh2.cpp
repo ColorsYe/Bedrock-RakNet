@@ -496,8 +496,8 @@ void FullyConnectedMesh2::AssignOurFCMGuid()
 	// Only assigned once ever
 	RakAssert(ourFCMGuid==0);
 	unsigned int randomNumber = randomMT();
-	randomNumber ^= (unsigned int) (RakNet::GetTimeUS() & 0xFFFFFFFF);
-	randomNumber ^= (unsigned int) (rakPeerInterface->GetGuidFromSystemAddress(UNASSIGNED_SYSTEM_ADDRESS).g & 0xFFFFFFFF);
+	randomNumber ^= static_cast<unsigned int>(RakNet::GetTimeUS() & 0xFFFFFFFF);
+	randomNumber ^= static_cast<unsigned int>(rakPeerInterface->GetGuidFromSystemAddress(UNASSIGNED_SYSTEM_ADDRESS).g & 0xFFFFFFFF);
 	ourFCMGuid |= randomNumber;
 	uint64_t reponse64 = totalConnectionCount;
 	ourFCMGuid |= reponse64<<32;
@@ -768,7 +768,7 @@ void FullyConnectedMesh2::ConnectToRemoteNewIncomingConnections(Packet *packet)
 		bsIn.Read(remoteAddress);
 		bsIn.Read(remoteGuid);
 		remoteAddress.ToString(false,str);
-		rakPeerInterface->Connect(str,remoteAddress.GetPort(),connectionPassword.C_String(),(int) connectionPassword.GetLength());
+		rakPeerInterface->Connect(str,remoteAddress.GetPort(),connectionPassword.C_String(),static_cast<int>(connectionPassword.GetLength()));
 	}
 }
 unsigned int FullyConnectedMesh2::GetTotalConnectionCount(void) const

@@ -426,13 +426,13 @@ void TwoWayAuthentication::Hash(char thierNonce[TWO_WAY_AUTHENTICATION_NONCE_LEN
 	cat::Skein hash;
 	if (!hash.BeginKey(HASH_BITS)) return;
 	hash.Crunch(thierNonce, TWO_WAY_AUTHENTICATION_NONCE_LENGTH);
-	hash.Crunch(password.C_String(), (int) password.GetLength());
+	hash.Crunch(password.C_String(), static_cast<int>(password.GetLength()));
 	hash.End();
 	hash.Generate(out, HASH_BYTES, STRENGTHENING_FACTOR);
 #else
 	CSHA1 sha1;
 	sha1.Update((unsigned char *) thierNonce, TWO_WAY_AUTHENTICATION_NONCE_LENGTH);
-	sha1.Update((unsigned char *) password.C_String(), (unsigned int) password.GetLength());
+	sha1.Update((unsigned char *) password.C_String(), static_cast<unsigned int>(password.GetLength()));
 	sha1.Final();
 	sha1.GetHash((unsigned char *) out);
 #endif

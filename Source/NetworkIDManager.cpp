@@ -63,7 +63,7 @@ NetworkID NetworkIDManager::GetNewNetworkID()
 unsigned int NetworkIDManager::NetworkIDToHashIndex(NetworkID networkId)
 {
 //	return SuperFastHash((const char*) &networkId.guid.g,sizeof(networkId.guid.g)) % NETWORK_ID_MANAGER_HASH_LENGTH;
-	return (unsigned int) (networkId % NETWORK_ID_MANAGER_HASH_LENGTH);
+	return static_cast<unsigned int>(networkId % NETWORK_ID_MANAGER_HASH_LENGTH);
 }
 void NetworkIDManager::TrackNetworkIDObject(NetworkIDObject *networkIdObject)
 {

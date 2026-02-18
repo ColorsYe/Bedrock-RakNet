@@ -60,7 +60,7 @@ RPC4GlobalRegistration::RPC4GlobalRegistration(const char* uniqueID, void ( *fun
 	}
 	globalRegistrationBuffer[globalRegistrationIndex].registerFunctionPointer=functionPointer;
 	globalRegistrationBuffer[globalRegistrationIndex].registerBlockingFunctionPointer=0;
-	RakAssert(callPriority!=(int) 0xFFFFFFFF);
+	RakAssert(callPriority!=static_cast<int>(0xFFFFFFFF));
 	globalRegistrationBuffer[globalRegistrationIndex].callPriority=callPriority;
 	globalRegistrationIndex++;
 }
@@ -260,10 +260,10 @@ void RPC4::CallLoopback( const char* uniqueID, RakNet::BitStream * bitStream )
 	if (skhi.IsInvalid()==true)
 	{
 		if (rakPeerInterface) 
-			p=AllocatePacketUnified(sizeof(MessageID)+sizeof(unsigned char)+(unsigned int) strlen(uniqueID)+1);
+			p=AllocatePacketUnified(sizeof(MessageID)+sizeof(unsigned char)+static_cast<unsigned int>(strlen)(uniqueID)+1);
 #if _RAKNET_SUPPORT_PacketizedTCP==1 && _RAKNET_SUPPORT_TCPInterface==1
 		else
-			p=tcpInterface->AllocatePacket(sizeof(MessageID)+sizeof(unsigned char)+(unsigned int) strlen(uniqueID)+1);
+			p=tcpInterface->AllocatePacket(sizeof(MessageID)+sizeof(unsigned char)+static_cast<unsigned int>(strlen)(uniqueID)+1);
 #endif
 
 		if (rakPeerInterface)
@@ -505,7 +505,7 @@ void RPC4::OnAttach()
 	{
 		if (globalRegistrationBuffer[i].registerFunctionPointer)
 		{
-			if (globalRegistrationBuffer[i].callPriority==(int)0xFFFFFFFF)
+			if (globalRegistrationBuffer[i].callPriority==static_cast<int>(0xFFFFFFFF))
 				RegisterFunction(globalRegistrationBuffer[i].functionName, globalRegistrationBuffer[i].registerFunctionPointer);
 			else
 				RegisterSlot(globalRegistrationBuffer[i].functionName, globalRegistrationBuffer[i].registerFunctionPointer, globalRegistrationBuffer[i].callPriority);
@@ -535,9 +535,9 @@ PluginReceiveResult RPC4::OnReceive(Packet *packet)
 				if (skhi.IsInvalid())
 				{
 					RakNet::BitStream bsOut;
-					bsOut.Write((unsigned char) ID_RPC_REMOTE_ERROR);
-					bsOut.Write((unsigned char) RPC_ERROR_FUNCTION_NOT_REGISTERED);
-					bsOut.Write(functionName.C_String(),(unsigned int) functionName.GetLength()+1);
+					bsOut.Write(static_cast<unsigned char>(ID_RPC_REMOTE_ERROR));
+					bsOut.Write(static_cast<unsigned char>(RPC_ERROR_FUNCTION_NOT_REGISTERED));
+					bsOut.Write(functionName.C_String(),static_cast<unsigned int>(functionName.GetLength())+1);
 					SendUnified(&bsOut,HIGH_PRIORITY,RELIABLE_ORDERED,0,packet->systemAddress,false);
 					return RR_STOP_PROCESSING_AND_DEALLOCATE;
 				}
@@ -553,9 +553,9 @@ PluginReceiveResult RPC4::OnReceive(Packet *packet)
 				if (skhi.IsInvalid())
 				{
 					RakNet::BitStream bsOut;
-					bsOut.Write((unsigned char) ID_RPC_REMOTE_ERROR);
-					bsOut.Write((unsigned char) RPC_ERROR_FUNCTION_NOT_REGISTERED);
-					bsOut.Write(functionName.C_String(),(unsigned int) functionName.GetLength()+1);
+					bsOut.Write(static_cast<unsigned char>(ID_RPC_REMOTE_ERROR));
+					bsOut.Write(static_cast<unsigned char>(RPC_ERROR_FUNCTION_NOT_REGISTERED));
+					bsOut.Write(functionName.C_String(),static_cast<unsigned int>(functionName.GetLength())+1);
 					SendUnified(&bsOut,HIGH_PRIORITY,RELIABLE_ORDERED,0,packet->systemAddress,false);
 					return RR_STOP_PROCESSING_AND_DEALLOCATE;
 				}

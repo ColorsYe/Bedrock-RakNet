@@ -241,7 +241,7 @@ RakNet::RakString SocketLayer::GetSubNetForSocketAndIp(__UDPSOCKET__ inSock, Rak
 	int intNum = ifc.ifc_len / sizeof(struct ifreq);
 	for(int i = 0; i < intNum; i++)
 	{
-		ipString=inet_ntoa(((struct sockaddr_in *)&ifr[i].ifr_addr)->sin_addr);
+		ipString=inet_ntoa((reinterpret_cast<struct sockaddr_in*>(&ifr[i].ifr_addr))->sin_addr);
 
 		if (inIpString==ipString)
 		{
@@ -259,7 +259,7 @@ RakNet::RakString SocketLayer::GetSubNetForSocketAndIp(__UDPSOCKET__ inSock, Rak
 
 			close(fd);
 			close(fd2);
-			netMaskString=inet_ntoa(((struct sockaddr_in *)&ifr2.ifr_addr)->sin_addr);
+			netMaskString=inet_ntoa((reinterpret_cast<struct sockaddr_in*>(&ifr2.ifr_addr))->sin_addr);
 
 			return netMaskString;
 		}
@@ -386,12 +386,12 @@ void GetMyIP_Win32( SystemAddress addresses[MAXIMUM_NUMBER_OF_INTERNAL_IDS] )
 	{
 		if (aip->ai_family == AF_INET)
 		{
-			struct sockaddr_in *ipv4 = (struct sockaddr_in *)aip->ai_addr;
+			struct sockaddr_in *ipv4 = reinterpret_cast<struct sockaddr_in*>(aip->ai_addr);
 			memcpy(&addresses[idx].address.addr4,ipv4,sizeof(sockaddr_in));
 		}
 		else
 		{
-			struct sockaddr_in6 *ipv6 = (struct sockaddr_in6 *)aip->ai_addr;
+			struct sockaddr_in6 *ipv6 = reinterpret_cast<struct sockaddr_in6*>(aip->ai_addr);
 			memcpy(&addresses[idx].address.addr4,ipv6,sizeof(sockaddr_in6));
 		}
 
@@ -515,7 +515,7 @@ void SocketLayer::GetSystemAddress ( __UDPSOCKET__ s, SystemAddress *systemAddre
 	sockaddr_storage ss;
 	slen = sizeof(ss);
 
-	if (getsockname__(s, (struct sockaddr *)&ss, &slen)!=0)
+	if (getsockname__(s, reinterpret_cast<struct sockaddr*>(&ss), &slen)!=0)
 	{
 #if defined(_WIN32) && defined(_DEBUG)
 		DWORD dwIOError = GetLastError();

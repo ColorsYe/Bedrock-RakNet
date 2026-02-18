@@ -181,7 +181,7 @@ bool PluginInterface2::SendListUnified( const char **data, const int *lengths, c
 			return false;
 
 		char *dataAggregate;
-		dataAggregate = (char*) rakMalloc_Ex( (size_t) totalLength, _FILE_AND_LINE_ );
+		dataAggregate = (char*) rakMalloc_Ex( static_cast<size_t>(totalLength), _FILE_AND_LINE_ );
 		if (dataAggregate==0)
 		{
 			notifyOutOfMemory(_FILE_AND_LINE_);

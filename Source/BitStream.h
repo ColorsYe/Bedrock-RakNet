@@ -496,20 +496,20 @@ namespace RakNet
 		void SetWriteOffset( const BitSize_t offset );
 
 		/// \brief Returns the length in bits of the stream
-		inline BitSize_t GetNumberOfBitsUsed( void ) const {return GetWriteOffset();}
-		inline BitSize_t GetWriteOffset( void ) const {return numberOfBitsUsed;}
+		[[nodiscard]] inline BitSize_t GetNumberOfBitsUsed( void ) const {return GetWriteOffset();}
+		[[nodiscard]] inline BitSize_t GetWriteOffset( void ) const {return numberOfBitsUsed;}
 
 		/// \brief Returns the length in bytes of the stream
-		inline BitSize_t GetNumberOfBytesUsed( void ) const {return BITS_TO_BYTES( numberOfBitsUsed );}
+		[[nodiscard]] inline BitSize_t GetNumberOfBytesUsed( void ) const {return BITS_TO_BYTES( numberOfBitsUsed );}
 
 		/// \brief Returns the number of bits into the stream that we have read
-		inline BitSize_t GetReadOffset( void ) const {return readOffset;}
+		[[nodiscard]] inline BitSize_t GetReadOffset( void ) const {return readOffset;}
 
 		/// \brief Sets the read bit index
 		void SetReadOffset( const BitSize_t newReadOffset ) {readOffset=newReadOffset;}
 
 		/// \brief Returns the number of bits left in the stream that haven't been read
-		inline BitSize_t GetNumberOfUnreadBits( void ) const {return numberOfBitsUsed - readOffset;}
+		[[nodiscard]] inline BitSize_t GetNumberOfUnreadBits( void ) const {return numberOfBitsUsed - readOffset;}
 
 		/// \brief Makes a copy of the internal data for you \a _data will point to
 		/// the stream. Partial bytes are left aligned.
@@ -1331,7 +1331,7 @@ namespace RakNet
 			varCopy=-1.0f;
 		if (varCopy > 1.0f)
 			varCopy=1.0f;
-		Write((unsigned short)((varCopy+1.0f)*32767.5f));
+		Write(static_cast<unsigned short>((varCopy+1.0f)*32767.5f));
 	}
 
 	/// For values between -1 and 1
@@ -1344,7 +1344,7 @@ namespace RakNet
 			varCopy=-1.0f;
 		if (varCopy > 1.0f)
 			varCopy=1.0f;
-		Write((uint32_t)((varCopy+1.0)*2147483648.0));
+		Write(static_cast<uint32_t>((varCopy+1.0)*2147483648.0));
 	}
 
 	/// Compress the string
@@ -1666,7 +1666,7 @@ namespace RakNet
 		unsigned short compressedFloat;
 		if (Read(compressedFloat))
 		{
-			outTemplateVar = ((float)compressedFloat / 32767.5f - 1.0f);
+			outTemplateVar = (static_cast<float>(compressedFloat) / 32767.5f - 1.0f);
 			return true;
 		}
 		return false;
@@ -1679,7 +1679,7 @@ namespace RakNet
 		uint32_t compressedFloat;
 		if (Read(compressedFloat))
 		{
-			outTemplateVar = ((double)compressedFloat / 2147483648.0 - 1.0);
+			outTemplateVar = (static_cast<double>(compressedFloat) / 2147483648.0 - 1.0);
 			return true;
 		}
 		return false;
@@ -1788,21 +1788,21 @@ namespace RakNet
 		RakAssert(x <= 1.01 && y <= 1.01 && z <= 1.01 && x >= -1.01 && y >= -1.01 && z >= -1.01);
 #endif
 
-		WriteFloat16((float)x,-1.0f,1.0f);
-		WriteFloat16((float)y,-1.0f,1.0f);
-		WriteFloat16((float)z,-1.0f,1.0f);
+		WriteFloat16(static_cast<float>(x),-1.0f,1.0f);
+		WriteFloat16(static_cast<float>(y),-1.0f,1.0f);
+		WriteFloat16(static_cast<float>(z),-1.0f,1.0f);
 	}
 
 	template <class templateType> // templateType for this function must be a float or double
 		void BitStream::WriteVector( templateType x, templateType y, templateType z )
 	{
 		templateType magnitude = sqrt(x * x + y * y + z * z);
-		Write((float)magnitude);
+		Write(static_cast<float>(magnitude));
 		if (magnitude > 0.00001f)
 		{
-			WriteCompressed((float)(x/magnitude));
-			WriteCompressed((float)(y/magnitude));
-			WriteCompressed((float)(z/magnitude));
+			WriteCompressed(static_cast<float>(x/magnitude));
+			WriteCompressed(static_cast<float>(y/magnitude));
+			WriteCompressed(static_cast<float>(z/magnitude));
 			//	Write((unsigned short)((x/magnitude+1.0f)*32767.5f));
 			//	Write((unsigned short)((y/magnitude+1.0f)*32767.5f));
 			//	Write((unsigned short)((z/magnitude+1.0f)*32767.5f));
@@ -1812,13 +1812,13 @@ namespace RakNet
 	template <class templateType> // templateType for this function must be a float or double
 		void BitStream::WriteNormQuat( templateType w, templateType x, templateType y, templateType z)
 	{
-		Write((bool)(w<0.0));
-		Write((bool)(x<0.0));
-		Write((bool)(y<0.0));
-		Write((bool)(z<0.0));
-		Write((unsigned short)(fabs(x)*65535.0));
-		Write((unsigned short)(fabs(y)*65535.0));
-		Write((unsigned short)(fabs(z)*65535.0));
+		Write(static_cast<bool>(w<0.0));
+		Write(static_cast<bool>(x<0.0));
+		Write(static_cast<bool>(y<0.0));
+		Write(static_cast<bool>(z<0.0));
+		Write(static_cast<unsigned short>(fabs(x)*65535.0));
+		Write(static_cast<unsigned short>(fabs(y)*65535.0));
+		Write(static_cast<unsigned short>(fabs(z)*65535.0));
 		// Leave out w and calculate it on the target
 	}
 
@@ -1853,9 +1853,9 @@ namespace RakNet
 		if (qx < 0.0) qx=0.0;
 		if (qy < 0.0) qy=0.0;
 		if (qz < 0.0) qz=0.0;
-		qx = _copysign( (double) qx, (double) (m21 - m12) );
-		qy = _copysign( (double) qy, (double) (m02 - m20) );
-		qz = _copysign( (double) qz, (double) (m10 - m01) );
+		qx = _copysign( static_cast<double>(qx), static_cast<double>(m21 - m12) );
+		qy = _copysign( static_cast<double>(qy), static_cast<double>(m02 - m20) );
+		qz = _copysign( static_cast<double>(qz), static_cast<double>(m10 - m01) );
 
 		WriteNormQuat(qw,qx,qy,qz);
 	}
@@ -1994,25 +1994,25 @@ namespace RakNet
 
 		// Quat to orthogonal rotation matrix
 		// http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToMatrix/index.htm
-		double sqw = (double)qw*(double)qw;
-		double sqx = (double)qx*(double)qx;
-		double sqy = (double)qy*(double)qy;
-		double sqz = (double)qz*(double)qz;
+		double sqw = static_cast<double>(qw)*static_cast<double>(qw);
+		double sqx = static_cast<double>(qx)*static_cast<double>(qx);
+		double sqy = static_cast<double>(qy)*static_cast<double>(qy);
+		double sqz = static_cast<double>(qz)*static_cast<double>(qz);
 		m00 =  (templateType)(sqx - sqy - sqz + sqw); // since sqw + sqx + sqy + sqz =1
 		m11 = (templateType)(-sqx + sqy - sqz + sqw);
 		m22 = (templateType)(-sqx - sqy + sqz + sqw);
 
-		double tmp1 = (double)qx*(double)qy;
-		double tmp2 = (double)qz*(double)qw;
+		double tmp1 = static_cast<double>(qx)*static_cast<double>(qy);
+		double tmp2 = static_cast<double>(qz)*static_cast<double>(qw);
 		m10 = (templateType)(2.0 * (tmp1 + tmp2));
 		m01 = (templateType)(2.0 * (tmp1 - tmp2));
 
-		tmp1 = (double)qx*(double)qz;
-		tmp2 = (double)qy*(double)qw;
+		tmp1 = static_cast<double>(qx)*static_cast<double>(qz);
+		tmp2 = static_cast<double>(qy)*static_cast<double>(qw);
 		m20 =(templateType)(2.0 * (tmp1 - tmp2));
 		m02 = (templateType)(2.0 * (tmp1 + tmp2));
-		tmp1 = (double)qy*(double)qz;
-		tmp2 = (double)qx*(double)qw;
+		tmp1 = static_cast<double>(qy)*static_cast<double>(qz);
+		tmp2 = static_cast<double>(qx)*static_cast<double>(qw);
 		m21 = (templateType)(2.0 * (tmp1 + tmp2));
 		m12 = (templateType)(2.0 * (tmp1 - tmp2));
 

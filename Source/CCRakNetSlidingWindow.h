@@ -171,7 +171,7 @@ class CCRakNetSlidingWindow
 	double GetRTT(void) const;
 
 	bool GetIsInSlowStart(void) const {return IsInSlowStart();}
-	uint32_t GetCWNDLimit(void) const {return (uint32_t) 0;}
+	uint32_t GetCWNDLimit(void) const {return static_cast<uint32_t>(0);}
 
 
 	/// Is a > b, accounting for variable overflow?

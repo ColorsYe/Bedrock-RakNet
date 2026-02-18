@@ -93,7 +93,7 @@ void DynDNS::UpdateHostIPAsynch(const char *dnsHost, const char *newIPAddress, c
 	getString+="Host: members.dyndns.org\n";
 	getString+="Authorization: Basic ";
 	char outputData[512];
-	Base64Encoding((const unsigned char*) usernameAndPassword, (int) strlen(usernameAndPassword), outputData);
+	Base64Encoding((const unsigned char*) usernameAndPassword, static_cast<int>(strlen)(usernameAndPassword), outputData);
 	getString+=outputData;
 	getString+="User-Agent: Jenkins Software LLC - PC - 1.0\n\n";
 }
@@ -121,7 +121,7 @@ void DynDNS::Update()
 		else
 		{
 			connectPhase = CP_WAITING_FOR_DYNDNS_RESPONSE;
-			tcp->Send(getString.C_String(), (unsigned int) getString.GetLength(), serverAddress, false);
+			tcp->Send(getString.C_String(), static_cast<unsigned int>(getString.GetLength()), serverAddress, false);
 		}
 		phaseTimeout=RakNet::GetTime()+1000;
 	}

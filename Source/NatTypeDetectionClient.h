@@ -60,14 +60,14 @@ struct Packet;
 		void DetectNATType(SystemAddress _serverAddress);
 
 		/// \internal For plugin handling
-		virtual void Update();
+		void Update() override;
 
 		/// \internal For plugin handling
-		virtual PluginReceiveResult OnReceive(Packet *packet);
+		PluginReceiveResult OnReceive(Packet *packet) override;
 
-		virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
-		virtual void OnRakPeerShutdown();
-		virtual void OnDetach();
+		void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason ) override;
+		void OnRakPeerShutdown() override;
+		void OnDetach() override;
 
 		virtual void OnRNS2Recv(RNS2RecvStruct *recvStruct);
 		virtual void DeallocRNS2RecvStruct(RNS2RecvStruct *s, const char *file, unsigned int line);

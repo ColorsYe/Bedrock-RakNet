@@ -91,7 +91,7 @@ namespace DataStructures
 		bool Delete(const KeyType key, DataType &out);
 		bool Insert(const KeyType key, const DataType &data);
 		void Clear();
-		unsigned Size(void) const;
+		[[nodiscard]] unsigned Size(void) const;
 		bool IsEmpty(void) const;
 		Page<KeyType, DataType, order> *GetListHead(void) const;
 		DataType GetDataHead(void) const;

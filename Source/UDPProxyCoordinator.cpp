@@ -268,7 +268,7 @@ void UDPProxyCoordinator::OnForwardingRequestFromClientToCoordinator(Packet *pac
 		outgoingBs.Write(sourceAddress);
 		outgoingBs.Write(targetAddress);
 		outgoingBs.Write(targetGuid);
-		unsigned short serverListSize = (unsigned short) serverList.Size();
+		unsigned short serverListSize = static_cast<unsigned short>(serverList.Size());
 		outgoingBs.Write(serverListSize);
 		unsigned int idx;
 		for (idx=0; idx < serverList.Size(); idx++)
@@ -549,13 +549,13 @@ void UDPProxyCoordinator::ForwardingRequest::OrderRemainingServersToTry()
 		swp.serverAddress=remainingServersToTry[idx];
 		swp.ping=0;
 		if (sourceServerPings.Size())
-			swp.ping+=(unsigned short) (sourceServerPings[idx].ping);
+			swp.ping+=static_cast<unsigned short>(sourceServerPings[idx].ping);
 		else
-			swp.ping+=(unsigned short) (DEFAULT_CLIENT_UNRESPONSIVE_PING_TIME);
+			swp.ping+=static_cast<unsigned short>(DEFAULT_CLIENT_UNRESPONSIVE_PING_TIME);
 		if (targetServerPings.Size())
-			swp.ping+=(unsigned short) (targetServerPings[idx].ping);
+			swp.ping+=static_cast<unsigned short>(targetServerPings[idx].ping);
 		else
-			swp.ping+=(unsigned short) (DEFAULT_CLIENT_UNRESPONSIVE_PING_TIME);
+			swp.ping+=static_cast<unsigned short>(DEFAULT_CLIENT_UNRESPONSIVE_PING_TIME);
 		swpList.Insert(swp.ping, swp, false, _FILE_AND_LINE_);
 	}
 	remainingServersToTry.Clear(_FILE_AND_LINE_ );

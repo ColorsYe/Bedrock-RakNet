@@ -104,11 +104,11 @@ public:
 	
 protected:
 	/// \internal
-	virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
+	void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason ) override;
 	/// \internal
-	virtual void OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming);
+	void OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming) override;
 	/// \internal
-	virtual PluginReceiveResult OnReceive(Packet *packet);
+	PluginReceiveResult OnReceive(Packet *packet) override;
 
 	// List of systems I am connected to, which in turn stores which systems they are connected to
 	DataStructures::OrderedList<RakNetGUID, RemoteSystem*, ConnectionGraph2::RemoteSystemComp> remoteSystems;

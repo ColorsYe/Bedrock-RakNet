@@ -35,7 +35,7 @@ void DataCompressor::Compress( unsigned char *userData, unsigned sizeInBytes, Ra
 		output->WriteCompressed(frequencyTable[i]);
 	output->AlignWriteToByteBoundary();
 	writeOffset1=output->GetWriteOffset();
-	output->Write((unsigned int)0);	// Dummy value
+	output->Write(static_cast<unsigned int>(0));	// Dummy value
 	bitsUsed1=output->GetNumberOfBitsUsed();
 	tree.EncodeArray(userData, sizeInBytes, output);
 	bitsUsed2=output->GetNumberOfBitsUsed();

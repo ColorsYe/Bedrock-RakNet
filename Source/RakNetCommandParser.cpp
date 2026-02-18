@@ -87,8 +87,8 @@ bool RakNetCommandParser::OnCommand(const char *command, unsigned numParameters,
 
 	if (strcmp(command, "Startup")==0)
 	{
-		RakNet::SocketDescriptor socketDescriptor((unsigned short)atoi(parameterList[1]), parameterList[2]);
-		ReturnResult(peer->Startup((unsigned short)atoi(parameterList[0]), &socketDescriptor, 1), command, transport, systemAddress);
+		RakNet::SocketDescriptor socketDescriptor(static_cast<unsigned short>(atoi)(parameterList[1]), parameterList[2]);
+		ReturnResult(peer->Startup(static_cast<unsigned short>(atoi)(parameterList[0]), &socketDescriptor, 1), command, transport, systemAddress);
 	}
 	else if (strcmp(command, "InitializeSecurity")==0)
 	{
@@ -115,20 +115,20 @@ bool RakNetCommandParser::OnCommand(const char *command, unsigned numParameters,
 	}
 	else if (strcmp(command, "SetMaximumIncomingConnections")==0)
 	{
-		peer->SetMaximumIncomingConnections((unsigned short)atoi(parameterList[0]));
+		peer->SetMaximumIncomingConnections(static_cast<unsigned short>(atoi)(parameterList[0]));
 		ReturnResult(command, transport, systemAddress);
 	}
 	else if (strcmp(command, "GetMaximumIncomingConnections")==0)
 	{
-		ReturnResult((int) peer->GetMaximumIncomingConnections(), command, transport, systemAddress);
+		ReturnResult(static_cast<int>(peer->GetMaximumIncomingConnections)(), command, transport, systemAddress);
 	}
 	else if (strcmp(command, "Connect")==0)
 	{
-		ReturnResult(peer->Connect(parameterList[0], (unsigned short)atoi(parameterList[1]),parameterList[2],atoi(parameterList[3]))==RakNet::CONNECTION_ATTEMPT_STARTED, command, transport, systemAddress);
+		ReturnResult(peer->Connect(parameterList[0], static_cast<unsigned short>(atoi)(parameterList[1]),parameterList[2],atoi(parameterList[3]))==RakNet::CONNECTION_ATTEMPT_STARTED, command, transport, systemAddress);
 	}
 	else if (strcmp(command, "Disconnect")==0)
 	{
-		peer->Shutdown(atoi(parameterList[0]), (unsigned char)atoi(parameterList[1]));
+		peer->Shutdown(atoi(parameterList[0]), static_cast<unsigned char>(atoi)(parameterList[1]));
 		ReturnResult(command, transport, systemAddress);
 	}
 	else if (strcmp(command, "IsActive")==0)
@@ -162,12 +162,12 @@ bool RakNetCommandParser::OnCommand(const char *command, unsigned numParameters,
 	}
 	else if (strcmp(command, "CloseConnection")==0)
 	{
-		peer->CloseConnection(SystemAddress(parameterList[0]), atoi(parameterList[1])!=0,(unsigned char)atoi(parameterList[2]));
+		peer->CloseConnection(SystemAddress(parameterList[0]), atoi(parameterList[1])!=0,static_cast<unsigned char>(atoi)(parameterList[2]));
 		ReturnResult(command, transport, systemAddress);
 	}
 	else if (strcmp(command, "GetConnectionState")==0)
 	{
-		ReturnResult((int) peer->GetConnectionState(SystemAddress(parameterList[0])), command, transport, systemAddress);
+		ReturnResult(static_cast<int>(peer->GetConnectionState)(SystemAddress(parameterList[0])), command, transport, systemAddress);
 	}
 	else if (strcmp(command, "GetIndexFromSystemAddress")==0)
 	{
@@ -203,7 +203,7 @@ bool RakNetCommandParser::OnCommand(const char *command, unsigned numParameters,
 	}
 	else if (strcmp(command, "Ping2")==0)
 	{
-		peer->Ping(parameterList[0], (unsigned short) atoi(parameterList[1]), atoi(parameterList[2])!=0);
+		peer->Ping(parameterList[0], static_cast<unsigned short>(atoi)(parameterList[1]), atoi(parameterList[2])!=0);
 		ReturnResult(command, transport, systemAddress);
 	}
 	else if (strcmp(command, "GetAveragePing")==0)
@@ -253,7 +253,7 @@ bool RakNetCommandParser::OnCommand(const char *command, unsigned numParameters,
 	}
 	else if (strcmp(command, "GetNumberOfAddresses")==0)
 	{
-		ReturnResult((int)peer->GetNumberOfAddresses(), command, transport, systemAddress);
+		ReturnResult(static_cast<int>(peer->GetNumberOfAddresses)(), command, transport, systemAddress);
 	}
 	else if (strcmp(command, "GetLocalIP")==0)
 	{
@@ -266,7 +266,7 @@ bool RakNetCommandParser::OnCommand(const char *command, unsigned numParameters,
 	}
 	else if (strcmp(command, "AdvertiseSystem")==0)
 	{
-		peer->AdvertiseSystem(parameterList[0], (unsigned short) atoi(parameterList[1]),parameterList[2],atoi(parameterList[3]));
+		peer->AdvertiseSystem(parameterList[0], static_cast<unsigned short>(atoi)(parameterList[1]),parameterList[2],atoi(parameterList[3]));
 		ReturnResult(command, transport, systemAddress);
 	}
 	else if (strcmp(command, "SetIncomingPassword")==0)

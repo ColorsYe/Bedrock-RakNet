@@ -144,10 +144,10 @@ PluginReceiveResult UDPProxyClient::OnReceive(Packet *packet)
 					RakNet::TimeMS curTime=RakNet::GetTimeMS();
 					int ping;
 					if (curTime>sentTime)
-						ping=(int) (curTime-sentTime);
+						ping=static_cast<int>(curTime-sentTime);
 					else
 						ping=0;
-					psg->serversToPing[idx2].ping=(unsigned short) ping;
+					psg->serversToPing[idx2].ping=static_cast<unsigned short>(ping);
 
 					// If all servers to ping are now pinged, reply to coordinator
 					if (psg->AreAllServersPinged())
@@ -291,7 +291,7 @@ void UDPProxyClient::PingServerGroup::SendPingedServersToCoordinator(RakPeerInte
 	outgoingBs.Write((MessageID)ID_UDP_PROXY_PING_SERVERS_REPLY_FROM_CLIENT_TO_COORDINATOR);
 	outgoingBs.Write(sata.senderClientAddress);
 	outgoingBs.Write(sata.targetClientAddress);
-	unsigned short serversToPingSize = (unsigned short) serversToPing.Size();
+	unsigned short serversToPingSize = static_cast<unsigned short>(serversToPing.Size());
 	outgoingBs.Write(serversToPingSize);
 	unsigned int serversToPingIndex;
 	for (serversToPingIndex=0; serversToPingIndex < serversToPingSize; serversToPingIndex++)

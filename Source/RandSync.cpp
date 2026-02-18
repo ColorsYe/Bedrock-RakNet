@@ -39,7 +39,7 @@ void RakNetRandomSync::SeedMT( uint32_t _seed, uint32_t skipValues )
 }
 float RakNetRandomSync::FrandomMT( void )
 {
-	return ( float ) ( ( double ) RandomMT() / (double) UINT_MAX );
+	return ( float ) ( ( double ) RandomMT() / static_cast<double>(UINT_MAX) );
 }
 unsigned int RakNetRandomSync::RandomMT( void )
 {

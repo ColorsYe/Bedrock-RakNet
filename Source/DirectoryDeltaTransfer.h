@@ -150,7 +150,7 @@ public:
 	void SetDownloadRequestIncrementalReadInterface(IncrementalReadInterface *_incrementalReadInterface, unsigned int _chunkSize);
 	
 	/// \internal For plugin handling
-	virtual PluginReceiveResult OnReceive(Packet *packet);
+	PluginReceiveResult OnReceive(Packet *packet) override;
 protected:
 	void OnDownloadRequest(Packet *packet);
 

@@ -90,14 +90,14 @@ public:
 	void SetDebugInterface(NatPunchthroughServerDebugInterface *i);
 
 	/// \internal For plugin handling
-	virtual void Update();
+	void Update() override;
 
 	/// \internal For plugin handling
-	virtual PluginReceiveResult OnReceive(Packet *packet);
+	PluginReceiveResult OnReceive(Packet *packet) override;
 
 	/// \internal For plugin handling
-	virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
-	virtual void OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming);
+	void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason ) override;
+	void OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming) override;
 
 	// Each connected user has a ready state. Ready means ready for nat punchthrough.
 	struct User;

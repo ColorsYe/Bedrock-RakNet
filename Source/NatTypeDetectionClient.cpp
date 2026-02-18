@@ -67,7 +67,7 @@ void NatTypeDetectionClient::DetectNATType(SystemAddress _serverAddress)
 	serverAddress=_serverAddress;
 
 	RakNet::BitStream bs;
-	bs.Write((unsigned char)ID_NAT_TYPE_DETECTION_REQUEST);
+	bs.Write(static_cast<unsigned char>(ID_NAT_TYPE_DETECTION_REQUEST));
 	bs.Write(true); // IsRequest
 	bs.Write(c2->GetBoundAddress().GetPort());
 	rakPeerInterface->Send(&bs,MEDIUM_PRIORITY,RELIABLE,0,serverAddress,false);
@@ -80,7 +80,7 @@ void NatTypeDetectionClient::OnCompletion(NATTypeDetectionResult result)
 	p->systemAddress=serverAddress;
 	p->systemAddress.systemIndex=(SystemIndex)-1;
 	p->guid=rakPeerInterface->GetGuidFromSystemAddress(serverAddress);
-	p->data[1]=(unsigned char) result;
+	p->data[1]=static_cast<unsigned char>(result);
 	p->wasGeneratedLocally=true;
 	rakPeerInterface->PushBackPacket(p, true);
 
@@ -89,7 +89,7 @@ void NatTypeDetectionClient::OnCompletion(NATTypeDetectionResult result)
 	{
 		// Otherwise tell the server we got this message, so it stops sending tests to us
 		RakNet::BitStream bs;
-		bs.Write((unsigned char)ID_NAT_TYPE_DETECTION_REQUEST);
+		bs.Write(static_cast<unsigned char>(ID_NAT_TYPE_DETECTION_REQUEST));
 		bs.Write(false); // Done
 		rakPeerInterface->Send(&bs,HIGH_PRIORITY,RELIABLE,0,serverAddress,false);
 	}

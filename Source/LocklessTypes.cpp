@@ -23,7 +23,7 @@ LocklessUint32_t::LocklessUint32_t(uint32_t initial)
 uint32_t LocklessUint32_t::Increment()
 {
 #ifdef _WIN32
-	return (uint32_t) InterlockedIncrement(&value);
+	return static_cast<uint32_t>(InterlockedIncrement)(&value);
 #elif defined(ANDROID) || defined(__S3E__) || defined(__APPLE__)
 	uint32_t v;
 	mutex.Lock();
@@ -32,13 +32,13 @@ uint32_t LocklessUint32_t::Increment()
 	mutex.Unlock();
 	return v;
 #else
-	return __sync_fetch_and_add (&value, (uint32_t) 1);
+	return __sync_fetch_and_add (&value, static_cast<uint32_t>(1));
 #endif
 }
 uint32_t LocklessUint32_t::Decrement()
 {
 #ifdef _WIN32
-	return (uint32_t) InterlockedDecrement(&value);
+	return static_cast<uint32_t>(InterlockedDecrement)(&value);
 #elif defined(ANDROID) || defined(__S3E__) || defined(__APPLE__)
 	uint32_t v;
 	mutex.Lock();

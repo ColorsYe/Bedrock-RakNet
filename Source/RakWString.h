@@ -72,7 +72,7 @@ namespace RakNet
 		bool IsEmpty(void) const;
 
 		/// Returns the length of the string
-		size_t GetLength(void) const;
+		[[nodiscard]] size_t GetLength(void) const;
 
 		/// Has the string into an unsigned int
 		static unsigned long ToInteger(const RakWString &rs);

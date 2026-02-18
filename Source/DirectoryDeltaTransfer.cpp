@@ -148,7 +148,7 @@ unsigned short DirectoryDeltaTransfer::DownloadFromSubdirectory(FileList &localF
 	transferCallback = RakNet::OP_NEW<DDTCallback>( _FILE_AND_LINE_ );
 	if (subdir && subdir[0])
 	{
-		transferCallback->subdirLen=(unsigned int)strlen(subdir);
+		transferCallback->subdirLen=static_cast<unsigned int>(strlen)(subdir);
 		if (subdir[transferCallback->subdirLen-1]!='/' && subdir[transferCallback->subdirLen-1]!='\\')
 			transferCallback->subdirLen++;
 	}

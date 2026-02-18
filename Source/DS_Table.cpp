@@ -57,8 +57,8 @@ Table::Cell& Table::Cell::operator = ( const Table::Cell& input )
 		rakFree_Ex(c, _FILE_AND_LINE_);
 	if (input.c)
 	{
-		c = (char*) rakMalloc_Ex( (int) i, _FILE_AND_LINE_ );
-		memcpy(c, input.c, (int) i);
+		c = (char*) rakMalloc_Ex( static_cast<int>(i), _FILE_AND_LINE_ );
+		memcpy(c, input.c, static_cast<int>(i));
 	}
 	else
 		c=0;
@@ -73,8 +73,8 @@ Table::Cell::Cell( const Table::Cell & input)
 	{
 		if (c)
 			rakFree_Ex(c, _FILE_AND_LINE_);
-		c =  (char*) rakMalloc_Ex( (int) i, _FILE_AND_LINE_ );
-		memcpy(c, input.c, (int) i);
+		c =  (char*) rakMalloc_Ex( static_cast<int>(i), _FILE_AND_LINE_ );
+		memcpy(c, input.c, static_cast<int>(i));
 	}
 }
 void Table::Cell::Set(double input)
@@ -87,12 +87,12 @@ void Table::Cell::Set(double input)
 }
 void Table::Cell::Set(unsigned int input)
 {
-	Set((int) input);
+	Set(static_cast<int>(input));
 }
 void Table::Cell::Set(int input)
 {
 	Clear();
-	i=(double) input;
+	i=static_cast<double>(input);
 	c=0;
 	ptr=0;
 	isEmpty=false;
@@ -104,8 +104,8 @@ void Table::Cell::Set(const char *input)
 		
 	if (input)
 	{
-		i=(int)strlen(input)+1;
-		c =  (char*) rakMalloc_Ex( (int) i, _FILE_AND_LINE_ );
+		i=static_cast<int>(strlen)(input)+1;
+		c =  (char*) rakMalloc_Ex( static_cast<int>(i), _FILE_AND_LINE_ );
 		strcpy(c, input);
 	}
 	else
@@ -143,7 +143,7 @@ void Table::Cell::SetPtr(void* p)
 void Table::Cell::Get(int *output)
 {
 	RakAssert(isEmpty==false);
-	int o = (int) i;
+	int o = static_cast<int>(i);
 	*output=o;
 }
 void Table::Cell::Get(double *output)
@@ -159,9 +159,9 @@ void Table::Cell::Get(char *output)
 void Table::Cell::Get(char *output, int *outputLength)
 {
 	RakAssert(isEmpty==false);
-	memcpy(output, c, (int) i);
+	memcpy(output, c, static_cast<int>(i));
 	if (outputLength)
-		*outputLength=(int) i;
+		*outputLength=static_cast<int>(i);
 }
 RakNet::RakString Table::Cell::ToString(ColumnType columnType)
 {
@@ -204,7 +204,7 @@ void Table::Cell::SetByType(double numericValue, char *charValue, void *ptr, Col
 	}
 	else if (type==BINARY)
 	{
-		Set(charValue, (int) numericValue);
+		Set(charValue, static_cast<int>(numericValue));
 	}
 	else if (type==POINTER)
 	{
@@ -440,7 +440,7 @@ void Table::RemoveRows(Table *tableContainingRowIDs)
 	DataStructures::Page<unsigned, Row*, _TABLE_BPLUS_TREE_ORDER> *cur = tableContainingRowIDs->GetRows().GetListHead();
 	while (cur)
 	{
-		for (i=0; i < (unsigned)cur->size; i++)
+		for (i=0; i < static_cast<unsigned>(cur->size); i++)
 		{
 			rows.Delete(cur->keys[i]);
 		}
@@ -577,13 +577,13 @@ Table::Row* Table::GetRowByIndex(unsigned rowIndex, unsigned *key) const
 	DataStructures::Page<unsigned, Row*, _TABLE_BPLUS_TREE_ORDER> *cur = rows.GetListHead();
 	while (cur)
 	{
-		if (rowIndex < (unsigned)cur->size)
+		if (rowIndex < static_cast<unsigned>(cur->size))
 		{
 			if (key)
 				*key=cur->keys[rowIndex];
 			return cur->data[rowIndex];
 		}
-		if (rowIndex <= (unsigned)cur->size)
+		if (rowIndex <= static_cast<unsigned>(cur->size))
 			rowIndex-=cur->size;
 		else
 			return 0;
@@ -643,7 +643,7 @@ void Table::QueryTable(unsigned *columnIndicesSubset, unsigned numColumnSubset, 
 		DataStructures::Page<unsigned, Row*, _TABLE_BPLUS_TREE_ORDER> *cur = rows.GetListHead();
 		while (cur)
 		{
-			for (i=0; i < (unsigned)cur->size; i++)
+			for (i=0; i < static_cast<unsigned>(cur->size); i++)
 			{
 				QueryRow(inclusionFilterColumnIndices, columnIndicesToReturn, cur->keys[i], cur->data[i], inclusionFilters, result);
 			}
@@ -701,7 +701,7 @@ void Table::QueryRow(DataStructures::List<unsigned> &inclusionFilterColumnIndice
 						break;
 					case BINARY:
 						pass=row->cells[columnIndex]->i==inclusionFilters[j].cellValue->i &&
-							memcmp(row->cells[columnIndex]->c,inclusionFilters[j].cellValue->c, (int) row->cells[columnIndex]->i)==0;
+							memcmp(row->cells[columnIndex]->c,inclusionFilters[j].cellValue->c, static_cast<int>(row->cells[columnIndex]->i))==0;
 						break;
 					case POINTER:
 						pass=row->cells[columnIndex]->ptr==inclusionFilters[j].cellValue->ptr;
@@ -719,7 +719,7 @@ void Table::QueryRow(DataStructures::List<unsigned> &inclusionFilterColumnIndice
 						break;
 					case BINARY:
 						pass=row->cells[columnIndex]->i==inclusionFilters[j].cellValue->i &&
-							memcmp(row->cells[columnIndex]->c,inclusionFilters[j].cellValue->c, (int) row->cells[columnIndex]->i)==0;
+							memcmp(row->cells[columnIndex]->c,inclusionFilters[j].cellValue->c, static_cast<int>(row->cells[columnIndex]->i))==0;
 						break;
 					case POINTER:
 						pass=row->cells[columnIndex]->ptr!=inclusionFilters[j].cellValue->ptr;
@@ -909,7 +909,7 @@ void Table::SortTable(Table::SortQuery *sortQueries, unsigned numSortQueries, Ta
 		outLength=0;
 		while (cur)
 		{
-			for (i=0; i < (unsigned)cur->size; i++)
+			for (i=0; i < static_cast<unsigned>(cur->size); i++)
 			{
 				out[(outLength)++]=cur->data[i];
 			}
@@ -922,7 +922,7 @@ void Table::SortTable(Table::SortQuery *sortQueries, unsigned numSortQueries, Ta
 	DataStructures::OrderedList<Row*, Row*, RowSort> orderedList;
 	while (cur)
 	{
-		for (i=0; i < (unsigned)cur->size; i++)
+		for (i=0; i < static_cast<unsigned>(cur->size); i++)
 		{
 			RakAssert(cur->data[i]);
 			orderedList.Insert(cur->data[i],cur->data[i], true, _FILE_AND_LINE_);
@@ -951,15 +951,15 @@ void Table::PrintColumnHeaders(char *out, int outLength, char columnDelineator) 
 	{
 		if (i!=0)
 		{
-			len = (int) strlen(out);
+			len = static_cast<int>(strlen)(out);
 			if (len < outLength-1)
 				sprintf(out+len, "%c", columnDelineator);
 			else
 				return;
 		}
 
-		len = (int) strlen(out);
-		if (len < outLength-(int) strlen(columns[i].columnName))
+		len = static_cast<int>(strlen)(out);
+		if (len < outLength-static_cast<int>(strlen)(columns[i].columnName))
 			sprintf(out+len, "%s", columns[i].columnName);
 		else
 			return;
@@ -993,7 +993,7 @@ void Table::PrintRow(char *out, int outLength, char columnDelineator, bool print
 			if (inputRow->cells[i]->isEmpty==false)
 			{
 				sprintf(buff, "%f", inputRow->cells[i]->i);
-				len=(int)strlen(buff);
+				len=static_cast<int>(strlen)(buff);
 			}
 			else
 				len=0;
@@ -1007,7 +1007,7 @@ void Table::PrintRow(char *out, int outLength, char columnDelineator, bool print
 			{
 				strncpy(buff, inputRow->cells[i]->c, 512-2);
 				buff[512-2]=0;
-				len=(int)strlen(buff);
+				len=static_cast<int>(strlen)(buff);
 			}
 			else
 				len=0;
@@ -1020,7 +1020,7 @@ void Table::PrintRow(char *out, int outLength, char columnDelineator, bool print
 			if (inputRow->cells[i]->isEmpty==false && inputRow->cells[i]->ptr)
 			{
 				sprintf(buff, "%p", inputRow->cells[i]->ptr);
-				len=(int)strlen(buff);
+				len=static_cast<int>(strlen)(buff);
 			}
 			else
 				len=0;
@@ -1041,7 +1041,7 @@ void Table::PrintRow(char *out, int outLength, char columnDelineator, bool print
 
 		}
 
-		len=(int)strlen(out);
+		len=static_cast<int>(strlen)(out);
 		if (outLength==len+1)
 			break;
 		strncpy(out+len, buff, outLength-len);
@@ -1115,7 +1115,7 @@ Table& Table::operator = ( const Table& input )
 	DataStructures::Page<unsigned, Row*, _TABLE_BPLUS_TREE_ORDER> *cur = input.GetRows().GetListHead();
 	while (cur)
 	{
-		for (i=0; i < (unsigned int) cur->size; i++)
+		for (i=0; i < static_cast<unsigned int>(cur->size); i++)
 		{
 			AddRow(cur->keys[i], cur->data[i]->cells, false);
 		}

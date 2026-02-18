@@ -22,8 +22,8 @@
   || defined(_MSC_VER) || defined (__BORLANDC__) || defined (__TURBOC__)
 #define get16bits(d) (*((const uint16_t *) (d)))
 #else
-#define get16bits(d) ((((uint32_t)(((const uint8_t *)(d))[1])) << 8)\
-	+(uint32_t)(((const uint8_t *)(d))[0]) )
+#define get16bits(d) (((static_cast<uint32_t>(((const uint8_t *)(d))[1])) << 8)\
+	+static_cast<uint32_t>(((const uint8_t *)(d))[0]) )
 #endif
 
 static constexpr int INCREMENTAL_READ_BLOCK=65536;
@@ -50,7 +50,7 @@ uint32_t SuperFastHash (const char * data, int length)
 }
 uint32_t SuperFastHashIncremental (const char * data, int len, unsigned int lastHash )
 {
-	uint32_t hash = (uint32_t) lastHash;
+	uint32_t hash = static_cast<uint32_t>(lastHash);
 	uint32_t tmp;
 	int rem;
 
@@ -92,7 +92,7 @@ uint32_t SuperFastHashIncremental (const char * data, int len, unsigned int last
 	hash ^= hash << 25;
 	hash += hash >> 6;
 
-	return (uint32_t) hash;
+	return static_cast<uint32_t>(hash);
 
 }
 
@@ -114,11 +114,11 @@ uint32_t SuperFastHashFilePtr (FILE *fp)
 	int bytesRemaining=length;
 	unsigned int lastHash = length;
 	char readBlock[INCREMENTAL_READ_BLOCK];
-	while (bytesRemaining>=(int) sizeof(readBlock))
+	while (bytesRemaining>=static_cast<int>(sizeof)(readBlock))
 	{
 		fread(readBlock, sizeof(readBlock), 1, fp);
-		lastHash=SuperFastHashIncremental (readBlock, (int) sizeof(readBlock), lastHash );
-		bytesRemaining-=(int) sizeof(readBlock);
+		lastHash=SuperFastHashIncremental (readBlock, static_cast<int>(sizeof)(readBlock), lastHash );
+		bytesRemaining-=static_cast<int>(sizeof)(readBlock);
 	}
 	if (bytesRemaining>0)
 	{

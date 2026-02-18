@@ -113,7 +113,7 @@ int UDPForwarder::GetMaxForwardEntries(void) const
 }
 int UDPForwarder::GetUsedForwardEntries(void) const
 {
-	return (int) forwardListNotUpdated.Size();
+	return static_cast<int>(forwardListNotUpdated.Size());
 }
 UDPForwarderResult UDPForwarder::StartForwarding(SystemAddress source, SystemAddress destination, RakNet::TimeMS timeoutOnNoDataMS, const char *forceHostAddress, unsigned short socketFamily,
 								  unsigned short *forwardingPort, __UDPSOCKET__ *forwardingSocket)
@@ -499,7 +499,7 @@ void UDPForwarder::UpdateUDPForwarder()
 					fe->socket = socket__(aip->ai_family, aip->ai_socktype, aip->ai_protocol);
 					if (fe->socket != INVALID_SOCKET)
 					{
-						int ret = bind__( fe->socket, aip->ai_addr, (int) aip->ai_addrlen );
+						int ret = bind__( fe->socket, aip->ai_addr, static_cast<int>(aip->ai_addrlen) );
 						if (ret>=0)
 						{
 							break;

@@ -67,7 +67,7 @@ namespace DataStructures
 
 		/// This function will estimate how many elements are waiting to be read.  It's threadsafe enough that the value returned is stable, but not threadsafe enough to give accurate results.
 		/// \return An ESTIMATE of how many data elements are waiting to be read
-		int Size(void) const;
+		[[nodiscard]] int Size(void) const;
 
 		/// Make sure that the pointer we done reading for the call to ReadUnlock is the right pointer.
 		/// param[in] A previous pointer returned by ReadLock()

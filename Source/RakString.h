@@ -131,7 +131,7 @@ public:
 	bool IsEmpty(void) const;
 
 	/// Returns the length of the string
-	size_t GetLength(void) const;
+	[[nodiscard]] size_t GetLength(void) const;
 	size_t GetLengthUTF8(void) const;
 
 	/// Replace character(s) in starting at index, for count, with c

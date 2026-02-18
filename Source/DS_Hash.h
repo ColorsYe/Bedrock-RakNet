@@ -53,7 +53,7 @@ namespace DataStructures
 		data_type& ItemAtIndex(const HashIndex &index);
 		key_type  KeyAtIndex(const HashIndex &index);
 		void GetAsList(DataStructures::List<data_type> &itemList,DataStructures::List<key_type > &keyList,const char *file, unsigned int line) const;
-		unsigned int Size(void) const;
+		[[nodiscard]] unsigned int Size(void) const;
 
 		/// \brief Clear the list		
 		void Clear( const char *file, unsigned int line );

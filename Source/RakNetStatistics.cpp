@@ -124,7 +124,7 @@ void RAK_DLL_EXPORT RakNet::StatisticsToString( RakNetStatistics *s, char *buffe
 			(long long unsigned int) s->runningTotal[USER_MESSAGE_BYTES_RECEIVED_PROCESSED],
 			(long long unsigned int) s->runningTotal[USER_MESSAGE_BYTES_RECEIVED_IGNORED],
 			s->messageInSendBuffer[IMMEDIATE_PRIORITY],s->messageInSendBuffer[HIGH_PRIORITY],s->messageInSendBuffer[MEDIUM_PRIORITY],s->messageInSendBuffer[LOW_PRIORITY],
-			(unsigned int) s->bytesInSendBuffer[IMMEDIATE_PRIORITY],(unsigned int) s->bytesInSendBuffer[HIGH_PRIORITY],(unsigned int) s->bytesInSendBuffer[MEDIUM_PRIORITY],(unsigned int) s->bytesInSendBuffer[LOW_PRIORITY],
+			static_cast<unsigned int>(s->bytesInSendBuffer[IMMEDIATE_PRIORITY]),static_cast<unsigned int>(s->bytesInSendBuffer[HIGH_PRIORITY]),static_cast<unsigned int>(s->bytesInSendBuffer[MEDIUM_PRIORITY]),static_cast<unsigned int>(s->bytesInSendBuffer[LOW_PRIORITY]),
 			s->messagesInResendBuffer,
 			(long long unsigned int) s->bytesInResendBuffer,
 			s->packetlossLastSecond*100.0f,

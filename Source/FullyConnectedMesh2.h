@@ -222,19 +222,19 @@ public:
 	RakNet::TimeUS GetElapsedRuntime();
 
 	/// \internal
-	virtual PluginReceiveResult OnReceive(Packet *packet);
+	PluginReceiveResult OnReceive(Packet *packet) override;
 	/// \internal
-	virtual void OnRakPeerStartup();
+	void OnRakPeerStartup() override;
 	/// \internal
-	virtual void OnAttach();
+	void OnAttach() override;
 	/// \internal
-	virtual void OnRakPeerShutdown();
+	void OnRakPeerShutdown() override;
 	/// \internal
-	virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
+	void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason ) override;
 	/// \internal
-	virtual void OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming);
+	void OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming) override;
 	/// \internal
-	virtual void OnFailedConnectionAttempt(Packet *packet, PI2_FailedConnectionAttemptReason failedConnectionAttemptReason);
+	void OnFailedConnectionAttempt(Packet *packet, PI2_FailedConnectionAttemptReason failedConnectionAttemptReason) override;
 
 	/// \internal
 	struct FCM2Participant

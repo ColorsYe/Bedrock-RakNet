@@ -147,9 +147,9 @@ public:
 protected:
 
 	/// \internal
-	virtual PluginReceiveResult OnReceive(Packet *packet);
+	PluginReceiveResult OnReceive(Packet *packet) override;
 	/// \internal
-	virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
+	void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason ) override;
 	/// \internal
 	void OnAttach();
 

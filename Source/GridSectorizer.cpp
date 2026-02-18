@@ -32,8 +32,8 @@ void GridSectorizer::Init(const float _maxCellWidth, const float _maxCellHeight,
 	cellOriginY=minY;
 	gridWidth=maxX-minX;
 	gridHeight=maxY-minY;
-	gridCellWidthCount=(int) ceil(gridWidth/_maxCellWidth);
-	gridCellHeightCount=(int) ceil(gridHeight/_maxCellHeight);
+	gridCellWidthCount=static_cast<int>(ceil)(gridWidth/_maxCellWidth);
+	gridCellHeightCount=static_cast<int>(ceil)(gridHeight/_maxCellHeight);
 	// Make the cells slightly smaller, so we allocate an extra unneeded cell if on the edge.  This way we don't go outside the array on rounding errors.
 	cellWidth=gridWidth/gridCellWidthCount;
 	cellHeight=gridHeight/gridCellHeightCount;
@@ -172,11 +172,11 @@ bool GridSectorizer::PositionCrossesCells(const float originX, const float origi
 }
 int GridSectorizer::WorldToCellX(const float input) const
 {
-	return (int)((input-cellOriginX)*invCellWidth);
+	return static_cast<int>((input-cellOriginX)*invCellWidth);
 }
 int GridSectorizer::WorldToCellY(const float input) const
 {
-	return (int)((input-cellOriginY)*invCellHeight);
+	return static_cast<int>((input-cellOriginY)*invCellHeight);
 }
 int GridSectorizer::WorldToCellXOffsetAndClamped(const float input) const
 {

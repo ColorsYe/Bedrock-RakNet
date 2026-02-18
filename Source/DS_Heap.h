@@ -53,7 +53,7 @@ namespace DataStructures
 		weight_type PeekWeight(const unsigned startingIndex=0) const;
 		void Clear(bool doNotDeallocateSmallBlocks, const char *file, unsigned int line);
 		data_type& operator[] ( const unsigned int position ) const;
-		unsigned Size(void) const;
+		[[nodiscard]] unsigned Size(void) const;
 
 	protected:
 		unsigned LeftChild(const unsigned i) const;

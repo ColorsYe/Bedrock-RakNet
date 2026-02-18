@@ -119,7 +119,7 @@ RakWString& RakWString::operator = ( const char * const str )
 	}
 
 	c_strCharLength = mbstowcs(c_str, str, c_strCharLength+1);
-	if (c_strCharLength == (size_t) (-1))
+	if (c_strCharLength == static_cast<size_t>(-1))
 	{
 		RAKNET_DEBUG_PRINTF("Couldn't convert string--invalid multibyte character.\n");
 		Clear();
@@ -302,7 +302,7 @@ void RakWString::Serialize(const wchar_t * const str, BitStream *bs)
 	for (unsigned int i=0; i < mbByteLength; i++)
 	{
 		uint16_t t;
-		t = (uint16_t) str[i];
+		t = static_cast<uint16_t>(str[i]);
 		// Force endian swapping, and write to 16 bits
 		bs->Write(t);
 	}

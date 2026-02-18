@@ -51,7 +51,7 @@ void CommandParserInterface::ParseConsoleString(char *str, const char delineator
 	unsigned strLen;
 	bool replaceDelineator=true;
 
-	strLen = (unsigned) strlen(str);
+	strLen = static_cast<unsigned>(strlen)(str);
 
 	// Replace every instance of delineator, \n, \r with 0
 	for (strIndex=0; strIndex < strLen; strIndex++)

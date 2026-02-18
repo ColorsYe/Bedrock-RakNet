@@ -176,7 +176,7 @@ class CCRakNetUDT
 	double GetRTT(void) const;
 
 	bool GetIsInSlowStart(void) const {return isInSlowStart;}
-	uint32_t GetCWNDLimit(void) const {return (uint32_t) (CWND*MAXIMUM_MTU_INCLUDING_UDP_HEADER);}
+	uint32_t GetCWNDLimit(void) const {return static_cast<uint32_t>(CWND*MAXIMUM_MTU_INCLUDING_UDP_HEADER);}
 
 
 	/// Is a > b, accounting for variable overflow?

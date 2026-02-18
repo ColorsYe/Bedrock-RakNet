@@ -113,13 +113,13 @@ public:
 	void GetCallbacks(DataStructures::List<FileListProgress*> &callbacks);
 
 	/// \internal For plugin handling
-	virtual PluginReceiveResult OnReceive(Packet *packet);
+	PluginReceiveResult OnReceive(Packet *packet) override;
 	/// \internal For plugin handling
-	virtual void OnRakPeerShutdown();
+	void OnRakPeerShutdown() override;
 	/// \internal For plugin handling
-	virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
+	void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason ) override;
 	/// \internal For plugin handling
-	virtual void Update();
+	void Update() override;
 
 protected:
 	bool DecodeSetHeader(Packet *packet);

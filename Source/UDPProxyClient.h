@@ -138,9 +138,9 @@ public:
 	bool RequestForwarding(SystemAddress proxyCoordinator, SystemAddress sourceAddress, RakNetGUID targetGuid, RakNet::TimeMS timeoutOnNoDataMS, RakNet::BitStream *serverSelectionBitstream=0);
 
 	/// \internal
-	virtual void Update();
-	virtual PluginReceiveResult OnReceive(Packet *packet);
-	virtual void OnRakPeerShutdown();
+	void Update() override;
+	PluginReceiveResult OnReceive(Packet *packet) override;
+	void OnRakPeerShutdown() override;
 	
 	struct ServerWithPing
 	{

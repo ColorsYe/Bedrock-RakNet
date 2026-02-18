@@ -57,8 +57,8 @@ inline int gettimeofday(struct timeval* p, void* tz )
 	} now;
  
     GetSystemTimeAsFileTime( &(now.ft) );
-    p->tv_usec=(long)((now.ns100 / 10LL) % 1000000LL );
-    p->tv_sec= (long)((now.ns100-(116444736000000000LL))/10000000LL);
+    p->tv_usec=static_cast<long>((now.ns100 / 10LL) % 1000000LL );
+    p->tv_sec= static_cast<long>((now.ns100-(116444736000000000LL))/10000000LL);
 	return 0;
 }
  

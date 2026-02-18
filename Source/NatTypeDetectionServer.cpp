@@ -148,7 +148,7 @@ void NatTypeDetectionServer::Update()
 				if (i!=(unsigned int)-1)
 				{
 					bs.Reset();
-					bs.Write((unsigned char) ID_NAT_TYPE_DETECTION_RESULT);
+					bs.Write(static_cast<unsigned char>(ID_NAT_TYPE_DETECTION_RESULT));
 					// If different, then symmetric
 					if (senderAddr!=natDetectionAttempts[i].systemAddress)
 					{
@@ -156,7 +156,7 @@ void NatTypeDetectionServer::Update()
 #ifdef NTDS_VERBOSE
 						printf("Determined client is symmetric\n");
 #endif
-						bs.Write((unsigned char) NAT_TYPE_SYMMETRIC);
+						bs.Write(static_cast<unsigned char>(NAT_TYPE_SYMMETRIC));
 					}
 					else
 					{
@@ -165,7 +165,7 @@ void NatTypeDetectionServer::Update()
 
 						printf("Determined client is port restricted\n");
 #endif
-						bs.Write((unsigned char) NAT_TYPE_PORT_RESTRICTED);
+						bs.Write(static_cast<unsigned char>(NAT_TYPE_PORT_RESTRICTED));
 					}
 
 					rakPeerInterface->Send(&bs,HIGH_PRIORITY,RELIABLE,0,natDetectionAttempts[i].systemAddress,false);
@@ -214,7 +214,7 @@ void NatTypeDetectionServer::Update()
 			if (i!=(unsigned int)-1)
 			{
 				bs.Reset();
-				bs.Write((unsigned char) ID_NAT_TYPE_DETECTION_RESULT);
+				bs.Write(static_cast<unsigned char>(ID_NAT_TYPE_DETECTION_RESULT));
 				// If different, then symmetric
 				if (senderAddr!=natDetectionAttempts[i].systemAddress)
 				{
@@ -222,7 +222,7 @@ void NatTypeDetectionServer::Update()
 				#ifdef NTDS_VERBOSE
 					printf("Determined client is symmetric\n");
 				#endif
-					bs.Write((unsigned char) NAT_TYPE_SYMMETRIC);
+					bs.Write(static_cast<unsigned char>(NAT_TYPE_SYMMETRIC));
 				}
 				else
 				{
@@ -231,7 +231,7 @@ void NatTypeDetectionServer::Update()
 					#ifdef NTDS_VERBOSE
 					printf("Determined client is port restricted\n");
 					#endif
-					bs.Write((unsigned char) NAT_TYPE_PORT_RESTRICTED);
+					bs.Write(static_cast<unsigned char>(NAT_TYPE_PORT_RESTRICTED));
 				}
 
 				rakPeerInterface->Send(&bs,HIGH_PRIORITY,RELIABLE,0,natDetectionAttempts[i].systemAddress,false);
@@ -254,12 +254,12 @@ void NatTypeDetectionServer::Update()
 	*/
 
 
-	while (i < (int) natDetectionAttempts.Size())
+	while (i < static_cast<int>(natDetectionAttempts.Size()))
 	{
 		if (time > natDetectionAttempts[i].nextStateTime)
 		{
 			RNS2_SendParameters bsp;
-			natDetectionAttempts[i].detectionState=(NATDetectionState)((int)natDetectionAttempts[i].detectionState+1);
+			natDetectionAttempts[i].detectionState=(NATDetectionState)(static_cast<int>(natDetectionAttempts[i]).detectionState+1);
 			natDetectionAttempts[i].nextStateTime=time+natDetectionAttempts[i].timeBetweenAttempts;
 			SystemAddress saOut;
 			unsigned char c;
@@ -289,8 +289,8 @@ void NatTypeDetectionServer::Update()
 				printf("Testing NAT_TYPE_FULL_CONE\n");
 #endif
 				rakPeerInterface->WriteOutOfBandHeader(&bs);
-				bs.Write((unsigned char) ID_NAT_TYPE_DETECT);
-				bs.Write((unsigned char) NAT_TYPE_FULL_CONE);
+				bs.Write(static_cast<unsigned char>(ID_NAT_TYPE_DETECT));
+				bs.Write(static_cast<unsigned char>(NAT_TYPE_FULL_CONE));
 				// S2P3 sends to C1 (Different address, different port, to previously used port on client). If received, Full-cone nat. Done.  (Else S2P3 potentially banned, do not use again).
 				saOut=natDetectionAttempts[i].systemAddress;
 				saOut.SetPortHostOrder(natDetectionAttempts[i].systemAddress.GetPort());
@@ -307,8 +307,8 @@ void NatTypeDetectionServer::Update()
 				printf("Testing NAT_TYPE_ADDRESS_RESTRICTED\n");
 #endif
 				rakPeerInterface->WriteOutOfBandHeader(&bs);
-				bs.Write((unsigned char) ID_NAT_TYPE_DETECT);
-				bs.Write((unsigned char) NAT_TYPE_ADDRESS_RESTRICTED);
+				bs.Write(static_cast<unsigned char>(ID_NAT_TYPE_DETECT));
+				bs.Write(static_cast<unsigned char>(NAT_TYPE_ADDRESS_RESTRICTED));
 				// S1P2 sends to C1 (Same address, different port, to previously used port on client). If received, address-restricted cone nat. Done.
 				saOut=natDetectionAttempts[i].systemAddress;
 				saOut.SetPortHostOrder(natDetectionAttempts[i].systemAddress.GetPort());
@@ -325,7 +325,7 @@ void NatTypeDetectionServer::Update()
 #ifdef NTDS_VERBOSE
 				printf("Testing NAT_TYPE_PORT_RESTRICTED\n");
 #endif
-				bs.Write((unsigned char) ID_NAT_TYPE_DETECTION_REQUEST);
+				bs.Write(static_cast<unsigned char>(ID_NAT_TYPE_DETECTION_REQUEST));
 				bs.Write(RakString::NonVariadic(s3p4Address));
 				bs.Write(s3p4->GetBoundAddress().GetPort());
 				rakPeerInterface->Send(&bs,HIGH_PRIORITY,RELIABLE,0,natDetectionAttempts[i].systemAddress,false);
@@ -335,8 +335,8 @@ void NatTypeDetectionServer::Update()
 #ifdef NTDS_VERBOSE
 				printf("Warning, exceeded final check STATE_TESTING_PORT_RESTRICTED_2.\nExpected that client would have sent NAT_TYPE_PORT_RESTRICTED on s3p4.\nDefaulting to Symmetric\n");
 #endif
-				bs.Write((unsigned char) ID_NAT_TYPE_DETECTION_RESULT);
-				bs.Write((unsigned char) NAT_TYPE_SYMMETRIC);
+				bs.Write(static_cast<unsigned char>(ID_NAT_TYPE_DETECTION_RESULT));
+				bs.Write(static_cast<unsigned char>(NAT_TYPE_SYMMETRIC));
 				rakPeerInterface->Send(&bs,HIGH_PRIORITY,RELIABLE,0,natDetectionAttempts[i].systemAddress,false);
 				natDetectionAttempts.RemoveAtIndexFast(i);
 				i--;

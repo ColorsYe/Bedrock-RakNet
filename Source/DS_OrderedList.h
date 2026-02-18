@@ -56,7 +56,7 @@ namespace DataStructures
 		void InsertAtEnd(const data_type &data, const char *file, unsigned int line);
 		void RemoveFromEnd(const unsigned num=1);
 		void Clear(bool doNotDeallocate, const char *file, unsigned int line);
-		unsigned Size(void) const;
+		[[nodiscard]] unsigned Size(void) const;
 	
 	protected:
 		DataStructures::List<data_type> orderedList;
@@ -125,9 +125,9 @@ namespace DataStructures
 			return 0;
 		}
 
-		upperBound=(int)orderedList.Size()-1;
+		upperBound=static_cast<int>(orderedList.Size())-1;
 		lowerBound=0;
-		index = (int)orderedList.Size()/2;
+		index = static_cast<int>(orderedList.Size())/2;
 
 #ifdef _MSC_VER
 	#pragma warning( disable : 4127 ) // warning C4127: conditional expression is constant
@@ -138,7 +138,7 @@ namespace DataStructures
 			if (res==0)
 			{
 				*objectExists=true;
-				return (unsigned)index;
+				return static_cast<unsigned>(index);
 			}
 			else if (res<0)
 			{
@@ -155,10 +155,10 @@ namespace DataStructures
 			if (lowerBound>upperBound)
 			{
 				*objectExists=false;
-				return (unsigned)lowerBound; // No match
+				return static_cast<unsigned>(lowerBound); // No match
 			}
 
-			if (index < 0 || index >= (int) orderedList.Size())
+			if (index < 0 || index >= static_cast<int>(orderedList.Size()))
 			{
 				// This should never hit unless the comparison function was inconsistent
 				RakAssert(index && 0);

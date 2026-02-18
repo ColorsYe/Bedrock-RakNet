@@ -90,7 +90,7 @@ unsigned char *BytePool::Allocate(int bytesWanted, const char *file, unsigned in
 	}
 
 	out = (unsigned char*) rakMalloc_Ex(bytesWanted+1, _FILE_AND_LINE_);
-	out[0]=(unsigned char)255;
+	out[0]=static_cast<unsigned char>(255);
 	return out+1;
 }
 void BytePool::Release(unsigned char *data, const char *file, unsigned int line)

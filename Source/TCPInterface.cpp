@@ -101,7 +101,7 @@ bool TCPInterface::CreateListenSocket(unsigned short port, unsigned short maxInc
 	(void) socketFamily;
 #if RAKNET_SUPPORT_IPV6!=1
 	listenSocket = socket__(AF_INET, SOCK_STREAM, 0);
-	if ((int)listenSocket ==-1)
+	if (static_cast<int>(listenSocket) ==-1)
 		return false;
 
 	struct sockaddr_in serverAddress;
@@ -124,7 +124,7 @@ bool TCPInterface::CreateListenSocket(unsigned short port, unsigned short maxInc
 
 	SocketLayer::SetSocketOptions(listenSocket, false, false);
 
-	if (bind__(listenSocket,(struct sockaddr *) &serverAddress,sizeof(serverAddress)) < 0)
+	if (bind__(listenSocket,reinterpret_cast<struct sockaddr*>(&serverAddress),sizeof(serverAddress)) < 0)
 		return false;
 
 	listen__(listenSocket, maxIncomingConnections);
@@ -146,7 +146,7 @@ bool TCPInterface::CreateListenSocket(unsigned short port, unsigned short maxInc
 		listenSocket = socket__(aip->ai_family, aip->ai_socktype, aip->ai_protocol);
 		if (listenSocket != 0)
 		{
-			int ret = bind__( listenSocket, aip->ai_addr, (int) aip->ai_addrlen );
+			int ret = bind__( listenSocket, aip->ai_addr, static_cast<int>(aip->ai_addrlen) );
 			if (ret>=0)
 			{
 				break;
@@ -295,7 +295,7 @@ void TCPInterface::Stop()
 	#endif
 
 	// Stuff from here on to the end of the function is not threadsafe
-	for (i=0; i < (unsigned int) remoteClientsLength; i++)
+	for (i=0; i < static_cast<unsigned int>(remoteClientsLength); i++)
 	{
 		closesocket__(remoteClients[i].socket);
 #if OPEN_SSL_CLIENT_SUPPORT==1
@@ -1026,7 +1026,7 @@ RAK_THREAD_DECLARATION(RakNet::UpdateTCPInterfaceLoop)
 			}
 
 			unsigned i;
-			for (i=0; i < (unsigned int) sts->remoteClientsLength; i++)
+			for (i=0; i < static_cast<unsigned int>(sts->remoteClientsLength); i++)
 			{
 				sts->remoteClients[i].isActiveMutex.Lock();
 				if (sts->remoteClients[i].isActive)
@@ -1051,7 +1051,7 @@ RAK_THREAD_DECLARATION(RakNet::UpdateTCPInterfaceLoop)
 #endif
 
 
-			selectResult=(int) select__(largestDescriptor+1, &readFD, &writeFD, &exceptionFD, &tv);		
+			selectResult=static_cast<int>(select__)(largestDescriptor+1, &readFD, &writeFD, &exceptionFD, &tv);		
 
 
 
@@ -1126,7 +1126,7 @@ RAK_THREAD_DECLARATION(RakNet::UpdateTCPInterfaceLoop)
 			
 			{
 				i=0;
-				while (i < (unsigned int) sts->remoteClientsLength)
+				while (i < static_cast<unsigned int>(sts->remoteClientsLength))
 				{
 					if (sts->remoteClients[i].isActive==false)
 					{
@@ -1222,7 +1222,7 @@ RAK_THREAD_DECLARATION(RakNet::UpdateTCPInterfaceLoop)
 							{
 								unsigned int contiguousLength;
 								char* contiguousBytesPointer = rc->outgoingData.PeekContiguousBytes(&contiguousLength);
-								if (contiguousLength < (unsigned int) BUFF_SIZE && contiguousLength<bytesInBuffer)
+								if (contiguousLength < static_cast<unsigned int>(BUFF_SIZE) && contiguousLength<bytesInBuffer)
 								{
 									if (bytesInBuffer > BUFF_SIZE)
 										bytesAvailable=BUFF_SIZE;
@@ -1293,7 +1293,7 @@ void RemoteClient::SendOrBuffer(const char **data, const unsigned int *lengths, 
 		{
 			outgoingDataMutex.Unlock();
 			int bytesSent = Send(data[parameterIndex],lengths[parameterIndex]);
-			if (bytesSent<(int) lengths[parameterIndex])
+			if (bytesSent<static_cast<int>(lengths[parameterIndex]))
 			{
 				// Push remainder
 				outgoingDataMutex.Lock();

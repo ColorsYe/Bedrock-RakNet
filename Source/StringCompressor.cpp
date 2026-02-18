@@ -372,7 +372,7 @@ void StringCompressor::EncodeString( const char *input, int maxCharsToWrite, Rak
 
 	if ( input == 0 )
 	{
-		output->WriteCompressed( (uint32_t) 0 );
+		output->WriteCompressed( static_cast<uint32_t>(0) );
 		return ;
 	}
 
@@ -389,7 +389,7 @@ void StringCompressor::EncodeString( const char *input, int maxCharsToWrite, Rak
 
 	huffmanEncodingTree->EncodeArray( ( unsigned char* ) input, charsToWrite, &encodedBitStream );
 
-	stringBitLength = (uint32_t) encodedBitStream.GetNumberOfBitsUsed();
+	stringBitLength = static_cast<uint32_t>(encodedBitStream.GetNumberOfBitsUsed());
 
 	output->WriteCompressed( stringBitLength );
 
@@ -413,7 +413,7 @@ bool StringCompressor::DecodeString( char *output, int maxCharsToWrite, RakNet::
 	if ( input->ReadCompressed( stringBitLength ) == false )
 		return false;
 
-	if ( (unsigned) input->GetNumberOfUnreadBits() < stringBitLength )
+	if ( static_cast<unsigned>(input->GetNumberOfUnreadBits)() < stringBitLength )
 		return false;
 
 	bytesInStream = huffmanEncodingTree->DecodeArray( input, stringBitLength, maxCharsToWrite, ( unsigned char* ) output );

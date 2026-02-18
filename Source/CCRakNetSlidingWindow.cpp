@@ -80,7 +80,7 @@ int CCRakNetSlidingWindow::GetTransmissionBandwidth(CCTimeType curTime, CCTimeTy
 	_isContinuousSend=isContinuousSend;
 
 	if (unacknowledgedBytes<=cwnd)
-		return (int) (cwnd-unacknowledgedBytes);
+		return static_cast<int>(cwnd-unacknowledgedBytes);
 	else
 		return 0;
 }
@@ -91,7 +91,7 @@ bool CCRakNetSlidingWindow::ShouldSendACKs(CCTimeType curTime, CCTimeType estima
 	(void) estimatedTimeToNextTick;
 
 	// iphone crashes on comparison between double and int64 http://www.jenkinssoftware.com/forum/index.php?topic=2717.0
-	if (rto==(CCTimeType) UNSET_TIME_US)
+	if (rto==static_cast<CCTimeType>(UNSET_TIME_US))
 	{
 		// Unknown how long until the remote system will retransmit, so better send right away
 		return true;
@@ -146,7 +146,7 @@ bool CCRakNetSlidingWindow::OnGotPacket(DatagramSequenceNumberType datagramSeque
 		if (*skippedMessageCount>1000)
 		{
 			// During testing, the nat punchthrough server got 51200 on the first packet. I have no idea where this comes from, but has happened twice
-			if (*skippedMessageCount>(uint32_t)50000)
+			if (*skippedMessageCount>static_cast<uint32_t>(50000))
 				return false;
 			*skippedMessageCount=1000;
 		}
@@ -207,11 +207,11 @@ void CCRakNetSlidingWindow::OnAck(CCTimeType curTime, CCTimeType rtt, bool hasBA
 	(void) curTime;
 	(void) rtt;
 
-	lastRtt=(double) rtt;
+	lastRtt=static_cast<double>(rtt);
 	if (estimatedRTT==UNSET_TIME_US)
 	{
-		estimatedRTT=(double) rtt;
-		deviationRtt=(double)rtt;
+		estimatedRTT=static_cast<double>(rtt);
+		deviationRtt=static_cast<double>(rtt);
 	}
 	else
 	{
@@ -360,7 +360,7 @@ uint64_t CCRakNetSlidingWindow::GetBytesPerSecondLimitByCongestionControl(void) 
 CCTimeType CCRakNetSlidingWindow::GetSenderRTOForACK(void) const
 {
 	if (lastRtt==UNSET_TIME_US)
-		return (CCTimeType) UNSET_TIME_US;
+		return static_cast<CCTimeType>(UNSET_TIME_US);
 	return (CCTimeType)(lastRtt + SYN);
 }
 // ----------------------------------------------------------------------------------------------------------------------------

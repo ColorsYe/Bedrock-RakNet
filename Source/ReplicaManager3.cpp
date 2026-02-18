@@ -768,7 +768,7 @@ void Connection_RM3::AutoConstructByQuery(ReplicaManager3 *replicaManager3, Worl
 				// This is done here, as it isn't done in PushConstruction
 				SerializeParameters sp;
 				RakNet::BitStream emptyBs;
-				for (index=0; index < (unsigned int) RM3_NUM_OUTPUT_BITSTREAM_CHANNELS; index++)
+				for (index=0; index < static_cast<unsigned int>(RM3_NUM_OUTPUT_BITSTREAM_CHANNELS); index++)
 				{
 					sp.lastSentBitstream[index]=&emptyBs;
 					sp.pro[index]=replicaManager3->GetDefaultSendParameters();
@@ -1402,7 +1402,7 @@ void ReplicaManager3::BroadcastDestructionList(DataStructures::List<Replica3*> &
 		bsOut.Write(worldId);
 		uint16_t cnt=0;
 		bsOut.Write(cnt); // No construction
-		cnt=(uint16_t) replicaList.Size();
+		cnt=static_cast<uint16_t>(replicaList.Size());
 		BitSize_t cntOffset=bsOut.GetWriteOffset();;
 		bsOut.Write(cnt); // Overwritten at send call
 		cnt=0;
@@ -2210,7 +2210,7 @@ void Connection_RM3::SendConstruction(DataStructures::List<Replica3*> &newObject
 	bsOut.Reset();
 	bsOut.Write((MessageID)ID_REPLICA_MANAGER_CONSTRUCTION);
 	bsOut.Write(worldId);
-	uint16_t objectSize = (uint16_t) newObjects.Size();
+	uint16_t objectSize = static_cast<uint16_t>(newObjects.Size());
 	bsOut.Write(objectSize);
 
 	// Construction
@@ -2289,7 +2289,7 @@ void Connection_RM3::SendConstruction(DataStructures::List<Replica3*> &newObject
 	bsOut.AlignWriteToByteBoundary();
 
 	// Destruction
-	objectSize = (uint16_t) deletedObjects.Size();
+	objectSize = static_cast<uint16_t>(deletedObjects.Size());
 	bsOut.Write(objectSize);
 	for (oldListIndex=0; oldListIndex < deletedObjects.Size(); oldListIndex++)
 	{

@@ -124,10 +124,10 @@ public:
 	void RemoveAllQueryFilters();
 
 protected:
-	virtual void Update();
-	virtual PluginReceiveResult OnReceive(Packet *packet);
-	virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
-	virtual void OnRakPeerShutdown();
+	void Update() override;
+	PluginReceiveResult OnReceive(Packet *packet) override;
+	void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason ) override;
+	void OnRakPeerShutdown() override;
 
 
 	virtual void OnPostRequest(Packet *packet);

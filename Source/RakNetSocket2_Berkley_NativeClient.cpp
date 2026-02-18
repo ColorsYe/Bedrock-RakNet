@@ -46,18 +46,18 @@ void DomainNameToIP_Berkley_IPV4And6( const char *domainName, char ip[65] )
 		// different fields in IPv4 and IPv6:
 		if (p->ai_family == AF_INET)
 		{
-			struct sockaddr_in *ipv4 = (struct sockaddr_in *)p->ai_addr;
+			struct sockaddr_in *ipv4 = reinterpret_cast<struct sockaddr_in*>(p->ai_addr);
 			addr = &(ipv4->sin_addr);
 			strcpy(ip, inet_ntoa( ipv4->sin_addr ));
 		} 
 		else
 		{
 			// TODO - test
-			struct sockaddr_in6 *ipv6 = (struct sockaddr_in6 *)p->ai_addr;
+			struct sockaddr_in6 *ipv6 = reinterpret_cast<struct sockaddr_in6*>(p->ai_addr);
 			addr = &(ipv6->sin6_addr);
 			// inet_ntop function does not exist on windows
 			// http://www.mail-archive.com/users@ipv6.org/msg02107.html
-			getnameinfo((struct sockaddr *)ipv6, sizeof(struct sockaddr_in6), ip, 1, nullptr, 0, NI_NUMERICHOST);
+			getnameinfo(reinterpret_cast<struct sockaddr*>(ipv6), sizeof(struct sockaddr_in6), ip, 1, nullptr, 0, NI_NUMERICHOST);
 		}
 		freeaddrinfo(res); // free the linked list
 //	}

@@ -43,7 +43,7 @@ namespace DataStructures
 		void Clear();
 		heap_data_type& operator[] ( const unsigned int position ) const;
 		unsigned ChannelSize(const channel_key_type &channelID);
-		unsigned Size(void) const;
+		[[nodiscard]] unsigned Size(void) const;
 
 		struct QueueAndWeight
 		{

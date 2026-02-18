@@ -265,7 +265,7 @@ const char* PacketLogger::BaseIDTOString(unsigned char Id)
 	if (Id >= ID_USER_PACKET_ENUM)
         return 0;
 
-	const char *IDTable[((int)ID_USER_PACKET_ENUM)+1]=
+	const char *IDTable[(static_cast<int>(ID_USER_PACKET_ENUM))+1]=
 	{
 		"ID_CONNECTED_PING",
 		"ID_UNCONNECTED_PING",

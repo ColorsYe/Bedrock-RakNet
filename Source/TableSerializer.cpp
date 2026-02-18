@@ -21,11 +21,11 @@ void TableSerializer::SerializeTable(DataStructures::Table *in, RakNet::BitStrea
 	DataStructures::Page<unsigned, DataStructures::Table::Row*, _TABLE_BPLUS_TREE_ORDER> *cur = in->GetRows().GetListHead();
 	const DataStructures::List<DataStructures::Table::ColumnDescriptor> &columns=in->GetColumns();
 	SerializeColumns(in, out);
-	out->Write((unsigned)in->GetRows().Size());
+	out->Write(static_cast<unsigned>(in->GetRows)().Size());
 	unsigned rowIndex;
 	while (cur)
 	{
-		for (rowIndex=0; rowIndex < (unsigned)cur->size; rowIndex++)
+		for (rowIndex=0; rowIndex < static_cast<unsigned>(cur->size); rowIndex++)
 		{
 			SerializeRow(cur->data[rowIndex], cur->keys[rowIndex], columns, out);
 		}
@@ -35,25 +35,25 @@ void TableSerializer::SerializeTable(DataStructures::Table *in, RakNet::BitStrea
 void TableSerializer::SerializeColumns(DataStructures::Table *in, RakNet::BitStream *out)
 {
 	const DataStructures::List<DataStructures::Table::ColumnDescriptor> &columns=in->GetColumns();
-	out->Write((unsigned)columns.Size());
+	out->Write(static_cast<unsigned>(columns.Size()));
 	unsigned i;
 	for (i=0; i<columns.Size(); i++)
 	{
 		StringCompressor::Instance()->EncodeString(columns[i].columnName, _TABLE_MAX_COLUMN_NAME_LENGTH, out);
-		out->Write((unsigned char)columns[i].columnType);
+		out->Write(static_cast<unsigned char>(columns[i]).columnType);
 	}
 }
 void TableSerializer::SerializeColumns(DataStructures::Table *in, RakNet::BitStream *out, DataStructures::List<int> &skipColumnIndices)
 {
 	const DataStructures::List<DataStructures::Table::ColumnDescriptor> &columns=in->GetColumns();
-	out->Write((unsigned)columns.Size()-skipColumnIndices.Size());
+	out->Write(static_cast<unsigned>(columns.Size())-skipColumnIndices.Size());
 	unsigned i;
 	for (i=0; i<columns.Size(); i++)
 	{
 		if (skipColumnIndices.GetIndexOf(i)==(unsigned)-1)
 		{
 			StringCompressor::Instance()->EncodeString(columns[i].columnName, _TABLE_MAX_COLUMN_NAME_LENGTH, out);
-			out->Write((unsigned char)columns[i].columnType);
+			out->Write(static_cast<unsigned char>(columns[i]).columnType);
 		}		
 	}
 }
@@ -179,7 +179,7 @@ void TableSerializer::SerializeCell(RakNet::BitStream *out, DataStructures::Tabl
 			RakAssert(columnType==DataStructures::Table::BINARY);
 			RakAssert(cell->i>0);
 			unsigned binaryLength;
-			binaryLength=(unsigned)cell->i;
+			binaryLength=static_cast<unsigned>(cell->i);
 			out->Write(binaryLength);
 			out->WriteAlignedBytes((const unsigned char*) cell->c, (const unsigned int) cell->i);
 		}
@@ -223,10 +223,10 @@ bool TableSerializer::DeserializeCell(RakNet::BitStream *in, DataStructures::Tab
 			if (in->Read(binaryLength)==false || binaryLength > 10000000)
 				return false; // Sanity check to max binary cell of 10 megabytes
 			in->AlignReadToByteBoundary();
-			if (BITS_TO_BYTES(in->GetNumberOfUnreadBits())<(BitSize_t)binaryLength)
+			if (BITS_TO_BYTES(in->GetNumberOfUnreadBits())<static_cast<BitSize_t>(binaryLength))
 				return false;
-			cell->Set((char*) in->GetData()+BITS_TO_BYTES(in->GetReadOffset()), (int) binaryLength);
-			in->IgnoreBits(BYTES_TO_BITS((int) binaryLength));
+			cell->Set((char*) in->GetData()+BITS_TO_BYTES(in->GetReadOffset()), static_cast<int>(binaryLength));
+			in->IgnoreBits(BYTES_TO_BITS(static_cast<int>(binaryLength)));
 		}
 	}
 	return true;
@@ -235,7 +235,7 @@ void TableSerializer::SerializeFilterQuery(RakNet::BitStream *in, DataStructures
 {
 	StringCompressor::Instance()->EncodeString(query->columnName,_TABLE_MAX_COLUMN_NAME_LENGTH,in,0);
 	in->WriteCompressed(query->columnIndex);
-	in->Write((unsigned char) query->operation);
+	in->Write(static_cast<unsigned char>(query->operation));
 	in->Write(query->cellValue->isEmpty);
 	if (query->cellValue->isEmpty==false)
 	{
@@ -271,7 +271,7 @@ bool TableSerializer::DeserializeFilterQuery(RakNet::BitStream *out, DataStructu
 void TableSerializer::SerializeFilterQueryList(RakNet::BitStream *in, DataStructures::Table::FilterQuery *query, unsigned int numQueries, unsigned int maxQueries)
 {
 	(void) maxQueries;
-	in->Write((bool)(query && numQueries>0));
+	in->Write(static_cast<bool>(query && numQueries>0));
 	if (query==0 || numQueries<=0)
 		return;
 

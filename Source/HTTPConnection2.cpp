@@ -333,7 +333,7 @@ PluginReceiveResult HTTPConnection2::OnReceive(Packet *packet)
 							body_header += 4; // strlen("\r\n\r\n");
 							size_t slen = strlen(body_header);
 							//RakAssert(slen <= (size_t) sentRequest->contentLength);
-							if (slen >= (size_t) sentRequest->contentLength)
+							if (slen >= static_cast<size_t>(sentRequest->contentLength))
 							{
 								sentRequest->contentOffset = body_header - sentRequest->stringReceived.C_String();
 								completedRequestsMutex.Lock();
@@ -615,7 +615,7 @@ bool HTTPConnection2::IsConnected(SystemAddress sa)
 }
 void HTTPConnection2::SendRequest(Request *request)
 {
-	tcpInterface->Send(request->stringToTransmit.C_String(), (unsigned int) request->stringToTransmit.GetLength(), request->hostCompletedAddress, false);
+	tcpInterface->Send(request->stringToTransmit.C_String(), static_cast<unsigned int>(request->stringToTransmit).GetLength(), request->hostCompletedAddress, false);
 }
 
 #endif // #if _RAKNET_SUPPORT_HTTPConnection2==1 && _RAKNET_SUPPORT_TCPInterface==1

@@ -81,7 +81,7 @@ void CheckSum::Add ( unsigned short value )
 
 void CheckSum::Add ( unsigned char value )
 {
-	unsigned char cipher = (unsigned char)( value ^ ( r >> 8 ) );
+	unsigned char cipher = static_cast<unsigned char>( value ^ ( r >> 8 ) );
 	r = ( cipher + r ) * c1 + c2;
 	sum += cipher;
 } // CheckSum::add(unsigned char)

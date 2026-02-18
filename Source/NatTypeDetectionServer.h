@@ -80,11 +80,11 @@ public:
 	void Shutdown();
 
 	/// \internal For plugin handling
-	virtual void Update();
+	void Update() override;
 
 	/// \internal For plugin handling
-	virtual PluginReceiveResult OnReceive(Packet *packet);
-	virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
+	PluginReceiveResult OnReceive(Packet *packet) override;
+	void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason ) override;
 
 	enum NATDetectionState
 	{

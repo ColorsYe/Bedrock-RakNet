@@ -177,20 +177,20 @@ public:
 	void GetUPNPPortMappings(char *externalPort, char *internalPort, const SystemAddress &natPunchthroughServerAddress);
 
 	/// \internal For plugin handling
-	virtual void Update();
+	void Update() override;
 
 	/// \internal For plugin handling
-	virtual PluginReceiveResult OnReceive(Packet *packet);
+	PluginReceiveResult OnReceive(Packet *packet) override;
 
 	/// \internal For plugin handling
-	virtual void OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming);
+	void OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming) override;
 
 	/// \internal For plugin handling
-	virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
+	void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason ) override;
 
-	virtual void OnAttach();
-	virtual void OnDetach();
-	virtual void OnRakPeerShutdown();
+	void OnAttach() override;
+	void OnDetach() override;
+	void OnRakPeerShutdown() override;
 	void Clear();
 
 	struct SendPing

@@ -90,8 +90,8 @@ long _findfirst(const char *name, _finddata_t *f)
 
 int _findnext(long h, _finddata_t *f)
 {
-	RakAssert(h >= 0 && h < (long)fileInfo.Size());
-	if (h < 0 || h >= (long)fileInfo.Size()) return -1;
+	RakAssert(h >= 0 && h < static_cast<long>(fileInfo.Size()));
+	if (h < 0 || h >= static_cast<long>(fileInfo.Size())) return -1;
         
 	_findinfo_t* fi = fileInfo[h];
 
@@ -144,7 +144,7 @@ int _findclose(long h)
 {
     if (h==-1) return 0;
    
-    if (h < 0 || h >= (long)fileInfo.Size())
+    if (h < 0 || h >= static_cast<long>(fileInfo.Size()))
     {
         RakAssert(false);
         return -1;

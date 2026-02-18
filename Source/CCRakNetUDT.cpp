@@ -171,7 +171,7 @@ int CCRakNetUDT::GetRetransmissionBandwidth(CCTimeType curTime, CCTimeType timeS
 
 	if (isInSlowStart)
 	{
-		uint32_t CWNDLimit = (uint32_t) (CWND*MAXIMUM_MTU_INCLUDING_UDP_HEADER);
+		uint32_t CWNDLimit = static_cast<uint32_t>(CWND*MAXIMUM_MTU_INCLUDING_UDP_HEADER);
 		return CWNDLimit;
 	}
 	return GetTransmissionBandwidth(curTime,timeSinceLastTick,unacknowledgedBytes,isContinuousSend);
@@ -183,7 +183,7 @@ int CCRakNetUDT::GetTransmissionBandwidth(CCTimeType curTime, CCTimeType timeSin
 
 	if (isInSlowStart)
 	{
-		uint32_t CWNDLimit = (uint32_t) (CWND*MAXIMUM_MTU_INCLUDING_UDP_HEADER-unacknowledgedBytes);
+		uint32_t CWNDLimit = static_cast<uint32_t>(CWND*MAXIMUM_MTU_INCLUDING_UDP_HEADER-unacknowledgedBytes);
 		return CWNDLimit;
 	}
 	if (bytesCanSendThisTick>0)
@@ -197,7 +197,7 @@ int CCRakNetUDT::GetTransmissionBandwidth(CCTimeType curTime, CCTimeType timeSin
 		timeSinceLastTick=100000;
 #endif
 
-	bytesCanSendThisTick=(int)((double)timeSinceLastTick*((double)1.0/SND)+(double)bytesCanSendThisTick);
+	bytesCanSendThisTick=static_cast<int>(static_cast<double>(timeSinceLastTick)*(static_cast<double>(1.0)/SND)+static_cast<double>(bytesCanSendThisTick));
 	if (bytesCanSendThisTick>0)
 		return bytesCanSendThisTick;
 	return 0;
@@ -207,9 +207,9 @@ uint64_t CCRakNetUDT::GetBytesPerSecondLimitByCongestionControl(void) const
 	if (isInSlowStart)
 		return 0;
 #if CC_TIME_TYPE_BYTES==4
-	return (uint64_t) ((double)1.0/(SND*1000.0));
+	return (uint64_t) (static_cast<double>(1.0)/(SND*1000.0));
 #else
-	return (uint64_t) ((double)1.0/(SND*1000000.0));
+	return (uint64_t) (static_cast<double>(1.0)/(SND*1000000.0));
 #endif
 }
 // ----------------------------------------------------------------------------------------------------------------------------
@@ -218,7 +218,7 @@ bool CCRakNetUDT::ShouldSendACKs(CCTimeType curTime, CCTimeType estimatedTimeToN
 	CCTimeType rto = GetSenderRTOForACK();
 
 	// iphone crashes on comparison between double and int64 http://www.jenkinssoftware.com/forum/index.php?topic=2717.0
-	if (rto==(CCTimeType) UNSET_TIME_US)
+	if (rto==static_cast<CCTimeType>(UNSET_TIME_US))
 	{
 		// Unknown how long until the remote system will retransmit, so better send right away
 		return true;
@@ -363,7 +363,7 @@ bool CCRakNetUDT::LessThan(DatagramSequenceNumberType a, DatagramSequenceNumberT
 CCTimeType CCRakNetUDT::GetSenderRTOForACK(void) const
 {
 	if (RTT==UNSET_TIME_US)
-		return (CCTimeType) UNSET_TIME_US;
+		return static_cast<CCTimeType>(UNSET_TIME_US);
 	double RTTVar = maxRTT-minRTT;
 	return (CCTimeType)(RTT + RTTVarMultiple * RTTVar + SYN);
 }
@@ -380,7 +380,7 @@ CCTimeType CCRakNetUDT::GetRTOForRetransmission(unsigned char timesSent) const
 
 	if (RTT==UNSET_TIME_US)
 	{
-		return (CCTimeType) maxThreshold;
+		return static_cast<CCTimeType>(maxThreshold);
 	}
 
 	CCTimeType ret = lastRttOnIncreaseSendRate*2;
@@ -487,7 +487,7 @@ bool CCRakNetUDT::OnGotPacket(DatagramSequenceNumberType datagramSequenceNumber,
 		if (*skippedMessageCount>1000)
 		{
 			// During testing, the nat punchthrough server got 51200 on the first packet. I have no idea where this comes from, but has happened twice
-			if (*skippedMessageCount>(uint32_t)50000)
+			if (*skippedMessageCount>static_cast<uint32_t>(50000))
 				return false;
 			*skippedMessageCount=1000;
 		}
@@ -518,7 +518,7 @@ bool CCRakNetUDT::OnGotPacket(DatagramSequenceNumberType datagramSequenceNumber,
 			//			printf("%s:%i LIKELY BUG: Calculated packetArrivalHistory is below 28.8 Kbps modem\nReport to rakkar@jenkinssoftware.com with file and line number\n", _FILE_AND_LINE_);
 			//		}
 
-			packetArrivalHistoryContinuousGaps[packetArrivalHistoryContinuousGapsIndex++]=(int) interval;
+			packetArrivalHistoryContinuousGaps[packetArrivalHistoryContinuousGapsIndex++]=static_cast<int>(interval);
 			packetArrivalHistoryContinuousGapsIndex&=(CC_RAKNET_UDT_PACKET_HISTORY_LENGTH-1);
 
 			packetArrivalHistoryWriteCount++;
@@ -621,7 +621,7 @@ void CCRakNetUDT::UpdateWindowSizeAndAckOnAckPreSlowStart(double totalUserDataBy
 	// During slow start, max window size is the number of full packets that have been sent out
 	// CWND=(double) ((double)totalUserDataBytesSent/(double)MAXIMUM_MTU_INCLUDING_UDP_HEADER);
 	CC_DEBUG_PRINTF_3("CWND increasing from %f to %f\n", CWND, (double) ((double)totalUserDataBytesAcked/(double)MAXIMUM_MTU_INCLUDING_UDP_HEADER));
-	CWND=(double) ((double)totalUserDataBytesAcked/(double)MAXIMUM_MTU_INCLUDING_UDP_HEADER);
+	CWND=static_cast<double>(static_cast<double>(totalUserDataBytesAcked)/static_cast<double>(MAXIMUM_MTU_INCLUDING_UDP_HEADER));
 	if (CWND>=CWND_MAX_THRESHOLD)
 	{
 		CWND=CWND_MAX_THRESHOLD;
@@ -653,11 +653,11 @@ void CCRakNetUDT::UpdateWindowSizeAndAckOnAckPerSyn(CCTimeType curTime, CCTimeTy
 		pingsLastInterval.Size()==intervalSize)
 	{
 		double slopeSum=0.0;
-		double average=(double) pingsLastInterval[0];
+		double average=static_cast<double>(pingsLastInterval[0]);
 		int sampleSize=pingsLastInterval.Size();
 		for (int i=1; i < sampleSize; i++)
 		{
-			slopeSum+=(double)pingsLastInterval[i]-(double)pingsLastInterval[i-1];
+			slopeSum+=static_cast<double>(pingsLastInterval[i])-static_cast<double>(pingsLastInterval[i-1]);
 			average+=pingsLastInterval[i];
 		}
 		average/=sampleSize;

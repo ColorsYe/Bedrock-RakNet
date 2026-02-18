@@ -550,8 +550,8 @@ public:
 	static int JoinRequestHelperComp(const TM_World::JoinRequestHelper &key, const TM_World::JoinRequestHelper &data);
 
 protected:
-	virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
-	virtual void OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming);
+	void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason ) override;
+	void OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming) override;
 
 	// Teams with too many members have those members go to other teams.
 	void EnforceTeamBalance(NoTeamId noTeamSubcategory);
@@ -694,10 +694,10 @@ public:
 
 protected:
 
-	virtual void Update();
-	virtual PluginReceiveResult OnReceive(Packet *packet);
-	virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
-	virtual void OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming);
+	void Update() override;
+	PluginReceiveResult OnReceive(Packet *packet) override;
+	void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason ) override;
+	void OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming) override;
 	void Send( const RakNet::BitStream * bitStream, const AddressOrGUID systemIdentifier, bool broadcast );
 
 	void EncodeTeamFullOrLocked(RakNet::BitStream *bitStream, TM_TeamMember *teamMember, TM_Team *team);

@@ -88,7 +88,7 @@ public:
 	/// \return The SystemAddress/address of the system
 	SystemAddress HasLostConnection();
 
-	virtual CommandParserInterface* GetCommandParser() {return 0;}
+	CommandParserInterface* GetCommandParser() override {return 0;}
 
 	/// \internal
 	virtual PluginReceiveResult OnReceive(Packet *packet);

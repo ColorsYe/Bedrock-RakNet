@@ -197,9 +197,9 @@ protected:
 	// --------------------------------------------------------------------------------------------
 	// Packet handling functions
 	// --------------------------------------------------------------------------------------------
-	virtual PluginReceiveResult OnReceive(Packet *packet);
-	virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
-	virtual void OnRakPeerShutdown();
+	PluginReceiveResult OnReceive(Packet *packet) override;
+	void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason ) override;
+	void OnRakPeerShutdown() override;
 	
 	void Clear();
 	/*

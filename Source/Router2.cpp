@@ -172,7 +172,7 @@ bool Router2::ConnectInternal(RakNetGUID endpointGuid, bool returnConnectionLost
 			// Broadcast(ID_ROUTER_2_QUERY_FORWARDING, endpointGuid);
 			RakNet::BitStream bsOut;
 			bsOut.Write((MessageID)ID_ROUTER_2_INTERNAL);
-			bsOut.Write((unsigned char) ID_ROUTER_2_QUERY_FORWARDING);
+			bsOut.Write(static_cast<unsigned char>(ID_ROUTER_2_QUERY_FORWARDING));
 			bsOut.Write(endpointGuid);
 			uint32_t pack_id = rakPeerInterface->Send(&bsOut,MEDIUM_PRIORITY,RELIABLE_ORDERED,0,crs.guid,false);
 
@@ -362,7 +362,7 @@ PluginReceiveResult Router2::OnReceive(Packet *packet)
 			// Have the endpoint take longer to drop us, in case the intermediary system drops
 			RakNet::BitStream bsOut;
 			bsOut.Write((MessageID)ID_ROUTER_2_INTERNAL);
-			bsOut.Write((unsigned char) ID_ROUTER_2_INCREASE_TIMEOUT);
+			bsOut.Write(static_cast<unsigned char>(ID_ROUTER_2_INCREASE_TIMEOUT));
 			rakPeerInterface->Send(&bsOut,HIGH_PRIORITY,RELIABLE,0,packet->guid,false);
 
 			if (debugInterface)
@@ -732,7 +732,7 @@ void Router2::RequestForwarding(ConnnectRequest* connectionRequest)
 
 	RakNet::BitStream bsOut;
 	bsOut.Write((MessageID)ID_ROUTER_2_INTERNAL);
-	bsOut.Write((unsigned char) ID_ROUTER_2_REQUEST_FORWARDING);
+	bsOut.Write(static_cast<unsigned char>(ID_ROUTER_2_REQUEST_FORWARDING));
 	bsOut.Write(connectionRequest->endpointGuid);
 	rakPeerInterface->Send(&bsOut,MEDIUM_PRIORITY,RELIABLE_ORDERED,0,connectionRequest->lastRequestedForwardingSystem,false);
 
@@ -748,7 +748,7 @@ void Router2::SendFailureOnCannotForward(RakNetGUID sourceGuid, RakNetGUID endpo
 {
 	RakNet::BitStream bsOut;
 	bsOut.Write((MessageID)ID_ROUTER_2_INTERNAL);
-	bsOut.Write((unsigned char) ID_ROUTER_2_REPLY_FORWARDING);
+	bsOut.Write(static_cast<unsigned char>(ID_ROUTER_2_REPLY_FORWARDING));
 	bsOut.Write(endpointGuid);
 	bsOut.Write(false);
 	rakPeerInterface->Send(&bsOut,MEDIUM_PRIORITY,RELIABLE_ORDERED,0,sourceGuid,false);
@@ -814,11 +814,11 @@ void Router2::OnQueryForwarding(Packet *packet)
 	// If we are connected to endpointGuid, reply ID_ROUTER_2_REPLY_FORWARDING,endpointGuid,true,ping,numCurrentlyForwarding
 	RakNet::BitStream bsOut;
 	bsOut.Write((MessageID)ID_ROUTER_2_INTERNAL);
-	bsOut.Write((unsigned char) ID_ROUTER_2_REPLY_FORWARDING);
+	bsOut.Write(static_cast<unsigned char>(ID_ROUTER_2_REPLY_FORWARDING));
 	bsOut.Write(endpointGuid);
 	bsOut.Write(true);
-	bsOut.Write((unsigned short) pingToEndpoint);
-	bsOut.Write((unsigned short) udpForwarder->GetUsedForwardEntries()/2);
+	bsOut.Write(static_cast<unsigned short>(pingToEndpoint));
+	bsOut.Write(static_cast<unsigned short>(udpForwarder->GetUsedForwardEntries)()/2);
 	rakPeerInterface->Send(&bsOut,MEDIUM_PRIORITY,RELIABLE_ORDERED,0,packet->guid,false);
 
 	if (debugInterface)
@@ -909,7 +909,7 @@ void Router2::SendForwardingSuccess(MessageID messageId, RakNetGUID sourceGuid, 
 void Router2::SendOOBFromRakNetPort(OutOfBandIdentifiers oob, BitStream *extraData, SystemAddress sa)
 {
 	RakNet::BitStream oobBs;
-	oobBs.Write((unsigned char)oob);
+	oobBs.Write(static_cast<unsigned char>(oob));
 	if (extraData)
 	{
 		extraData->ResetReadPointer();
@@ -923,7 +923,7 @@ void Router2::SendOOBFromSpecifiedSocket(OutOfBandIdentifiers oob, SystemAddress
 {
 	RakNet::BitStream bs;
 	rakPeerInterface->WriteOutOfBandHeader(&bs);
-	bs.Write((unsigned char) oob);
+	bs.Write(static_cast<unsigned char>(oob));
 	// SocketLayer::SendTo_PC( socket, (const char*) bs.GetData(), bs.GetNumberOfBytesUsed(), sa, __FILE__, __LINE__  );
 
 

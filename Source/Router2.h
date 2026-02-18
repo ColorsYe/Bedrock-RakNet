@@ -95,11 +95,11 @@ public:
 	// --------------------------------------------------------------------------------------------
 	// Packet handling functions
 	// --------------------------------------------------------------------------------------------
-	virtual PluginReceiveResult OnReceive(Packet *packet);
-	virtual void Update();
-	virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
-	virtual void OnFailedConnectionAttempt(Packet *packet, PI2_FailedConnectionAttemptReason failedConnectionAttemptReason);
-	virtual void OnRakPeerShutdown();
+	PluginReceiveResult OnReceive(Packet *packet) override;
+	void Update() override;
+	void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason ) override;
+	void OnFailedConnectionAttempt(Packet *packet, PI2_FailedConnectionAttemptReason failedConnectionAttemptReason) override;
+	void OnRakPeerShutdown() override;
 
 
 	enum Router2RequestStates

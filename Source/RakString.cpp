@@ -68,7 +68,7 @@ RakString::RakString(char input)
 RakString::RakString(unsigned char input)
 {
 	char str[2];
-	str[0]=(char) input;
+	str[0]=static_cast<char>(input);
 	str[1]=0;
 	Assign(str);
 }
@@ -160,7 +160,7 @@ void RakString::Realloc(SharedString *sharedString, size_t bytes)
 	size_t newBytes;
 	const size_t smallStringSize = 128-sizeof(unsigned int)-sizeof(size_t)-sizeof(char*)*2;
 	newBytes = GetSizeToAllocate(bytes);
-	if (oldBytes <=(size_t) smallStringSize && newBytes > (size_t) smallStringSize)
+	if (oldBytes <=static_cast<size_t>(smallStringSize) && newBytes > static_cast<size_t>(smallStringSize))
 	{
 		sharedString->bigString=(char*) rakMalloc_Ex(newBytes, _FILE_AND_LINE_);
 		strcpy(sharedString->bigString, sharedString->smallString);
@@ -336,7 +336,7 @@ const RakNet::RakString operator+(const RakNet::RakString &lhs, const RakNet::Ra
 	const int smallStringSize = 128-sizeof(unsigned int)-sizeof(size_t)-sizeof(char*)*2;
 	sharedString->bytesUsed=allocatedBytes;
 	sharedString->refCount=1;
-	if (allocatedBytes <= (size_t) smallStringSize)
+	if (allocatedBytes <= static_cast<size_t>(smallStringSize))
 	{
 		sharedString->c_str=sharedString->smallString;
 	}
@@ -641,7 +641,7 @@ void RakString::Erase(unsigned int index, unsigned int count)
 }
 void RakString::TerminateAtLastCharacter(char c)
 {
-	int i, len=(int) GetLength();
+	int i, len=static_cast<int>(GetLength)();
 	for (i=len-1; i >= 0; i--)
 	{
 		if (sharedString->c_str[i]==c)
@@ -654,7 +654,7 @@ void RakString::TerminateAtLastCharacter(char c)
 }
 void RakString::StartAfterLastCharacter(char c)
 {
-	int i, len=(int) GetLength();
+	int i, len=static_cast<int>(GetLength)();
 	for (i=len-1; i >= 0; i--)
 	{
 		if (sharedString->c_str[i]==c)
@@ -670,7 +670,7 @@ void RakString::StartAfterLastCharacter(char c)
 }
 void RakString::TerminateAtFirstCharacter(char c)
 {
-	unsigned int i, len=(unsigned int) GetLength();
+	unsigned int i, len=static_cast<unsigned int>(GetLength)();
 	for (i=0; i < len; i++)
 	{
 		if (sharedString->c_str[i]==c)
@@ -685,7 +685,7 @@ void RakString::TerminateAtFirstCharacter(char c)
 }
 void RakString::StartAfterFirstCharacter(char c)
 {
-	unsigned int i, len=(unsigned int) GetLength();
+	unsigned int i, len=static_cast<unsigned int>(GetLength)();
 	for (i=0; i < len; i++)
 	{
 		if (sharedString->c_str[i]==c)
@@ -702,7 +702,7 @@ void RakString::StartAfterFirstCharacter(char c)
 int RakString::GetCharacterCount(char c)
 {
 	int count=0;
-	unsigned int i, len=(unsigned int) GetLength();
+	unsigned int i, len=static_cast<unsigned int>(GetLength)();
 	for (i=0; i < len; i++)
 	{
 		if (sharedString->c_str[i]==c)
@@ -947,12 +947,12 @@ void RakString::SplitURI(RakNet::RakString &header, RakNet::RakString &domain, R
 	char c;
 	unsigned int i=0;
 	if (strncmp(sharedString->c_str, "http://", 7)==0)
-		i+=(unsigned int) strlen("http://");
+		i+=static_cast<unsigned int>(strlen("http://");
 	else if (strncmp(sharedString->c_str, "https://", 8)==0)
-		i+=(unsigned int) strlen("https://");
+		i+=static_cast<unsigned int>(strlen("https://");
 	
 	if (strncmp(sharedString->c_str, "www.", 4)==0)
-		i+=(unsigned int) strlen("www.");
+		i+=static_cast<unsigned int>(strlen("www."));
 
 	if (i!=0)
 	{
@@ -991,7 +991,7 @@ void RakString::SplitURI(RakNet::RakString &header, RakNet::RakString &domain, R
 }
 RakNet::RakString& RakString::SQLEscape()
 {
-	int strLen=(int)GetLength();
+	int strLen=static_cast<int>(GetLength)();
 	int escapedCharacterCount=0;
 	int index;
 	for (index=0; index < strLen; index++)
@@ -1217,7 +1217,7 @@ void RakString::Serialize(BitStream *bs) const
 }
 void RakString::Serialize(const char *str, BitStream *bs)
 {
-	unsigned short l = (unsigned short) strlen(str);
+	unsigned short l = static_cast<unsigned short>(strlen)(str);
 	bs->Write(l);
 	bs->WriteAlignedBytes((const unsigned char*) str, (const unsigned int) l);
 }
@@ -1240,7 +1240,7 @@ bool RakString::Deserialize(BitStream *bs)
 	b=bs->Read(l);
 	if (l>0)
 	{
-		Allocate(((unsigned int) l)+1);
+		Allocate((static_cast<unsigned int>(l))+1);
 		b=bs->ReadAlignedBytes((unsigned char*) sharedString->c_str, l);
 		if (b)
 			sharedString->c_str[l]=0;
@@ -1480,7 +1480,7 @@ void RakString::AppendBytes(const char *bytes, unsigned int count)
 	else
 	{
 		Clone();
-		unsigned int length=(unsigned int) GetLength();
+		unsigned int length=static_cast<unsigned int>(GetLength)();
 		Realloc(sharedString, count+length+1);
 		memcpy(sharedString->c_str+length, bytes, count);
 		sharedString->c_str[length+count]=0;

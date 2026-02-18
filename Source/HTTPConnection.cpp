@@ -163,7 +163,7 @@ void HTTPConnection::Update()
 					host.C_String(),
 					port,
 					currentProcessingCommand.contentType.C_String(),
-					(unsigned) currentProcessingCommand.data.GetLength(),
+					static_cast<unsigned>(currentProcessingCommand.data.GetLength()),
 					currentProcessingCommand.data.C_String());
 			}
 			else
@@ -180,7 +180,7 @@ void HTTPConnection::Update()
 			
 		//	printf(request.C_String());
 	//		request.URLEncode();
-			tcp->Send(request.C_String(), (unsigned int) request.GetLength(), server,false);
+			tcp->Send(request.C_String(), static_cast<unsigned int>(request.GetLength()), server,false);
 			connectionState=CS_PROCESSING;
 		}
 		break;
@@ -264,14 +264,14 @@ void HTTPConnection::ProcessTCPPacket(Packet *packet)
 				long length_of_headers;
 				if (start_of_body)
 				{
-					length_of_headers = (long)(start_of_body + 4 - incomingData.C_String());
+					length_of_headers = static_cast<long>(start_of_body + 4 - incomingData.C_String());
 					const char *length_header = strstr(incomingData, "\r\nLength: ");
 
 					if(length_header)
 					{
 						long length = atol(length_header + 10) + length_of_headers;
 
-						if((long) incomingData.GetLength() >= length)
+						if(static_cast<long>(incomingData.GetLength()) >= length)
 						{
 							//printf("Closed connection (Got all data due to length header)\n");
 							CloseConnection();

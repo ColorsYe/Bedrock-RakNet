@@ -86,13 +86,13 @@ public:
 	void Clear();
 
 	/// \internal
-	virtual void Update();
+	void Update() override;
 	/// \internal
-	virtual PluginReceiveResult OnReceive(Packet *packet);
+	PluginReceiveResult OnReceive(Packet *packet) override;
 	/// \internal
-	virtual void OnRakPeerShutdown();
+	void OnRakPeerShutdown() override;
 	/// \internal
-	virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
+	void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason ) override;
 
 	/// \internal
 	struct PendingChallenge

@@ -107,7 +107,7 @@ namespace DataStructures
 		unsigned int GetIndexOf( const list_type &input ) const;
 		
 		/// \return The number of elements in the list
-		unsigned int Size( void ) const;
+		[[nodiscard]] unsigned int Size() const;
 		
 		/// \brief Clear the list		
 		void Clear( bool doNotDeallocateSmallBlocks, const char *file, unsigned int line );

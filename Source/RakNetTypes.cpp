@@ -344,11 +344,11 @@ void SystemAddress::ToString_New(bool writePort, char *dest, char portDelineator
 
 	if (address.addr4.sin_family==AF_INET)
 	{
-		ret=getnameinfo((struct sockaddr *) &address.addr4, sizeof(struct sockaddr_in), dest, 22, nullptr, 0, NI_NUMERICHOST);
+		ret=getnameinfo(reinterpret_cast<struct sockaddr*>(&address.addr4), sizeof(struct sockaddr_in), dest, 22, nullptr, 0, NI_NUMERICHOST);
 	}
 	else
 	{
-		ret=getnameinfo((struct sockaddr *) &address.addr6, sizeof(struct sockaddr_in6), dest, INET6_ADDRSTRLEN, nullptr, 0, NI_NUMERICHOST);
+		ret=getnameinfo(reinterpret_cast<struct sockaddr*>(&address.addr6), sizeof(struct sockaddr_in6), dest, INET6_ADDRSTRLEN, nullptr, 0, NI_NUMERICHOST);
 	}
 	if (ret!=0)
 	{
@@ -494,7 +494,7 @@ bool SystemAddress::SetBinaryAddress(const char *str, char portDelineator)
 
 			if (str[9])
 			{
-				SetPortHostOrder((unsigned short) atoi(str+9));
+				SetPortHostOrder(static_cast<unsigned short>(atoi)(str+9));
 			}
 			return true;
 		}
@@ -578,7 +578,7 @@ bool SystemAddress::SetBinaryAddress(const char *str, char portDelineator)
 
 		if (portPart[0])
 		{
-			address.addr4.sin_port=htons((unsigned short) atoi(portPart));
+			address.addr4.sin_port=htons(static_cast<unsigned short>(atoi)(portPart));
 			debugPort=ntohs(address.addr4.sin_port);
 		}
 		//#endif
@@ -699,17 +699,17 @@ bool SystemAddress::FromString(const char *str, char portDelineator, int ipVersi
 // 		else
 // 		{
 			address.addr4.sin_family=AF_INET;
-			memcpy(&address.addr4, (struct sockaddr_in *)servinfo->ai_addr,sizeof(struct sockaddr_in));
+			memcpy(&address.addr4, reinterpret_cast<struct sockaddr_in*>(servinfo->ai_addr),sizeof(struct sockaddr_in));
 //		}
 	}
 	else
 	{
 		address.addr4.sin_family=AF_INET6;
-		memcpy(&address.addr6, (struct sockaddr_in6 *)servinfo->ai_addr,sizeof(struct sockaddr_in6));
+		memcpy(&address.addr6, reinterpret_cast<struct sockaddr_in6*>(servinfo->ai_addr),sizeof(struct sockaddr_in6));
 	}
 #else
 	address.addr4.sin_family=AF_INET4;
-	memcpy(&address.addr4, (struct sockaddr_in *)servinfo->ai_addr,sizeof(struct sockaddr_in));
+	memcpy(&address.addr4, reinterpret_cast<struct sockaddr_in*>(servinfo->ai_addr),sizeof(struct sockaddr_in));
 #endif
 
 	freeaddrinfo(servinfo); // free the linked list
@@ -720,7 +720,7 @@ bool SystemAddress::FromString(const char *str, char portDelineator, int ipVersi
 	// PORT
 	if (portPart[0])
 	{
-		address.addr4.sin_port=htons((unsigned short) atoi(portPart));
+		address.addr4.sin_port=htons(static_cast<unsigned short>(atoi)(portPart));
 		debugPort=ntohs(address.addr4.sin_port);
 	}
 	else
@@ -733,7 +733,7 @@ bool SystemAddress::FromString(const char *str, char portDelineator, int ipVersi
 }
 bool SystemAddress::FromStringExplicitPort(const char *str, unsigned short port, int ipVersion)
 {
-	bool b = FromString(str,(char) 0,ipVersion);
+	bool b = FromString(str,static_cast<char>(0),ipVersion);
 	if (b==false)
 	{
 		*this=UNASSIGNED_SYSTEM_ADDRESS;
@@ -801,7 +801,7 @@ bool RakNetGUID::FromString(const char *source)
 
 #else
 	// Changed from g=strtoull(source,0,10); for android
-	g=strtoull(source, (char **)nullptr, 10);
+	g=strtoull(source, nullptr, 10);
 #endif
 	return true;
 

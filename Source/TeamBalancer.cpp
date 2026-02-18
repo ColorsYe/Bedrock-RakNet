@@ -871,7 +871,7 @@ void TeamBalancer::NotifyNoTeam(NetworkID memberId, RakNetGUID target)
 {
 	BitStream bsOut;
 	bsOut.Write((MessageID)ID_TEAM_BALANCER_TEAM_ASSIGNED);
-	bsOut.Write((unsigned char)UNASSIGNED_TEAM_ID);
+	bsOut.Write(static_cast<unsigned char>(UNASSIGNED_TEAM_ID));
 	bsOut.Write(memberId);
 	rakPeerInterface->Send(&bsOut,HIGH_PRIORITY,RELIABLE_ORDERED,0,target,false);
 }

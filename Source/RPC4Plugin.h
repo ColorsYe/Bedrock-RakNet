@@ -211,8 +211,8 @@ class NetworkIDManager;
 		// --------------------------------------------------------------------------------------------
 		// Packet handling functions
 		// --------------------------------------------------------------------------------------------
-		virtual void OnAttach();
-		virtual PluginReceiveResult OnReceive(Packet *packet);
+		void OnAttach() override;
+		PluginReceiveResult OnReceive(Packet *packet) override;
 
 		DataStructures::Hash<RakNet::RakString, void ( * ) ( RakNet::BitStream *, Packet * ),64, RakNet::RakString::ToInteger> registeredNonblockingFunctions;
 		DataStructures::Hash<RakNet::RakString, void ( * ) ( RakNet::BitStream *, RakNet::BitStream *, Packet * ),64, RakNet::RakString::ToInteger> registeredBlockingFunctions;

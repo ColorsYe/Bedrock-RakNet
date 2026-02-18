@@ -66,8 +66,8 @@ void RakNetTransport2::Send( SystemAddress systemAddress, const char *data, ... 
 
 	RakNet::BitStream str;
 	str.Write((MessageID)ID_TRANSPORT_STRING);
-	str.Write(text, (int) strlen(text));
-	str.Write((unsigned char) 0); // Null terminate the string
+	str.Write(text, static_cast<int>(strlen)(text));
+	str.Write(static_cast<unsigned char>(0)); // Null terminate the string
 	rakPeerInterface->Send(&str, MEDIUM_PRIORITY, RELIABLE_ORDERED, 0, systemAddress, (systemAddress==UNASSIGNED_SYSTEM_ADDRESS)!=0);
 }
 void RakNetTransport2::CloseConnection( SystemAddress systemAddress )

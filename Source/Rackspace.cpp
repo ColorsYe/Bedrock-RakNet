@@ -83,7 +83,7 @@ SystemAddress Rackspace::Authenticate(TCPInterface *_tcpInterface, const char *_
 		"X-Auth-User: %s\n"
 		"X-Auth-Key: %s\n\n"
 		,_authenticationURL, _rackspaceCloudUsername, _apiAccessKey);
-	tcpInterface->Send(command.C_String(), (unsigned int) command.GetLength(), ro.connectionAddress, false);
+	tcpInterface->Send(command.C_String(), static_cast<unsigned int>(command.GetLength()), ro.connectionAddress, false);
 
 	operations.Insert(ro,_FILE_AND_LINE_);
 	return ro.connectionAddress;
@@ -598,7 +598,7 @@ bool Rackspace::ExecuteOperation(RackspaceOperation &ro)
 
 	//printf(command.C_String());
 
-	tcpInterface->Send(command.C_String(), (unsigned int) command.GetLength(), ro.connectionAddress, false);
+	tcpInterface->Send(command.C_String(), static_cast<unsigned int>(command.GetLength()), ro.connectionAddress, false);
 	return true;
 }
 void Rackspace::ReadLine(const char *data, const char *stringStart, RakNet::RakString &output)
@@ -625,7 +625,7 @@ void Rackspace::ReadLine(const char *data, const char *stringStart, RakNet::RakS
 	resultEnd=result;
 	while (*resultEnd && (*resultEnd!='\r') && (*resultEnd!='\n') )
 		resultEnd++;
-	output.Truncate((unsigned int) (resultEnd-result));
+	output.Truncate(static_cast<unsigned int>(resultEnd-result));
 }
 
 

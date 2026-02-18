@@ -211,9 +211,9 @@ public:
 	void SetTrackConnections(bool _addNewConnections, int newConnectionsObjectType, bool _removeLostConnections);
 	
 protected:
-	virtual void Update();
-	virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
-	virtual void OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming);
+	void Update() override;
+	void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason ) override;
+	void OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming) override;
 
 	// Too slow
 // 	virtual bool UsesReliabilityLayer(void) const {return true;}

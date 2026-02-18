@@ -42,12 +42,12 @@ void GetMyIP_Windows_Linux_IPV4And6( SystemAddress addresses[MAXIMUM_NUMBER_OF_I
 	{
 		if (aip->ai_family == AF_INET)
 		{
-			struct sockaddr_in *ipv4 = (struct sockaddr_in *)aip->ai_addr;
+			struct sockaddr_in *ipv4 = reinterpret_cast<struct sockaddr_in*>(aip->ai_addr);
 			memcpy(&addresses[idx].address.addr4,ipv4,sizeof(sockaddr_in));
 		}
 		else
 		{
-			struct sockaddr_in6 *ipv6 = (struct sockaddr_in6 *)aip->ai_addr;
+			struct sockaddr_in6 *ipv6 = reinterpret_cast<struct sockaddr_in6*>(aip->ai_addr);
 			memcpy(&addresses[idx].address.addr4,ipv6,sizeof(sockaddr_in6));
 		}
 

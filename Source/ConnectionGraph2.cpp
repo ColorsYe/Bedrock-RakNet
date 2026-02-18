@@ -94,9 +94,9 @@ uint16_t ConnectionGraph2::GetPingBetweenSystems(RakNetGUID g1, RakNetGUID g2) c
 		return 0;
 
 	if (g1==rakPeerInterface->GetMyGUID())
-		return (uint16_t) rakPeerInterface->GetAveragePing(g2);
+		return static_cast<uint16_t>(rakPeerInterface->GetAveragePing)(g2);
 	if (g2==rakPeerInterface->GetMyGUID())
-		return (uint16_t) rakPeerInterface->GetAveragePing(g1);
+		return static_cast<uint16_t>(rakPeerInterface->GetAveragePing)(g1);
 
 	bool objectExists;
 	unsigned int idx = remoteSystems.GetIndexFromKey(g1, &objectExists);
@@ -131,7 +131,7 @@ RakNetGUID ConnectionGraph2::GetLowestAveragePingSystem(void) const
 		ap = rakPeerInterface->GetAveragePing(remoteSystems[idx]->guid);
 		if (ap!=-1)
 		{
-			thisAvePing+=(float) ap;
+			thisAvePing+=static_cast<float>(ap);
 			count++;
 		}
 	}
@@ -152,7 +152,7 @@ RakNetGUID ConnectionGraph2::GetLowestAveragePingSystem(void) const
 			ap=remoteSystem->remoteConnections[idx2].sendersPingToThatSystem;
 			if (ap!=-1)
 			{
-				thisAvePing+=(float) ap;
+				thisAvePing+=static_cast<float>(ap);
 				count++;
 			}
 		}
@@ -202,7 +202,7 @@ void ConnectionGraph2::AddParticipant(const SystemAddress &systemAddress, RakNet
 	// Relay the new connection to other systems.
 	RakNet::BitStream bs;
 	bs.Write((MessageID)ID_REMOTE_NEW_INCOMING_CONNECTION);
-	bs.Write((uint32_t)1);
+	bs.Write(static_cast<uint32_t>(1));
 	bs.Write(systemAddress);
 	bs.Write(rakNetGUID);
 	bs.WriteCasted<uint16_t>(rakPeerInterface->GetAveragePing(rakNetGUID));
@@ -215,7 +215,7 @@ void ConnectionGraph2::AddParticipant(const SystemAddress &systemAddress, RakNet
 	bs.Reset();
 	bs.Write((MessageID)ID_REMOTE_NEW_INCOMING_CONNECTION);
 	BitSize_t writeOffset = bs.GetWriteOffset();
-	bs.Write((uint32_t) addresses.Size());
+	bs.Write(static_cast<uint32_t>(addresses.Size()));
 
 	unsigned int i;
 	uint32_t count=0;
