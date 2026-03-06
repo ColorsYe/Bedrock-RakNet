@@ -158,7 +158,7 @@ public:
 	virtual void DeallocateWithDefaultAllocator(CloudQueryRow *row);
 
 protected:
-	PluginReceiveResult OnReceive(Packet *packet);
+	PluginReceiveResult OnReceive(Packet *packet) override;
 
 	CloudClientCallback *callback;
 	CloudAllocator *allocator;

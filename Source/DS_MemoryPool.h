@@ -22,7 +22,7 @@
 #include "RakMemoryOverride.h"
 
 /* DS_MEMORY_POOL_MAX_FREE_PAGES must be > 1 */
-#define DS_MEMORY_POOL_MAX_FREE_PAGES 4
+static constexpr unsigned int DS_MEMORY_POOL_MAX_FREE_PAGES = 4;
 
 /* #define _DISABLE_MEMORY_POOL */
 

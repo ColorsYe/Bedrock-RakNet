@@ -1,3 +1,4 @@
+#include "RakSafeString.h"
 /*
  *  Copyright (c) 2014, Oculus VR, Inc.
  *  All rights reserved.
@@ -73,7 +74,7 @@ void TelnetTransport::Send(  SystemAddress systemAddress, const char *data,... )
 	size_t prefixLength;
 	if (sendPrefix)
 	{
-		strcpy(text, sendPrefix);
+		RakNet::SafeStrcpy(text, sendPrefix, sizeof(text));
 		prefixLength = strlen(sendPrefix);
 	}
 	else
@@ -146,7 +147,7 @@ Packet* TelnetTransport::Receive( void )
 				remoteClient->textInput[i]=8;
 			strcat(remoteClient->textInput, remoteClient->lastSentTextInput);
 			tcpInterface->Send((const char *)remoteClient->textInput, static_cast<unsigned int>(strlen(remoteClient->textInput)), p->systemAddress, false);
-			strcpy(remoteClient->textInput,remoteClient->lastSentTextInput);
+			RakNet::SafeStrcpy(remoteClient->textInput, remoteClient->lastSentTextInput, sizeof(remoteClient->textInput));
 			remoteClient->cursorPosition=static_cast<unsigned int>(strlen(remoteClient->textInput));
 		}
 		
@@ -312,7 +313,7 @@ void TelnetTransport::SetSendSuffix(const char *suffix)
 	if (suffix)
 	{
 		sendSuffix = (char*) rakMalloc_Ex(strlen(suffix)+1, _FILE_AND_LINE_);
-		strcpy(sendSuffix, suffix);
+		RakNet::SafeStrcpy(sendSuffix, suffix, strlen(suffix) + 1);
 	}
 }
 void TelnetTransport::SetSendPrefix(const char *prefix)
@@ -325,7 +326,7 @@ void TelnetTransport::SetSendPrefix(const char *prefix)
 	if (prefix)
 	{
 		sendPrefix = (char*) rakMalloc_Ex(strlen(prefix)+1, _FILE_AND_LINE_);
-		strcpy(sendPrefix, prefix);
+		RakNet::SafeStrcpy(sendPrefix, prefix, strlen(prefix) + 1);
 	}
 }
 void TelnetTransport::AutoAllocate()

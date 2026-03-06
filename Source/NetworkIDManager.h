@@ -25,7 +25,7 @@ namespace RakNet
  * Increase this value if you plan to have many persistent objects
  * This value must match on all systems
  */
-#define NETWORK_ID_MANAGER_HASH_LENGTH 1024
+static constexpr unsigned int NETWORK_ID_MANAGER_HASH_LENGTH = 1024;
 
 /*
  * This class is simply used to generate a unique number for a group of instances of NetworkIDObject

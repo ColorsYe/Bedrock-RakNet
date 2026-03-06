@@ -368,7 +368,7 @@ public:
 	PRO GetDefaultSendParameters(void) const;
 
 	/* 调用 interfaces, send data */
-	virtual void Update();
+	void Update() override;
 
 	/* 内部使用 */
 	struct RM3World
@@ -382,11 +382,11 @@ public:
 		NetworkIDManager *networkIDManager;
 	};
 protected:
-	virtual PluginReceiveResult OnReceive(Packet *packet);
-	virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
-	virtual void OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming);
-	virtual void OnRakPeerShutdown();
-	virtual void OnDetach();
+	PluginReceiveResult OnReceive(Packet *packet) override;
+	void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason ) override;
+	void OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming) override;
+	void OnRakPeerShutdown() override;
+	void OnDetach() override;
 
 	PluginReceiveResult OnConstruction(Packet *packet, unsigned char *packetData, int packetDataLength, RakNetGUID senderGuid, unsigned char packetDataOffset, WorldId worldId);
 	PluginReceiveResult OnSerialize(Packet *packet, unsigned char *packetData, int packetDataLength, RakNetGUID senderGuid, RakNet::Time timestamp, unsigned char packetDataOffset, WorldId worldId);

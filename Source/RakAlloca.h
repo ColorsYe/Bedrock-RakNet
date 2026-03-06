@@ -8,6 +8,8 @@
  *
  */
 
+#pragma once
+
 /* 跨平台 alloca 栈内存分配头文件 */
 #if defined(__FreeBSD__)
 #include <cstdlib>

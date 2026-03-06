@@ -114,7 +114,7 @@
  */
 #ifndef RESEND_BUFFER_ARRAY_LENGTH
 #define RESEND_BUFFER_ARRAY_LENGTH 512
-#define RESEND_BUFFER_ARRAY_MASK 511
+static constexpr int RESEND_BUFFER_ARRAY_MASK = 511;
 #endif
 
 /* Uncomment if you want to link in the DLMalloc library to use with RakMemoryOverride */

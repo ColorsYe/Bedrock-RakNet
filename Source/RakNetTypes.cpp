@@ -1,3 +1,4 @@
+#include "RakSafeString.h"
 /*
  *  Copyright (c) 2014, Oculus VR, Inc.
  *  All rights reserved.
@@ -102,7 +103,7 @@ SocketDescriptor::SocketDescriptor(unsigned short _port, const char *_hostAddres
 	remotePortRakNetWasStartedOn_PS3_PSP2=0;
 	port=_port;
 	if (_hostAddress)
-		strcpy(hostAddress, _hostAddress);
+		RakNet::SafeStrcpy(hostAddress, _hostAddress, sizeof(hostAddress));
 	else
 		hostAddress[0]=0;
 	extraSocketOptions=0;
@@ -263,7 +264,7 @@ void SystemAddress::ToString_Old(bool writePort, char *dest, char portDelineator
 {
 	if (*this==UNASSIGNED_SYSTEM_ADDRESS)
 	{
-		strcpy(dest, "UNASSIGNED_SYSTEM_ADDRESS");
+		RakNet::SafeStrcpy(dest, "UNASSIGNED_SYSTEM_ADDRESS", 64);
 		return;
 	}
 
@@ -293,7 +294,7 @@ void SystemAddress::ToString_Old(bool writePort, char *dest, char portDelineator
 	in_addr in;
 	in.s_addr = address.addr4.sin_addr.s_addr;
 	const char *ntoaStr = inet_ntoa( in );
-	strcpy(dest, ntoaStr);
+	RakNet::SafeStrcpy(dest, ntoaStr, 64);
 	if (writePort)
 	{
 		strcat(dest, portStr);
@@ -323,7 +324,7 @@ void SystemAddress::ToString_New(bool writePort, char *dest, char portDelineator
 
 	if (*this==UNASSIGNED_SYSTEM_ADDRESS)
 	{
-		strcpy(dest, "UNASSIGNED_SYSTEM_ADDRESS");
+		RakNet::SafeStrcpy(dest, "UNASSIGNED_SYSTEM_ADDRESS", 64);
 		return;
 	}
 
@@ -612,12 +613,12 @@ bool SystemAddress::FromString(const char *str, char portDelineator, int ipVersi
 	// TODO - what about 255.255.255.255?
 	if (ipVersion==4 && strcmp(str, IPV6_LOOPBACK)==0)
 	{
-		strcpy(ipPart,IPV4_LOOPBACK);
+		RakNet::SafeStrcpy(ipPart, IPV4_LOOPBACK, sizeof(ipPart));
 	}
 	else if (ipVersion==6 && strcmp(str, IPV4_LOOPBACK)==0)
 	{
 		address.addr4.sin_family=AF_INET6;
-		strcpy(ipPart,IPV6_LOOPBACK);
+		RakNet::SafeStrcpy(ipPart, IPV6_LOOPBACK, sizeof(ipPart));
 	}
 	else if (NonNumericHostString(str)==false)
 	{
@@ -782,7 +783,7 @@ const char *RakNetGUID::ToString(void) const
 void RakNetGUID::ToString(char *dest) const
 {
 	if (*this==UNASSIGNED_RAKNET_GUID)
-		strcpy(dest, "UNASSIGNED_RAKNET_GUID");
+		RakNet::SafeStrcpy(dest, "UNASSIGNED_RAKNET_GUID", 64);
 	else
 		//sprintf(dest, "%u.%u.%u.%u.%u.%u", g[0], g[1], g[2], g[3], g[4], g[5]);
 		snprintf(dest, 22, "%" PRINTF_64_BIT_MODIFIER "u", (long long unsigned int) g);

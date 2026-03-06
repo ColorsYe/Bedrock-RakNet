@@ -1,3 +1,4 @@
+#include "RakSafeString.h"
 /*
  *  Copyright (c) 2014, Oculus VR, Inc.
  *  All rights reserved.
@@ -77,7 +78,7 @@ void NatTypeDetectionServer::Startup(
 #endif
 		this);
 
-	strcpy(s3p4Address, nonRakNetIP3);
+	RakNet::SafeStrcpy(s3p4Address, nonRakNetIP3, sizeof(s3p4Address));
 
 
 	#if !defined(__native_client__) && !defined(WINDOWS_STORE_RT)

@@ -1,3 +1,4 @@
+#include "RakSafeString.h"
 /*
  *  Copyright (c) 2014, Oculus VR, Inc.
  *  All rights reserved.
@@ -394,7 +395,7 @@ SystemAddress TCPInterface::Connect(const char* host, unsigned short remotePort,
 		s->systemAddress.FromStringExplicitPort(host,remotePort);
 		s->systemAddress.systemIndex=(SystemIndex) newRemoteClientIndex;
 		if (bindAddress)
-			strcpy(s->bindAddress, bindAddress);
+			RakNet::SafeStrcpy(s->bindAddress, bindAddress, sizeof(s->bindAddress));
 		else
 			s->bindAddress[0]=0;
 		s->tcpInterface=this;

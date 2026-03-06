@@ -8,6 +8,8 @@
  *
  */
 
+#pragma once
+
 /* Windows 平台头文件包含 */
 #if   defined (WINDOWS_STORE_RT)
 #include <windows.h>

@@ -8,5 +8,7 @@
  *
  */
 
+#pragma once
+
 // USER EDITABLE FILE
 

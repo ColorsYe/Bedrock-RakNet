@@ -1,3 +1,4 @@
+#include "RakSafeString.h"
 /*
  *  Copyright (c) 2014, Oculus VR, Inc.
  *  All rights reserved.
@@ -48,7 +49,7 @@ void DomainNameToIP_Berkley_IPV4And6( const char *domainName, char ip[65] )
 		{
 			struct sockaddr_in *ipv4 = reinterpret_cast<struct sockaddr_in*>(p->ai_addr);
 			addr = &(ipv4->sin_addr);
-			strcpy(ip, inet_ntoa( ipv4->sin_addr ));
+			RakNet::SafeStrcpy(ip, inet_ntoa(ipv4->sin_addr), 65);
 		} 
 		else
 		{
@@ -90,7 +91,7 @@ void DomainNameToIP_Berkley_IPV4( const char *domainName, char ip[65] )
 	}
 
 	memcpy( &addr, phe->h_addr_list[ 0 ], sizeof( struct in_addr ) );
-	strcpy(ip, inet_ntoa( addr ));
+	RakNet::SafeStrcpy(ip, inet_ntoa(addr), 65);
 }
 
 

@@ -45,21 +45,21 @@ public:
 	 * 参数[输入] systemAddress The player that sent this command.
 	 * 参数[输入] originalString The string that was actually sent over the network, in case you want to do your own parsing
 	 */
-	bool OnCommand(const char *command, unsigned numParameters, char **parameterList, TransportInterface *transport, const SystemAddress &systemAddress, const char *originalString);
+	bool OnCommand(const char *command, unsigned numParameters, char **parameterList, TransportInterface *transport, const SystemAddress &systemAddress, const char *originalString) override;
 
 	/*
 	 * 你需要重写此函数并返回一个静态字符串来标识你的解析器。
 	 * 应返回一个静态字符串
 	 * 返回值: The name that you return.
 	 */
-	const char *GetName(void) const;
+	const char *GetName(void) const override;
 
 	/*
 	 * 当需要向 systemAddress 发送解析器简要描述时的回调
 	 * 参数[输入] transport The transport interface we can use to write to
 	 * 参数[输入] systemAddress The player that requested help.
 	 */
-	void SendHelp(TransportInterface *transport, const SystemAddress &systemAddress);
+	void SendHelp(TransportInterface *transport, const SystemAddress &systemAddress) override;
 
 	/* All logs must be associated with a channel.  This is a filter so that remote clients only get logs for a system they care about. */
 	/* If you call Log with a channel that is unknown, that channel will automatically be added */
@@ -79,14 +79,14 @@ public:
 	 * 参数[输入] systemAddress The player that has connected.
 	 * 参数[输入] transport The transport interface that sent us this information.  Can be used to send messages to this or other players.
 	 */
-	void OnNewIncomingConnection(const SystemAddress &systemAddress, TransportInterface *transport);
+	void OnNewIncomingConnection(const SystemAddress &systemAddress, TransportInterface *transport) override;
 
 	/*
 	 * A callback for when systemAddress has disconnected, either gracefully or forcefully
 	 * 参数[输入] systemAddress The player that has disconnected.
 	 * 参数[输入] transport The transport interface that sent us this information.
 	 */
-	void OnConnectionLost(const SystemAddress &systemAddress, TransportInterface *transport);
+	void OnConnectionLost(const SystemAddress &systemAddress, TransportInterface *transport) override;
 
 	/*
 	 * This is called every time transport interface is registered.  If you want to save a copy of the TransportInterface pointer

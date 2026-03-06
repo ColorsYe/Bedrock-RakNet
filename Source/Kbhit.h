@@ -5,6 +5,8 @@ Chris Giese <geezer@execpc.com>	http://my.execpc.com/~geezer
 此代码为公共领域（无版权）。
 您可以随意使用。
 *****************************************************************************/
+
+#pragma once
 #if defined(_WIN32)
 #include <conio.h> /* kbhit(), getch() */
 

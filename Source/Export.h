@@ -8,6 +8,8 @@
  *
  */
 
+#pragma once
+
 #include "RakNetDefines.h"
 
 /* Windows 平台下的 DLL 导出宏定义 */

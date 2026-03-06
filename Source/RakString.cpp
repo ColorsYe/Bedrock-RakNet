@@ -1,3 +1,4 @@
+#include "RakSafeString.h"
 /*
  *  Copyright (c) 2014, Oculus VR, Inc.
  *  All rights reserved.
@@ -163,7 +164,7 @@ void RakString::Realloc(SharedString *sharedString, size_t bytes)
 	if (oldBytes <=static_cast<size_t>(smallStringSize) && newBytes > static_cast<size_t>(smallStringSize))
 	{
 		sharedString->bigString=(char*) rakMalloc_Ex(newBytes, _FILE_AND_LINE_);
-		strcpy(sharedString->bigString, sharedString->smallString);
+		RakNet::SafeStrcpy(sharedString->bigString, sharedString->smallString, newBytes);
 		sharedString->c_str=sharedString->bigString;
 	}
 	else if (oldBytes > smallStringSize)
@@ -346,7 +347,7 @@ const RakNet::RakString operator+(const RakNet::RakString &lhs, const RakNet::Ra
 		sharedString->c_str=sharedString->bigString;
 	}
 
-	strcpy(sharedString->c_str, lhs);
+	RakNet::SafeStrcpy(sharedString->c_str, lhs, sharedString->bytesUsed);
 	strcat(sharedString->c_str, rhs);
 
 	return RakString(sharedString);
@@ -1618,7 +1619,7 @@ int main()
 		for (i=0; i < repeatCount; i++)
 		{
 			c = RakNet::OP_NEW_ARRAY<char >(56,_FILE_AND_LINE_ );
-			strcpy(c, "Aalsdkj alsdjf laksdjf ;lasdfj ;lasjfd");
+			RakNet::SafeStrcpy(c, "Aalsdkj alsdjf laksdjf ;lasdfj ;lasjfd", 56);
 			referenceStringList.Insert(c);
 		}
 		beforeRakString=RakNet::GetTimeMS();
@@ -1650,7 +1651,7 @@ int main()
 		for (i=0; i < repeatCount; i++)
 		{
 			c = RakNet::OP_NEW_ARRAY<char >(56, _FILE_AND_LINE_ );
-			strcpy(c, "Aalsdkj alsdjf laksdjf ;lasdfj ;lasjfd");
+			RakNet::SafeStrcpy(c, "Aalsdkj alsdjf laksdjf ;lasdfj ;lasjfd", 56);
 			referenceStringList.Insert(0);
 		}
 		beforeRakString=RakNet::GetTimeMS();

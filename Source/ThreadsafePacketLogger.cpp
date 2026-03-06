@@ -1,3 +1,4 @@
+#include "RakSafeString.h"
 /*
  *  Copyright (c) 2014, Oculus VR, Inc.
  *  All rights reserved.
@@ -41,7 +42,7 @@ void ThreadsafePacketLogger::AddToLog(const char *str)
 {
 	char **msg = logMessages.WriteLock();
 	*msg = (char*) rakMalloc_Ex( strlen(str)+1, _FILE_AND_LINE_ );
-	strcpy(*msg, str);
+	RakNet::SafeStrcpy(*msg, str, strlen(str) + 1);
 	logMessages.WriteUnlock();
 }
 

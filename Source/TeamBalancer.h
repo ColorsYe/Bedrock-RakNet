@@ -177,7 +177,7 @@ protected:
 	/* 内部使用 */
 	void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason ) override;
 	/* 内部使用 */
-	void OnAttach();
+	void OnAttach() override;
 
 	void OnStatusUpdateToNewHost(Packet *packet);
 	void OnCancelTeamRequest(Packet *packet);

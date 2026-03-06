@@ -43,15 +43,15 @@ public:
 
 	TelnetTransport();
 	virtual ~TelnetTransport();
-	bool Start(unsigned short port, bool serverMode);
-	void Stop();
-	void Send( SystemAddress systemAddress, const char *data, ... );
-	void CloseConnection( SystemAddress systemAddress );
-	Packet* Receive( void );
-	void DeallocatePacket( Packet *packet );
-	SystemAddress HasNewIncomingConnection();
-	SystemAddress HasLostConnection();
-	CommandParserInterface* GetCommandParser();
+	bool Start(unsigned short port, bool serverMode) override;
+	void Stop() override;
+	void Send( SystemAddress systemAddress, const char *data, ... ) override;
+	void CloseConnection( SystemAddress systemAddress ) override;
+	Packet* Receive( void ) override;
+	void DeallocatePacket( Packet *packet ) override;
+	SystemAddress HasNewIncomingConnection() override;
+	SystemAddress HasLostConnection() override;
+	CommandParserInterface* GetCommandParser() override;
 	void SetSendSuffix(const char *suffix);
 	void SetSendPrefix(const char *prefix);
 protected:

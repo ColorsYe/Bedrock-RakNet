@@ -224,9 +224,9 @@ protected:
 	void OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming) override;
 
 	/* Too slow */
-/* 	virtual bool UsesReliabilityLayer(void) const {return true;} */
-/* 	virtual void OnDirectSocketSend(const char *data, const BitSize_t bitsUsed, SystemAddress remoteSystemAddress); */
-/* 	virtual void OnDirectSocketReceive(const char *data, const BitSize_t bitsUsed, SystemAddress remoteSystemAddress); */
+/* 	bool UsesReliabilityLayer(void) const override {return true;} */
+/* 	void OnDirectSocketSend(const char *data, const BitSize_t bitsUsed, SystemAddress remoteSystemAddress) override; */
+/* 	void OnDirectSocketReceive(const char *data, const BitSize_t bitsUsed, SystemAddress remoteSystemAddress) override; */
 
 
 	bool addNewConnections;

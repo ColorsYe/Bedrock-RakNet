@@ -8,6 +8,8 @@
  *
  */
 
+#pragma once
+
 /* RakNet 断言宏定义 */
 #include <cassert>
 #include "RakNetDefines.h"

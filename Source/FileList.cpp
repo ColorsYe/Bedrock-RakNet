@@ -1,3 +1,4 @@
+#include "RakSafeString.h"
 /*
  *  Copyright (c) 2014, Oculus VR, Inc.
  *  All rights reserved.
@@ -259,14 +260,14 @@ void FileList::AddFilesFromDirectory(const char *applicationDirectory, const cha
 	RakAssert(dirSoFar);
 
 	if (applicationDirectory)
-		strcpy(root, applicationDirectory);
+		RakNet::SafeStrcpy(root, applicationDirectory, sizeof(root));
 	else
 		root[0]=0;
 
 	int rootLen=static_cast<int>(strlen(root));
 	if (rootLen)
 	{
-		strcpy(dirSoFar, root);
+		RakNet::SafeStrcpy(dirSoFar, root, 520);
 		if (FixEndingSlash(dirSoFar))
 			rootLen++;
 	}
@@ -285,7 +286,7 @@ void FileList::AddFilesFromDirectory(const char *applicationDirectory, const cha
 	while (dirList.Size())
 	{
 		dirSoFar=dirList.Pop();
-		strcpy(fullPath, dirSoFar);
+		RakNet::SafeStrcpy(fullPath, dirSoFar, sizeof(fullPath));
 		// Changed from *.* to * for Linux compatibility
 		strcat(fullPath, "*");
 
@@ -316,7 +317,7 @@ void FileList::AddFilesFromDirectory(const char *applicationDirectory, const cha
                     
 			if ((fileInfo.attrib & (_A_HIDDEN | _A_SUBDIR | _A_SYSTEM))==0)
 			{
-				strcpy(fullPath, dirSoFar);
+				RakNet::SafeStrcpy(fullPath, dirSoFar, sizeof(fullPath));
 				strcat(fullPath, fileInfo.name);
 				fileData=0;
 
@@ -402,7 +403,7 @@ void FileList::AddFilesFromDirectory(const char *applicationDirectory, const cha
 			{
 				char *newDir=(char*) rakMalloc_Ex( 520, _FILE_AND_LINE_ );
 				RakAssert(newDir);
-				strcpy(newDir, dirSoFar);
+				RakNet::SafeStrcpy(newDir, dirSoFar, 520);
 				strcat(newDir, fileInfo.name);
 				strcat(newDir, "/");
 				dirList.Push(newDir, _FILE_AND_LINE_ );
@@ -591,7 +592,7 @@ void FileList::ListMissingOrChangedFiles(const char *applicationDirectory, FileL
 
 	for (i=0; i < fileList.Size(); i++)
 	{
-		strcpy(fullPath, applicationDirectory);
+		RakNet::SafeStrcpy(fullPath, applicationDirectory, sizeof(fullPath));
 		FixEndingSlash(fullPath);
 		strcat(fullPath,fileList[i].filename);
 		fp=fopen(fullPath, "rb");
@@ -650,7 +651,7 @@ void FileList::PopulateDataFromDisk(const char *applicationDirectory, bool write
 	while (i < fileList.Size())
 	{
 		rakFree_Ex(fileList[i].data, _FILE_AND_LINE_ );
-		strcpy(fullPath, applicationDirectory);
+		RakNet::SafeStrcpy(fullPath, applicationDirectory, sizeof(fullPath));
 		FixEndingSlash(fullPath);
 		strcat(fullPath,fileList[i].filename.C_String());
 		fp=fopen(fullPath, "rb");
@@ -775,7 +776,7 @@ void FileList::WriteDataToDisk(const char *applicationDirectory)
 
 	for (i=0; i < fileList.Size(); i++)
 	{
-		strcpy(fullPath, applicationDirectory);
+		RakNet::SafeStrcpy(fullPath, applicationDirectory, sizeof(fullPath));
 		FixEndingSlash(fullPath);
 		strcat(fullPath,fileList[i].filename.C_String());
 		
@@ -822,7 +823,7 @@ void FileList::DeleteFiles(const char *applicationDirectory)
 			}
 		}
 
-		strcpy(fullPath, applicationDirectory);
+		RakNet::SafeStrcpy(fullPath, applicationDirectory, sizeof(fullPath));
 		FixEndingSlash(fullPath);
 		strcat(fullPath, fileList[i].filename.C_String());
 	

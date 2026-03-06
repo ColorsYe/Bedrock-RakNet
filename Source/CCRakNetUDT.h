@@ -36,11 +36,11 @@ using BytesPerSecond = double;
 using MicrosecondsPerByte = double;
 
 /* CC_RAKNET_UDT_PACKET_HISTORY_LENGTH 应为 2 的幂次，以确保写入索引能正确回绕 */
-#define CC_RAKNET_UDT_PACKET_HISTORY_LENGTH 64
-#define RTT_HISTORY_LENGTH 64
+static constexpr int CC_RAKNET_UDT_PACKET_HISTORY_LENGTH = 64;
+static constexpr int RTT_HISTORY_LENGTH = 64;
 
 /* UDP 头部大小（字节） */
-#define UDP_HEADER_SIZE 28
+static constexpr unsigned int UDP_HEADER_SIZE = 28;
 
 #define CC_DEBUG_PRINTF_1(x)
 #define CC_DEBUG_PRINTF_2(x,y)

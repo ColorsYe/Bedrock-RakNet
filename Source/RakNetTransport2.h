@@ -59,10 +59,10 @@ public:
 	 * 参数[输入] serverMode If true, you should allow incoming connections (I don't actually use this anywhere)
 	 * 返回值: Return 成功返回 true，失败返回 false。
 	 */
-	bool Start(unsigned short port, bool serverMode);
+	bool Start(unsigned short port, bool serverMode) override;
 
 	/* Stop the transport provider.  You can clear memory and shutdown threads here. */
-	void Stop();
+	void Stop() override;
 
 	/*
 	 * Send a 以空字符结尾的字符串 to systemAddress
@@ -72,13 +72,13 @@ public:
 	 * 参数[输入] data format specifier - same as RAKNET_DEBUG_PRINTF
 	 * 参数[输入] ... format specification arguments - same as RAKNET_DEBUG_PRINTF
 	 */
-	void Send( SystemAddress systemAddress, const char *data, ... );
+	void Send( SystemAddress systemAddress, const char *data, ... ) override;
 
 	/*
 	 * Disconnect systemAddress .  The binary address and port defines the SystemAddress structure.
 	 * 参数[输入] systemAddress The player/address to disconnect
 	 */
-	void CloseConnection( SystemAddress systemAddress );
+	void CloseConnection( SystemAddress systemAddress ) override;
 
 	/*
 	 * 返回一个字符串。该字符串应被分配并写入 Packet::data。
@@ -87,34 +87,34 @@ public:
 	 * and thus only return a string in Packet::data
 	 * 返回值: The packet structure containing the result of Receive, or 0 if no data is available
 	 */
-	Packet* Receive( void );
+	Packet* Receive( void ) override;
 
 	/*
 	 * Deallocate the Packet structure returned by Receive
 	 * 参数[输入] The packet to deallocate
 	 */
-	void DeallocatePacket( Packet *packet );
+	void DeallocatePacket( Packet *packet ) override;
 
 	/*
 	 * If a new system connects to you, you should queue that event and return the systemAddress/address of that player in this function.
 	 * 返回值: The SystemAddress/address of the system
 	 */
-	SystemAddress HasNewIncomingConnection();
+	SystemAddress HasNewIncomingConnection() override;
 
 	/*
 	 * If a system loses the connection, you should queue that event and return the systemAddress/address of that player in this function.
 	 * 返回值: The SystemAddress/address of the system
 	 */
-	SystemAddress HasLostConnection();
+	SystemAddress HasLostConnection() override;
 
 	CommandParserInterface* GetCommandParser() override {return 0;}
 
 	/* 内部使用 */
-	virtual PluginReceiveResult OnReceive(Packet *packet);
+	PluginReceiveResult OnReceive(Packet *packet) override;
 	/* 内部使用 */
-	virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
+	void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason ) override;
 	/* 内部使用 */
-	virtual void OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming);
+	void OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming) override;
 protected:
 	DataStructures::Queue<SystemAddress> newConnections, lostConnections;
 	DataStructures::Queue<Packet*> packetQueue;

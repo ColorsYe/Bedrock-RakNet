@@ -29,7 +29,7 @@
 #include "DS_OrderedList.h"
 
 /* If the data is smaller than this value, an allocation is avoid. However, this value exists for every row */
-#define CLOUD_SERVER_DATA_STACK_SIZE 32
+static constexpr unsigned int CLOUD_SERVER_DATA_STACK_SIZE = 32;
 
 namespace RakNet
 {

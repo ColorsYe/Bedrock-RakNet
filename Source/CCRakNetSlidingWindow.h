@@ -46,7 +46,7 @@ else use congestion avoidance
 #include "DS_Queue.h"
 
 /* UDP 头部大小（字节） */
-#define UDP_HEADER_SIZE 28
+static constexpr unsigned int UDP_HEADER_SIZE = 28;
 
 #define CC_DEBUG_PRINTF_1(x)
 #define CC_DEBUG_PRINTF_2(x,y)

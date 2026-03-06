@@ -1,3 +1,4 @@
+#include "RakSafeString.h"
 /*
  *  Copyright (c) 2014, Oculus VR, Inc.
  *  All rights reserved.
@@ -44,7 +45,7 @@ public:
 
 		if (onFileStruct->fileName && onFileStruct->fileData && subdirLen < strlen(onFileStruct->fileName))
 		{
-			strcpy(fullPathToDir, outputSubdir);
+			RakNet::SafeStrcpy(fullPathToDir, outputSubdir, sizeof(fullPathToDir));
 			strcat(fullPathToDir, onFileStruct->fileName+subdirLen);
 			WriteFileWithDirectories(fullPathToDir, (char*)onFileStruct->fileData, (unsigned int ) onFileStruct->byteLengthOfThisFile);
 		}
@@ -60,7 +61,7 @@ public:
 
 		if (fps->onFileStruct->fileName && subdirLen < strlen(fps->onFileStruct->fileName))
 		{
-			strcpy(fullPathToDir, outputSubdir);
+			RakNet::SafeStrcpy(fullPathToDir, outputSubdir, sizeof(fullPathToDir));
 			strcat(fullPathToDir, fps->onFileStruct->fileName+subdirLen);
 		}
 		else
@@ -155,7 +156,7 @@ unsigned short DirectoryDeltaTransfer::DownloadFromSubdirectory(FileList &localF
 	else
 		transferCallback->subdirLen=0;
 	if (prependAppDirToOutputSubdir)
-		strcpy(transferCallback->outputSubdir, applicationDirectory);
+		RakNet::SafeStrcpy(transferCallback->outputSubdir, applicationDirectory, sizeof(transferCallback->outputSubdir));
 	else
 		transferCallback->outputSubdir[0]=0;
 	if (outputSubdir)

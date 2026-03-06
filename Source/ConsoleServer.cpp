@@ -1,3 +1,4 @@
+#include "RakSafeString.h"
 /*
  *  Copyright (c) 2014, Oculus VR, Inc.
  *  All rights reserved.
@@ -312,7 +313,7 @@ void ConsoleServer::SetPrompt(const char *_prompt)
 	{
 		size_t len = strlen(_prompt);
 		prompt = (char*) rakMalloc_Ex(len+1,_FILE_AND_LINE_);
-		strcpy(prompt,_prompt);
+		RakNet::SafeStrcpy(prompt, _prompt, len + 1);
 	}
 	else
 		prompt=0;

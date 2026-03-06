@@ -1,3 +1,4 @@
+#include "RakSafeString.h"
 /*
  *  Copyright (c) 2014, Oculus VR, Inc.
  *  All rights reserved.
@@ -180,11 +181,11 @@ void ListenerContext::OnMessage(Windows::Networking::Sockets::DatagramSocket^ so
 	char ip[64];
 	RakString rs2;
 	rs2.FromWideChar(eventArguments->RemoteAddress->DisplayName->Data());
-	strcpy(ip, rs2.C_String());
+	RakNet::SafeStrcpy(ip, rs2.C_String(), sizeof(ip));
 	recvFromStruct->systemAddress.address.addr4.sin_addr.s_addr = RNS2_WindowsStore8::WinRTInet_Addr(ip);
 	char portStr[64];
 	rs2.FromWideChar(eventArguments->RemotePort->Data());
-	strcpy(portStr, rs2.C_String());
+	RakNet::SafeStrcpy(portStr, rs2.C_String(), sizeof(portStr));
 	recvFromStruct->systemAddress.SetPortHostOrder(atoi(portStr));
 	recvFromStruct->timeRead=RakNet::GetTimeUS();
 	recvFromStruct->socket = rns2;
@@ -359,7 +360,7 @@ void RNS2_WindowsStore8::DomainNameToIP( const char *domainName, char ip[65] ) {
 			Platform::String ^name = result2->GetAt(0)->RemoteHostName->DisplayName;
 			RakString rs2;
 			rs2.FromWideChar(name->Data());
-			strcpy(ip, rs2.C_String());
+			RakNet::SafeStrcpy(ip, rs2.C_String(), 65);
 		}
 		else
 		{
@@ -399,7 +400,7 @@ void RNS2_WindowsStore8::DomainNameToIP( const char *domainName, char ip[65] ) {
 		Platform::String ^name = view->GetAt(0)->RemoteHostName->DisplayName;
 		RakString rs2;
 		rs2.FromWideChar(name->Data());
-		strcpy(ip, rs2.C_String());
+		RakNet::SafeStrcpy(ip, rs2.C_String(), 65);
 	}
 	else
 	{

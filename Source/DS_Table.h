@@ -22,8 +22,8 @@
 #include "Export.h"
 #include "RakString.h"
 
-#define _TABLE_BPLUS_TREE_ORDER 16
-#define _TABLE_MAX_COLUMN_NAME_LENGTH 64
+static constexpr int _TABLE_BPLUS_TREE_ORDER = 16;
+static constexpr int _TABLE_MAX_COLUMN_NAME_LENGTH = 64;
 
 /*
  * DataStructures 命名空间的添加仅是为了避免常见数据结构名称导致的编译器错误

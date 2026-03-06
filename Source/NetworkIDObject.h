@@ -8,6 +8,8 @@
  *
  */
 
+#pragma once
+
 /*
  * 
  * A class you can derive from to make it easier to represent every networked object with an integer.  This way you can refer to objects over the network.

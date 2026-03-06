@@ -7,6 +7,8 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  *
  */
+
+#pragma once
  
 #ifndef __GET_TIME_OF_DAY_H
 #define __GET_TIME_OF_DAY_H

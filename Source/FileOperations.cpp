@@ -1,3 +1,4 @@
+#include "RakSafeString.h"
 /*
  *  Copyright (c) 2014, Oculus VR, Inc.
  *  All rights reserved.
@@ -46,7 +47,7 @@ bool WriteFileWithDirectories( const char *path, char *data, unsigned dataLength
 	if ( path == 0 || path[ 0 ] == 0 )
 		return false;
 
-	strcpy( pathCopy, path );
+	RakNet::SafeStrcpy(pathCopy, path, sizeof(pathCopy));
 
 	// Ignore first / if there is one
 	if (pathCopy[0])
@@ -130,7 +131,7 @@ bool DirectoryExists(const char *directory)
 	_finddata_t fileInfo;
 	intptr_t dir;
 	char baseDirWithStars[560];
-	strcpy(baseDirWithStars, directory);
+	RakNet::SafeStrcpy(baseDirWithStars, directory, sizeof(baseDirWithStars));
 	AddSlash(baseDirWithStars);
 	strcat(baseDirWithStars, "*.*");
 	dir=_findfirst(baseDirWithStars, &fileInfo );

@@ -1,3 +1,4 @@
+#include "RakSafeString.h"
 /*
  *  Copyright (c) 2014, Oculus VR, Inc.
  *  All rights reserved.
@@ -106,7 +107,7 @@ void Table::Cell::Set(const char *input)
 	{
 		i=static_cast<int>(strlen(input))+1;
 		c =  (char*) rakMalloc_Ex( static_cast<int>(i), _FILE_AND_LINE_ );
-		strcpy(c, input);
+		RakNet::SafeStrcpy(c, input, static_cast<size_t>(i));
 	}
 	else
 	{
@@ -154,7 +155,7 @@ void Table::Cell::Get(double *output)
 void Table::Cell::Get(char *output)
 {
 	RakAssert(isEmpty==false);
-	strcpy(output, c);
+	RakNet::SafeStrcpy(output, c, strlen(c) + 1) /* NOTE: caller must ensure output is large enough */;
 }
 void Table::Cell::Get(char *output, int *outputLength)
 {
@@ -249,7 +250,7 @@ Table::ColumnDescriptor::~ColumnDescriptor()
 Table::ColumnDescriptor::ColumnDescriptor(const char cn[_TABLE_MAX_COLUMN_NAME_LENGTH], ColumnType ct)
 {
 	columnType=ct;
-	strcpy(columnName, cn);
+	RakNet::SafeStrcpy(columnName, cn, sizeof(columnName));
 }
 void Table::Row::UpdateCell(unsigned columnIndex, double value)
 {

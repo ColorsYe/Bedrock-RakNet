@@ -1,3 +1,4 @@
+#include "RakSafeString.h"
 /*
  *  Copyright (c) 2014, Oculus VR, Inc.
  *  All rights reserved.
@@ -1893,7 +1894,7 @@ void RakPeer::AddToBanList( const char *IP, RakNet::TimeMS milliseconds )
 		banStruct->timeout=0; // Infinite
 	else
 		banStruct->timeout=time+milliseconds;
-	strcpy( banStruct->IP, IP );
+	RakNet::SafeStrcpy(banStruct->IP, IP, 16);
 	banListMutex.Lock();
 	banList.Insert( banStruct, _FILE_AND_LINE_ );
 	banListMutex.Unlock();

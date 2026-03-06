@@ -1,3 +1,4 @@
+#include "RakSafeString.h"
 /*
  *  Copyright (c) 2014, Oculus VR, Inc.
  *  All rights reserved.
@@ -842,7 +843,7 @@ void BitStream::PrintBits( char *out ) const
 {
 	if ( numberOfBitsUsed <= 0 )
 	{
-		strcpy(out, "No bits\n" );
+		RakNet::SafeStrcpy(out, "No bits\n", 16);
 		return;
 	}
 

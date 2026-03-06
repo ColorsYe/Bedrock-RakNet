@@ -1,3 +1,4 @@
+#include "RakSafeString.h"
 /*
  *  Copyright (c) 2014, Oculus VR, Inc.
  *  All rights reserved.
@@ -277,7 +278,7 @@ void RPC4::CallLoopback( const char* uniqueID, RakNet::BitStream * bitStream )
 		p->systemAddress.systemIndex=(SystemIndex)-1;
 		p->data[0]=ID_RPC_REMOTE_ERROR;
 		p->data[1]=RPC_ERROR_FUNCTION_NOT_REGISTERED;
-		strcpy((char*) p->data+2, uniqueID);
+		RakNet::SafeStrcpy(reinterpret_cast<char*>(p->data + 2), uniqueID, strlen(uniqueID) + 1);
 		
 		PushBackPacketUnified(p,false);
 

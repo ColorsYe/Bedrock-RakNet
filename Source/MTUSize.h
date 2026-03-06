@@ -8,6 +8,8 @@
  *
  */
 
+#pragma once
+
 /*
  *
  * \b [内部使用] 定义默认最大传输单元（MTU）。
@@ -37,6 +39,6 @@
 #define MAXIMUM_MTU_SIZE 1492
 
 
-#define MINIMUM_MTU_SIZE 400
+static constexpr int MINIMUM_MTU_SIZE = 400;
 
 #endif

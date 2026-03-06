@@ -1,3 +1,4 @@
+#include "RakSafeString.h"
 /*
  *  Copyright (c) 2014, Oculus VR, Inc.
  *  All rights reserved.
@@ -73,7 +74,7 @@ void StringTable::AddString(const char *str, bool copyString)
 	if (copyString)
 	{
 		sab.str = (char*) rakMalloc_Ex( strlen(str)+1, _FILE_AND_LINE_ );
-		strcpy(sab.str, str);
+		RakNet::SafeStrcpy(sab.str, str, strlen(str) + 1);
 	}
 	else
 	{
