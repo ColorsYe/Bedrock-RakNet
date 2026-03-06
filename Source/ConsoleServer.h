@@ -8,9 +8,11 @@
  *
  */
 
-/// \file ConsoleServer.h
-/// \brief Contains ConsoleServer , used to plugin to your game to accept remote console-based connections
-///
+/*
+ *  ConsoleServer.h
+ * Contains ConsoleServer , used to plugin to your game to accept remote console-based connections
+ *
+ */
 
 
 #include "NativeFeatureIncludes.h"
@@ -24,46 +26,58 @@
 
 namespace RakNet
 {
-/// Forward declarations
+/* 前向声明 */
 class TransportInterface;
 class CommandParserInterface;
 
 
-/// \brief The main entry point for the server portion of your remote console application support.
-/// \details ConsoleServer takes one TransportInterface and one or more CommandParserInterface (s)
-/// The TransportInterface will be used to send data between the server and the client.  The connecting client must support the
-/// protocol used by your derivation of TransportInterface . TelnetTransport and RakNetTransport are two such derivations .
-/// When a command is sent by a remote console, it will be processed by your implementations of CommandParserInterface
+/*
+ * The main entry point for the server portion of your remote console application support.
+ * ConsoleServer takes one TransportInterface and one or more CommandParserInterface (s)
+ * The TransportInterface will be used to send data between the server and the client.  The connecting client must support the
+ * protocol used by your derivation of TransportInterface . TelnetTransport and RakNetTransport are two such derivations .
+ * 当远程控制台发送命令时，该命令将由你的 CommandParserInterface 实现来处理
+ */
 class RAK_DLL_EXPORT ConsoleServer
 {
 public:
-	// GetInstance() and DestroyInstance(instance*)
+	/* 获取单例 GetInstance() 和销毁单例 DestroyInstance(instance*) */
 	STATIC_FACTORY_DECLARATIONS(ConsoleServer)
 
 	ConsoleServer();
 	~ConsoleServer() noexcept;
 
-	/// \brief Call this with a derivation of TransportInterface so that the console server can send and receive commands
-	/// \param[in] transportInterface Your interface to use.
-	/// \param[in] port The port to host on.  Telnet uses port 23 by default.  RakNet can use whatever you want.
+	/*
+	 * 使用 TransportInterface 的派生类调用此函数，以便控制台服务器可以发送和接收命令
+	 * 参数[输入] transportInterface Your interface to use.
+	 * 参数[输入] port The port to host on.  Telnet uses port 23 by default.  RakNet can use whatever you want.
+	 */
 	void SetTransportProvider(TransportInterface *transportInterface, unsigned short port);
 
-	/// \brief Add an implementation of CommandParserInterface to the list of command parsers.
-	/// \param[in] commandParserInterface The command parser referred to
+	/*
+	 * Add an implementation of CommandParserInterface to the list of command parsers.
+	 * 参数[输入] commandParserInterface The command parser referred to
+	 */
 	void AddCommandParser(CommandParserInterface *commandParserInterface);
 
-	/// \brief Remove an implementation of CommandParserInterface previously added with AddCommandParser().
-	/// \param[in] commandParserInterface The command parser referred to
+	/*
+	 * Remove an implementation of CommandParserInterface previously added with AddCommandParser().
+	 * 参数[输入] commandParserInterface The command parser referred to
+	 */
 	void RemoveCommandParser(CommandParserInterface *commandParserInterface);
 
-	/// \brief Call update to read packet sent from your TransportInterface.
-	/// You should do this fairly frequently.
+	/*
+	 * 调用 update 以读取从 TransportInterface 发送的数据包。
+	 * You should do this fairly frequently.
+	 */
 	void Update();
 
-	/// \brief Sets a prompt to show when waiting for user input.
-	/// \details Pass an empty string to clear the prompt
-	/// Defaults to no prompt
-	/// \param[in] _prompt Null-terminated string of the prompt to use. If you want a newline, be sure to use /r/n
+	/*
+	 * 将a prompt设置为show when waiting for user input
+	 * Pass an empty string to clear the prompt
+	 * 默认无提示
+	 * 参数[输入] _prompt 以空字符结尾的字符串 of the prompt to use. If you want a newline, be sure to use /r/n
+	 */
 	void SetPrompt(const char *_prompt);
 
 protected:
@@ -75,6 +89,6 @@ protected:
 	char *prompt;
 };
 
-} // namespace RakNet
+} /* RakNet 命名空间 */
 
 #endif

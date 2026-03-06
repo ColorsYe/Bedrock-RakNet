@@ -8,10 +8,12 @@
  *
  */
 
-/// \file DataCompressor.h
-/// \brief DataCompressor does compression on a block of data.  
-/// \details Not very good compression, but it's small and fast so is something you can use per-message at runtime.
-///
+/*
+ *  DataCompressor.h
+ * DataCompressor does compression on a block of data.
+ * Not very good compression, but it's small and fast so is something you can use per-message at runtime.
+ *
+ */
 
 
 #pragma once
@@ -22,15 +24,15 @@
 namespace RakNet
 {
 
-/// \brief Does compression on a block of data.  Not very good compression, but it's small and fast so is something you can compute at runtime.
+/* Does compression on a block of data.  Not very good compression, but it's small and fast so is something you can compute at runtime. */
 class RAK_DLL_EXPORT DataCompressor
 {
 public:
-	// GetInstance() and DestroyInstance(instance*)
+	/* 获取单例 GetInstance() 和销毁单例 DestroyInstance(instance*) */
 	STATIC_FACTORY_DECLARATIONS(DataCompressor)
 
 	static void Compress( unsigned char *userData, unsigned sizeInBytes, RakNet::BitStream * output );
 	static unsigned DecompressAndAllocate( RakNet::BitStream * input, unsigned char **output );
 };
 
-} // namespace RakNet
+} /* RakNet 命名空间 */

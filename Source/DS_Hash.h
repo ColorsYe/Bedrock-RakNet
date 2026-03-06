@@ -8,20 +8,24 @@
  *
  */
 
-/// \internal
-/// \brief Hashing container
-///
+/*
+ * 内部使用
+ * Hashing container
+ *
+ */
 
 
 #pragma once
 #include "RakAssert.h"
-#include <cstring> // memmove
+#include <cstring> /* memmove */
 #include "Export.h"
 #include "RakMemoryOverride.h"
 #include "RakString.h"
 
-/// The namespace DataStructures was only added to avoid compiler errors for commonly named data structures
-/// As these data structures are stand-alone, you can use them outside of RakNet for your own projects if you wish.
+/*
+ * DataStructures 命名空间的添加仅是为了避免常见数据结构名称导致的编译器错误
+ * 由于这些数据结构是独立的，如果需要，你可以在 RakNet 之外将它们用于自己的项目。
+ */
 namespace DataStructures
 {
 	struct HashIndex
@@ -32,15 +36,15 @@ namespace DataStructures
 		void SetInvalid() {primaryIndex=(unsigned int) -1; secondaryIndex=(unsigned int) -1;}
 	};
 
-	/// \brief Using a string as a identifier for a node, store an allocated pointer to that node
+	/* 使用字符串作为节点的标识符，存储指向该节点的分配指针 */
 	template <class key_type, class data_type, unsigned int HASH_SIZE, unsigned long (*hashFunction)(const key_type &) >
 	class RAK_DLL_EXPORT Hash
 	{	
 	public:
-		/// Default constructor
+		/* 默认构造函数 */
 		Hash();
 
-		// Destructor
+		/* 析构函数 */
 		~Hash() noexcept;
 
 		void Push(key_type key, const data_type &input, const char *file, unsigned int line );
@@ -55,7 +59,7 @@ namespace DataStructures
 		void GetAsList(DataStructures::List<data_type> &itemList,DataStructures::List<key_type > &keyList,const char *file, unsigned int line) const;
 		[[nodiscard]] unsigned int Size(void) const;
 
-		/// \brief Clear the list		
+		/* 清空列表 */
 		void Clear( const char *file, unsigned int line );
 
 		struct Node
@@ -63,7 +67,7 @@ namespace DataStructures
 			Node(key_type strIn, const data_type &_data) {string=strIn; data=_data;}
 			key_type  string;
 			data_type data;
-			// Next in the list for this key
+			/* 此密钥列表中的下一个 */
 			Node *next;
 		};
 
@@ -132,23 +136,23 @@ namespace DataStructures
 			return false;
 		if (node->next==0)
 		{
-			// Only one item.
+			/* Only one item. */
 			if (node->string==key)
 			{
-				// Delete last item
+				/* 删除 last item */
 				out=node->data;
 				ClearIndex(hashIndex,_FILE_AND_LINE_);
 				return true;
 			}
 			else
 			{
-				// Single item doesn't match
+				/* Single item doesn't match */
 				return false;
 			}
 		}
 		else if (node->string==key)
 		{
-			// First item does match, but more than one item
+			/* First item does match, but more than one item */
 			out=node->data;
 			nodeList[hashIndex]=node->next;
 			RakNet::OP_DELETE(node,file,line);
@@ -161,13 +165,13 @@ namespace DataStructures
 
 		while (node!=0)
 		{
-			// First item does not match, but subsequent item might
+			/* First item does not match, but subsequent item might */
 			if (node->string==key)
 			{
 				out=node->data;
-				// Skip over subsequent item
+				/* Skip over subsequent item */
 				last->next=node->next;
-				// Delete existing item
+				/* 删除 existing item */
 				RakNet::OP_DELETE(node,file,line);
 				size--;
 				return true;
@@ -189,13 +193,13 @@ namespace DataStructures
 			return false;
 		if (node->next==0)
 		{
-			// Delete last item
+			/* 删除 last item */
 			ClearIndex(index.primaryIndex,file,line);
 			return true;
 		}
 		else if (index.secondaryIndex==0)
 		{
-			// First item does match, but more than one item
+			/* First item does match, but more than one item */
 			nodeList[index.primaryIndex]=node->next;
 			RakNet::OP_DELETE(node,file,line);
 			size--;
@@ -213,9 +217,9 @@ namespace DataStructures
 			--index.secondaryIndex;
 		}
 
-		// Skip over subsequent item
+		/* Skip over subsequent item */
 		last->next=node->next;
-		// Delete existing item
+		/* 删除 existing item */
 		RakNet::OP_DELETE(node,file,line);
 		size--;
 		return true;

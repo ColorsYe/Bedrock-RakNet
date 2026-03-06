@@ -16,22 +16,26 @@
 #pragma once
 namespace RakNet
 {
-/// Class to write a series of variables, copy the contents to memory, and return if the newly written value is different than what was last written
-/// Can also encode the reads, writes, and results directly to/from a bitstream
+/*
+ * Class to write a series of variables, copy the contents to memory, and return if the newly written value is different than what was last written
+ * Can also encode the reads, writes, and results directly to/from a bitstream
+ */
 class VariableListDeltaTracker
 {
 public:
 	VariableListDeltaTracker();
 	~VariableListDeltaTracker() noexcept;
 
-	// Call before using a series of WriteVar
+	/* Call before using a series of WriteVar */
 	void StartWrite();
 
 	bool IsPastEndOfList(void) const {return nextWriteIndex>=variableList.Size();}
 
-	/// Records the passed value of the variable to memory, and returns true if the value is different from the write before that (or if it is the first write)
-	/// \pre Call StartWrite() before doing the first of a series of calls to WriteVar or other functions that call WriteVar
-	/// \note Variables must be of the same type, written in the same order, each time
+	/*
+	 * Records the passed value of the variable to memory, and returns true if the value is different from the write before that (or if it is the first write)
+	 * 前提条件: Call StartWrite() before doing the first of a series of calls to WriteVar or other functions that call WriteVar
+	 * 注意: Variables must be of the same type, written in the same order, each time
+	 */
 	template <class VarType>
 	bool WriteVar(const VarType &varData)
 	{
@@ -41,7 +45,7 @@ public:
 		{
 			variableList.Push(VariableLastValueNode(temp.GetData(),temp.GetNumberOfBytesUsed()),_FILE_AND_LINE_);
 			nextWriteIndex++;
-			return true; // Different because it's new
+			return true; /* Different because it's new */
 		}
 
 		if (temp.GetNumberOfBytesUsed()!=variableList[nextWriteIndex].byteLength)
@@ -51,20 +55,20 @@ public:
 			memcpy(variableList[nextWriteIndex].lastData,temp.GetData(),temp.GetNumberOfBytesUsed());
 			nextWriteIndex++;
 			variableList[nextWriteIndex].isDirty=false;
-			return true; // Different because the serialized size is different
+			return true; /* Different because the serialized size is different */
 		}
 		if (variableList[nextWriteIndex].isDirty==false && memcmp(temp.GetData(),variableList[nextWriteIndex].lastData, variableList[nextWriteIndex].byteLength)==0)
 		{
 			nextWriteIndex++;
-			return false; // Same because not dirty and memcmp is the same
+			return false; /* Same because not dirty and memcmp is the same */
 		}
 
 		variableList[nextWriteIndex].isDirty=false;
 		memcpy(variableList[nextWriteIndex].lastData,temp.GetData(),temp.GetNumberOfBytesUsed());
 		nextWriteIndex++;
-		return true; // Different because dirty or memcmp was different
+		return true; /* Different because dirty or memcmp was different */
 	}
-	/// Calls WriteVar. If the variable has changed, writes true, and writes the variable. Otherwise writes false.
+	/* Calls WriteVar. If the variable has changed, writes true, and writes the variable. Otherwise writes false. */
 	template <class VarType>
 	bool WriteVarToBitstream(const VarType &varData, RakNet::BitStream *bitStream)
 	{
@@ -77,7 +81,7 @@ public:
 		}
 		return false;
 	}
-	/// Calls WriteVarToBitstream(). Additionally, adds the boolean result of WriteVar() to boolean bit array
+	/* Calls WriteVarToBitstream(). Additionally, adds the boolean result of WriteVar() to boolean bit array */
 	template <class VarType>
 	bool WriteVarToBitstream(const VarType &varData, RakNet::BitStream *bitStream, unsigned char *bArray, unsigned short writeOffset)
 	{
@@ -88,7 +92,7 @@ public:
 			if ( numberOfBitsMod8 == 0 )
 				bArray[ writeOffset >> 3 ] = 0x80;
 			else
-				bArray[ writeOffset >> 3 ] |= 0x80 >> ( numberOfBitsMod8 ); // Set the bit to 1
+				bArray[ writeOffset >> 3 ] |= 0x80 >> ( numberOfBitsMod8 ); /* 将bit设置为1 */
 
 			return true;
 		}
@@ -101,7 +105,7 @@ public:
 		}
 	}
 
-	/// Paired with a call to WriteVarToBitstream(), will read a variable if it had changed. Otherwise the values remains the same.
+	/* Paired with a call to WriteVarToBitstream(), will read a variable if it had changed. Otherwise the values remains the same. */
 	template <class VarType>
 	static bool ReadVarFromBitstream(VarType &varData, RakNet::BitStream *bitStream)
 	{
@@ -116,11 +120,13 @@ public:
 		return wasWritten;
 	}
 
-	/// Variables flagged dirty will cause WriteVar() to return true, even if the variable had not otherwise changed
-	/// This updates all the variables in the list, where in each index \a varsWritten is true, so will the variable at the corresponding index be flagged dirty
+	/*
+	 * Variables flagged dirty will cause WriteVar() to return true, even if the variable had not otherwise changed
+	 * This updates all the variables in the list, where in each index varsWritten is true, so will the variable at the corresponding index be flagged dirty
+	 */
 	void FlagDirtyFromBitArray(unsigned char *bArray);
 
-	/// \internal
+	/* 内部使用 */
 	struct VariableLastValueNode
 	{
 		VariableLastValueNode();
@@ -132,9 +138,9 @@ public:
 	};
 
 protected:
-	/// \internal
+	/* 内部使用 */
 	DataStructures::List<VariableLastValueNode> variableList;
-	/// \internal
+	/* 内部使用 */
 	unsigned int nextWriteIndex;
 };
 

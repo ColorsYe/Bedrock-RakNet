@@ -8,9 +8,11 @@
  *
  */
 
-/// \file
-/// \brief Derivation of the packet logger to defer the call to WriteLog until the user thread.
-///
+/*
+ * 
+ * Derivation of the packet logger to defer the call to WriteLog until the user thread.
+ *
+ */
 
 
 #include "NativeFeatureIncludes.h"
@@ -23,8 +25,10 @@
 namespace RakNet
 {
 
-/// \ingroup PACKETLOGGER_GROUP
-/// \brief Same as PacketLogger, but writes output in the user thread.
+/*
+ * \ingroup PACKETLOGGER_GROUP
+ * 与 PacketLogger, but writes output in the user thread 相同
+ */
 class RAK_DLL_EXPORT ThreadsafePacketLogger : public PacketLogger
 {
 public:
@@ -39,6 +43,6 @@ protected:
 	DataStructures::SingleProducerConsumer<char*> logMessages;
 };
 
-} // namespace RakNet
+} /* RakNet 命名空间 */
 
 #endif

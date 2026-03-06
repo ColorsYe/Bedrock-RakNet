@@ -8,9 +8,11 @@
  *
  */
 
-/// \file FileListTransfer.h
-/// \brief A plugin to provide a simple way to compress and incrementally send the files in the FileList structure.
-///
+/*
+ *  FileListTransfer.h
+ * 一个插件，提供简单的方式来压缩和增量发送 FileList 结构中的文件。
+ *
+ */
 
 
 #include "NativeFeatureIncludes.h"
@@ -31,94 +33,109 @@
 
 namespace RakNet
 {
-/// Forward declarations
+/* 前向声明 */
 class IncrementalReadInterface;
 class FileListTransferCBInterface;
 class FileListProgress;
 struct FileListReceiver;
 
-/// \defgroup FILE_LIST_TRANSFER_GROUP FileListTransfer
-/// \brief A plugin to provide a simple way to compress and incrementally send the files in the FileList structure.
-/// \details
-/// \ingroup PLUGINS_GROUP
+/*
+ * \defgroup FILE_LIST_TRANSFER_GROUP FileListTransfer
+ * 一个插件，提供简单的方式来压缩和增量发送 FileList 结构中的文件。
+ * * \ingroup PLUGINS_GROUP
+ */
 
-/// \brief A plugin to provide a simple way to compress and incrementally send the files in the FileList structure.
-/// \details Similar to the DirectoryDeltaTransfer plugin, except that it doesn't send deltas based on pre-existing files or actually write the files to disk.
-///
-/// Usage:
-/// Call SetupReceive to allow one file set to arrive.  The value returned by FileListTransfer::SetupReceive()<BR>
-/// is the setID that is allowed.<BR>
-/// It's up to you to transmit this value to the other system, along with information indicating what kind of files you want to get.<BR>
-/// The other system should then prepare a FileList and call FileListTransfer::Send(), passing the return value of FileListTransfer::SetupReceive()<BR>
-/// as the \a setID parameter to FileListTransfer::Send()
-/// \ingroup FILE_LIST_TRANSFER_GROUP
+/*
+ * 一个插件，提供简单的方式来压缩和增量发送 FileList 结构中的文件。
+ * Similar to the DirectoryDeltaTransfer plugin, except that it doesn't send deltas based on pre-existing files or actually write the files to disk.
+ *
+ * Usage:
+ * Call SetupReceive to allow one file set to arrive.  The value returned by FileListTransfer::SetupReceive()<BR>
+ * is the setID that is allowed.<BR>
+ * It's up to you to transmit this value to the other system, along with information indicating what kind of files you want to get.<BR>
+ * The other system should then prepare a FileList and call FileListTransfer::Send(), passing the return value of FileListTransfer::SetupReceive()<BR>
+ * as the setID parameter to FileListTransfer::Send()
+ * \ingroup FILE_LIST_TRANSFER_GROUP
+ */
 class RAK_DLL_EXPORT FileListTransfer : public PluginInterface2
 {
 public:
 
-	// GetInstance() and DestroyInstance(instance*)
+	/* 获取单例 GetInstance() 和销毁单例 DestroyInstance(instance*) */
 	STATIC_FACTORY_DECLARATIONS(FileListTransfer)
 
 	FileListTransfer();
 	virtual ~FileListTransfer();
 
-	/// \brief Optionally start worker threads when using _incrementalReadInterface for the Send() operation
-	/// \param[in] numThreads how many worker threads to start
-	/// \param[in] threadPriority Passed to the thread creation routine. Use THREAD_PRIORITY_NORMAL for Windows. For Linux based systems, you MUST pass something reasonable based on the thread priorities for your application.
+	/*
+	 * Optionally start worker threads when using _incrementalReadInterface for the Send() operation
+	 * 参数[输入] numThreads how many worker threads to start
+	 * 参数[输入] threadPriority Passed to the thread creation routine. Use THREAD_PRIORITY_NORMAL for Windows. For Linux based systems, you MUST pass something reasonable based on the thread priorities for your application.
+	 */
 	void StartIncrementalReadThreads(int numThreads, int threadPriority=-99999);
 	
-	/// \brief Allows one corresponding Send() call from another system to arrive.
-	/// \param[in] handler The class to call on each file
-	/// \param[in] deleteHandler True to delete the handler when it is no longer needed.  False to not do so.
-	/// \param[in] allowedSender Which system to allow files from.
-	/// \return A set ID value, which should be passed as the \a setID value to the Send() call on the other system.  This value will be returned in the callback and is unique per file set.  Returns 65535 on failure (not connected to sender)
+	/*
+	 * Allows one corresponding Send() call from another system to arrive.
+	 * 参数[输入] handler The class to call on each file
+	 * 参数[输入] deleteHandler True to delete the handler when it is no longer needed.  False to not do so.
+	 * 参数[输入] allowedSender Which system to allow files from.
+	 * 返回值: A set ID value, which should be passed as the setID value to the Send() call on the other system.  This value will be returned in the callback and is unique per file set.  Returns 65535 on failure (not connected to sender)
+	 */
     unsigned short SetupReceive(FileListTransferCBInterface *handler, bool deleteHandler, SystemAddress allowedSender);
 
-	/// \brief Send the FileList structure to another system, which must have previously called SetupReceive().
-	/// \param[in] fileList A list of files.  The data contained in FileList::data will be sent incrementally and compressed among all files in the set
-	/// \param[in] rakPeer The instance of RakNet to use to send the message. Pass 0 to use the instance the plugin is attached to
-	/// \param[in] recipient The address of the system to send to
-	/// \param[in] setID The return value of SetupReceive() which was previously called on \a recipient
-	/// \param[in] priority Passed to RakPeerInterface::Send()
-	/// \param[in] orderingChannel Passed to RakPeerInterface::Send()
-	/// \param[in] _incrementalReadInterface If a file in \a fileList has no data, _incrementalReadInterface will be used to read the file in chunks of size \a chunkSize
-	/// \param[in] _chunkSize How large of a block of a file to read/send at once. Large values use more memory but transfer slightly faster.
+	/*
+	 * Send the FileList structure to another system, which must have previously called SetupReceive().
+	 * 参数[输入] fileList A list of files.  The data contained in FileList::data will be sent incrementally and compressed among all files in the set
+	 * 参数[输入] rakPeer The instance of RakNet to use to send the message. Pass 0 to use the instance the plugin is attached to
+	 * 参数[输入] recipient The address of the system to send to
+	 * 参数[输入] setID The return value of SetupReceive() which was previously called on recipient
+	 * 参数[输入] priority Passed to RakPeerInterface::Send()
+	 * 参数[输入] orderingChannel Passed to RakPeerInterface::Send()
+	 * 参数[输入] _incrementalReadInterface If a file in fileList has no data, _incrementalReadInterface will be used to read the file in chunks of size chunkSize
+	 * 参数[输入] _chunkSize How large of a block of a file to read/send at once. Large values use more memory but transfer slightly faster.
+	 */
 	void Send(FileList *fileList, RakNet::RakPeerInterface *rakPeer, SystemAddress recipient, unsigned short setID, PacketPriority priority, char orderingChannel, IncrementalReadInterface *_incrementalReadInterface=0, unsigned int _chunkSize=262144*4*16);
 
-	/// Return number of files waiting to go out to a particular address
+	/* 返回等待发送到特定地址的文件数量 */
 	unsigned int GetPendingFilesToAddress(SystemAddress recipient);
 
-	/// \brief Stop a download.
+	/* 停止 download */
 	void CancelReceive(unsigned short setId);
 
-	/// \brief Remove all handlers associated with a particular system address.
+	/* Remove all handlers associated with a particular system address. */
 	void RemoveReceiver(SystemAddress systemAddress);
 
-	/// \brief Is a handler passed to SetupReceive still running?
+	/* Is a handler passed to SetupReceive still running? */
 	bool IsHandlerActive(unsigned short setId);
 
-	/// \brief Adds a callback to get progress reports about what the file list instances do.
-	/// \param[in] cb A pointer to an externally defined instance of FileListProgress. This pointer is held internally, so should remain valid as long as this class is valid.
+	/*
+	 * Adds a callback to get progress reports about what the file list instances do.
+	 * 参数[输入] cb A pointer to an externally defined instance of FileListProgress. This pointer is held internally, so should remain valid as long as this class is valid.
+	 */
 	void AddCallback(FileListProgress *cb);
 
-	/// \brief Removes a callback
-	/// \param[in] cb A pointer to an externally defined instance of FileListProgress that was previously added with AddCallback()
+	/*
+	 * 移除 callback
+	 * 参数[输入] cb A pointer to an externally defined instance of FileListProgress that was previously added with AddCallback()
+	 */
 	void RemoveCallback(FileListProgress *cb);
 
-	/// \brief Removes all callbacks
+	/* 移除 all callbacks */
 	void ClearCallbacks();
 
-	/// Returns all callbacks added with AddCallback()
-	/// \param[out] callbacks The list is set to the list of callbacks
+	/*
+	 * 返回通过 AddCallback() 添加的所有回调
+	 * 参数[输出] callbacks The list is set to the list of callbacks
+	 */
 	void GetCallbacks(DataStructures::List<FileListProgress*> &callbacks);
 
-	/// \internal For plugin handling
+	/* 内部使用 For plugin handling */
 	PluginReceiveResult OnReceive(Packet *packet) override;
-	/// \internal For plugin handling
+	/* 内部使用 For plugin handling */
 	void OnRakPeerShutdown() override;
-	/// \internal For plugin handling
+	/* 内部使用 For plugin handling */
 	void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason ) override;
-	/// \internal For plugin handling
+	/* 内部使用 For plugin handling */
 	void Update() override;
 
 protected:
@@ -141,7 +158,7 @@ protected:
 		PacketPriority packetPriority;
 		char orderingChannel;
 		unsigned int currentOffset;
-		////unsigned short setID;
+		/* /unsigned short setID; */
 		unsigned int setIndex;
 		IncrementalReadInterface *incrementalReadInterface;
 		unsigned int chunkSize;
@@ -157,7 +174,7 @@ protected:
 		SystemAddress systemAddress;
 		unsigned short setId;
 
-		//// SimpleMutex filesToPushMutex;
+		/* / SimpleMutex filesToPushMutex; */
 		DataStructures::Queue<FileToPush*> filesToPush;
 	};
 	DataStructures::List< FileToPushRecipient* > fileToPushRecipientList;
@@ -176,6 +193,6 @@ protected:
 	friend int SendIRIToAddressCB(FileListTransfer::ThreadData threadData, bool *returnOutput, void* perThreadData);
 };
 
-} // namespace RakNet
+} /* RakNet 命名空间 */
 
 #endif

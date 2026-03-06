@@ -8,13 +8,12 @@
  *
  */
 
-/// \file DS_MemoryPool.h
-///
+/*  DS_MemoryPool.h */
 
 
 #pragma once
 #ifndef __APPLE__
-// Use stdlib and not malloc for compatibility
+/* Use stdlib and not malloc for compatibility */
 #include <cstdlib>
 #endif
 #include "RakAssert.h"
@@ -22,15 +21,17 @@
 
 #include "RakMemoryOverride.h"
 
-// DS_MEMORY_POOL_MAX_FREE_PAGES must be > 1
+/* DS_MEMORY_POOL_MAX_FREE_PAGES must be > 1 */
 #define DS_MEMORY_POOL_MAX_FREE_PAGES 4
 
-//#define _DISABLE_MEMORY_POOL
+/* #define _DISABLE_MEMORY_POOL */
 
 namespace DataStructures
 {
-	/// Very fast memory pool for allocating and deallocating structures that don't have constructors or destructors.
-	/// Contains a list of pages, each of which has an array of the user structures
+	/*
+	 * Very fast memory pool for allocating and deallocating structures that don't have 构造函数 or destructors.
+	 * Contains a list of pages, each of which has an array of the user structures
+	 */
 	template <class MemoryBlockType>
 	class RAK_DLL_EXPORT MemoryPool
 	{
@@ -51,7 +52,7 @@ namespace DataStructures
 
 		MemoryPool();
 		~MemoryPool() noexcept;
-		void SetPageSize(int size); // Defaults to 16384 bytes
+		void SetPageSize(int size); /* 默认为 16384 字节 */
 		MemoryBlockType *Allocate(const char *file, unsigned int line);
 		void Release(MemoryBlockType *m, const char *file, unsigned int line);
 		void Clear(const char *file, unsigned int line);
@@ -64,9 +65,9 @@ namespace DataStructures
 		void AllocateFirst();
 		bool InitPage(Page *page, Page *prev, const char *file, unsigned int line);
 
-		// availablePages contains pages which have room to give the user new blocks.  We return these blocks from the head of the list
-		// unavailablePages are pages which are totally full, and from which we do not return new blocks.
-		// Pages move from the head of unavailablePages to the tail of availablePages, and from the head of availablePages to the tail of unavailablePages
+		/* availablePages contains pages which have room to give the user new blocks.  We return these blocks from the head of the list */
+		/* unavailablePages are pages which are totally full, and from which we do not return new blocks. */
+		/* Pages move from the head of unavailablePages to the tail of availablePages, and from the head of availablePages to the tail of unavailablePages */
 		Page *availablePages, *unavailablePages;
 		int availablePagesSize, unavailablePagesSize;
 		int memoryPoolPageSize;
@@ -76,7 +77,7 @@ namespace DataStructures
 	MemoryPool<MemoryBlockType>::MemoryPool()
 	{
 #ifndef _DISABLE_MEMORY_POOL
-		//AllocateFirst();
+		/* AllocateFirst(); */
 		availablePagesSize=0;
 		unavailablePagesSize=0;
 		memoryPoolPageSize=16384;
@@ -142,7 +143,7 @@ namespace DataStructures
 		availablePagesSize=1;
 		if (InitPage(availablePages, availablePages, file, line)==false)
 			return 0;
-		// If this assert hits, we couldn't allocate even 1 block per page. Increase the page size
+		/* If this assert hits, we couldn't allocate even 1 block per page. Increase the page size */
 		RakAssert(availablePages->availableStackSize>1);
 
 		return (MemoryBlockType *) availablePages->availableStack[--availablePages->availableStackSize];
@@ -155,18 +156,18 @@ namespace DataStructures
 		rakFree_Ex(m, file, line);
 		return;
 #else
-		// Find the page this block is in and return it.
+		/* Find the page this block is in and return it. */
 		Page *curPage;
 		MemoryWithPage *memoryWithPage = (MemoryWithPage*)m;
 		curPage=memoryWithPage->parentPage;
 
 		if (curPage->availableStackSize==0)
 		{
-			// The page is in the unavailable list so move it to the available list
+			/* The page is in the unavailable list so move it to the available list */
 			curPage->availableStack[curPage->availableStackSize++]=memoryWithPage;
 			unavailablePagesSize--;
 
-			// As this page is no longer totally empty, move it to the end of available pages
+			/* As this page is no longer totally empty, move it to the end of available pages */
 			curPage->next->prev=curPage->prev;
 			curPage->prev->next=curPage->next;
 			
@@ -194,7 +195,7 @@ namespace DataStructures
 			if (curPage->availableStackSize==BlocksPerPage() &&
 				availablePagesSize>=DS_MEMORY_POOL_MAX_FREE_PAGES)
 			{
-				// After a certain point, just deallocate empty pages rather than keep them around
+				/* After a certain point, just deallocate empty pages rather than keep them around */
 				if (curPage==availablePages)
 				{
 					availablePages=curPage->next;
@@ -222,10 +223,10 @@ namespace DataStructures
 		{
 			cur = availablePages;
 #ifdef _MSC_VER
-#pragma warning(disable:4127)   // conditional expression is constant
+#pragma warning(disable:4127) /* 条件表达式是常量 */
 #endif
 			while (true) 
-			// do
+			/* do */
 			{
 				rakFree_Ex(cur->availableStack, file, line );
 				rakFree_Ex(cur->block, file, line );
@@ -237,14 +238,14 @@ namespace DataStructures
 					break;
 				}
 				rakFree_Ex(freed, file, line );
-			}// while(cur!=availablePages);
+			} /* while(cur!=availablePages); */
 		}
 		
 		if (unavailablePagesSize>0)
 		{
 			cur = unavailablePages;
 			while (1)
-			//do 
+			/* do */
 			{
 				rakFree_Ex(cur->availableStack, file, line );
 				rakFree_Ex(cur->block, file, line );
@@ -256,7 +257,7 @@ namespace DataStructures
 					break;
 				}
 				rakFree_Ex(freed, file, line );
-			} // while(cur!=unavailablePages);
+			} /* while(cur!=unavailablePages); */
 		}
 
 		availablePagesSize=0;

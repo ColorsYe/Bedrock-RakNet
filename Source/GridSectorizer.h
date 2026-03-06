@@ -9,7 +9,7 @@
  */
 
 #pragma once
-//#define _USE_ORDERED_LIST
+/* #define _USE_ORDERED_LIST */
 
 #include "RakMemoryOverride.h"
 
@@ -25,25 +25,25 @@ public:
 	GridSectorizer();
 	~GridSectorizer() noexcept;
 
-	// _cellWidth, _cellHeight is the width and height of each cell in world units
-	// minX, minY, maxX, maxY are the world dimensions (can be changed to dynamically allocate later if needed)
+	/* _cellWidth, _cellHeight is the width and height of each cell in world units */
+	/* minX, minY, maxX, maxY are the world dimensions (can be changed to dynamically allocate later if needed) */
 	void Init(const float _maxCellWidth, const float _maxCellHeight, const float minX, const float minY, const float maxX, const float maxY);
 
-	// Adds a pointer to the grid with bounding rectangle dimensions
+	/* Adds a pointer to the grid with bounding rectangle dimensions */
 	void AddEntry(void *entry, const float minX, const float minY, const float maxX, const float maxY);
 
 #ifdef _USE_ORDERED_LIST
 
-	// Removes a pointer, as above
+	/* 移除 pointer, as above */
 	void RemoveEntry(void *entry, const float minX, const float minY, const float maxX, const float maxY);
 
-	// Adds and removes in one pass, more efficient than calling both functions consecutively
+	/* Adds and removes in one pass, more efficient than calling both functions consecutively */
 	void MoveEntry(void *entry, const float sourceMinX, const float sourceMinY, const float sourceMaxX, const float sourceMaxY,
 		const float destMinX, const float destMinY, const float destMaxX, const float destMaxY);
 
 #endif
 
-	// Adds to intersectionList all entries in a certain radius
+	/* Adds to intersectionList all entries in a certain radius */
 	void GetEntries(DataStructures::List<void*>& intersectionList, const float minX, const float minY, const float maxX, const float maxY);
 
 	void Clear();
@@ -54,7 +54,7 @@ protected:
 	int WorldToCellXOffsetAndClamped(const float input) const;
 	int WorldToCellYOffsetAndClamped(const float input) const;
 
-	// Returns true or false if a position crosses cells in the grid.  If false, you don't need to move entries
+	/* 返回位置是否跨越网格中的单元格。如果为 false，则不需要移动条目 */
 	bool PositionCrossesCells(const float originX, const float originY, const float destinationX, const float destinationY) const;
 
 	float cellOriginX, cellOriginY;
@@ -64,7 +64,7 @@ protected:
 	int gridCellWidthCount, gridCellHeightCount;
 
 
-	// int gridWidth, gridHeight;
+	/* int gridWidth, gridHeight; */
 
 #ifdef _USE_ORDERED_LIST
 	DataStructures::OrderedList<void*, void*>* grid;

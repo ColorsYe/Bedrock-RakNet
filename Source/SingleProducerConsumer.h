@@ -8,9 +8,11 @@
  *
  */
 
-/// \file
-/// \brief \b [Internal] Passes queued data between threads using a circular buffer with read and write pointers
-///
+/*
+ * 
+ * \b [内部使用] Passes queued data between threads using a circular buffer with read and write pointers
+ *
+ */
 
 
 
@@ -22,59 +24,75 @@ static constexpr int MINIMUM_LIST_SIZE=8;
 #include "RakMemoryOverride.h"
 #include "Export.h"
 
-/// The namespace DataStructures was only added to avoid compiler errors for commonly named data structures
-/// As these data structures are stand-alone, you can use them outside of RakNet for your own projects if you wish.
+/*
+ * DataStructures 命名空间的添加仅是为了避免常见数据结构名称导致的编译器错误
+ * 由于这些数据结构是独立的，如果需要，你可以在 RakNet 之外将它们用于自己的项目。
+ */
 namespace DataStructures
 {
-	/// \brief A single producer consumer implementation without critical sections.
+	/* 不使用临界区的单生产者-消费者实现。*/
 	template <class SingleProducerConsumerType>
 	class RAK_DLL_EXPORT SingleProducerConsumer
 	{
 	public:
-		// Constructor
+		/* 构造函数 */
 		SingleProducerConsumer();
 
-		// Destructor
+		/* 析构函数 */
 		~SingleProducerConsumer() noexcept;
 
-		/// WriteLock must be immediately followed by WriteUnlock.  These two functions must be called in the same thread.
-		/// \return A pointer to a block of data you can write to.
+		/*
+		 * WriteLock must be immediately followed by WriteUnlock.  These two functions must be called in the same thread.
+		 * 返回值: A pointer to a block of data you can write to.
+		 */
 		SingleProducerConsumerType* WriteLock();
 
-		/// Call if you don't want to write to a block of data from WriteLock() after all.
-		/// Cancelling locks cancels all locks back up to the data passed.  So if you lock twice and cancel using the first lock, the second lock is ignored
-		/// \param[in] cancelToLocation Which WriteLock() to cancel.
+		/*
+		 * Call if you don't want to write to a block of data from WriteLock() after all.
+		 * Cancelling locks cancels all locks back up to the data passed.  So if you lock twice and cancel using the first lock, the second lock is ignored
+		 * 参数[输入] cancelToLocation Which WriteLock() to cancel.
+		 */
 		void CancelWriteLock(SingleProducerConsumerType* cancelToLocation);
 
-		/// Call when you are done writing to a block of memory returned by WriteLock()
+		/* Call when you are done writing to a block of memory returned by WriteLock() */
 		void WriteUnlock();
 
-		/// ReadLock must be immediately followed by ReadUnlock. These two functions must be called in the same thread.
-		/// \retval 0 No data is availble to read
-		/// \retval Non-zero The data previously written to, in another thread, by WriteLock followed by WriteUnlock.
+		/*
+		 * ReadLock must be immediately followed by ReadUnlock. These two functions must be called in the same thread.
+		 * \retval 0 No data is availble to read
+		 * \retval Non-zero The data previously written to, in another thread, by WriteLock followed by WriteUnlock.
+		 */
 		SingleProducerConsumerType* ReadLock();
 
-		// Cancelling locks cancels all locks back up to the data passed.  So if you lock twice and cancel using the first lock, the second lock is ignored
-		/// param[in] Which ReadLock() to cancel.
+		/* Cancelling locks cancels all locks back up to the data passed.  So if you lock twice and cancel using the first lock, the second lock is ignored */
+		/* param[in] Which ReadLock() to cancel. */
 		void CancelReadLock(SingleProducerConsumerType* cancelToLocation);
 
-		/// Signals that we are done reading the the data from the least recent call of ReadLock.
-		/// At this point that pointer is no longer valid, and should no longer be read.
+		/*
+		 * Signals that we are done reading the the data from the least recent call of ReadLock.
+		 * At this point that pointer is no longer valid, and should no longer be read.
+		 */
 		void ReadUnlock();
 
-		/// Clear is not thread-safe and none of the lock or unlock functions should be called while it is running.
+		/* Clear is 非线程安全 and 无 of the lock or unlock functions should be called while it is running. */
 		void Clear();
 
-		/// This function will estimate how many elements are waiting to be read.  It's threadsafe enough that the value returned is stable, but not threadsafe enough to give accurate results.
-		/// \return An ESTIMATE of how many data elements are waiting to be read
+		/*
+		 * This function will estimate how many elements are waiting to be read.  It's 线程安全 enough that the value returned is stable, but 非线程安全 enough to give accurate results.
+		 * 返回值: An ESTIMATE of how many data elements are waiting to be read
+		 */
 		[[nodiscard]] int Size(void) const;
 
-		/// Make sure that the pointer we done reading for the call to ReadUnlock is the right pointer.
-		/// param[in] A previous pointer returned by ReadLock()
+		/*
+		 * Make sure that the pointer we done reading for the call to ReadUnlock is the right pointer.
+		 * param[in] A previous pointer returned by ReadLock()
+		 */
 		bool CheckReadUnlockOrder(const SingleProducerConsumerType* data) const;
 
-		/// Returns if ReadUnlock was called before ReadLock
-		/// \return If the read is locked
+		/*
+		 * Returns if ReadUnlock was called before ReadLock
+		 * 返回值: If the read is locked
+		 */
 		bool ReadIsLocked(void) const;
 
 	private:
@@ -83,7 +101,7 @@ namespace DataStructures
 			DataPlusPtr () {readyToRead=false;}
 			SingleProducerConsumerType object;
 
-			// Ready to read is so we can use an equality boolean comparison, in case the writePointer var is trashed while context switching.
+			/* Ready to read is so we can use an equality boolean comparison, in case the writePointer var is trashed while context switching. */
 			volatile bool readyToRead;
 			volatile DataPlusPtr *next;
 		};
@@ -97,7 +115,7 @@ namespace DataStructures
 	template <class SingleProducerConsumerType>
 		SingleProducerConsumer<SingleProducerConsumerType>::SingleProducerConsumer()
 	{
-		// Preallocate
+		/* Preallocate */
 		readPointer = RakNet::OP_NEW<DataPlusPtr>( _FILE_AND_LINE_ );
 		writePointer=readPointer;
 		readPointer->next = RakNet::OP_NEW<DataPlusPtr>( _FILE_AND_LINE_ );
@@ -110,7 +128,7 @@ namespace DataStructures
 			readPointer=readPointer->next;
 			readPointer->next = RakNet::OP_NEW<DataPlusPtr>( _FILE_AND_LINE_ );
 		}
-		readPointer->next->next=writePointer; // last to next = start
+		readPointer->next->next=writePointer; /* last to next = start */
 		readPointer=writePointer;
 		readAheadPointer=readPointer;
 		writeAheadPointer=writePointer;
@@ -159,7 +177,7 @@ namespace DataStructures
 	template <class SingleProducerConsumerType>
 		void SingleProducerConsumer<SingleProducerConsumerType>::WriteUnlock( void )
 	{
-		//	DataPlusPtr *dataContainer = (DataPlusPtr *)structure;
+		/* DataPlusPtr *dataContainer = (DataPlusPtr *)structure; */
 
 #ifdef _DEBUG
 		RakAssert(writePointer->next!=readPointer);
@@ -167,7 +185,7 @@ namespace DataStructures
 #endif
 
 		writeCount++;
-		// User is done with the data, allow send by updating the write pointer
+		/* User is done with the data, allow send by updating the write pointer */
 		writePointer->readyToRead=true;
 		writePointer=writePointer->next;
 	}
@@ -200,12 +218,12 @@ namespace DataStructures
 		void SingleProducerConsumer<SingleProducerConsumerType>::ReadUnlock( void )
 	{
 #ifdef _DEBUG
-		RakAssert(readAheadPointer!=readPointer); // If hits, then called ReadUnlock before ReadLock
-		RakAssert(readPointer!=writePointer); // If hits, then called ReadUnlock when Read returns 0
+		RakAssert(readAheadPointer!=readPointer); /* If hits, then called ReadUnlock before ReadLock */
+		RakAssert(readPointer!=writePointer); /* If hits, then called ReadUnlock when Read returns 0 */
 #endif
 		readCount++;
 
-		// Allow writes to this memory block
+		/* Allow writes to this memory block */
 		readPointer->readyToRead=false;
 		readPointer=readPointer->next;
 	}
@@ -213,7 +231,7 @@ namespace DataStructures
 	template <class SingleProducerConsumerType>
 		void SingleProducerConsumer<SingleProducerConsumerType>::Clear( void )
 	{
-		// Shrink the list down to MINIMUM_LIST_SIZE elements
+		/* Shrink the list down to MINIMUM_LIST_SIZE elements */
 		volatile DataPlusPtr *next;
 		writePointer=readPointer->next;
 

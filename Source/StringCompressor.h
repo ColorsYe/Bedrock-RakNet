@@ -8,9 +8,11 @@
  *
  */
 
-/// \file
-/// \brief \b Compresses/Decompresses ASCII strings and writes/reads them to BitStream class instances.  You can use this to easily serialize and deserialize your own strings.
-///
+/*
+ * 
+ * \b Compresses/Decompresses ASCII strings and writes/reads them to BitStream class instances.  You can use this to easily serialize and deserialize your own strings.
+ *
+ */
 
 
 
@@ -24,7 +26,7 @@
 #include <string>
 #endif
 
-/// Forward declaration
+/* 前向声明 */
 namespace RakNet
 {
 	class BitStream;
@@ -34,44 +36,54 @@ namespace RakNet
 
 namespace RakNet
 {
-/// Forward declarations
+/* 前向声明 */
 class HuffmanEncodingTree;
 
-/// \brief Writes and reads strings to and from bitstreams.
-///
-/// Only works with ASCII strings.  The default compression is for English.
-/// You can call GenerateTreeFromStrings to compress and decompress other languages efficiently as well.
+/*
+ * Writes and reads strings to and from bitstreams.
+ *
+ * Only works with ASCII strings.  The default compression is for English.
+ * You can call GenerateTreeFromStrings to compress and decompress other languages efficiently as well.
+ */
 class RAK_DLL_EXPORT StringCompressor
 {
 public:
 	
-	// Destructor	
+	/* 析构函数 */
 	~StringCompressor() noexcept;
 	
-	/// static function because only static functions can access static members
-	/// The RakPeer constructor adds a reference to this class, so don't call this until an instance of RakPeer exists, or unless you call AddReference yourself.
-	/// \return the unique instance of the StringCompressor 
+	/*
+	 * static function because only static functions can access static members
+	 * The RakPeer 构造函数 adds a reference to this class, so don't call this until an instance of RakPeer exists, or unless you call AddReference yourself.
+	 * 返回值: the unique instance of the StringCompressor
+	 */
 	static StringCompressor* Instance();
 
-	/// Given an array of strings, such as a chat log, generate the optimal encoding tree for it.
-	/// This function is optional and if it is not called a default tree will be used instead.
-	/// \param[in] input An array of bytes which should point to text.
-	/// \param[in] inputLength Length of \a input
-	/// \param[in] languageID An identifier for the language / string table to generate the tree for.  English is automatically created with ID 0 in the constructor.
+	/*
+	 * Given an array of strings, such as a chat log, generate the optimal encoding tree for it.
+	 * This function is 可选 and if it is not called a default tree will be used instead.
+	 * 参数[输入] input An array of bytes which should point to text.
+	 * 参数[输入] inputLength Length of input
+	 * 参数[输入] languageID An identifier for the language / string table to generate the tree for.  English is automatically created with ID 0 in the 构造函数.
+	 */
 	void GenerateTreeFromStrings( unsigned char *input, unsigned inputLength, uint8_t languageId );
 	
- 	/// Writes input to output, compressed.  Takes care of the null terminator for you.
-	/// \param[in] input Pointer to an ASCII string
-	/// \param[in] maxCharsToWrite The max number of bytes to write of \a input.  Use 0 to mean no limit.
-	/// \param[out] output The bitstream to write the compressed string to
-	/// \param[in] languageID Which language to use
+ 	/*
+ 	 * Writes input to output, compressed.  Takes care of the null terminator for you.
+ 	 * 参数[输入] input Pointer to an ASCII string
+ 	 * 参数[输入] maxCharsToWrite The max number of bytes to write of input.  Use 0 to mean no limit.
+ 	 * 参数[输出] output The bitstream to write the compressed string to
+ 	 * 参数[输入] languageID Which language to use
+ 	 */
 	void EncodeString( const char *input, int maxCharsToWrite, RakNet::BitStream *output, uint8_t languageId=0 );
 	
-	/// Writes input to output, uncompressed.  Takes care of the null terminator for you.
-	/// \param[out] output A block of bytes to receive the output
-	/// \param[in] maxCharsToWrite Size, in bytes, of \a output .  A nullptr terminator will always be appended to the output string.  If the maxCharsToWrite is not large enough, the string will be truncated.
-	/// \param[in] input The bitstream containing the compressed string
-	/// \param[in] languageID Which language to use
+	/*
+	 * Writes input to output, uncompressed.  Takes care of the null terminator for you.
+	 * 参数[输出] output A block of bytes to receive the output
+	 * 参数[输入] maxCharsToWrite Size, in bytes, of output .  A nullptr terminator will always be appended to the output string.  If the maxCharsToWrite is not large enough, the string will be truncated.
+	 * 参数[输入] input The bitstream containing the compressed string
+	 * 参数[输入] languageID Which language to use
+	 */
 	bool DecodeString( char *output, int maxCharsToWrite, RakNet::BitStream *input, uint8_t languageId=0 );
 
 #ifdef _CSTRING_COMPRESSOR
@@ -87,23 +99,23 @@ public:
 	void EncodeString( const RakNet::RakString *input, int maxCharsToWrite, RakNet::BitStream *output, uint8_t languageId=0 );
 	bool DecodeString( RakNet::RakString *output, int maxCharsToWrite, RakNet::BitStream *input, uint8_t languageId=0 );
 
-	/// Used so I can allocate and deallocate this singleton at runtime
+	/* 用于在运行时分配和释放此单例 */
 	static void AddReference();
 	
-	/// Used so I can allocate and deallocate this singleton at runtime
+	/* 用于在运行时分配和释放此单例 */
 	static void RemoveReference();
 
 	StringCompressor();
 
 private:
 	
-	/// Singleton instance
+	/* 单例实例 */
 	static StringCompressor *instance;
 	
-	/// Pointer to the huffman encoding trees.
+	/* Pointer to the huffman encoding trees. */
 	DataStructures::Map<int, HuffmanEncodingTree *> huffmanEncodingTrees;
 	
 	static int referenceCount;
 };
 
-} // namespace RakNet
+} /* RakNet 命名空间 */

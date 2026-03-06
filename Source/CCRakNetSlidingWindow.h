@@ -11,11 +11,11 @@
 /*
 http://www.ssfnet.org/Exchange/tcp/tcpTutorialNotes.html
 
-cwnd=max bytes allowed on wire at once
+cwnd=一次允许的最大字节数
 
 Start:
 cwnd=mtu
-ssthresh=unlimited
+ssthresh=无限制
 
 Slow start:
 On ack cwnd*=2
@@ -27,9 +27,9 @@ cwnd+=mtu*mtu/cwnd
 on loss or duplicate ack during period:
 sshtresh=cwnd/2
 cwnd=MTU
-This reenters slow start
+这将重新进入慢启动阶段
 
-If cwnd < ssthresh, then use slow start
+如果cwnd < ssthresh，则then use slow start
 else use congestion avoidance
 
 
@@ -45,7 +45,7 @@ else use congestion avoidance
 #include "RakNetTypes.h"
 #include "DS_Queue.h"
 
-/// Sizeof an UDP header in byte
+/* UDP 头部大小（字节） */
 #define UDP_HEADER_SIZE 28
 
 #define CC_DEBUG_PRINTF_1(x)
@@ -53,13 +53,13 @@ else use congestion avoidance
 #define CC_DEBUG_PRINTF_3(x,y,z)
 #define CC_DEBUG_PRINTF_4(x,y,z,a)
 #define CC_DEBUG_PRINTF_5(x,y,z,a,b)
-//#define CC_DEBUG_PRINTF_1(x) printf(x)
-//#define CC_DEBUG_PRINTF_2(x,y) printf(x,y)
-//#define CC_DEBUG_PRINTF_3(x,y,z) printf(x,y,z)
-//#define CC_DEBUG_PRINTF_4(x,y,z,a) printf(x,y,z,a)
-//#define CC_DEBUG_PRINTF_5(x,y,z,a,b) printf(x,y,z,a,b)
+/* #define CC_DEBUG_PRINTF_1(x) printf(x) */
+/* #define CC_DEBUG_PRINTF_2(x,y) printf(x,y) */
+/* #define CC_DEBUG_PRINTF_3(x,y,z) printf(x,y,z) */
+/* #define CC_DEBUG_PRINTF_4(x,y,z,a) printf(x,y,z,a) */
+/* #define CC_DEBUG_PRINTF_5(x,y,z,a,b) printf(x,y,z,a,b) */
 
-/// Set to 4 if you are using the iPod Touch TG. See http://www.jenkinssoftware.com/forum/index.php?topic=2717.0
+/* 若使用 iPod Touch TG，请将此值设为 4。*/
 #define CC_TIME_TYPE_BYTES 8
 
 #if CC_TIME_TYPE_BYTES==8
@@ -83,124 +83,150 @@ class CCRakNetSlidingWindow
 	CCRakNetSlidingWindow();
 	~CCRakNetSlidingWindow() noexcept;
 
-	/// Reset all variables to their initial states, for a new connection
+	/* 将所有变量重置为新连接的初始状态 */
 	void Init(CCTimeType curTime, uint32_t maxDatagramPayload);
 
-	/// Update over time
+	/* 按时间推进更新 */
 	void Update(CCTimeType curTime, bool hasDataToSendOrResend);
 
 	int GetRetransmissionBandwidth(CCTimeType curTime, CCTimeType timeSinceLastTick, uint32_t unacknowledgedBytes, bool isContinuousSend);
 	int GetTransmissionBandwidth(CCTimeType curTime, CCTimeType timeSinceLastTick, uint32_t unacknowledgedBytes, bool isContinuousSend);
 
-	/// Acks do not have to be sent immediately. Instead, they can be buffered up such that groups of acks are sent at a time
-	/// This reduces overall bandwidth usage
-	/// How long they can be buffered depends on the retransmit time of the sender
-	/// Should call once per update tick, and send if needed
+	/*
+	 * ACK 无需立即发送，可以缓冲后批量发送
+	 * 这样可以减少总体带宽占用
+	 * 缓冲时长取决于发送方的重传时间
+	 * 每次更新心跳时调用一次，必要时发送
+	 */
 	bool ShouldSendACKs(CCTimeType curTime, CCTimeType estimatedTimeToNextTick);
 
-	/// Every data packet sent must contain a sequence number
-	/// Call this function to get it. The sequence number is passed into OnGotPacketPair()
+	/*
+	 * 每个发送的数据包都必须包含序列号
+	 * 调用此函数获取序列号，该序列号将传入 OnGotPacketPair()
+	 */
 	DatagramSequenceNumberType GetAndIncrementNextDatagramSequenceNumber();
 	DatagramSequenceNumberType GetNextDatagramSequenceNumber();
 
-	/// Call this when you send packets
-	/// Every 15th and 16th packets should be sent as a packet pair if possible
-	/// When packets marked as a packet pair arrive, pass to OnGotPacketPair()
-	/// When any packets arrive, (additionally) pass to OnGotPacket
-	/// Packets should contain our system time, so we can pass rtt to OnNonDuplicateAck()
+	/*
+	 * 发送数据包时调用
+	 * 尽可能将第 15 和第 16 个数据包作为数据包对发送
+	 * 当标记为数据包对的包到达时，传递给 OnGotPacketPair()
+	 * 所有数据包到达时（额外地）传递给 OnGotPacket
+	 * 数据包应包含本机系统时间，以便将 RTT 传递给 OnNonDuplicateAck()
+	 */
 	void OnSendBytes(CCTimeType curTime, uint32_t numBytes);
 
-	/// Call this when you get a packet pair
+	/* 收到数据包对时调用 */
 	void OnGotPacketPair(DatagramSequenceNumberType datagramSequenceNumber, uint32_t sizeInBytes, CCTimeType curTime);
 
-	/// Call this when you get a packet (including packet pairs)
-	/// If the DatagramSequenceNumberType is out of order, skippedMessageCount will be non-zero
-	/// In that case, send a NAK for every sequence number up to that count
+	/*
+	 * 收到数据包（包括数据包对）时调用
+	 * 若数据报序列号乱序，skippedMessageCount 将非零
+	 * 此时，对每个缺失的序列号发送 NAK
+	 */
 	bool OnGotPacket(DatagramSequenceNumberType datagramSequenceNumber, bool isContinuousSend, CCTimeType curTime, uint32_t sizeInBytes, uint32_t *skippedMessageCount);
 
-	/// Call when you get a NAK, with the sequence number of the lost message
-	/// Affects the congestion control
+	/*
+	 * 收到 NAK 时调用，参数为丢失消息的序列号
+	 * 影响拥塞控制
+	 */
 	void OnResend(CCTimeType curTime, RakNet::TimeUS nextActionTime);
 	void OnNAK(CCTimeType curTime, DatagramSequenceNumberType nakSequenceNumber);
 
-	/// Call this when an ACK arrives.
-	/// hasBAndAS are possibly written with the ack, see OnSendAck()
-	/// B and AS are used in the calculations in UpdateWindowSizeAndAckOnAckPerSyn
-	/// B and AS are updated at most once per SYN 
+	/*
+	 * 收到 ACK 时调用。
+	 * hasBAndAS 可能随 ACK 一起写入，参见 OnSendAck()
+	 * B 和 AS 用于 UpdateWindowSizeAndAckOnAckPerSyn 中的计算
+	 * B 和 AS 每个 SYN 周期最多更新一次
+	 */
 	void OnAck(CCTimeType curTime, CCTimeType rtt, bool hasBAndAS, BytesPerMicrosecond _B, BytesPerMicrosecond _AS, double totalUserDataBytesAcked, bool isContinuousSend, DatagramSequenceNumberType sequenceNumber );
 	void OnDuplicateAck( CCTimeType curTime, DatagramSequenceNumberType sequenceNumber );
 	
-	/// Call when you send an ack, to see if the ack should have the B and AS parameters transmitted
-	/// Call before calling OnSendAck()
+	/*
+	 * 发送 ACK 时调用，以判断 ACK 是否需要携带 B 和 AS 参数
+	 * 请在调用 OnSendAck() 之前调用此函数
+	 */
 	void OnSendAckGetBAndAS(CCTimeType curTime, bool *hasBAndAS, BytesPerMicrosecond *_B, BytesPerMicrosecond *_AS);
 
-	/// Call when we send an ack, to write B and AS if needed
-	/// B and AS are only written once per SYN, to prevent slow calculations
-	/// Also updates SND, the period between sends, since data is written out
-	/// Be sure to call OnSendAckGetBAndAS() before calling OnSendAck(), since whether you write it or not affects \a numBytes
+	/*
+	 * 发送 ACK 时调用，必要时写入 B 和 AS
+	 * B 和 AS 每个 SYN 周期仅写入一次，以避免频繁计算
+	 * 同时更新 SND（发送间隔），因为数据已写出
+	 * 请确保在调用 OnSendAck() 之前先调用 OnSendAckGetBAndAS()，因为是否写入会影响 numBytes 的值
+	 */
 	void OnSendAck(CCTimeType curTime, uint32_t numBytes);
 
-	/// Call when we send a NACK
-	/// Also updates SND, the period between sends, since data is written out
+	/*
+	 * 发送 NACK 时调用
+	 * 同时更新 SND（发送间隔），因为数据已写出
+	 */
 	void OnSendNACK(CCTimeType curTime, uint32_t numBytes);
 	
-	/// Retransmission time out for the sender
-	/// If the time difference between when a message was last transmitted, and the current time is greater than RTO then packet is eligible for retransmission, pending congestion control
-	/// RTO = (RTT + 4 * RTTVar) + SYN
-	/// If we have been continuously sending for the last RTO, and no ACK or NAK at all, SND*=2;
-	/// This is per message, which is different from UDT, but RakNet supports packetloss with continuing data where UDT is only RELIABLE_ORDERED
-	/// Minimum value is 100 milliseconds
+	/*
+	 * 发送方的重传超时时间（RTO）
+	 * 若消息最后一次传输时间与当前时间之差超过 RTO，则该包满足重传条件（仍需等待拥塞控制许可）
+	 * RTO = (RTT + 4 * RTTVar) + SYN
+	 * 若在过去 RTO 时间内持续发送但未收到任何 ACK 或 NAK，则 SND 翻倍
+	 * 这是按消息计算的，与 UDT 不同；RakNet 支持持续数据流中的丢包重传，而 UDT 仅支持 RELIABLE_ORDERED 模式
+	 * 最小值为 100 毫秒
+	 */
 	CCTimeType GetRTOForRetransmission(unsigned char timesSent) const;
 
-	/// Set the maximum amount of data that can be sent in one datagram
-	/// Default to MAXIMUM_MTU_SIZE-UDP_HEADER_SIZE
+	/*
+	 * 设置单个数据报中可发送的最大数据量
+	 * 默认值为 MAXIMUM_MTU_SIZE - UDP_HEADER_SIZE
+	 */
 	void SetMTU(uint32_t bytes);
 
-	/// Return what was set by SetMTU()
+	/* 返回由 SetMTU() 设置的值 */
 	uint32_t GetMTU(void) const;
 
-	/// Query for statistics
+	/* 查询统计信息 */
 	BytesPerMicrosecond GetLocalSendRate(void) const {return 0;}
 	BytesPerMicrosecond GetLocalReceiveRate(CCTimeType currentTime) const;
 	BytesPerMicrosecond GetRemoveReceiveRate(void) const {return 0;}
-	//BytesPerMicrosecond GetEstimatedBandwidth(void) const {return B;}
+	/* BytesPerMicrosecond GetEstimatedBandwidth(void) const {return B;} */
 	BytesPerMicrosecond GetEstimatedBandwidth(void) const {return GetLinkCapacityBytesPerSecond()*1000000.0;}
 	double GetLinkCapacityBytesPerSecond(void) const {return 0;}
 
-	/// Query for statistics
+	/* 查询统计信息 */
 	double GetRTT(void) const;
 
 	bool GetIsInSlowStart(void) const {return IsInSlowStart();}
 	uint32_t GetCWNDLimit(void) const {return static_cast<uint32_t>(0);}
 
 
-	/// Is a > b, accounting for variable overflow?
+	/* 考虑变量溢出情况下，a 是否大于 b？ */
 	static bool GreaterThan(DatagramSequenceNumberType a, DatagramSequenceNumberType b);
-	/// Is a < b, accounting for variable overflow?
+	/* 考虑变量溢出情况下，a 是否小于 b？ */
 	static bool LessThan(DatagramSequenceNumberType a, DatagramSequenceNumberType b);
-//	void SetTimeBetweenSendsLimit(unsigned int bitsPerSecond);
+/* void SetTimeBetweenSendsLimit(unsigned int bitsPerSecond); */
 	uint64_t GetBytesPerSecondLimitByCongestionControl(void) const;
 	  
 	protected:
 
-	// Maximum amount of bytes that the user can send, e.g. the size of one full datagram
+	/* 用户可发送的最大字节数，即一个完整数据报的大小 */
 	uint32_t MAXIMUM_MTU_INCLUDING_UDP_HEADER;
 
-	double cwnd; // max bytes on wire
-	double ssThresh; // Threshhold between slow start and congestion avoidance
+	double cwnd; /* 网络中允许的最大字节数 */
+	double ssThresh; /* 慢启动与拥塞避免之间的阈值 */
 
-	/// When we get an ack, if oldestUnsentAck==0, set it to the current time
-	/// When we send out acks, set oldestUnsentAck to 0
+	/*
+	 * 收到 ACK 时，若 oldestUnsentAck == 0，将其设置为当前时间
+	 * 发出 ACK 后，将 oldestUnsentAck 重置为 0
+	 */
 	CCTimeType oldestUnsentAck;
 
 	CCTimeType GetSenderRTOForACK(void) const;
 
-	/// Every outgoing datagram is assigned a sequence number, which increments by 1 every assignment
+	/* 每个发出的数据报都被分配一个序列号，每次分配后递增 1 */
 	DatagramSequenceNumberType nextDatagramSequenceNumber;
 	DatagramSequenceNumberType nextCongestionControlBlock;
 	bool backoffThisBlock, speedUpThisBlock;
-	/// Track which datagram sequence numbers have arrived.
-	/// If a sequence number is skipped, send a NAK for all skipped messages
+	/*
+	 * 跟踪已到达的数据报序列号。
+	 * 若序列号出现跳跃，则对所有缺失的序列号发送 NAK
+	 */
 	DatagramSequenceNumberType expectedNextSequenceNumber;
 
 	bool _isContinuousSend;

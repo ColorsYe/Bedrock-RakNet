@@ -13,7 +13,7 @@
 #include "NativeTypes.h"
 #include "WindowsIncludes.h"
 #if defined(ANDROID) || defined(__S3E__) || defined(__APPLE__)
-// __sync_fetch_and_add not supported apparently
+/* __sync_fetch_and_add not supported apparently */
 #include "SimpleMutex.h"
 #endif
 
@@ -25,9 +25,9 @@ class RAK_DLL_EXPORT LocklessUint32_t
 public:
 	LocklessUint32_t();
 	explicit LocklessUint32_t(uint32_t initial);
-	// Returns variable value after changing it
+	/* 返回修改后的变量值 */
 	uint32_t Increment();
-	// Returns variable value after changing it
+	/* 返回修改后的变量值 */
 	uint32_t Decrement();
 	uint32_t GetValue(void) const {return value;}
 
@@ -35,7 +35,7 @@ protected:
 #ifdef _WIN32
 	volatile LONG value;
 #elif defined(ANDROID) || defined(__S3E__) || defined(__APPLE__)
-	// __sync_fetch_and_add not supported apparently
+	/* __sync_fetch_and_add not supported apparently */
 	SimpleMutex mutex;
 	uint32_t value;
 #else

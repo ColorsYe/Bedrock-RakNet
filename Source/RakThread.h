@@ -31,7 +31,7 @@ using namespace ThreadEmulation;
 
 namespace RakNet
 {
-/// To define a thread, use RAK_THREAD_DECLARATION(functionName);
+/* To define a thread, use RAK_THREAD_DECLARATION(functionName); */
 #if defined(_WIN32_WCE) || defined(WINDOWS_PHONE_8) || defined(WINDOWS_STORE_RT)
 #define RAK_THREAD_DECLARATION(functionName) DWORD WINAPI functionName(LPVOID arguments)
 
@@ -51,11 +51,13 @@ public:
 
 
 
-	/// Create a thread, simplified to be cross platform without all the extra junk
-	/// To then start that thread, call RakCreateThread(functionName, arguments);
-	/// \param[in] start_address Function you want to call
-	/// \param[in] arglist Arguments to pass to the function
-	/// \return 0=success. >0 = error code
+	/*
+	 * Create a thread, simplified to be cross platform without all the extra junk
+	 * To then start that thread, call RakCreateThread(functionName, arguments);
+	 * 参数[输入] start_address Function you want to call
+	 * 参数[输入] arglist Arguments to pass to the function
+	 * 返回值: 0=success. >0 = error code
+	 */
 
 	/*
 	nice value 	Win32 Priority

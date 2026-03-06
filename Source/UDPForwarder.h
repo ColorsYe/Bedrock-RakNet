@@ -8,9 +8,11 @@
  *
  */
 
-/// \file
-/// \brief Forwards UDP datagrams. Independent of RakNet's protocol.
-///
+/*
+ * 
+ * 转发 UDP 数据报。独立于 RakNet 的协议。
+ *
+ */
 
 
 
@@ -44,52 +46,62 @@ enum UDPForwarderResult
 	UDPFORWARDER_RESULT_COUNT
 };
 
-/// \brief Forwards UDP datagrams. Independent of RakNet's protocol.
-/// \ingroup NAT_PUNCHTHROUGH_GROUP
+/*
+ * 转发 UDP 数据报。独立于 RakNet 的协议。
+ * \ingroup NAT_PUNCHTHROUGH_GROUP
+ */
 class RAK_DLL_EXPORT UDPForwarder
 {
 public:
 	UDPForwarder();
 	virtual ~UDPForwarder();
 
-	/// Starts the system.
-	/// Required to call before StartForwarding
+	/*
+	 * 启动 system
+	 * 必须 to call before StartForwarding
+	 */
 	void Startup();
 
-	/// Stops the system, and frees all sockets
+	/* Stops the system, and frees all sockets */
 	void Shutdown();
 
-	/// Sets the maximum number of forwarding entries allowed
-	/// Set according to your available bandwidth and the estimated average bandwidth per forwarded address.
-	/// \param[in] maxEntries The maximum number of simultaneous forwarding entries. Defaults to 64 (32 connections)
+	/*
+	 * 设置 maximum number of forwarding entries allowed
+	 * 将according设置为your available bandwidth and the estimated average bandwidth per forwarded address
+	 * 参数[输入] maxEntries The maximum number of simultaneous forwarding entries. Defaults to 64 (32 connections)
+	 */
 	void SetMaxForwardEntries(unsigned short maxEntries);
 
-	/// \return The \a maxEntries parameter passed to SetMaxForwardEntries(), or the default if it was never called
+	/* 返回值: The maxEntries parameter passed to SetMaxForwardEntries(), or the default if it was never called */
 	int GetMaxForwardEntries(void) const;
 
-	/// \return How many entries have been used
+	/* 返回值: How many entries have been used */
 	int GetUsedForwardEntries(void) const;
 
-	/// Forwards datagrams from source to destination, and vice-versa
-	/// Does nothing if this forward entry already exists via a previous call
-	/// \pre Call Startup()
-	/// \note RakNet's protocol will ensure a message is sent at least every 15 seconds, so if routing RakNet messages, it is a reasonable value for timeoutOnNoDataMS, plus an some extra seconds for latency
-	/// \param[in] source The source IP and port
-	/// \param[in] destination Where to forward to (and vice-versa)
-	/// \param[in] timeoutOnNoDataMS If no messages are forwarded for this many MS, then automatically remove this entry.
-	/// \param[in] forceHostAddress Force binding on a particular address. 0 to use any.
-	/// \param[in] socketFamily IP version: For IPV4, use AF_INET (default). For IPV6, use AF_INET6. To autoselect, use AF_UNSPEC.
-	/// \param[out] forwardingPort New opened port for forwarding
-	/// \param[out] forwardingSocket New opened socket for forwarding
-	/// \return UDPForwarderResult
+	/*
+	 * Forwards datagrams from source to destination, and vice-versa
+	 * Does nothing if this forward entry already exists via a previous call
+	 * 前提条件: Call Startup()
+	 * 注意: RakNet's protocol will ensure a message is sent at least every 15 seconds, so if routing RakNet messages, it is a reasonable value for timeoutOnNoDataMS, plus an some extra seconds for latency
+	 * 参数[输入] source The source IP and port
+	 * 参数[输入] destination Where to forward to (and vice-versa)
+	 * 参数[输入] timeoutOnNoDataMS If no messages are forwarded for this many MS, then automatically remove this entry.
+	 * 参数[输入] forceHostAddress Force binding on a particular address. 0 to use any.
+	 * 参数[输入] socketFamily IP version: For IPV4, use AF_INET (default). For IPV6, use AF_INET6. To autoselect, use AF_UNSPEC.
+	 * 参数[输出] forwardingPort New opened port for forwarding
+	 * 参数[输出] forwardingSocket New opened socket for forwarding
+	 * 返回值: UDPForwarderResult
+	 */
 	UDPForwarderResult StartForwarding(
 		SystemAddress source, SystemAddress destination, RakNet::TimeMS timeoutOnNoDataMS,
 		const char *forceHostAddress, unsigned short socketFamily,
 		unsigned short *forwardingPort, __UDPSOCKET__ *forwardingSocket);
 
-	/// No longer forward datagrams from source to destination
-	/// \param[in] source The source IP and port
-	/// \param[in] destination Where to forward to
+	/*
+	 * No longer forward datagrams from source to destination
+	 * 参数[输入] source The source IP and port
+	 * 参数[输入] destination Where to forward to
+	 */
 	void StopForwarding(SystemAddress source, SystemAddress destination);
 
 
@@ -141,15 +153,15 @@ protected:
 	DataStructures::ThreadsafeAllocatingQueue<StopForwardingStruct> stopForwardingCommands;
 	unsigned int nextInputId;
 
-	// New entries are added to forwardListNotUpdated
+	/* New entries are added to forwardListNotUpdated */
 	DataStructures::List<ForwardEntry*> forwardListNotUpdated;
-//	SimpleMutex forwardListNotUpdatedMutex;
+/* SimpleMutex forwardListNotUpdatedMutex; */
 
 	unsigned short maxForwardEntries;
 	RakNet::LocklessUint32_t isRunning, threadRunning;
 
 };
 
-} // End namespace
+} /* 命名空间结束 */
 
 #endif

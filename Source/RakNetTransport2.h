@@ -8,9 +8,11 @@
  *
  */
 
-/// \file
-/// \brief Contains RakNetTransportCommandParser and RakNetTransport used to provide a secure console connection.
-///
+/*
+ * 
+ * Contains RakNetTransportCommandParser and RakNetTransport used to provide a secure console connection.
+ *
+ */
 
 
 #include "NativeFeatureIncludes.h"
@@ -25,82 +27,99 @@
 
 namespace RakNet
 {
-/// Forward declarations
+/* 前向声明 */
 class BitStream;
 class RakPeerInterface;
 class RakNetTransport;
 
-/// \defgroup RAKNET_TRANSPORT_GROUP RakNetTransport
-/// \brief UDP based transport implementation for the ConsoleServer
-/// \details
-/// \ingroup PLUGINS_GROUP
+/*
+ * \defgroup RAKNET_TRANSPORT_GROUP RakNetTransport
+ * UDP based transport implementation for the ConsoleServer
+ * * \ingroup PLUGINS_GROUP
+ */
 
-/// \brief Use RakNetTransport if you need a secure connection between the client and the console server.
-/// \details RakNetTransport automatically initializes security for the system.  Use the project CommandConsoleClient to connect
-/// To the ConsoleServer if you use RakNetTransport
-/// \ingroup RAKNET_TRANSPORT_GROUP
+/*
+ * Use RakNetTransport if you need a secure connection between the client and the console server.
+ * RakNetTransport automatically initializes security for the system.  Use the project CommandConsoleClient to connect
+ * To the ConsoleServer if you use RakNetTransport
+ * \ingroup RAKNET_TRANSPORT_GROUP
+ */
 class RAK_DLL_EXPORT RakNetTransport2 : public TransportInterface, public PluginInterface2
 {
 public:
-	// GetInstance() and DestroyInstance(instance*)
+	/* 获取单例 GetInstance() 和销毁单例 DestroyInstance(instance*) */
 	STATIC_FACTORY_DECLARATIONS(RakNetTransport2)
 
 	RakNetTransport2();
     virtual ~RakNetTransport2();
 
-	/// Start the transport provider on the indicated port.
-	/// \param[in] port The port to start the transport provider on
-	/// \param[in] serverMode If true, you should allow incoming connections (I don't actually use this anywhere)
-	/// \return Return true on success, false on failure.
+	/*
+	 * Start the transport provider on the indicated port.
+	 * 参数[输入] port The port to start the transport provider on
+	 * 参数[输入] serverMode If true, you should allow incoming connections (I don't actually use this anywhere)
+	 * 返回值: Return 成功返回 true，失败返回 false。
+	 */
 	bool Start(unsigned short port, bool serverMode);
 
-	/// Stop the transport provider.  You can clear memory and shutdown threads here.
+	/* Stop the transport provider.  You can clear memory and shutdown threads here. */
 	void Stop();
 
-	/// Send a null-terminated string to \a systemAddress
-	/// If your transport method requires particular formatting of the outgoing data (e.g. you don't just send strings) you can do it here
-	/// and parse it out in Receive().
-	/// \param[in] systemAddress The player to send the string to
-	/// \param[in] data format specifier - same as RAKNET_DEBUG_PRINTF
-	/// \param[in] ... format specification arguments - same as RAKNET_DEBUG_PRINTF
+	/*
+	 * Send a 以空字符结尾的字符串 to systemAddress
+	 * If your transport method requires particular formatting of the outgoing data (e.g. you don't just send strings) you can do it here
+	 * and parse it out in Receive().
+	 * 参数[输入] systemAddress The player to send the string to
+	 * 参数[输入] data format specifier - same as RAKNET_DEBUG_PRINTF
+	 * 参数[输入] ... format specification arguments - same as RAKNET_DEBUG_PRINTF
+	 */
 	void Send( SystemAddress systemAddress, const char *data, ... );
 
-	/// Disconnect \a systemAddress .  The binary address and port defines the SystemAddress structure.
-	/// \param[in] systemAddress The player/address to disconnect
+	/*
+	 * Disconnect systemAddress .  The binary address and port defines the SystemAddress structure.
+	 * 参数[输入] systemAddress The player/address to disconnect
+	 */
 	void CloseConnection( SystemAddress systemAddress );
 
-	/// Return a string. The string should be allocated and written to Packet::data .
-	/// The byte length should be written to Packet::length .  The player/address should be written to Packet::systemAddress
-	/// If your transport protocol adds special formatting to the data stream you should parse it out before returning it in the packet
-	/// and thus only return a string in Packet::data
-	/// \return The packet structure containing the result of Receive, or 0 if no data is available
+	/*
+	 * 返回一个字符串。该字符串应被分配并写入 Packet::data。
+	 * The byte length should be written to Packet::length .  The player/address should be written to Packet::systemAddress
+	 * If your transport protocol adds special formatting to the data stream you should parse it out before returning it in the packet
+	 * and thus only return a string in Packet::data
+	 * 返回值: The packet structure containing the result of Receive, or 0 if no data is available
+	 */
 	Packet* Receive( void );
 
-	/// Deallocate the Packet structure returned by Receive
-	/// \param[in] The packet to deallocate
+	/*
+	 * Deallocate the Packet structure returned by Receive
+	 * 参数[输入] The packet to deallocate
+	 */
 	void DeallocatePacket( Packet *packet );
 
-	/// If a new system connects to you, you should queue that event and return the systemAddress/address of that player in this function.
-	/// \return The SystemAddress/address of the system
+	/*
+	 * If a new system connects to you, you should queue that event and return the systemAddress/address of that player in this function.
+	 * 返回值: The SystemAddress/address of the system
+	 */
 	SystemAddress HasNewIncomingConnection();
 
-	/// If a system loses the connection, you should queue that event and return the systemAddress/address of that player in this function.
-	/// \return The SystemAddress/address of the system
+	/*
+	 * If a system loses the connection, you should queue that event and return the systemAddress/address of that player in this function.
+	 * 返回值: The SystemAddress/address of the system
+	 */
 	SystemAddress HasLostConnection();
 
 	CommandParserInterface* GetCommandParser() override {return 0;}
 
-	/// \internal
+	/* 内部使用 */
 	virtual PluginReceiveResult OnReceive(Packet *packet);
-	/// \internal
+	/* 内部使用 */
 	virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
-	/// \internal
+	/* 内部使用 */
 	virtual void OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming);
 protected:
 	DataStructures::Queue<SystemAddress> newConnections, lostConnections;
 	DataStructures::Queue<Packet*> packetQueue;
 };
 
-} // namespace RakNet
+} /* RakNet 命名空间 */
 
 #endif

@@ -3,30 +3,34 @@
  *  All rights reserved.
  *
  *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant 
+ *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  *
  */
 
-/// \file
-/// \brief \b [Internal] Defines the default maximum transfer unit.
-///
+/*
+ *
+ * \b [内部使用] 定义默认最大传输单元（MTU）。
+ *
+ */
 
 
 #ifndef MAXIMUM_MTU_SIZE
 
-/// \li \em 17914 16 Mbit/Sec Token Ring
-/// \li \em 4464 4 Mbits/Sec Token Ring
-/// \li \em 4352 FDDI
-/// \li \em 1500. The largest Ethernet packet size \b recommended. This is the typical setting for non-PPPoE, non-VPN connections. The default value for NETGEAR routers, adapters and switches.
-/// \li \em 1492. The size PPPoE prefers.
-/// \li \em 1472. Maximum size to use for pinging. (Bigger packets are fragmented.)
-/// \li \em 1468. The size DHCP prefers.
-/// \li \em 1460. Usable by AOL if you don't have large email attachments, etc.
-/// \li \em 1430. The size VPN and PPTP prefer.
-/// \li \em 1400. Maximum size for AOL DSL.
-/// \li \em 576. Typical value to connect to dial-up ISPs.
-/// The largest value for an UDP datagram
+/*
+ * \li \em 17914 16 Mbit/秒 令牌环
+ * \li \em 4464 4 Mbit/秒 令牌环
+ * \li \em 4352 FDDI
+ * \li \em 1500. 最大以太网数据包大小（\b 推荐值）。这是非 PPPoE、非 VPN 连接的典型设置，也是 NETGEAR 路由器、适配器和交换机的默认值。
+ * \li \em 1492. PPPoE 的首选大小。
+ * \li \em 1472. 用于 ping 的最大大小（更大的数据包会被分片）。
+ * \li \em 1468. DHCP 的首选大小。
+ * \li \em 1460. 在没有大型邮件附件等情况下，AOL 可用的大小。
+ * \li \em 1430. VPN 和 PPTP 的首选大小。
+ * \li \em 1400. AOL DSL 的最大大小。
+ * \li \em 576. 连接到拨号 ISP 的典型值。
+ * UDP 数据报的最大值
+ */
 
 
 

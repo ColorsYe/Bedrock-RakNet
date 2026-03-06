@@ -8,9 +8,11 @@
  *
  */
 
-/// \file HTTPConnection.h
-/// \brief Contains HTTPConnection, used to communicate with web servers
-///
+/*
+ *  HTTPConnection.h
+ * Contains HTTPConnection, used to communicate with web servers
+ *
+ */
 
 
 #include "NativeFeatureIncludes.h"
@@ -25,71 +27,83 @@
 
 namespace RakNet
 {
-/// Forward declarations
+/* 前向声明 */
 class TCPInterface;
 struct SystemAddress;
 
-/// \brief Use HTTPConnection to communicate with a web server.
-/// \details Start an instance of TCPInterface via the Start() command.
-/// Instantiate a new instance of HTTPConnection, and associate TCPInterface with the class in the constructor.
-/// Use Post() to send commands to the web server, and ProcessDataPacket() to update the connection with packets returned from TCPInterface that have the system address of the web server
-/// This class will handle connecting and reconnecting as necessary.
-///
-/// Note that only one Post() can be handled at a time. 
-/// \deprecated, use HTTPConnection2
+/*
+ * Use HTTPConnection to communicate with a web server.
+ * Start an instance of TCPInterface via the Start() command.
+ * Instantiate a new instance of HTTPConnection, and associate TCPInterface with the class in the 构造函数.
+ * Use Post() to send commands to the web server, and ProcessDataPacket() to update the connection with packets returned from TCPInterface that have the system address of the web server
+ * This class will handle connecting and reconnecting as necessary.
+ *
+ * Note that only one Post() can be handled at a time.
+ * 已废弃, use HTTPConnection2
+ */
 class RAK_DLL_EXPORT HTTPConnection
 {
 public:
-	// GetInstance() and DestroyInstance(instance*)
+	/* 获取单例 GetInstance() 和销毁单例 DestroyInstance(instance*) */
 	STATIC_FACTORY_DECLARATIONS(HTTPConnection)
 
-    /// Returns a HTTP object associated with this tcp connection
+    /* 返回与此 TCP 连接关联的 HTTP 对象 */
     HTTPConnection();
     virtual ~HTTPConnection();
 
-	/// \pre tcp should already be started
+	/* 前提条件: tcp should already be started */
 	void Init(TCPInterface *_tcp, const char *host, unsigned short port=80);
 
-    /// Submit data to the HTTP server
-    /// HTTP only allows one request at a time per connection
-    ///
-	/// \pre IsBusy()==false
-    /// \param path the path on the remote server you want to POST to. For example "index.html"
-    /// \param data A nullptr terminated string to submit to the server
-	/// \param contentType "Content-Type:" passed to post.
+    /*
+     * Submit data to the HTTP server
+     * HTTP only allows one request at a time per connection
+     *
+     * 前提条件: IsBusy()==false
+     * 参数 path the path on the remote server you want to POST to. For example "index.html"
+     * 参数 data A nullptr terminated string to submit to the server
+     * 参数 contentType "Content-Type:" passed to post.
+     */
     void Post(const char *path, const char *data, const char *_contentType="application/x-www-form-urlencoded");
 
-	/// Get a file from a webserver
-	/// \param path the path on the remote server you want to GET from. For example "index.html"
+	/*
+	 * 获取 a file from a webserver
+	 * 参数 path the path on the remote server you want to GET from. For example "index.html"
+	 */
 	void Get(const char *path);
     
-	/// Is there a Read result ready?
+	/* Is there a Read result ready? */
 	bool HasRead(void) const;
 
-    /// Get one result from the server
-	/// \pre HasResult must return true
+    /*
+     * 获取 one result from the server
+     * 前提条件: HasResult must return true
+     */
     RakNet::RakString Read();
 
-	/// Call periodically to do time-based updates
+	/* Call periodically to do time-based updates */
 	void Update();
 
-	/// Returns the address of the server we are connected to
+	/* 返回 address of the server we are connected to */
 	SystemAddress GetServerAddress(void) const;
 
-	/// Process an HTTP data packet returned from TCPInterface
-	/// Returns true when we have gotten all the data from the HTTP server.
-    /// If this returns true then it's safe to Post() another request
-	/// Deallocate the packet as usual via TCPInterface
-    /// \param packet nullptr or a packet associated with our host and port
+	/*
+	 * Process an HTTP data packet returned from TCPInterface
+	 * 当从 HTTP 服务器获取所有数据后返回 true。
+	 * If this returns true then it's safe to Post() another request
+	 * Deallocate the packet as usual via TCPInterface
+	 * 参数 packet nullptr or a packet associated with our host and port
+	 */
    void ProcessTCPPacket(Packet *packet);
 
-    /// Results of HTTP requests.  Standard response codes are < 999
-    /// ( define HTTP codes and our internal codes as needed )
+    /*
+     * Results of HTTP requests.  Standard response codes are < 999
+     * ( define HTTP codes and our 内部使用 codes as needed )
+     */
     enum ResponseCodes { NoBody=1001, OK=200, Deleted=1002 };
 
 	HTTPConnection& operator=(const HTTPConnection& rhs){(void) rhs; return *this;}
    
-    /// Encapsulates a raw HTTP response and response code
+    /* Encapsulates a raw HTTP response and response code */
     struct BadResponse
     {
     public:
@@ -104,16 +118,16 @@ public:
 		operator int () const { return code; }
 
 		RakNet::RakString data;
-		int code;  // ResponseCodes
+		int code; /* ResponseCodes */
     };
 
-    /// Queued events of failed exchanges with the HTTP server
+    /* Queued events of failed exchanges with the HTTP server */
     bool HasBadResponse(int *code, RakNet::RakString *data);
 
-	/// Returns false if the connection is not doing anything else
+	/* 如果连接未执行其他操作则返回 false */
 	bool IsBusy(void) const;
 
-	/// \internal
+	/* 内部使用 */
 	int GetState(void) const;
 
 	struct OutgoingCommand
@@ -166,6 +180,6 @@ private:
 
 };
 
-} // namespace RakNet
+} /* RakNet 命名空间 */
 
 #endif

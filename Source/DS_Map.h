@@ -8,10 +8,12 @@
  *
  */
 
-/// \file DS_Map.h
-/// \internal
-/// \brief Map
-///
+/*
+ *  DS_Map.h
+ * 内部使用
+ * Map
+ *
+ */
 
 
 #pragma once
@@ -20,22 +22,26 @@
 #include "RakMemoryOverride.h"
 #include "RakAssert.h"
 
-// If I want to change this to a red-black tree, this is a good site: http://www.cs.auckland.ac.nz/software/AlgAnim/red_black.html
-// This makes insertions and deletions faster.  But then traversals are slow, while they are currently fast.
+/* If I want to change this to a red-black tree, this is a good site: http://www.cs.auckland.ac.nz/software/AlgAnim/red_black.html */
+/* This makes insertions and deletions faster.  But then traversals are slow, while they are currently fast. */
 
-/// The namespace DataStructures was only added to avoid compiler errors for commonly named data structures
-/// As these data structures are stand-alone, you can use them outside of RakNet for your own projects if you wish.
+/*
+ * DataStructures 命名空间的添加仅是为了避免常见数据结构名称导致的编译器错误
+ * 由于这些数据结构是独立的，如果需要，你可以在 RakNet 之外将它们用于自己的项目。
+ */
 namespace DataStructures
 {
-	/// The default comparison has to be first so it can be called as a default parameter.
-	/// It then is followed by MapNode, followed by NodeComparisonFunc
+	/*
+	 * The default comparison has to be first so it can be called as a default parameter.
+	 * 其后跟着 MapNode，再跟着 NodeComparisonFunc
+	 */
 	template <class key_type>
 		int defaultMapKeyComparison(const key_type &a, const key_type &b)
 	{
 		if (a<b) return -1; if (a==b) return 0; return 1;
 	}
 
-	/// \note IMPORTANT! If you use defaultMapKeyComparison then call IMPLEMENT_DEFAULT_COMPARISON or you will get an unresolved external linker error.
+	/* 注意: IMPORTANT! If you use defaultMapKeyComparison then call IMPLEMENT_DEFAULT_COMPARISON or you will get an unresolved 外部 linker error. */
 	template <class key_type, class data_type, int (*key_comparison_func)(const key_type&, const key_type&)=defaultMapKeyComparison<key_type> >
 	class RAK_DLL_EXPORT Map
 	{
@@ -52,11 +58,11 @@ namespace DataStructures
 			data_type mapNodeData;
 		};
 
-		// Has to be a static because the comparison callback for DataStructures::OrderedList is a C function
+		/* Has to be a static because the comparison callback for DataStructures::OrderedList is a C function */
 		static int NodeComparisonFunc(const key_type &a, const MapNode &b)
 		{
 #ifdef _MSC_VER
-#pragma warning( disable : 4127 ) // warning C4127: conditional expression is constant
+#pragma warning( disable : 4127 ) /* 警告 C4127：条件表达式是常量 */
 #endif
 			return key_comparison_func(a, b.mapNodeKey);
 		}
@@ -68,11 +74,11 @@ namespace DataStructures
 
 		data_type& Get(const key_type &key) const; 
 		data_type Pop(const key_type &key);
-		// Add if needed
+		/* 添加 if needed */
 		void Set(const key_type &key, const data_type &data);
-		// Must already exist
+		/* Must already exist */
 		void SetExisting(const key_type &key, const data_type &data);
-		// Must add
+		/* Must add */
 		void SetNew(const key_type &key, const data_type &data);
 		bool Has(const key_type &key) const;
 		bool Delete(const key_type &key);
@@ -317,8 +323,8 @@ namespace DataStructures
 	{
 		static_cast<void>(key);
 
-		// Not threadsafe!
+		/* 非线程安全! */
 		return false;
-		// return lastSearchIndexValid && key_comparison_func(key,lastSearchKey)==0;
+		/* return lastSearchIndexValid && key_comparison_func(key,lastSearchKey)==0; */
 	}
 }

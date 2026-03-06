@@ -8,9 +8,11 @@
  *
  */
 
-/// \file
-/// \brief A simple TCP based server allowing sends and receives.  Can be connected by any TCP client, including telnet.
-///
+/*
+ * 
+ * A simple TCP based server allowing sends and receives.  Can be connected by any TCP client, including telnet.
+ *
+ */
 
 
 #include "NativeFeatureIncludes.h"
@@ -27,39 +29,43 @@ namespace RakNet
 class RAK_DLL_EXPORT PacketizedTCP : public TCPInterface
 {
 public:
-	// GetInstance() and DestroyInstance(instance*)
+	/* 获取单例 GetInstance() 和销毁单例 DestroyInstance(instance*) */
 	STATIC_FACTORY_DECLARATIONS(PacketizedTCP)
 
 	PacketizedTCP();
 	virtual ~PacketizedTCP();
 
-	/// Stops the TCP server
+	/* 停止 TCP server */
 	void Stop();
 
-	/// Sends a byte stream
+	/* 发送 byte stream */
 	void Send( const char *data, unsigned length, const SystemAddress &systemAddress, bool broadcast );
 
-	// Sends a concatenated list of byte streams
+	/* Sends a concatenated list of byte streams */
 	bool SendList( const char **data, const unsigned int *lengths, const int numParameters, const SystemAddress &systemAddress, bool broadcast );
 
-	/// Returns data received
+	/* 返回 data received */
 	Packet* Receive( void );
 
-	/// Disconnects a player/address
+	/* Disconnects a player/address */
 	void CloseConnection( SystemAddress systemAddress );
 
-	/// Has a previous call to connect succeeded?
-	/// \return UNASSIGNED_SYSTEM_ADDRESS = no. Anything else means yes.
+	/*
+	 * Has a previous call to connect succeeded?
+	 * 返回值: UNASSIGNED_SYSTEM_ADDRESS = no. Anything else means yes.
+	 */
 	SystemAddress HasCompletedConnectionAttempt();
 
-	/// Has a previous call to connect failed?
-	/// \return UNASSIGNED_SYSTEM_ADDRESS = no. Anything else means yes.
+	/*
+	 * Has a previous call to connect failed?
+	 * 返回值: UNASSIGNED_SYSTEM_ADDRESS = no. Anything else means yes.
+	 */
 	SystemAddress HasFailedConnectionAttempt();
 
-	/// Queued events of new incoming connections
+	/* Queued events of new incoming connections */
 	SystemAddress HasNewIncomingConnection();
 
-	/// Queued events of lost connections
+	/* Queued events of lost connections */
 	SystemAddress HasLostConnection();
 
 protected:
@@ -69,14 +75,14 @@ protected:
 	void PushNotificationsToQueues();
 	Packet *ReturnOutgoingPacket();
 
-	// A single TCP recieve may generate multiple split packets. They are stored in the waitingPackets list until Receive is called
+	/* A single TCP recieve may generate multiple split packets. They are stored in the waitingPackets list until Receive is called */
 	DataStructures::Queue<Packet*> waitingPackets;
 	DataStructures::Map<SystemAddress, DataStructures::ByteQueue *> connections;
 
-	// Mirrors single producer / consumer, but processes them in Receive() before returning to user
+	/* Mirrors single producer / consumer, but processes them in Receive() before returning to user */
 	DataStructures::Queue<SystemAddress> _newIncomingConnections, _lostConnections, _failedConnectionAttempts, _completedConnectionAttempts;
 };
 
-} // namespace RakNet
+} /* RakNet 命名空间 */
 
 #endif

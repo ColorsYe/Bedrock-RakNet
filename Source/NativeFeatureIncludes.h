@@ -2,52 +2,51 @@
  *  Copyright (c) 2014, Oculus VR, Inc.
  *  All rights reserved.
  *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant 
- *  of patent rights can be found in the PATENTS file in the same directory.
+ *  本源代码使用 BSD 风格许可证授权，
+ *  许可证文件位于源码树根目录的 LICENSE 文件中。
+ *  同目录下的 PATENTS 文件中还包含额外的专利授权。
  *
  */
 
-// If you want to change these defines, put them in NativeFeatureIncludesOverrides so your changes are not lost when updating RakNet
-// The user should not edit this file
-#include "NativeFeatureIncludesOverrides.h"
+/* 如果您要修改这些宏定义，请将它们放入 NativeFeatureIncludesOverrides 文件中，这样更新 RakNet 时您的修改不会丢失 */
+/* 用户不应编辑此文件 */
 
 #pragma once
-// Uncomment below defines, and paste to NativeFeatureIncludesOverrides.h, to exclude plugins that you do not want to build into the static library, or DLL
-// These are not all the plugins, only those that are in the core library
-// Other plugins are located in DependentExtensions
-// #define _RAKNET_SUPPORT_ConnectionGraph2 0
-// #define _RAKNET_SUPPORT_DirectoryDeltaTransfer 0
-// #define _RAKNET_SUPPORT_FileListTransfer 0
-// #define _RAKNET_SUPPORT_FullyConnectedMesh2 0
-// #define _RAKNET_SUPPORT_MessageFilter 0
-// #define _RAKNET_SUPPORT_NatPunchthroughClient 0
-// #define _RAKNET_SUPPORT_NatPunchthroughServer 0
-// #define _RAKNET_SUPPORT_NatTypeDetectionClient 0
-// #define _RAKNET_SUPPORT_NatTypeDetectionServer 0
-// #define _RAKNET_SUPPORT_PacketLogger 0
-// #define _RAKNET_SUPPORT_ReadyEvent 0
-// #define _RAKNET_SUPPORT_ReplicaManager3 0
-// #define _RAKNET_SUPPORT_Router2 0
-// #define _RAKNET_SUPPORT_RPC4Plugin 0
-// #define _RAKNET_SUPPORT_TeamBalancer 0
-// #define _RAKNET_SUPPORT_TeamManager 0
-// #define _RAKNET_SUPPORT_UDPProxyClient 0
-// #define _RAKNET_SUPPORT_UDPProxyCoordinator 0
-// #define _RAKNET_SUPPORT_UDPProxyServer 0
-// #define _RAKNET_SUPPORT_ConsoleServer 0
-// #define _RAKNET_SUPPORT_RakNetTransport 0
-// #define _RAKNET_SUPPORT_TelnetTransport 0
-// #define _RAKNET_SUPPORT_TCPInterface 0
-// #define _RAKNET_SUPPORT_LogCommandParser 0
-// #define _RAKNET_SUPPORT_RakNetCommandParser 0
-// #define _RAKNET_SUPPORT_EmailSender 0
-// #define _RAKNET_SUPPORT_HTTPConnection 0
-// #define _RAKNET_SUPPORT_HTTPConnection2 0
-// #define _RAKNET_SUPPORT_PacketizedTCP 0
-// #define _RAKNET_SUPPORT_TwoWayAuthentication 0
+/* 取消下面的宏注释，并粘贴到 NativeFeatureIncludesOverrides.h 中，可排除不需要编译到静态库或 DLL 中的插件 */
+/* 这里并非全部插件，仅为核心库中包含的那些 */
+/* 其他插件位于 DependentExtensions 目录中 */
+/* #define _RAKNET_SUPPORT_ConnectionGraph2 0 */
+/* #define _RAKNET_SUPPORT_DirectoryDeltaTransfer 0 */
+/* #define _RAKNET_SUPPORT_FileListTransfer 0 */
+/* #define _RAKNET_SUPPORT_FullyConnectedMesh2 0 */
+/* #define _RAKNET_SUPPORT_MessageFilter 0 */
+/* #define _RAKNET_SUPPORT_NatPunchthroughClient 0 */
+/* #define _RAKNET_SUPPORT_NatPunchthroughServer 0 */
+/* #define _RAKNET_SUPPORT_NatTypeDetectionClient 0 */
+/* #define _RAKNET_SUPPORT_NatTypeDetectionServer 0 */
+/* #define _RAKNET_SUPPORT_PacketLogger 0 */
+/* #define _RAKNET_SUPPORT_ReadyEvent 0 */
+/* #define _RAKNET_SUPPORT_ReplicaManager3 0 */
+/* #define _RAKNET_SUPPORT_Router2 0 */
+/* #define _RAKNET_SUPPORT_RPC4Plugin 0 */
+/* #define _RAKNET_SUPPORT_TeamBalancer 0 */
+/* #define _RAKNET_SUPPORT_TeamManager 0 */
+/* #define _RAKNET_SUPPORT_UDPProxyClient 0 */
+/* #define _RAKNET_SUPPORT_UDPProxyCoordinator 0 */
+/* #define _RAKNET_SUPPORT_UDPProxyServer 0 */
+/* #define _RAKNET_SUPPORT_ConsoleServer 0 */
+/* #define _RAKNET_SUPPORT_RakNetTransport 0 */
+/* #define _RAKNET_SUPPORT_TelnetTransport 0 */
+/* #define _RAKNET_SUPPORT_TCPInterface 0 */
+/* #define _RAKNET_SUPPORT_LogCommandParser 0 */
+/* #define _RAKNET_SUPPORT_RakNetCommandParser 0 */
+/* #define _RAKNET_SUPPORT_EmailSender 0 */
+/* #define _RAKNET_SUPPORT_HTTPConnection 0 */
+/* #define _RAKNET_SUPPORT_HTTPConnection2 0 */
+/* #define _RAKNET_SUPPORT_PacketizedTCP 0 */
+/* #define _RAKNET_SUPPORT_TwoWayAuthentication 0 */
 
-// SET DEFAULTS IF UNDEFINED
+/* 如果未定义则设置默认值 */
 #ifndef LIBCAT_SECURITY
 #define LIBCAT_SECURITY 0
 #endif
@@ -172,7 +171,7 @@
 #define _RAKNET_SUPPORT_RelayPlugin 1
 #endif
 
-// Take care of dependencies
+/* 处理依赖关系 */
 #if _RAKNET_SUPPORT_DirectoryDeltaTransfer==1
 #undef _RAKNET_SUPPORT_FileListTransfer
 #define _RAKNET_SUPPORT_FileListTransfer 1

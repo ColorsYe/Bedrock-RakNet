@@ -3,14 +3,16 @@
  *  All rights reserved.
  *
  *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant 
+ *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  *
  */
 
-/// \file
-/// \brief \b RakNet's plugin functionality system, version 2.  You can derive from this to create your own plugins.
-///
+/*
+ *
+ * \b RakNet 的插件功能系统，第 2 版。你可以从此类派生来创建自己的插件。
+ *
+ */
 
 
 #pragma once
@@ -21,47 +23,55 @@
 
 namespace RakNet {
 
-/// Forward declarations
+/* 前向声明 */
 class RakPeerInterface;
 class TCPInterface;
 struct Packet;
 struct InternalPacket;
 
-/// \defgroup PLUGIN_INTERFACE_GROUP PluginInterface2
+/* \defgroup PLUGIN_INTERFACE_GROUP PluginInterface2 */
 
-/// \defgroup PLUGINS_GROUP Plugins
-/// \ingroup PLUGIN_INTERFACE_GROUP
+/*
+ * \defgroup PLUGINS_GROUP Plugins
+ * \ingroup PLUGIN_INTERFACE_GROUP
+ */
 
-/// For each message that arrives on an instance of RakPeer, the plugins get an opportunity to process them first. This enumeration represents what to do with the message
-/// \ingroup PLUGIN_INTERFACE_GROUP
+/*
+ * 对于到达 RakPeer 实例的每条消息，插件有机会优先处理它们。此枚举表示对该消息的处理方式
+ * \ingroup PLUGIN_INTERFACE_GROUP
+ */
 enum PluginReceiveResult
 {
-	/// The plugin used this message and it shouldn't be given to the user.
+	/* 插件已使用此消息，不应将其传递给用户。 */
 	RR_STOP_PROCESSING_AND_DEALLOCATE=0,
 
-	/// This message will be processed by other plugins, and at last by the user.
+	/* 此消息将由其他插件处理，最终由用户处理。 */
 	RR_CONTINUE_PROCESSING,
 
-	/// The plugin is going to hold on to this message.  Do not deallocate it but do not pass it to other plugins either.
+	/* 插件将保留此消息。不要释放它，但也不要将它传递给其他插件。 */
 	RR_STOP_PROCESSING
 };
 
-/// Reasons why a connection was lost
-/// \ingroup PLUGIN_INTERFACE_GROUP
+/*
+ * 连接断开的原因
+ * \ingroup PLUGIN_INTERFACE_GROUP
+ */
 enum PI2_LostConnectionReason
 {
-	/// Called RakPeer::CloseConnection()
+	/* 调用了 RakPeer::CloseConnection() */
 	LCR_CLOSED_BY_USER,
 
-	/// Got ID_DISCONNECTION_NOTIFICATION
+	/* 收到 ID_DISCONNECTION_NOTIFICATION */
 	LCR_DISCONNECTION_NOTIFICATION,
 
-	/// GOT ID_CONNECTION_LOST
+	/* 收到 ID_CONNECTION_LOST */
 	LCR_CONNECTION_LOST
 };
 
-/// Returns why a connection attempt failed
-/// \ingroup PLUGIN_INTERFACE_GROUP
+/*
+ * 返回连接尝试失败的原因
+ * \ingroup PLUGIN_INTERFACE_GROUP
+ */
 enum PI2_FailedConnectionAttemptReason
 {
 	FCAR_CONNECTION_ATTEMPT_FAILED,
@@ -77,117 +87,141 @@ enum PI2_FailedConnectionAttemptReason
 	FCAR_PUBLIC_KEY_MISMATCH
 };
 
-/// RakNet's plugin system. Each plugin processes the following events:
-/// -Connection attempts
-/// -The result of connection attempts
-/// -Each incoming message
-/// -Updates over time, when RakPeer::Receive() is called
-///
-/// \ingroup PLUGIN_INTERFACE_GROUP
+/*
+ * RakNet 的插件系统。每个插件处理以下事件：
+ * - 连接尝试
+ * - 连接尝试的结果
+ * - 每条传入消息
+ * - 当 RakPeer::Receive() 被调用时随时间推进的更新
+ *
+ * \ingroup PLUGIN_INTERFACE_GROUP
+ */
 class RAK_DLL_EXPORT PluginInterface2
 {
 public:
 	PluginInterface2();
 	virtual ~PluginInterface2();
 
-	/// Called when the interface is attached
+	/* 当接口被附加时调用 */
 	virtual void OnAttach() {}
 
-	/// Called when the interface is detached
+	/* 当接口被分离时调用 */
 	virtual void OnDetach() {}
 
-	/// Update is called every time a packet is checked for .
+	/* 每次检查数据包时调用 Update。 */
 	virtual void Update() {}
 
-	/// OnReceive is called for every packet.
-	/// \param[in] packet the packet that is being returned to the user
-	/// \return True to allow the game and other plugins to get this message, false to absorb it
+	/*
+	 * 对每个数据包调用 OnReceive。
+	 * 参数[输入] packet 正在返回给用户的数据包
+	 * 返回值: true 允许游戏和其他插件获取此消息，false 将其吸收
+	 */
 	virtual PluginReceiveResult OnReceive(Packet *packet) {(void) packet; return RR_CONTINUE_PROCESSING;}
 
-	/// Called when RakPeer is initialized
+	/* 当 RakPeer 初始化时调用 */
 	virtual void OnRakPeerStartup() {}
 
-	/// Called when RakPeer is shutdown
+	/* 当 RakPeer 关闭时调用 */
 	virtual void OnRakPeerShutdown() {}
 
-	/// Called when a connection is dropped because the user called RakPeer::CloseConnection() for a particular system
-	/// \param[in] systemAddress The system whose connection was closed
-	/// \param[in] rakNetGuid The guid of the specified system
-	/// \param[in] lostConnectionReason How the connection was closed: manually, connection lost, or notification of disconnection
+	/*
+	 * 当用户对特定系统调用 RakPeer::CloseConnection() 而导致连接断开时调用
+	 * 参数[输入] systemAddress 连接被关闭的系统地址
+	 * 参数[输入] rakNetGuid 指定系统的 GUID
+	 * 参数[输入] lostConnectionReason 连接关闭的方式：手动关闭、连接丢失或断开通知
+	 */
 	virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason ){(void) systemAddress; (void) rakNetGUID; (void) lostConnectionReason;}
 
-	/// Called when we got a new connection
-	/// \param[in] systemAddress Address of the new connection
-	/// \param[in] rakNetGuid The guid of the specified system
-	/// \param[in] isIncoming If true, this is ID_NEW_INCOMING_CONNECTION, or the equivalent
+	/*
+	 * 当收到新连接时调用
+	 * 参数[输入] systemAddress 新连接的地址
+	 * 参数[输入] rakNetGuid 指定系统的 GUID
+	 * 参数[输入] isIncoming 若为 true，则为 ID_NEW_INCOMING_CONNECTION 或等效消息
+	 */
 	virtual void OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming) {(void) systemAddress; (void) rakNetGUID; (void) isIncoming;}
 
-	/// Called when a connection attempt fails
-	/// \param[in] packet Packet to be returned to the user
-	/// \param[in] failedConnectionReason Why the connection failed
+	/*
+	 * 当连接尝试失败时调用
+	 * 参数[输入] packet 返回给用户的数据包
+	 * 参数[输入] failedConnectionReason 连接失败的原因
+	 */
 	virtual void OnFailedConnectionAttempt(Packet *packet, PI2_FailedConnectionAttemptReason failedConnectionAttemptReason) {(void) packet; (void) failedConnectionAttemptReason;}
 
-	/// Queried when attached to RakPeer
-	/// Return true to call OnDirectSocketSend(), OnDirectSocketReceive(), OnReliabilityLayerNotification(), OnInternalPacket(), and OnAck()
-	/// If true, then you cannot call RakPeer::AttachPlugin() or RakPeer::DetachPlugin() for this plugin, while RakPeer is active
+	/*
+	 * 附加到 RakPeer 时查询
+	 * 返回 true 以调用 OnDirectSocketSend()、OnDirectSocketReceive()、OnReliabilityLayerNotification()、OnInternalPacket() 和 OnAck()
+	 * 若为 true，则在 RakPeer 活动期间不能调用 RakPeer::AttachPlugin() 或 RakPeer::DetachPlugin()
+	 */
 	virtual bool UsesReliabilityLayer(void) const {return false;}
 
-	/// Called on a send to the socket, per datagram, that does not go through the reliability layer
-	/// \pre To be called, UsesReliabilityLayer() must return true
-	/// \param[in] data The data being sent
-	/// \param[in] bitsUsed How many bits long \a data is
-	/// \param[in] remoteSystemAddress Which system this message is being sent to
+	/*
+	 * 在每个数据报发送到套接字时调用，该数据报不经过可靠性层
+	 * 前提条件: 要调用此函数，UsesReliabilityLayer() 必须返回 true
+	 * 参数[输入] data 正在发送的数据
+	 * 参数[输入] bitsUsed 数据的位长度
+	 * 参数[输入] remoteSystemAddress 此消息正在发送到的系统
+	 */
 	virtual void OnDirectSocketSend(const char *data, const BitSize_t bitsUsed, SystemAddress remoteSystemAddress) {(void) data; (void) bitsUsed; (void) remoteSystemAddress;}
-	
-	/// Called on a receive from the socket, per datagram, that does not go through the reliability layer
-	/// \pre To be called, UsesReliabilityLayer() must return true
-	/// \param[in] data The data being sent
-	/// \param[in] bitsUsed How many bits long \a data is
-	/// \param[in] remoteSystemAddress Which system this message is being sent to
+
+	/*
+	 * 在每个数据报从套接字接收时调用，该数据报不经过可靠性层
+	 * 前提条件: 要调用此函数，UsesReliabilityLayer() 必须返回 true
+	 * 参数[输入] data 正在发送的数据
+	 * 参数[输入] bitsUsed 数据的位长度
+	 * 参数[输入] remoteSystemAddress 此消息正在发送到的系统
+	 */
 	virtual void OnDirectSocketReceive(const char *data, const BitSize_t bitsUsed, SystemAddress remoteSystemAddress) {(void) data; (void) bitsUsed; (void) remoteSystemAddress;}
 
-	/// Called when the reliability layer rejects a send or receive
-	/// \pre To be called, UsesReliabilityLayer() must return true
-	/// \param[in] bitsUsed How many bits long \a data is
-	/// \param[in] remoteSystemAddress Which system this message is being sent to
+	/*
+	 * 当可靠性层拒绝发送或接收时调用
+	 * 前提条件: 要调用此函数，UsesReliabilityLayer() 必须返回 true
+	 * 参数[输入] bitsUsed 数据的位长度
+	 * 参数[输入] remoteSystemAddress 此消息正在发送到的系统
+	 */
 	virtual void OnReliabilityLayerNotification(const char *errorMessage, const BitSize_t bitsUsed, SystemAddress remoteSystemAddress, bool isError)  {(void) errorMessage; (void) bitsUsed; (void) remoteSystemAddress; (void) isError;}
-	
-	/// Called on a send or receive of a message within the reliability layer
-	/// \pre To be called, UsesReliabilityLayer() must return true
-	/// \param[in] internalPacket The user message, along with all send data.
-	/// \param[in] frameNumber The number of frames sent or received so far for this player depending on \a isSend .  Indicates the frame of this user message.
-	/// \param[in] remoteSystemAddress The player we sent or got this packet from
-	/// \param[in] time The current time as returned by RakNet::GetTimeMS()
-	/// \param[in] isSend Is this callback representing a send event or receive event?
+
+	/*
+	 * 在可靠性层内发送或接收消息时调用
+	 * 前提条件: 要调用此函数，UsesReliabilityLayer() 必须返回 true
+	 * 参数[输入] internalPacket 用户消息，以及所有发送数据。
+	 * 参数[输入] frameNumber 到目前为止，根据 isSend，为此玩家发送或接收的帧数。表示此用户消息的帧。
+	 * 参数[输入] remoteSystemAddress 我们向其发送或从其接收此数据包的玩家
+	 * 参数[输入] time RakNet::GetTimeMS() 返回的当前时间
+	 * 参数[输入] isSend 此回调表示发送事件还是接收事件？
+	 */
 	virtual void OnInternalPacket(InternalPacket *internalPacket, unsigned frameNumber, SystemAddress remoteSystemAddress, RakNet::TimeMS time, int isSend) {(void) internalPacket; (void) frameNumber; (void) remoteSystemAddress; (void) time; (void) isSend;}
 
-	/// Called when we get an ack for a message we reliably sent
-	/// \pre To be called, UsesReliabilityLayer() must return true
-	/// \param[in] messageNumber The numerical identifier for which message this is
-	/// \param[in] remoteSystemAddress The player we sent or got this packet from
-	/// \param[in] time The current time as returned by RakNet::GetTimeMS()
+	/*
+	 * 当我们收到可靠发送消息的确认时调用
+	 * 前提条件: 要调用此函数，UsesReliabilityLayer() 必须返回 true
+	 * 参数[输入] messageNumber 此消息的数字标识符
+	 * 参数[输入] remoteSystemAddress 我们向其发送或从其接收此数据包的玩家
+	 * 参数[输入] time RakNet::GetTimeMS() 返回的当前时间
+	 */
 	virtual void OnAck(unsigned int messageNumber, SystemAddress remoteSystemAddress, RakNet::TimeMS time) {(void) messageNumber; (void) remoteSystemAddress; (void) time;}
 
-	/// System called RakPeerInterface::PushBackPacket
-	/// \param[in] data The data being sent
-	/// \param[in] bitsUsed How many bits long \a data is
-	/// \param[in] remoteSystemAddress The player we sent or got this packet from
+	/*
+	 * 系统调用了 RakPeerInterface::PushBackPacket
+	 * 参数[输入] data 正在发送的数据
+	 * 参数[输入] bitsUsed 数据的位长度
+	 * 参数[输入] remoteSystemAddress 我们向其发送或从其接收此数据包的玩家
+	 */
 	virtual void OnPushBackPacket(const char *data, const BitSize_t bitsUsed, SystemAddress remoteSystemAddress) {(void) data; (void) bitsUsed; (void) remoteSystemAddress;}
 
 	RakPeerInterface *GetRakPeerInterface(void) const {return rakPeerInterface;}
 
 	RakNetGUID GetMyGUIDUnified(void) const;
 
-	/// \internal
+	/* 内部使用 */
 	void SetRakPeerInterface( RakPeerInterface *ptr );
 
 #if _RAKNET_SUPPORT_TCPInterface==1
-	/// \internal
+	/* 内部使用 */
 	void SetTCPInterface( TCPInterface *ptr );
 #endif
 
 protected:
-	// Send through either rakPeerInterface or tcpInterface, whichever is available
+	/* 通过 rakPeerInterface 或 tcpInterface 发送，使用可用的那个 */
 	void SendUnified( const RakNet::BitStream * bitStream, PacketPriority priority, PacketReliability reliability, char orderingChannel, const AddressOrGUID systemIdentifier, bool broadcast );
 	void SendUnified( const char * data, const int length, PacketPriority priority, PacketReliability reliability, char orderingChannel, const AddressOrGUID systemIdentifier, bool broadcast );
 	bool SendListUnified( const char **data, const int *lengths, const int numParameters, PacketPriority priority, PacketReliability reliability, char orderingChannel, const AddressOrGUID systemIdentifier, bool broadcast );
@@ -196,11 +230,11 @@ protected:
 	void PushBackPacketUnified(Packet *packet, bool pushAtHead);
 	void DeallocPacketUnified(Packet *packet);
 
-	// Filled automatically in when attached
+	/* 附加时自动填充 */
 	RakPeerInterface *rakPeerInterface;
 #if _RAKNET_SUPPORT_TCPInterface==1
 	TCPInterface *tcpInterface;
 #endif
 };
 
-} // namespace RakNet
+} /* RakNet 命名空间 */

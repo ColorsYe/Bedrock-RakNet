@@ -8,9 +8,11 @@
  *
  */
 
-/// \file
-/// \brief Contains the class RelayPlugin
-///
+/*
+ * 
+ * 包含 RelayPlugin 类
+ *
+ */
 
 
 #include "NativeFeatureIncludes.h"
@@ -25,19 +27,21 @@
 #pragma warning( push )
 #endif
 
-/// \defgroup RELAY_PLUGIN_GROUP RelayPlugin
-/// \brief A simple class to relay messages from one system to another through an intermediary
-/// \ingroup PLUGINS_GROUP
+/*
+ * \defgroup RELAY_PLUGIN_GROUP RelayPlugin
+ * A simple class to relay messages from one system to another through an intermediary
+ * \ingroup PLUGINS_GROUP
+ */
 
 namespace RakNet
 {
 
-/// Forward declarations
+/* 前向声明 */
 class RakPeerInterface;
 
 enum RelayPluginEnums
 {
-	// Server handled messages
+	/* Server handled messages */
 	RPE_MESSAGE_TO_SERVER_FROM_CLIENT,
 	RPE_ADD_CLIENT_REQUEST_FROM_CLIENT,
 	RPE_REMOVE_CLIENT_REQUEST_FROM_CLIENT,
@@ -45,7 +49,7 @@ enum RelayPluginEnums
 	RPE_JOIN_GROUP_REQUEST_FROM_CLIENT,
 	RPE_LEAVE_GROUP_REQUEST_FROM_CLIENT,
 	RPE_GET_GROUP_LIST_REQUEST_FROM_CLIENT,
-	// Client handled messages
+	/* Client handled messages */
 	RPE_MESSAGE_TO_CLIENT_FROM_SERVER,
 	RPE_ADD_CLIENT_NOT_ALLOWED,
 	RPE_ADD_CLIENT_TARGET_NOT_CONNECTED,
@@ -59,50 +63,60 @@ enum RelayPluginEnums
 	RPE_JOIN_GROUP_FAILURE,
 };
 
-/// \brief A simple class to relay messages from one system to another, identifying remote systems by a string.
-/// \ingroup RELAY_PLUGIN_GROUP
+/*
+ * A simple class to relay messages from one system to another, identifying remote systems by a string.
+ * \ingroup RELAY_PLUGIN_GROUP
+ */
 class RAK_DLL_EXPORT RelayPlugin : public PluginInterface2
 {
 public:
-	// GetInstance() and DestroyInstance(instance*)
+	/* 获取单例 GetInstance() 和销毁单例 DestroyInstance(instance*) */
 	STATIC_FACTORY_DECLARATIONS(RelayPlugin)
 
-	/// Constructor
+	/* 构造函数 */
 	RelayPlugin();
 
-	/// Destructor
+	/* 析构函数 */
 	virtual ~RelayPlugin();
 
-	/// \brief Forward messages from any system, to the system specified by the combination of key and guid. The sending system only needs to know the key.
-	/// \param[in] key A string to identify the target's RakNetGUID. This is so the sending system does not need to know the RakNetGUID of the target system. The key should be unique among all guids added. If the key is not unique, only one system will be sent to (at random).
-	/// \param[in] guid The RakNetGuid of the system to send to. If this system disconnects, it is removed from the internal hash 
-	/// \return RPE_ADD_CLIENT_TARGET_NOT_CONNECTED, RPE_ADD_CLIENT_NAME_ALREADY_IN_USE, or RPE_ADD_CLIENT_OK
+	/*
+	 * Forward messages from any system, to the system specified by the combination of key and guid. The sending system only needs to know the key.
+	 * 参数[输入] key A string to identify the target's RakNetGUID. This is so the sending system does not need to know the RakNetGUID of the target system. The key should be unique among all guids added. If the key is not unique, only one system will be sent to (at random).
+	 * 参数[输入] guid The RakNetGuid of the system to send to. If this system disconnects, it is removed from the 内部使用 hash
+	 * 返回值: RPE_ADD_CLIENT_TARGET_NOT_CONNECTED, RPE_ADD_CLIENT_NAME_ALREADY_IN_USE, or RPE_ADD_CLIENT_OK
+	 */
 	RelayPluginEnums AddParticipantOnServer(const RakString &key, const RakNetGUID &guid);
 
-	/// \brief Remove a chat participant
+	/* 移除 chat participant */
 	void RemoveParticipantOnServer(const RakNetGUID &guid);
 
-	/// \brief If true, then if the client calls AddParticipantRequestFromClient(), the server will call AddParticipantOnServer() automatically
-	/// Defaults to false
-	/// \param[in] accept true to accept, false to not.
+	/*
+	 * If true, then if the client calls AddParticipantRequestFromClient(), the server will call AddParticipantOnServer() automatically
+	 * 默认为 false
+	 * 参数[输入] accept true to accept, false to not.
+	 */
 	void SetAcceptAddParticipantRequests(bool accept);
 
-	/// \brief Request from the client for the server to call AddParticipantOnServer()
-	/// \pre The server must have called SetAcceptAddParticipantRequests(true) or the request will be ignored
-	/// \param[in] key A string to identify out system. Passed to \a key on AddParticipantOnServer()
-	/// \param[in] relayPluginServerGuid the RakNetGUID of the system running RelayPlugin
+	/*
+	 * Request from the client for the server to call AddParticipantOnServer()
+	 * 前提条件: The server must have called SetAcceptAddParticipantRequests(true) or the request will be ignored
+	 * 参数[输入] key A string to identify out system. Passed to key on AddParticipantOnServer()
+	 * 参数[输入] relayPluginServerGuid the RakNetGUID of the system running RelayPlugin
+	 */
 	void AddParticipantRequestFromClient(const RakString &key, const RakNetGUID &relayPluginServerGuid);
 
-	/// \brief Remove yourself as a participant
+	/* Remove yourself as a participant */
 	void RemoveParticipantRequestFromClient(const RakNetGUID &relayPluginServerGuid);
 
-	/// \brief Request that the server relay \a bitStream to the system designated by \a key
-	/// \param[in] relayPluginServerGuid the RakNetGUID of the system running RelayPlugin
-	/// \param[in] destinationGuid The key value passed to AddParticipant() earlier on the server. If this was not done, the server will not relay the message (it will be silently discarded).
-	/// \param[in] bitStream The data to relay
-	/// \param[in] priority See the parameter of the same name in RakPeerInterface::Send()
-	/// \param[in] reliability See the parameter of the same name in RakPeerInterface::Send()
-	/// \param[in] orderingChannel See the parameter of the same name in RakPeerInterface::Send()
+	/*
+	 * Request that the server relay bitStream to the system designated by key
+	 * 参数[输入] relayPluginServerGuid the RakNetGUID of the system running RelayPlugin
+	 * 参数[输入] destinationGuid The key value passed to AddParticipant() earlier on the server. If this was not done, the server will not relay the message (it will be silently discarded).
+	 * 参数[输入] bitStream The data to relay
+	 * 参数[输入] priority See the parameter of the same name in RakPeerInterface::Send()
+	 * 参数[输入] reliability See the parameter of the same name in RakPeerInterface::Send()
+	 * 参数[输入] orderingChannel See the parameter of the same name in RakPeerInterface::Send()
+	 */
 	void SendToParticipant(const RakNetGUID &relayPluginServerGuid, const RakString &destinationGuid, BitStream *bitStream, PacketPriority priority, PacketReliability reliability, char orderingChannel);
 
 	void SendGroupMessage(const RakNetGUID &relayPluginServerGuid, BitStream *bitStream, PacketPriority priority, PacketReliability reliability, char orderingChannel);
@@ -110,9 +124,9 @@ public:
 	void LeaveGroup(const RakNetGUID &relayPluginServerGuid);
 	void GetGroupList(const RakNetGUID &relayPluginServerGuid);
 
-	/// \internal
+	/* 内部使用 */
 	PluginReceiveResult OnReceive(Packet *packet) override;
-	/// \internal
+	/* 内部使用 */
 	void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason ) override;
 
 	struct StrAndGuidAndRoom
@@ -153,7 +167,7 @@ protected:
 
 };
 
-} // End namespace
+} /* 命名空间结束 */
 
 #endif
 

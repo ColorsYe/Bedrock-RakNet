@@ -8,9 +8,11 @@
  *
  */
 
-/// \file
-/// \brief Essentially maintains a list of servers running UDPProxyServer, and some state management for UDPProxyClient to find a free server to forward datagrams
-///
+/*
+ * 
+ * Essentially maintains a list of servers running UDPProxyServer, and some state management for UDPProxyClient to find a free server to forward datagrams
+ *
+ */
 
 
 #include "NativeFeatureIncludes.h"
@@ -27,26 +29,30 @@
 
 namespace RakNet
 {
-	/// When NAT Punchthrough fails, it is possible to use a non-NAT system to forward messages from us to the recipient, and vice-versa
-	/// The class to forward messages is UDPForwarder, and it is triggered over the network via the UDPProxyServer plugin.
-	/// The UDPProxyClient connects to UDPProxyCoordinator to get a list of servers running UDPProxyServer, and the coordinator will relay our forwarding request
-	/// \brief Middleman between UDPProxyServer and UDPProxyClient, maintaining a list of UDPProxyServer, and managing state for clients to find an available forwarding server.
-	/// \ingroup NAT_PUNCHTHROUGH_GROUP
+	/*
+	 * When NAT Punchthrough fails, it is possible to use a non-NAT system to forward messages from us to the recipient, and vice-versa
+	 * The class to forward messages is UDPForwarder, and it is triggered over the network via the UDPProxyServer plugin.
+	 * The UDPProxyClient connects to UDPProxyCoordinator to get a list of servers running UDPProxyServer, and the coordinator will relay our forwarding request
+	 * Middleman between UDPProxyServer and UDPProxyClient, maintaining a list of UDPProxyServer, and managing state for clients to find an available forwarding server.
+	 * \ingroup NAT_PUNCHTHROUGH_GROUP
+	 */
 	class RAK_DLL_EXPORT UDPProxyCoordinator : public PluginInterface2
 	{
 	public:
-		// GetInstance() and DestroyInstance(instance*)
+		/* 获取单例 GetInstance() 和销毁单例 DestroyInstance(instance*) */
 		STATIC_FACTORY_DECLARATIONS(UDPProxyCoordinator)
 
 		UDPProxyCoordinator();
 		virtual ~UDPProxyCoordinator();
 
-		/// For UDPProxyServers logging in remotely, they must pass a password to UDPProxyServer::LoginToCoordinator(). It must match the password set here.
-		/// If no password is set, they cannot login remotely.
-		/// By default, no password is set
+		/*
+		 * For UDPProxyServers logging in remotely, they must pass a password to UDPProxyServer::LoginToCoordinator(). It must match the password set here.
+		 * If no password is set, they cannot login remotely.
+		 * By default, no password is set
+		 */
 		void SetRemoteLoginPassword(RakNet::RakString password);
 
-		/// \internal
+		/* 内部使用 */
 		void Update() override;
 		PluginReceiveResult OnReceive(Packet *packet) override;
 		void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason ) override;
@@ -70,14 +76,14 @@ namespace RakNet
 			RakNet::TimeMS timeoutOnNoDataMS;
 			RakNet::TimeMS timeoutAfterSuccess;
 			SenderAndTargetAddress sata;
-			SystemAddress requestingAddress; // Which system originally sent the network message to start forwarding
+			SystemAddress requestingAddress; /* Which system originally sent the network message to start forwarding */
 			SystemAddress currentlyAttemptedServerAddress;
 			DataStructures::Queue<SystemAddress> remainingServersToTry;
 			RakNet::BitStream serverSelectionBitstream;
 
 			DataStructures::List<ServerWithPing> sourceServerPings, targetServerPings;
 			RakNet::TimeMS timeRequestedPings;
-			// Order based on sourceServerPings and targetServerPings
+			/* Order based on sourceServerPings and targetServerPings */
 			void OrderRemainingServersToTry();
 		
 		};
@@ -96,18 +102,18 @@ namespace RakNet
 
 		void SendForwardingRequest(SystemAddress sourceAddress, SystemAddress targetAddress, SystemAddress serverAddress, RakNet::TimeMS timeoutOnNoDataMS);
 
-		// Logged in servers
-		//DataStructures::Multilist<ML_UNORDERED_LIST, SystemAddress> serverList;
+		/* Logged in servers */
+		/* DataStructures::Multilist<ML_UNORDERED_LIST, SystemAddress> serverList; */
 		DataStructures::List<SystemAddress> serverList;
 
-		// Forwarding requests in progress
-		//DataStructures::Multilist<ML_ORDERED_LIST, ForwardingRequest*, SenderAndTargetAddress> forwardingRequestList;
+		/* Forwarding requests in progress */
+		/* DataStructures::Multilist<ML_ORDERED_LIST, ForwardingRequest*, SenderAndTargetAddress> forwardingRequestList; */
 		DataStructures::OrderedList<SenderAndTargetAddress, ForwardingRequest*, ForwardingRequestComp> forwardingRequestList;
 
 		RakNet::RakString remoteLoginPassword;
 
 	};
 
-} // End namespace
+} /* 命名空间结束 */
 
 #endif

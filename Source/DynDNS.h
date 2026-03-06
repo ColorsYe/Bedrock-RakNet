@@ -8,10 +8,12 @@
  *
  */
 
-/// \file DynDNS.h
-/// \brief Helper to class to update DynDNS
-/// This can be used to determine what permissions are should be allowed to the other system
-///
+/*
+ *  DynDNS.h
+ * Helper to class to update DynDNS
+ * 可用于确定应对另一个系统授予哪些权限
+ *
+ */
 
 
 #include "NativeFeatureIncludes.h"
@@ -27,54 +29,54 @@ class TCPInterface;
 
 enum DynDnsResultCode
 {
-	// ----- Success -----
+	/* ----- Success ----- */
 	RC_SUCCESS,
-	RC_DNS_ALREADY_SET, // RakNet detects no action is needed
+	RC_DNS_ALREADY_SET, /* RakNet detects no action is needed */
 
-	// ----- Ignorable failure (treat same as success) -----
-	RC_NO_CHANGE, // DynDNS detects no action is needed (treated as abuse though)
+	/* ----- Ignorable failure (treat same as success) ----- */
+	RC_NO_CHANGE, /* DynDNS detects no action is needed (treated as abuse though) */
 
-	// ----- User error -----
-	RC_NOT_DONATOR, // You have to pay to do this
-	RC_NO_HOST, // This host does not exist at all
-	RC_BAD_AUTH, // You set the wrong password
-	RC_NOT_YOURS, // This is not your host
+	/* ----- User error ----- */
+	RC_NOT_DONATOR, /* You have to pay to do this */
+	RC_NO_HOST, /* This host does not exist at all */
+	RC_BAD_AUTH, /* You set the wrong password */
+	RC_NOT_YOURS, /* 这是not your host */
 
-	// ----- Permanent failure -----
-	RC_ABUSE, // Your host has been blocked, too many failures disable your account
-	RC_TCP_FAILED_TO_START, // TCP port already in use
-	RC_TCP_DID_NOT_CONNECT, // DynDNS down?
-	RC_UNKNOWN_RESULT, // DynDNS returned a result code that was not documented as of 12/4/2010 on http://www.dyndns.com/developers/specs/flow.pdf
-	RC_PARSING_FAILURE, // Can't read the result returned, format change?
-	RC_CONNECTION_LOST_WITHOUT_RESPONSE, // Lost the connection to DynDNS while communicating
-	RC_BAD_AGENT, // ???
-	RC_BAD_SYS, // ???
-	RC_DNS_ERROR, // ???
-	RC_NOT_FQDN, // ???
-	RC_NUM_HOST, // ???
-	RC_911, // ???
-	RC_DYNDNS_TIMEOUT // DynDNS did not respond
+	/* ----- Permanent failure ----- */
+	RC_ABUSE, /* Your host has been blocked, too many failures disable your account */
+	RC_TCP_FAILED_TO_START, /* TCP port already in use */
+	RC_TCP_DID_NOT_CONNECT, /* DynDNS down? */
+	RC_UNKNOWN_RESULT, /* DynDNS returned a result code that was not documented as of 12/4/2010 on http://www.dyndns.com/developers/specs/flow.pdf */
+	RC_PARSING_FAILURE, /* Can't read the result returned, format change? */
+	RC_CONNECTION_LOST_WITHOUT_RESPONSE, /* Lost the connection to DynDNS while communicating */
+	RC_BAD_AGENT, /* ??? */
+	RC_BAD_SYS, /* ??? */
+	RC_DNS_ERROR, /* ??? */
+	RC_NOT_FQDN, /* ??? */
+	RC_NUM_HOST, /* ??? */
+	RC_911, /* ??? */
+	RC_DYNDNS_TIMEOUT /* DynDNS did not respond */
 };
 
-// Can only process one at a time with the current implementation
+/* Can only process one at a time with the current implementation */
 class RAK_DLL_EXPORT DynDNS
 {
 public:
 	DynDNS();
 	~DynDNS() noexcept;
 
-	// Pass 0 for newIPAddress to autodetect whatever you are uploading from
-	// usernameAndPassword should be in the format username:password
+	/* Pass 0 for newIPAddress to autodetect whatever you are uploading from */
+	/* usernameAndPassword should be in the format username:password */
 	void UpdateHostIPAsynch(const char *dnsHost, const char *newIPAddress, const char *usernameAndPassword );
 	void Update();
 
-	// Output
+	/* Output */
 	bool IsRunning(void) const {return connectPhase!=CP_IDLE;}
 	bool IsCompleted(void) const {return connectPhase==CP_IDLE;}
 	RakNet::DynDnsResultCode GetCompletedResultCode() {return result;}
 	const char *GetCompletedDescription(void) const {return resultDescription;}
 	bool WasResultSuccessful(void) const {return result==RC_SUCCESS || result==RC_DNS_ALREADY_SET || result==RC_NO_CHANGE;}
-	char *GetMyPublicIP(void) const {return (char*) myIPStr;} // We get our public IP as part of the process. This is valid once completed
+	char *GetMyPublicIP(void) const {return (char*) myIPStr;} /* We get our public IP as part of the process. This is valid once completed */
 
 protected:
 	void Stop();
@@ -101,6 +103,6 @@ protected:
 	char myIPStr[32];
 };
 
-} // namespace RakNet
+} /* RakNet 命名空间 */
 
-#endif // __DYN_DNS_H
+#endif /* __DYN_DNS_H */

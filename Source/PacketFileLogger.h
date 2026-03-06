@@ -8,9 +8,11 @@
  *
  */
 
-/// \file
-/// \brief This will write all incoming and outgoing network messages to a file
-///
+/*
+ * 
+ * 将所有传入和传出的网络消息写入文件
+ *
+ */
 
 
 #include "NativeFeatureIncludes.h"
@@ -23,8 +25,10 @@
 namespace RakNet
 {
 
-/// \ingroup PACKETLOGGER_GROUP
-/// \brief Packetlogger that outputs to a file
+/*
+ * \ingroup PACKETLOGGER_GROUP
+ * Packetlogger that outputs to a file
+ */
 class RAK_DLL_EXPORT  PacketFileLogger : public PacketLogger
 {
 public:
@@ -36,6 +40,6 @@ protected:
 	FILE *packetLogFile;
 };
 
-} // namespace RakNet
+} /* RakNet 命名空间 */
 
 #endif

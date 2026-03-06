@@ -8,21 +8,23 @@
  *
  */
 
-///
-/// \file CheckSum.cpp
-/// \brief [Internal] CheckSum implementation from http://www.flounder.com/checksum.htm
-///
+/*
+ *
+ *  CheckSum.cpp
+ * [内部使用] CheckSum implementation from http://www.flounder.com/checksum.htm
+ *
+ */
 
 #pragma once
 #include "RakMemoryOverride.h"
 
-/// Generates and validates checksums
+/* 生成和验证校验和 */
 class CheckSum
 {
 
 public:
 	
- /// Default constructor
+ /* 默认构造函数 */
 	
 	CheckSum()
 	{

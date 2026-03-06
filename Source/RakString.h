@@ -11,7 +11,7 @@
 #pragma once
 #include "Export.h"
 #include "DS_List.h"
-#include "RakNetTypes.h" // int64_t
+#include "RakNetTypes.h" /* int64_t */
 #include <cstdio>
 #include "stdarg.h"
 
@@ -25,19 +25,21 @@
 
 namespace RakNet
 {
-/// Forward declarations
+/* 前向声明 */
 class SimpleMutex;
 class BitStream;
 
-/// \brief String class
-/// \details Has the following improvements over std::string
-/// -Reference counting: Suitable to store in lists
-/// -Variadic assignment operator
-/// -Doesn't cause linker errors
+/*
+ * String class
+ * Has the following improvements over std::string
+ * -Reference counting: Suitable to store in lists
+ * -Variadic 赋值运算符
+ * -Doesn't cause linker errors
+ */
 class RAK_DLL_EXPORT RakString
 {
 public:
-	// Constructors
+	/* 构造函数 */
 	RakString();
 	RakString(char input);
 	RakString(unsigned char input);
@@ -46,17 +48,17 @@ public:
 	~RakString() noexcept;
 	RakString( const RakString & rhs);
 
-	/// Implicit return of const char*
+	/* Implicit return of const char* */
 	operator const char* () const {return sharedString->c_str;}
 
-	/// Same as std::string::c_str
+	/* 与 std::string::c_str 相同 */
 	const char *C_String(void) const {return sharedString->c_str;}
 
-	// Lets you modify the string. Do not make the string longer - however, you can make it shorter, or change the contents.
-	// Pointer is only valid in the scope of RakString itself
+	/* Lets you modify the string. Do not make the string longer - however, you can make it shorter, or change the contents. */
+	/* Pointer is only valid in the scope of RakString itself */
 	char *C_StringUnsafe() {Clone(); return sharedString->c_str;}
 
-	/// Assigment operators
+	/* Assigment operators */
 	RakString& operator = ( const RakString& rhs );
 	RakString& operator = ( const char *str );
 	RakString& operator = ( char *str );
@@ -64,7 +66,7 @@ public:
 	RakString& operator = ( char unsigned *str );
 	RakString& operator = ( const char c );
 
-	/// Concatenation
+	/* Concatenation */
 	RakString& operator +=( const RakString& rhs);
 	RakString& operator += ( const char *str );
 	RakString& operator += ( char *str );
@@ -72,12 +74,12 @@ public:
 	RakString& operator += ( char unsigned *str );
 	RakString& operator += ( const char c );
 
-	/// Character index. Do not use to change the string however.
+	/* Character index. Do not use to change the string however. */
 	unsigned char operator[] ( const unsigned int position ) const;
 
 #ifdef _WIN32
-	// Return as Wide char
-	// Deallocate with DeallocWideChar
+	/* 返回 as Wide char */
+	/* 释放 with DeallocWideChar */
 	WCHAR * ToWideChar();
 	void DeallocWideChar(WCHAR * w);
 
@@ -85,210 +87,234 @@ public:
 	static RakNet::RakString FromWideChar_S(const wchar_t *source);
 #endif
 	
-	/// String class find replacement
-	/// Searches the string for the content specified in stringToFind and returns the position of the first occurrence in the string.
-	/// Search only includes characters on or after position pos, ignoring any possible occurrences in previous locations.
-	/// \param[in] stringToFind The string to find inside of this object's string
-	/// \param[in] pos The position in the string to start the search
-	/// \return Returns the position of the first occurrence in the string.
+	/*
+	 * String class find replacement
+	 * Searches the string for the content specified in stringToFind and returns the position of the first occurrence in the string.
+	 * Search only includes characters on or after position pos, ignoring any possible occurrences in previous locations.
+	 * 参数[输入] stringToFind The string to find inside of this object's string
+	 * 参数[输入] pos The position in the string to start the search
+	 * 返回值: Returns the position of the first occurrence in the string.
+	 */
 	size_t Find(const char *stringToFind,size_t pos = 0 );
 
-	/// Equality
+	/* Equality */
 	bool operator==(const RakString &rhs) const;
 	bool operator==(const char *str) const;
 	bool operator==(char *str) const;
 
-	// Comparison
+	/* Comparison */
 	bool operator < ( const RakString& right ) const;
 	bool operator <= ( const RakString& right ) const;
 	bool operator > ( const RakString& right ) const;
 	bool operator >= ( const RakString& right ) const;
 
-	/// Inequality
+	/* Inequality */
 	bool operator!=(const RakString &rhs) const;
 	bool operator!=(const char *str) const;
 	bool operator!=(char *str) const;
 
-	/// Change all characters to lowercase
+	/* Change all characters to lowercase */
 	const char * ToLower();
 
-	/// Change all characters to uppercase
+	/* Change all characters to uppercase */
 	const char * ToUpper();
 
-	/// Set the value of the string
+	/* 设置 value of the string */
 	void Set(const char *format, ...);
 
-	/// Sets a copy of a substring of str as the new content. The substring is the portion of str 
-	/// that begins at the character position pos and takes up to n characters 
-	/// (it takes less than n if the end of str is reached before).
-	/// \param[in] str The string to copy in
-	/// \param[in] pos The position on str to start the copy
-	/// \param[in] n How many chars to copy
-	/// \return Returns the string, note that the current string is set to that value as well
+	/*
+	 * 设置 a copy of a substring of str as the new content. The substring is the portion of str
+	 * that begins at the character position pos and takes up to n characters
+	 * (it takes less than n if the end of str is reached before).
+	 * 参数[输入] str The string to copy in
+	 * 参数[输入] pos The position on str to start the copy
+	 * 参数[输入] n How many chars to copy
+	 * 返回值: Returns the string, note that the current string is set to that value as well
+	 */
 	RakString Assign(const char *str,size_t pos, size_t n );
 
-	/// Returns if the string is empty. Also, C_String() would return ""
+	/* Returns if the string is empty. Also, C_String() would return "" */
 	bool IsEmpty(void) const;
 
-	/// Returns the length of the string
+	/* 返回 length of the string */
 	[[nodiscard]] size_t GetLength(void) const;
 	size_t GetLengthUTF8(void) const;
 
-	/// Replace character(s) in starting at index, for count, with c
+	/* Replace character(s) in starting at index, for count, with c */
 	void Replace(unsigned index, unsigned count, unsigned char c);
 
-	/// Replace character at index with c
+	/* Replace character at index with c */
 	void SetChar( unsigned index, unsigned char c );
 
-	/// Replace character at index with string s
+	/* Replace character at index with string s */
 	void SetChar( unsigned index, RakNet::RakString s );
 
-	/// Make sure string is no longer than \a length
+	/* Make sure string is no longer than length */
 	void Truncate(unsigned int length);
 	void TruncateUTF8(unsigned int length);
 
-	// Gets the substring starting at index for count characters
+	/* 获取 substring starting at index for count characters */
 	RakString SubStr(unsigned int index, unsigned int count) const;
 
-	/// Erase characters out of the string at index for count
+	/* Erase characters out of the string at index for count */
 	void Erase(unsigned int index, unsigned int count);
 
-	/// Set the first instance of c with a nullptr terminator
+	/* 设置 first instance of c with a nullptr terminator */
 	void TerminateAtFirstCharacter(char c);
-	/// Set the last instance of c with a nullptr terminator
+	/* 设置 last instance of c with a nullptr terminator */
 	void TerminateAtLastCharacter(char c);
 
 	void StartAfterFirstCharacter(char c);
 	void StartAfterLastCharacter(char c);
 
-	/// Returns how many occurances there are of \a c in the string
+	/* Returns how many occurances there are of c in the string */
 	int GetCharacterCount(char c);
 	
-	/// Remove all instances of c
+	/* Remove all instances of c */
 	void RemoveCharacter(char c);
 
-	/// Create a RakString with a value, without doing printf style parsing
-	/// Equivalent to assignment operator
+	/*
+	 * Create a RakString with a value, without doing printf style parsing
+	 * Equivalent to 赋值运算符
+	 */
 	static RakNet::RakString NonVariadic(const char *str);
 
-	/// Hash the string into an unsigned int
+	/* Hash the string into an unsigned int */
 	static unsigned long ToInteger(const char *str);
 	static unsigned long ToInteger(const RakString &rs);
 
-	/// \brief Read an integer out of a substring
-	/// \param[in] str The string
-	/// \param[in] pos The position on str where the integer starts
-	/// \param[in] n How many chars to copy
+	/*
+	 * Read an integer out of a substring
+	 * 参数[输入] str The string
+	 * 参数[输入] pos The position on str where the integer starts
+	 * 参数[输入] n How many chars to copy
+	 */
 	static int ReadIntFromSubstring(const char *str, size_t pos, size_t n);
 
-	// Like strncat, but for a fixed length
+	/* Like strncat, but for a fixed length */
 	void AppendBytes(const char *bytes, unsigned int count);
 
-	/// Compare strings (case sensitive)
+	/* Compare strings (case sensitive) */
 	int StrCmp(const RakString &rhs) const;
 
-	/// Compare strings (case sensitive), up to num characters
+	/* Compare strings (case sensitive), up to num characters */
 	int StrNCmp(const RakString &rhs, size_t num) const;
 
-	/// Compare strings (not case sensitive)
+	/* Compare strings (not case sensitive) */
 	int StrICmp(const RakString &rhs) const;
 
-	/// Clear the string
+	/* 清空 string */
 	void Clear();
 
-	/// Print the string to the screen
+	/* Print the string to the screen */
 	void Printf();
 
-	/// Print the string to a file
+	/* Print the string to a file */
 	void FPrintf(FILE *fp);
 
-	/// Does the given IP address match the IP address encoded into this string, accounting for wildcards?
+	/* Does the given IP address match the IP address encoded into this string, accounting for wildcards? */
 	bool IPAddressMatch(const char *IP);
 
-	/// Does the string contain non-printable characters other than spaces?
+	/* Does the string contain non-printable characters other than spaces? */
 	bool ContainsNonprintableExceptSpaces(void) const;
 
-	/// Is this a valid email address?
+	/* Is this a valid email address? */
 	bool IsEmailAddress(void) const;
 
-	/// URL Encode the string. See http://www.codeguru.com/cpp/cpp/cpp_mfc/article.php/c4029/
+	/* URL Encode the string. See http://www.codeguru.com/cpp/cpp/cpp_mfc/article.php/c4029/ */
 	RakNet::RakString& URLEncode();
 
-	/// URL decode the string
+	/* URL decode the string */
 	RakNet::RakString& URLDecode();
 
-	/// https://servers.api.rackspacecloud.com/v1.0 to https://,  servers.api.rackspacecloud.com, /v1.0
+	/* https://servers.api.rackspacecloud.com/v1.0 to https://,  servers.api.rackspacecloud.com, /v1.0 */
 	void SplitURI(RakNet::RakString &header, RakNet::RakString &domain, RakNet::RakString &path);
 
-	/// Scan for quote, double quote, and backslash and prepend with backslash
+	/* Scan for quote, double quote, and backslash and prepend with backslash */
 	RakNet::RakString& SQLEscape();
 
-	/// Format as a POST command that can be sent to a webserver
-	/// \param[in] uri For example, masterserver2.raknet.com/testServer
-	/// \param[in] contentType For example, text/plain; charset=UTF-8
-	/// \param[in] body Body of the post
-	/// \return Formatted string
+	/*
+	 * Format as a POST command that can be sent to a webserver
+	 * 参数[输入] uri For example, masterserver2.raknet.com/testServer
+	 * 参数[输入] contentType For example, text/plain; charset=UTF-8
+	 * 参数[输入] body Body of the post
+	 * 返回值: Formatted string
+	 */
 	static RakNet::RakString FormatForPOST(const char* uri, const char* contentType, const char* body, const char* extraHeaders="");
 	static RakNet::RakString FormatForPUT(const char* uri, const char* contentType, const char* body, const char* extraHeaders="");
 
-	/// Format as a GET command that can be sent to a webserver
-	/// \param[in] uri For example, masterserver2.raknet.com/testServer?__gameId=comprehensivePCGame
-	/// \return Formatted string
+	/*
+	 * Format as a GET command that can be sent to a webserver
+	 * 参数[输入] uri For example, masterserver2.raknet.com/testServer?__gameId=comprehensivePCGame
+	 * 返回值: Formatted string
+	 */
 	static RakNet::RakString FormatForGET(const char* uri, const char* extraHeaders="");
 
-	/// Format as a DELETE command that can be sent to a webserver
-	/// \param[in] uri For example, masterserver2.raknet.com/testServer?__gameId=comprehensivePCGame&__rowId=1
-	/// \return Formatted string
+	/*
+	 * Format as a DELETE command that can be sent to a webserver
+	 * 参数[输入] uri For example, masterserver2.raknet.com/testServer?__gameId=comprehensivePCGame&__rowId=1
+	 * 返回值: Formatted string
+	 */
 	static RakNet::RakString FormatForDELETE(const char* uri, const char* extraHeaders="");
 
-	/// Fix to be a file path, ending with /
+	/* Fix to be a file path, ending with / */
 	RakNet::RakString& MakeFilePath();
 
-	/// RakString uses a freeList of old no-longer used strings
-	/// Call this function to clear this memory on shutdown
+	/*
+	 * RakString uses a freeList of old no-longer used strings
+	 * Call this function to clear this memory on shutdown
+	 */
 	static void FreeMemory();
-	/// \internal
+	/* 内部使用 */
 	static void FreeMemoryNoMutex();
 
-	/// Serialize to a bitstream, uncompressed (slightly faster)
-	/// \param[out] bs Bitstream to serialize to
+	/*
+	 * Serialize to a bitstream, uncompressed (slightly faster)
+	 * 参数[输出] bs Bitstream to serialize to
+	 */
 	void Serialize(BitStream *bs) const;
 
-	/// Static version of the Serialize function
+	/* Static version of the Serialize function */
 	static void Serialize(const char *str, BitStream *bs);
 
-	/// Serialize to a bitstream, compressed (better bandwidth usage)
-	/// \param[out]  bs Bitstream to serialize to
-	/// \param[in] languageId languageId to pass to the StringCompressor class
-	/// \param[in] writeLanguageId encode the languageId variable in the stream. If false, 0 is assumed, and DeserializeCompressed will not look for this variable in the stream (saves bandwidth)
-	/// \pre StringCompressor::AddReference must have been called to instantiate the class (Happens automatically from RakPeer::Startup())
+	/*
+	 * Serialize to a bitstream, compressed (better bandwidth usage)
+	 * 参数[输出] bs Bitstream to serialize to
+	 * 参数[输入] languageId languageId to pass to the StringCompressor class
+	 * 参数[输入] writeLanguageId encode the languageId variable in the stream. If false, 0 is assumed, and DeserializeCompressed will not look for this variable in the stream (saves bandwidth)
+	 * 前提条件: StringCompressor::AddReference must have been called to instantiate the class (Happens automatically from RakPeer::Startup())
+	 */
 	void SerializeCompressed(BitStream *bs, uint8_t languageId=0, bool writeLanguageId=false) const;
 
-	/// Static version of the SerializeCompressed function
+	/* Static version of the SerializeCompressed function */
 	static void SerializeCompressed(const char *str, BitStream *bs, uint8_t languageId=0, bool writeLanguageId=false);
 
-	/// Deserialize what was written by Serialize
-	/// \param[in] bs Bitstream to serialize from
-	/// \return true if the deserialization was successful
+	/*
+	 * Deserialize what was written by Serialize
+	 * 参数[输入] bs Bitstream to serialize from
+	 * 返回值: true if the deserialization was successful
+	 */
 	bool Deserialize(BitStream *bs);
 
-	/// Static version of the Deserialize() function
+	/* Static version of the Deserialize() function */
 	static bool Deserialize(char *str, BitStream *bs);
 
-	/// Deserialize compressed string, written by SerializeCompressed
-	/// \param[in] bs Bitstream to serialize from
-	/// \param[in] readLanguageId If true, looks for the variable langaugeId in the data stream. Must match what was passed to SerializeCompressed
-	/// \return true if the deserialization was successful
-	/// \pre StringCompressor::AddReference must have been called to instantiate the class (Happens automatically from RakPeer::Startup())
+	/*
+	 * Deserialize compressed string, written by SerializeCompressed
+	 * 参数[输入] bs Bitstream to serialize from
+	 * 参数[输入] readLanguageId If true, looks for the variable langaugeId in the data stream. Must match what was passed to SerializeCompressed
+	 * 返回值: true if the deserialization was successful
+	 * 前提条件: StringCompressor::AddReference must have been called to instantiate the class (Happens automatically from RakPeer::Startup())
+	 */
 	bool DeserializeCompressed(BitStream *bs, bool readLanguageId=false);
 
-	/// Static version of the DeserializeCompressed() function
+	/* Static version of the DeserializeCompressed() function */
 	static bool DeserializeCompressed(char *str, BitStream *bs, bool readLanguageId=false);
 
 	static const char *ToString(int64_t i);
 	static const char *ToString(uint64_t i);
 
-	/// \internal
+	/* 内部使用 */
 	static size_t GetSizeToAllocate(size_t bytes)
 	{
 		const size_t smallStringSize = 128-sizeof(unsigned int)-sizeof(size_t)-sizeof(char*)*2;
@@ -298,7 +324,7 @@ public:
 			return bytes*2;
 	}
 
-	/// \internal
+	/* 内部使用 */
 	struct SharedString
 	{
 		SimpleMutex *refCountMutex;
@@ -309,21 +335,23 @@ public:
 		char smallString[128-sizeof(unsigned int)-sizeof(size_t)-sizeof(char*)*2];		
 	};
 
-	/// \internal
+	/* 内部使用 */
 	RakString( SharedString *_sharedString );
 
-	/// \internal
+	/* 内部使用 */
 	SharedString *sharedString;
 
-//	static SimpleMutex poolMutex;
-//	static DataStructures::MemoryPool<SharedString> pool;
-	/// \internal
+/* static SimpleMutex poolMutex; */
+/* static DataStructures::MemoryPool<SharedString> pool; */
+	/* 内部使用 */
 	static SharedString emptyString;
 
-	//static SharedString *sharedStringFreeList;
-	//static unsigned int sharedStringFreeListAllocationCount;
-	/// \internal
-	/// List of free objects to reduce memory reallocations
+	/* static SharedString *sharedStringFreeList; */
+	/* static unsigned int sharedStringFreeListAllocationCount; */
+	/*
+	 * 内部使用
+	 * List of free objects to reduce memory reallocations
+	 */
 	static DataStructures::List<SharedString*> freeList;
 
 	static int RakStringComp( RakString const &key, RakString const &data );

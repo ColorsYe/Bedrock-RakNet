@@ -8,20 +8,22 @@
  *
  */
 
-/// \file DS_ThreadsafeAllocatingQueue.h
-/// \internal
-/// A threadsafe queue, that also uses a memory pool for allocation
+/*
+ *  DS_ThreadsafeAllocatingQueue.h
+ * 内部使用
+ * A 线程安全 queue, that also uses a memory pool for allocation
+ */
 
 #pragma once
 #include "DS_Queue.h"
 #include "SimpleMutex.h"
 #include "DS_MemoryPool.h"
 
-// #if defined(new)
-// #pragma push_macro("new")
-// #undef new
-// #define RMO_NEW_UNDEF_ALLOCATING_QUEUE
-// #endif
+/* #if defined(new) */
+/* #pragma push_macro("new") */
+/* #undef new */
+/* #define RMO_NEW_UNDEF_ALLOCATING_QUEUE */
+/* #endif */
 
 namespace DataStructures
 {
@@ -30,7 +32,7 @@ template <class structureType>
 class RAK_DLL_EXPORT ThreadsafeAllocatingQueue
 {
 public:
-	// Queue operations
+	/* Queue operations */
 	void Push(structureType *s);
 	structureType *PopInaccurate();
 	structureType *Pop();
@@ -40,7 +42,7 @@ public:
 	void RemoveAtIndex( unsigned int position );
 	unsigned int Size( void );
 
-	// Memory pool operations
+	/* Memory pool operations */
 	structureType *Allocate(const char *file, unsigned int line);
 	void Deallocate(structureType *s, const char *file, unsigned int line);
 	void Clear(const char *file, unsigned int line);
@@ -97,14 +99,14 @@ structureType *ThreadsafeAllocatingQueue<structureType>::Allocate(const char *fi
 	memoryPoolMutex.Lock();
 	s=memoryPool.Allocate(file, line);
 	memoryPoolMutex.Unlock();
-	// Call new operator, memoryPool doesn't do this
+	/* Call new operator, memoryPool doesn't do this */
 	s = new ((void*)s) structureType;
 	return s;
 }
 template <class structureType>
 void ThreadsafeAllocatingQueue<structureType>::Deallocate(structureType *s, const char *file, unsigned int line)
 {
-	// Call delete operator, memory pool doesn't do this
+	/* Call delete operator, memory pool doesn't do this */
 	s->~structureType();
 	memoryPoolMutex.Lock();
 	memoryPool.Release(s, file, line);
@@ -174,7 +176,7 @@ unsigned int ThreadsafeAllocatingQueue<structureType>::Size( void )
 }
 
 
-// #if defined(RMO_NEW_UNDEF_ALLOCATING_QUEUE)
-// #pragma pop_macro("new")
-// #undef RMO_NEW_UNDEF_ALLOCATING_QUEUE
-// #endif
+/* #if defined(RMO_NEW_UNDEF_ALLOCATING_QUEUE) */
+/* #pragma pop_macro("new") */
+/* #undef RMO_NEW_UNDEF_ALLOCATING_QUEUE */
+/* #endif */

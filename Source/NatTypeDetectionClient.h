@@ -8,9 +8,11 @@
  *
  */
 
-/// \file
-/// \brief Contains the NAT-type detection code for the client
-///
+/*
+ * 
+ * 包含客户端的 NAT 类型检测代码
+ *
+ */
 
 
 #include "NativeFeatureIncludes.h"
@@ -28,41 +30,45 @@
 
 namespace RakNet
 {
-/// Forward declarations
+/* 前向声明 */
 class RakPeerInterface;
 struct Packet;
 
-	/// \brief Client code for NatTypeDetection
-	/// \details See NatTypeDetectionServer.h for algorithm
-	/// To use, just connect to the server, and call DetectNAT
-	/// You will get back ID_NAT_TYPE_DETECTION_RESULT with one of the enumerated values of NATTypeDetectionResult found in NATTypeDetectionCommon.h
-	/// See also http://www.jenkinssoftware.com/raknet/manual/natpunchthrough.html
-	/// \sa NatPunchthroughClient
-	/// \sa NatTypeDetectionServer
-	/// \ingroup NAT_TYPE_DETECTION_GROUP
+	/*
+	 * Client code for NatTypeDetection
+	 * 参见 NatTypeDetectionServer.h for algorithm
+	 * To use, just connect to the server, and call DetectNAT
+	 * You will get back ID_NAT_TYPE_DETECTION_RESULT with one of the enumerated values of NATTypeDetectionResult found in NATTypeDetectionCommon.h
+	 * See also http://www.jenkinssoftware.com/raknet/manual/natpunchthrough.html
+	 * 另见 NatPunchthroughClient
+	 * 另见 NatTypeDetectionServer
+	 * \ingroup NAT_TYPE_DETECTION_GROUP
+	 */
 	class RAK_DLL_EXPORT NatTypeDetectionClient : public PluginInterface2, public RNS2EventHandler
 	{
 	public:
 
-		// GetInstance() and DestroyInstance(instance*)
+		/* 获取单例 GetInstance() 和销毁单例 DestroyInstance(instance*) */
 		STATIC_FACTORY_DECLARATIONS(NatTypeDetectionClient)
 
-		// Constructor
+		/* 构造函数 */
 		NatTypeDetectionClient();
 
-		// Destructor
+		/* 析构函数 */
 		virtual ~NatTypeDetectionClient();
 
-		/// Send the message to the server to detect the nat type
-		/// Server must be running NatTypeDetectionServer
-		/// We must already be connected to the server
-		/// \param[in] serverAddress address of the server
+		/*
+		 * Send the message to the server to detect the nat type
+		 * Server must be running NatTypeDetectionServer
+		 * We must already be connected to the server
+		 * 参数[输入] serverAddress address of the server
+		 */
 		void DetectNATType(SystemAddress _serverAddress);
 
-		/// \internal For plugin handling
+		/* 内部使用 For plugin handling */
 		void Update() override;
 
-		/// \internal For plugin handling
+		/* 内部使用 For plugin handling */
 		PluginReceiveResult OnReceive(Packet *packet) override;
 
 		void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason ) override;
@@ -77,7 +83,7 @@ struct Packet;
 		SimpleMutex bufferedPacketsMutex;
 		
 		RakNetSocket2* c2;
-		//unsigned short c2Port;
+		/* unsigned short c2Port; */
 		void Shutdown();
 		void OnCompletion(NATTypeDetectionResult result);
 		bool IsInProgress(void) const;

@@ -8,14 +8,16 @@
  *
  */
 
-/// \file DS_Multilist.h
-/// \internal
-/// \brief ADT that can represent an unordered list, ordered list, stack, or queue with a common interface
-///
+/*
+ *  DS_Multilist.h
+ * 内部使用
+ * ADT that can represent an unordered list, ordered list, stack, or queue with a common interface
+ *
+ */
 
 #pragma once
 #include "RakAssert.h"
-#include <cstring> // memmove
+#include <cstring> /* memmove */
 #include "Export.h"
 #include "RakMemoryOverride.h"
 #include "NativeTypes.h"
@@ -23,44 +25,52 @@
 
 #ifdef _MSC_VER
 #pragma warning( push )
-#pragma warning( disable : 4127 ) // warning C4127: conditional expression is constant
-#pragma warning( disable : 4512 ) // warning C4512: assignment operator could not be generated
+#pragma warning( disable : 4127 ) /* 警告 C4127：条件表达式是常量 */
+#pragma warning( disable : 4512 ) /* warning C4512: assignment operator could not be generated */
 #endif
 
-/// What algorithm to use to store the data for the Multilist
+/* What algorithm to use to store the data for the Multilist */
 enum MultilistType
 {
-	/// Removing from the middle of the list will swap the end of the list rather than shift the elements. Push and Pop operate on the tail.
+	/* Removing from the middle of the list will swap the end of the list rather than shift the elements. Push and Pop operate on the tail. */
 	ML_UNORDERED_LIST,
-	/// A normal list, with the list order preserved. Push and Pop operate on the tail.
+	/* 普通列表，保持列表顺序。Push 和 Pop 操作在尾部进行。*/
 	ML_STACK,
-	/// A queue. Push and Pop operate on the head
+	/* 队列。Push 和 Pop 操作在头部进行。*/
 	ML_QUEUE,
-	/// A list that is always kept in order. Elements must be unique, and compare against each other consistently using <, ==, and >
+	/* A list that is always kept in order. Elements must be unique, and compare against each other consistently using <, ==, and > */
 	ML_ORDERED_LIST,
-	/// A list whose type can change at runtime
+	/* 一个类型可以在运行时改变的列表 */
 	ML_VARIABLE_DURING_RUNTIME
 };
 
-/// The namespace DataStructures was only added to avoid compiler errors for commonly named data structures
-/// As these data structures are stand-alone, you can use them outside of RakNet for your own projects if you wish.
+/*
+ * DataStructures 命名空间的添加仅是为了避免常见数据结构名称导致的编译器错误
+ * 由于这些数据结构是独立的，如果需要，你可以在 RakNet 之外将它们用于自己的项目。
+ */
 namespace DataStructures
 {
-	/// Can be used with Multilist::ForEach
-	/// Assuming the Multilist holds pointers, will delete those pointers
+	/*
+	 * Can be used with Multilist::ForEach
+	 * Assuming the Multilist holds pointers, will delete those pointers
+	 */
 	template <class templateType>
 	void DeletePtr_RakNet(templateType &ptr, const char *file, unsigned int line ) {RakNet::OP_DELETE(ptr, file, line);}
 
-	/// Can be used with Multilist::ForEach
-	/// Assuming the Multilist holds pointers, will delete those pointers
+	/*
+	 * Can be used with Multilist::ForEach
+	 * Assuming the Multilist holds pointers, will delete those pointers
+	 */
 	template <class templateType>
 	void DeletePtr(templateType &ptr) {delete ptr;}
 
-	/// The following is invalid.
-	/// bool operator<( const MyClass *myClass, const int &inputKey ) {return myClass->value < inputKey;}
-	/// At least one type has to be a reference to a class
-	/// MLKeyRef is a helper class to turn a native type into a class, so you can compare that native type against a pointer to a different class
-	/// Used for he Multilist, when _DataType != _KeyType 
+	/*
+	 * The following is invalid.
+	 * bool operator<( const MyClass *myClass, const int &inputKey ) {return myClass->value < inputKey;}
+	 * At least one type has to be a reference to a class
+	 * MLKeyRef is a helper class to turn a native type into a class, so you can compare that native type against a pointer to a different class
+	 * 用于he Multilist, when _DataType != _KeyType
+	 */
 	template < class templateType >
 	class MLKeyRef
 	{
@@ -74,11 +84,13 @@ namespace DataStructures
 		const templateType &val;
 	};
 
-	/// For the Multilist, when _DataType != _KeyType, you must define the comparison operators between the key and the data
-	/// This is non-trivial due to the need to use MLKeyRef in case the type held is a pointer to a structure or class and the key type is not a class
-	/// For convenience, this macro will implement the comparison operators under the following conditions
-	/// 1. _DataType is a pointer to a class or structure
-	/// 2. The key is a member variable of _DataType
+	/*
+	 * For the Multilist, when _DataType != _KeyType, you must define the comparison operators between the key and the data
+	 * This is non-trivial due to the need to use MLKeyRef in case the type held is a pointer to a structure or class and the key type is not a class
+	 * For convenience, this macro will implement the comparison operators under the following conditions
+	 * 1. _DataType is a pointer to a class or structure
+	 * 2. The key is a member variable of _DataType
+	 */
 	#define DEFINE_MULTILIST_PTR_TO_MEMBER_COMPARISONS( _CLASS_NAME_, _KEY_TYPE_, _MEMBER_VARIABLE_NAME_ ) \
 	bool operator<( const DataStructures::MLKeyRef<_KEY_TYPE_> &inputKey, const _CLASS_NAME_ *cls ) {return inputKey.Get() < cls->_MEMBER_VARIABLE_NAME_;} \
 	bool operator>( const DataStructures::MLKeyRef<_KEY_TYPE_> &inputKey, const _CLASS_NAME_ *cls ) {return inputKey.Get() > cls->_MEMBER_VARIABLE_NAME_;} \
@@ -86,11 +98,13 @@ namespace DataStructures
 
 	using DefaultIndexType = uint32_t;
 
-	/// \brief The multilist, representing an abstract data type that generally holds lists.
-	/// \param[in] _MultilistType What type of list this is, \sa MultilistType
-	/// \param[in] _DataType What type of data this list holds.
-	/// \param[in] _KeyType If a function takes a key to sort on, what type of key this is. The comparison operator between _DataType and _KeyType must be defined
-	/// \param[in] _IndexType What variable type to use for indices
+	/*
+	 * The multilist, representing an abstract data type that generally holds lists.
+	 * 参数[输入] _MultilistType What type of list this is, 另见 MultilistType
+	 * 参数[输入] _DataType What type of data this list holds.
+	 * 参数[输入] _KeyType If a function takes a key to sort on, what type of key this is. The comparison operator between _DataType and _KeyType must be defined
+	 * 参数[输入] _IndexType What variable type to use for indices
+	 */
 	template <const MultilistType _MultilistType, class _DataType, class _KeyType=_DataType, class _IndexType=DefaultIndexType>
 	class RAK_DLL_EXPORT Multilist
 	{
@@ -100,109 +114,141 @@ namespace DataStructures
 		Multilist( const Multilist& source );
 		Multilist& operator= ( const Multilist& source );
 		_DataType& operator[] ( const _IndexType position ) const;
-		/// Unordered list, stack is LIFO
-		/// QUEUE is FIFO
-		/// Ordered list is inserted in order
+		/*
+		 * Unordered list, stack is LIFO
+		 * QUEUE is FIFO
+		 * Ordered list is inserted in order
+		 */
 		void Push(const _DataType &d, const char *file=__FILE__, unsigned int line=__LINE__ );
 		void Push(const _DataType &d, const _KeyType &key, const char *file=__FILE__, unsigned int line=__LINE__ );
 
-		/// \brief Gets or removes and gets an element from the list, according to the same rules as Push().
-		/// Ordered list is LIFO for the purposes of Pop and Peek.
+		/*
+		 * 获取 or removes and gets an element from the list, according to the same rules as Push()
+		 * Ordered list is LIFO for the purposes of Pop and Peek.
+		 */
 		_DataType &Pop(const char *file=__FILE__, unsigned int line=__LINE__);
 		_DataType &Peek(void) const;
 
-		/// \brief Same as Push(), except FIFO and LIFO are reversed.
-		/// Ordered list still inserts in order.
+		/*
+		 * 与 Push(), except FIFO and LIFO are reversed 相同
+		 * Ordered list still inserts in order.
+		 */
 		void PushOpposite(const _DataType &d, const char *file=__FILE__, unsigned int line=__LINE__ );
 		void PushOpposite(const _DataType &d, const _KeyType &key, const char *file=__FILE__, unsigned int line=__LINE__ );
 
-		/// \brief Same as Pop() and Peek(), except FIFO and LIFO are reversed.
+		/* 与 Pop() and Peek(), except FIFO and LIFO are reversed 相同 */
 		_DataType &PopOpposite(const char *file=__FILE__, unsigned int line=__LINE__);
 		_DataType &PeekOpposite(void) const;
 
-		/// \brief Stack,Queue: Inserts at index indicated, elements are shifted. 
-		/// Ordered list: Inserts, position is ignored
+		/*
+		 * Stack,Queue: Inserts at index indicated, elements are shifted.
+		 * Ordered list: Inserts, position is ignored
+		 */
 		void InsertAtIndex(const _DataType &d, _IndexType index, const char *file=__FILE__, unsigned int line=__LINE__);	
 		
-		/// \brief Unordered list, removes at index indicated, swaps last element with that element.
-		/// Otherwise, array is shifted left to overwrite removed element
-		/// \details Index[0] returns the same as Pop() for a queue. 
-		/// Same as PopOpposite() for the list and ordered list
+		/*
+		 * Unordered list, removes at index indicated, swaps last element with that element.
+		 * Otherwise, array is shifted left to overwrite removed element
+		 * Index[0] returns the same as Pop() for a queue.
+		 * 与 PopOpposite() for the list and ordered list 相同
+		 */
 		void RemoveAtIndex(_IndexType position, const char *file=__FILE__, unsigned int line=__LINE__);
 
-		/// \brief Find the index of \a key, and remove at that index.
+		/* Find the index of key, and remove at that index. */
 		bool RemoveAtKey(_KeyType key, bool assertIfDoesNotExist, const char *file=__FILE__, unsigned int line=__LINE__);
 
-		/// \brief Finds the index of \a key. Return -1 if the key is not found.
+		/* Finds the index of key. Return -1 if the key is not found. */
 		_IndexType GetIndexOf(_KeyType key) const;
 
-		/// \brief Returns where in the list we should insert the item, to preserve list order.
-		/// Returns -1 if the item is already in the list
+		/*
+		 * 返回应在列表中插入项的位置，以保持列表顺序。
+		 * 如果项已在列表中则返回 -1
+		 */
 		_IndexType GetInsertionIndex(_KeyType key) const;
 
-		/// \brief Finds the index of \a key. Return 0 if the key is not found. Useful if _DataType is always non-zero pointers.
+		/* Finds the index of key. Return 0 if the key is not found. Useful if _DataType is always non-zero pointers. */
 		_DataType GetPtr(_KeyType key) const;
 
-		/// \brief Iterate over the list, calling the function pointer on each element.
+		/* Iterate over the list, calling the function pointer on each element. */
 		void ForEach(void (*func)(_DataType &item, const char *file, unsigned int line), const char *file, unsigned int line);
 		void ForEach(void (*func)(_DataType &item));	
 
-		/// \brief Returns if the list is empty.
+		/* 返回 if the list is empty */
 		bool IsEmpty(void) const;
 
-		/// \brief Returns the number of elements used in the list.
+		/* 返回 number of elements used in the list */
 		_IndexType GetSize(void) const;
 
-		/// \brief Empties the list. The list is not deallocated if it is small, 
-		/// unless \a deallocateSmallBlocks is true
+		/*
+		 * Empties the list. The list is not deallocated if it is small,
+		 * unless deallocateSmallBlocks is true
+		 */
 		void Clear( bool deallocateSmallBlocks=true, const char *file=__FILE__, unsigned int line=__LINE__ );
 
-		/// \brief Empties the list, first calling RakNet::OP_Delete on all items.
-		/// \details The list is not deallocated if it is small, unless \a deallocateSmallBlocks is true
+		/*
+		 * Empties the list, first calling RakNet::OP_Delete on all items.
+		 * The list is not deallocated if it is small, unless deallocateSmallBlocks is true
+		 */
 		void ClearPointers( bool deallocateSmallBlocks=true, const char *file=__FILE__, unsigned int line=__LINE__ );
 
-		/// \brief Empty one item from the list, first calling RakNet::OP_Delete on that item.
+		/* Empty one item from the list, first calling RakNet::OP_Delete on that item. */
 		void ClearPointer( _KeyType key, const char *file=__FILE__, unsigned int line=__LINE__ );
 
-		/// \brief Reverses the elements in the list, and flips the sort order 
-		/// returned by GetSortOrder() if IsSorted() returns true at the time the function is called
+		/*
+		 * Reverses the elements in the list, and flips the sort order
+		 * returned by GetSortOrder() if IsSorted() returns true at the time the function is called
+		 */
 		void ReverseList();
 
-		/// \brief Reallocates the list to a larger size.
-		/// If \a size is smaller than the value returned by GetSize(), the call does nothing.
+		/*
+		 * Reallocates the list to a larger size.
+		 * If size is smaller than the value returned by GetSize(), the call does nothing.
+		 */
 		void Reallocate(_IndexType size, const char *file=__FILE__, unsigned int line=__LINE__);
 
-		/// \brief Sorts the list unless it is an ordered list, in which it does nothing as the list is assumed to already be sorted.
-		/// \details However, if \a force is true, it will also resort the ordered list, useful if the comparison operator between _KeyType and _DataType would now return different results
-		/// Once the list is sorted, further operations to lookup by key will be log2(n) until the list is modified
+		/*
+		 * Sorts the list unless it is an ordered list, in which it does nothing as the list is assumed to already be sorted.
+		 * However, if force is true, it will also resort the ordered list, useful if the comparison operator between _KeyType and _DataType would now return different results
+		 * Once the list is sorted, further operations to lookup by key will be log2(n) until the list is modified
+		 */
 		void Sort(bool force);
 
-		/// \brief Sets the list to be remembered as sorted.
-		/// \details Optimization if the source is sorted already
+		/*
+		 * 将list设置为be remembered as sorted
+		 * Optimization if the source is sorted already
+		 */
 		void TagSorted();
 
-		/// \brief Defaults to ascending.
-		/// \details Used by Sort(), and by ML_ORDERED_LIST
+		/*
+		 * 默认为升序。
+		 * 被Sort(), and by ML_ORDERED_LIST使用
+		 */
 		void SetSortOrder(bool ascending);
 
-		/// \brief Returns true if ascending.
+		/* 如果ascending则返回 true */
 		bool GetSortOrder(void) const;
 
-		/// \brief Returns true if the list is currently believed to be in a sorted state.
-		/// \details Doesn't actually check for sortedness, just if Sort() 
-		/// was recently called, or MultilistType is ML_ORDERED_LIST
+		/*
+		 * 如果the list is currently believed to be in a sorted state则返回 true
+		 * Doesn't actually check for sortedness, just if Sort()
+		 * was recently called, or MultilistType is ML_ORDERED_LIST
+		 */
 		bool IsSorted(void) const;
 
-		/// Returns what type of list this is
+		/* 返回 what type of list this is */
 		MultilistType GetMultilistType(void) const;
 
-		/// \brief Changes what type of list this is.
-		/// \pre Template must be defined with ML_VARIABLE_DURING_RUNTIME for this to do anything
-		/// \param[in] mlType Any value of the enum MultilistType, except ML_VARIABLE_DURING_RUNTIME
+		/*
+		 * Changes what type of list this is.
+		 * 前提条件: Template must be defined with ML_VARIABLE_DURING_RUNTIME for this to do anything
+		 * 参数[输入] mlType Any value of the enum MultilistType, except ML_VARIABLE_DURING_RUNTIME
+		 */
 		void SetMultilistType(MultilistType newType);
 
-		/// \brief Returns the intersection of two lists.
-		/// Intersection is items common to both lists.
+		/*
+		 * 返回 intersection of two lists
+		 * Intersection is items common to both lists.
+		 */
 		static void FindIntersection(
 			Multilist& source1,
 			Multilist& source2, 
@@ -223,23 +269,25 @@ namespace DataStructures
 		void QSortDescending(_IndexType left, _IndexType right);
 		void CopySource( const Multilist& source );
 
-		/// An array of user values
+		/* An array of user values */
 		_DataType* data;
 		
-		/// Number of elements in the list 		
+		/* Number of elements in the list */
 		_IndexType dataSize;
 		
-		/// Size of \a array 		
+		/* Size of array */
 		_IndexType allocationSize;
 
-		/// Array index for the head of the queue
+		/* Array index for the head of the queue */
 		_IndexType queueHead;
 
-		/// Array index for the tail of the queue
+		/* Array index for the tail of the queue */
 		_IndexType queueTail;
 
-		/// How many bytes the user chose to preallocate
-		/// Won't automatically deallocate below this
+		/*
+		 * How many bytes the user chose to preallocate
+		 * Won't automatically deallocate below this
+		 */
 		_IndexType preallocationSize;
 
 		enum
@@ -251,7 +299,7 @@ namespace DataStructures
 
 		bool ascendingSort;
 
-		// In case we are using the variable type multilist
+		/* In case we are using the variable type multilist */
 		MultilistType variableMultilistType;
 	};
 
@@ -277,7 +325,7 @@ namespace DataStructures
 	}
 
 	template <const MultilistType _MultilistType, class _DataType, class _KeyType, class _IndexType>
-	Multilist<_MultilistType, _DataType, _KeyType, _IndexType>::~Multilist()
+	Multilist<_MultilistType, _DataType, _KeyType, _IndexType>::~Multilist() noexcept
 	{
 		if (data!=0)
 			RakNet::OP_DELETE_ARRAY(data, _FILE_AND_LINE_);
@@ -370,7 +418,7 @@ namespace DataStructures
 
 		if (GetMultilistType()==ML_UNORDERED_LIST || GetMultilistType()==ML_STACK || GetMultilistType()==ML_QUEUE)
 		{
-			// Break sort if no longer sorted
+			/* Break sort if no longer sorted */
 			if (sortState!=ML_UNSORTED && dataSize>1)
 			{
 				if (ascendingSort)
@@ -440,7 +488,7 @@ namespace DataStructures
 	{
 		ReallocateIfNeeded(file,line);
 
-		// Unordered list Push at back
+		/* Unordered list Push at back */
 		if (GetMultilistType()==ML_UNORDERED_LIST)
 		{
 			data[dataSize]=d;
@@ -448,12 +496,12 @@ namespace DataStructures
 		}
 		else if (GetMultilistType()==ML_STACK)
 		{
-			// Stack push at front of the list, instead of back as normal
+			/* Stack push at front of the list, instead of back as normal */
 			InsertAtIndex(d,0,file,line);
 		}
 		else if (GetMultilistType()==ML_QUEUE)
 		{
-			// Queue push at front of the list, instead of back as normal
+			/* Queue push at front of the list, instead of back as normal */
 			InsertAtIndex(d,0,file,line);
 		}
 		else
@@ -464,7 +512,7 @@ namespace DataStructures
 
 		if (GetMultilistType()==ML_UNORDERED_LIST || GetMultilistType()==ML_STACK || GetMultilistType()==ML_QUEUE)
 		{
-			// Break sort if no longer sorted
+			/* Break sort if no longer sorted */
 			if (sortState!=ML_UNSORTED && dataSize>1)
 			{
 				if (ascendingSort)
@@ -487,20 +535,20 @@ namespace DataStructures
 		RakAssert(IsEmpty()==false);
 		if (GetMultilistType()==ML_UNORDERED_LIST || GetMultilistType()==ML_STACK || GetMultilistType()==ML_ORDERED_LIST)
 		{
-			// Copy leftmost to end
+			/* Copy leftmost to end */
 			ReallocateIfNeeded(file,line);
 			data[dataSize]=data[0];
 			DeleteShiftArrayLeft(0);
 			--dataSize;
-			// Assuming still leaves at least one element past the end of the list allocated
+			/* Assuming still leaves at least one element past the end of the list allocated */
 			DeallocateIfNeeded(file,line);
-			// Return end
+			/* 返回 end */
 			return data[dataSize+1];
 		}
 		else
 		{
 			RakAssert(GetMultilistType()==ML_QUEUE);
-			// Deallocate first, since we are returning off the existing list
+			/* Deallocate first, since we are returning off the existing list */
 			DeallocateIfNeeded(file,line);
 			dataSize--;
 
@@ -543,14 +591,14 @@ namespace DataStructures
 		{
 			if (index>=dataSize)
 			{
-				// insert at end
+				/* 插入 at end */
 				data[dataSize]=d;
 
 				dataSize++;
 			}
 			else
 			{
-				// insert at index
+				/* 插入 at index */
 				InsertShiftArrayRight(d,index);
 			}
 		}
@@ -609,7 +657,7 @@ namespace DataStructures
 
 		if (GetMultilistType()==ML_UNORDERED_LIST)
 		{
-			// Copy tail to current
+			/* Copy tail to current */
 			data[position]=data[dataSize-1];
 		}
 		else if (GetMultilistType()==ML_STACK || GetMultilistType()==ML_ORDERED_LIST)
@@ -634,16 +682,16 @@ namespace DataStructures
 
 			while ( next != queueTail )
 			{
-				// Overwrite the previous element
+				/* Overwrite the previous element */
 				data[ index ] = data[ next ];
 				index = next;
-				//next = (next + 1) % allocationSize;
+				/* next = (next + 1) % allocationSize; */
 
 				if ( ++next == allocationSize )
 					next = 0;
 			}
 
-			// Move the queueTail back
+			/* Move the queueTail back */
 			if ( queueTail == 0 )
 				queueTail = allocationSize - 1;
 			else
@@ -888,7 +936,7 @@ namespace DataStructures
 
 		temp=data[pivotIndex];
 
-		// Move pivot to center
+		/* Move pivot to center */
 		if (data[left] > data[pivotIndex])
 		{
 			--left;
@@ -936,7 +984,7 @@ namespace DataStructures
 
 		temp=data[pivotIndex];
 
-		// Move pivot to center
+		/* Move pivot to center */
 		if (data[left] < data[pivotIndex])
 		{
 			--left;
@@ -965,7 +1013,7 @@ namespace DataStructures
 		if (ascendingSort!=ascending && IsSorted())
 		{
 			ascendingSort=ascending;
-			// List is sorted, and the sort order has changed. So reverse the list
+			/* List is sorted, and the sort order has changed. So reverse the list */
 			ReverseListInternal();
 		}
 		else
@@ -1002,10 +1050,10 @@ namespace DataStructures
 			switch (newType)
 			{
 			case ML_UNORDERED_LIST:
-				// No change
+				/* 无变更 */
 				break;
 			case ML_STACK:
-				// Same data format
+				/* 相同的数据格式 */
 				break;
 			case ML_QUEUE:
 				queueHead=0;
@@ -1020,10 +1068,10 @@ namespace DataStructures
 			switch (newType)
 			{
 			case ML_UNORDERED_LIST:
-				// Same data format
+				/* 相同的数据格式 */
 				break;
 			case ML_STACK:
-				// No change
+				/* 无变更 */
 				break;
 			case ML_QUEUE:
 				queueHead=0;
@@ -1042,12 +1090,12 @@ namespace DataStructures
 			case ML_ORDERED_LIST:
 				if (queueTail < queueHead)
 				{
-					// Realign data if wrapped
+					/* Realign data if wrapped */
 					ReallocToSize(dataSize, _FILE_AND_LINE_);
 				}
 				else
 				{
-					// Else can just copy starting at head
+					/* Else can just copy starting at head */
 					_IndexType i;
 					for (i=0; i < dataSize; i++)
 						data[i]=operator[](i);
@@ -1056,7 +1104,7 @@ namespace DataStructures
 					Sort(false);
 				break;
 			case ML_QUEUE:
-				// No change
+				/* 无变更 */
 				break;
 			}
 			break;
@@ -1066,8 +1114,8 @@ namespace DataStructures
 			case ML_UNORDERED_LIST:
 			case ML_STACK:
 			case ML_QUEUE:
-				// Same data format
-				// Tag as sorted
+				/* 相同的数据格式 */
+				/* Tag as sorted */
 				if (ascendingSort)
 					sortState=ML_SORTED_ASCENDING;
 				else
@@ -1079,7 +1127,7 @@ namespace DataStructures
 				}
 				break;
 			case ML_ORDERED_LIST:
-				// No change
+				/* 无变更 */
 				break;
 			}
 			break;
@@ -1149,8 +1197,8 @@ namespace DataStructures
 			newAllocationSize=allocationSize+65536;
 		else
 		{
-			newAllocationSize=allocationSize<<1; // * 2
-			// Protect against underflow
+			newAllocationSize=allocationSize<<1; /* * 2 */
+			/* Protect against underflow */
 			if (newAllocationSize < allocationSize)
 				newAllocationSize=allocationSize+65536;
 		}
@@ -1168,7 +1216,7 @@ namespace DataStructures
 		if (dataSize <= preallocationSize )
 			return;
 		
-		_IndexType newAllocationSize = dataSize<<1; // * 2
+		_IndexType newAllocationSize = dataSize<<1; /* * 2 */
 
 		ReallocToSize(newAllocationSize,file,line);
 	}
@@ -1215,22 +1263,22 @@ namespace DataStructures
 		_IndexType index;
 		index = GetIndexFromKeyInSortedList(key, &objectExists);
 
-	//	if (objectExists)
-	//	{
-			// Ordered list only allows unique insertions
-	//		RakAssert("Duplicate insertion into ordered list" && false);
-	//		return;
-	//	}
+	/* if (objectExists) */
+	/* { */
+			/* Ordered list only allows unique insertions */
+	/* 	RakAssert("Duplicate insertion into ordered list" && false); */
+	/* 	return; */
+	/* } */
 
 		if (index>=dataSize)
 		{
-			// insert at end
+			/* 插入 at end */
 			data[dataSize]=d;
 			dataSize++;
 		}
 		else
 		{
-			// insert at index
+			/* 插入 at index */
 			InsertShiftArrayRight(d,index);
 		}
 	}
@@ -1252,7 +1300,7 @@ namespace DataStructures
 		index = dataSize/2;
 
 #ifdef _MSC_VER
-	#pragma warning( disable : 4127 ) // warning C4127: conditional expression is constant
+	#pragma warning( disable : 4127 ) /* 警告 C4127：条件表达式是常量 */
 #endif
 		while (1)
 		{
@@ -1272,7 +1320,7 @@ namespace DataStructures
 			}
 			else
 			{
-				// ==
+				/* == */
 				*objectExists=true;
 				return index;
 			}
@@ -1282,7 +1330,7 @@ namespace DataStructures
 			if (lowerBound>upperBound || upperBound==(_IndexType)-1)
 			{
 				*objectExists=false;
-				return lowerBound; // No match
+				return lowerBound; /* 无匹配 */
 			}
 		}
 	}
@@ -1292,12 +1340,12 @@ namespace DataStructures
 	{
 		RakAssert(_MultilistType!=ML_QUEUE);
 
-		// Move the elements in the list to make room
+		/* Move the elements in the list to make room */
 		_IndexType i;
 		for ( i = dataSize; i != index; i-- )
 			data[ i ] = data[ i - 1 ];
 
-		// Insert the new item at the correct spot
+		/* Insert the new item at the correct spot */
 		data[ index ] = d;
 
 		++dataSize;

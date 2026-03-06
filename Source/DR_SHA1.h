@@ -4,7 +4,7 @@
   Web: http://www.dominik-reichl.de/
 
   Version 2.1 - 2012-06-19
-  - Deconstructor (resetting internal variables) is now only
+  - Deconstructor (resetting 内部使用 variables) is now only
     implemented if SHA1_WIPE_VARIABLES is defined (which is the
     default).
   - Renamed inclusion guard to contain a GUID.
@@ -24,7 +24,7 @@
     are larger than 4 GB.
   - Improved file hashing performance (by using a larger buffer).
   - Disabled unnecessary compiler warnings.
-  - Internal variables are now private.
+  - 内部使用 variables are now private.
 
   Version 1.8 - 2009-03-16
   - Converted project files to Visual Studio 2008 format.
@@ -52,12 +52,12 @@
     header file of the CSHA1 class anymore.
   - Aligned data support.
   - Made support/compilation of the utility functions (ReportHash and
-    HashFile) optional (useful when bytes count, for example in embedded
+    HashFile) 可选 (useful when bytes count, for example in embedded
     environments).
 
   Version 1.5 - 2005-01-01
   - 64-bit compiler compatibility added.
-  - Made variable wiping optional (define SHA1_WIPE_VARIABLES).
+  - Made variable wiping 可选 (define SHA1_WIPE_VARIABLES).
   - Removed unnecessary variable initializations.
   - ROL32 improvement for the Microsoft compiler (using _rotl).
 
@@ -103,15 +103,15 @@
 */
 
 #pragma once
-// KevinJ:
+/* KevinJ: */
 #include "RakMemoryOverride.h"
-#include <cstdio> // Needed for file access
+#include <cstdio> /* Needed for file access */
 
-#include <memory.h> // Needed for memset and memcpy
+#include <memory.h> /* Needed for memset and memcpy */
 
-#include <cstring> // Needed for strcat and strcpy
+#include <cstring> /* Needed for strcat and strcpy */
 #include "Export.h"
-//#define MAX_FILE_READ_BUFFER 8000 
+/* #define MAX_FILE_READ_BUFFER 8000 */
 #define SHA1_LENGTH 20
 
 
@@ -145,17 +145,17 @@
 #include <cstdlib>
 #endif
 
-// You can define the endian mode in your files without modifying the SHA-1
-// source files. Just #define SHA1_LITTLE_ENDIAN or #define SHA1_BIG_ENDIAN
-// in your files, before including the DR_SHA1.h header file. If you don't
-// define anything, the class defaults to little endian.
+/* You can define the endian mode in your files without modifying the SHA-1 */
+/* source files. Just #define SHA1_LITTLE_ENDIAN or #define SHA1_BIG_ENDIAN */
+/* in your files, before including the DR_SHA1.h header file. If you don't */
+/* define anything, the class defaults to little endian. */
 #if !defined(SHA1_LITTLE_ENDIAN) && !defined(SHA1_BIG_ENDIAN)
 #define SHA1_LITTLE_ENDIAN
 #endif
 
-// If you want variable wiping, #define SHA1_WIPE_VARIABLES, if not,
-// #define SHA1_NO_WIPE_VARIABLES. If you don't define anything, it
-// defaults to wiping.
+/* If you want variable wiping, #define SHA1_WIPE_VARIABLES, if not, */
+/* #define SHA1_NO_WIPE_VARIABLES. If you don't define anything, it */
+/* defaults to wiping. */
 #if !defined(SHA1_WIPE_VARIABLES) && !defined(SHA1_NO_WIPE_VARIABLES)
 #define SHA1_WIPE_VARIABLES
 #endif
@@ -183,47 +183,47 @@
 #endif
 #endif
 
-///////////////////////////////////////////////////////////////////////////
-// Define variable types
+/* //////////////////////////////////////////////////////////////////////// */
+/* Define variable types */
 
 #ifndef UINT_8
-#ifdef _MSC_VER // Compiling with Microsoft compiler
+#ifdef _MSC_VER /* 使用 Microsoft 编译器编译 */
 #define UINT_8 unsigned __int8
-#else // !_MSC_VER
+#else /* !_MSC_VER */
 #define UINT_8 unsigned char
-#endif // _MSC_VER
+#endif /* _MSC_VER */
 #endif
 
 #ifndef UINT_32
-#ifdef _MSC_VER // Compiling with Microsoft compiler
+#ifdef _MSC_VER /* 使用 Microsoft 编译器编译 */
 #define UINT_32 unsigned __int32
-#else // !_MSC_VER
+#else /* !_MSC_VER */
 #if (ULONG_MAX == 0xFFFFFFFFUL)
 #define UINT_32 unsigned long
 #else
 #define UINT_32 unsigned int
 #endif
-#endif // _MSC_VER
-#endif // UINT_32
+#endif /* _MSC_VER */
+#endif /* UINT_32 */
 
 #ifndef INT_64
-#ifdef _MSC_VER // Compiling with Microsoft compiler
+#ifdef _MSC_VER /* 使用 Microsoft 编译器编译 */
 #define INT_64 __int64
-#else // !_MSC_VER
+#else /* !_MSC_VER */
 #define INT_64 long long
-#endif // _MSC_VER
-#endif // INT_64
+#endif /* _MSC_VER */
+#endif /* INT_64 */
 
 #ifndef UINT_64
-#ifdef _MSC_VER // Compiling with Microsoft compiler
+#ifdef _MSC_VER /* 使用 Microsoft 编译器编译 */
 #define UINT_64 unsigned __int64
-#else // !_MSC_VER
+#else /* !_MSC_VER */
 #define UINT_64 unsigned long long
-#endif // _MSC_VER
-#endif // UINT_64
+#endif /* _MSC_VER */
+#endif /* UINT_64 */
 
-///////////////////////////////////////////////////////////////////////////
-// Declare SHA-1 workspace
+/* //////////////////////////////////////////////////////////////////////// */
+/* Declare SHA-1 workspace */
 
 typedef union
 {
@@ -235,7 +235,7 @@ class RAK_DLL_EXPORT CSHA1
 {
 public:
 #ifdef SHA1_UTILITY_FUNCTIONS
-	// Different formats for ReportHash(Stl)
+	/* Different formats for ReportHash(Stl) */
 	enum REPORT_TYPE
 	{
 		REPORT_HEX = 0,
@@ -244,7 +244,7 @@ public:
 	};
 #endif
 
-	// Constructor and destructor
+	/* 构造函数 and 析构函数 */
 	CSHA1();
 
 #ifdef SHA1_WIPE_VARIABLES
@@ -253,15 +253,15 @@ public:
 
 	void Reset();
 
-	// Hash in binary data and strings
+	/* Hash in binary data and strings */
 	void Update(const UINT_8* pbData, UINT_32 uLen);
 
 #ifdef SHA1_UTILITY_FUNCTIONS
-	// Hash in file contents
+	/* Hash in file contents */
 	bool HashFile(const TCHAR* tszFileName);
 #endif
 
-	// Finalize hash; call it before using ReportHash(Stl)
+	/* Finalize hash; call it before using ReportHash(Stl) */
 	void Final();
 
 #ifdef SHA1_UTILITY_FUNCTIONS
@@ -273,25 +273,25 @@ public:
 		REPORT_HEX) const;
 #endif
 
-	// Get the raw message digest (20 bytes)
+	/* 获取 raw message digest (20 bytes)*/
 	bool GetHash(UINT_8* pbDest20) const;
 
 unsigned char * GetHash( void ) const;
-// KevinJ: http://cseweb.ucsd.edu/~mihir/papers/hmac-cb.pdf
+/* KevinJ: http://cseweb.ucsd.edu/~mihir/papers/hmac-cb.pdf */
 	static void HMAC(unsigned char *sharedKey, int sharedKeyLength, unsigned char *data, int dataLength, unsigned char output[SHA1_LENGTH]);
 
 private:
-	// Private SHA-1 transformation
+	/* Private SHA-1 transformation */
 	void Transform(UINT_32* pState, const UINT_8* pBuffer);
 
-	// Member variables
+	/* Member variables */
 	UINT_32 m_state[5];
 	UINT_32 m_count[2];
-	UINT_32 m_reserved0[1]; // Memory alignment padding
+	UINT_32 m_reserved0[1]; /* Memory alignment padding */
 	UINT_8 m_buffer[64];
 	UINT_8 m_digest[20];
-	UINT_32 m_reserved1[3]; // Memory alignment padding
+	UINT_32 m_reserved1[3]; /* Memory alignment padding */
 
 	UINT_8 m_workspace[64];
-	SHA1_WORKSPACE_BLOCK* m_block; // SHA1 pointer to the byte array above
+	SHA1_WORKSPACE_BLOCK* m_block; /* SHA1 pointer to the byte array above */
 };

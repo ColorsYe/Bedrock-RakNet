@@ -8,10 +8,12 @@
  *
  */
 
-/// \file DS_LinkedList.h
-/// \internal
-/// \brief Straightforward linked list data structure.
-///
+/*
+ *  DS_LinkedList.h
+ * 内部使用
+ * Straightforward linked list data structure.
+ *
+ */
 
 
 #pragma once
@@ -22,18 +24,19 @@
 #pragma warning( push )
 #endif
 
-/// The namespace DataStructures was only added to avoid compiler errors for commonly named data structures
-/// As these data structures are stand-alone, you can use them outside of RakNet for your own projects if you wish.
+/*
+ * DataStructures 命名空间的添加仅是为了避免常见数据结构名称导致的编译器错误
+ * 由于这些数据结构是独立的，如果需要，你可以在 RakNet 之外将它们用于自己的项目。
+ */
 namespace DataStructures
 {
-	// Prototype to prevent error in CircularLinkedList class when a reference is made to a LinkedList class
+	/* Prototype to prevent error in CircularLinkedList class when a reference is made to a LinkedList class */
 	template <class LinkedListType>
 	class RAK_DLL_EXPORT LinkedList;
 
-	/**
-	* \brief (Circular) Linked List ADT (Doubly Linked Pointer to Node Style) - 
+	/*
+	* (Circular) Linked List ADT (Doubly Linked Pointer to Node Style) - 
 	* 
-	* \details
 	* Initilize with the following command
 	* LinkedList<TYPE>
 	* OR
@@ -67,10 +70,9 @@ namespace DataStructures
 	*   after the sort function to read the first value.
 	* - end - moves the pointer to the end of the list.  For circular linked 
 	*   lists this is one less than the first 'position' created
-	* The assignment and copy constructor operators are defined
+	* The assignment and copy 构造函数 operators are defined
 	*
-	* \note 
-	* 1. LinkedList and CircularLinkedList are exactly the same except LinkedList 
+	* 注意: * 1. LinkedList and CircularLinkedList are exactly the same except LinkedList 
 	*    won't let you wrap around the root and lets you jump to two positions 
 	*    relative to the root/
 	* 2. Postfix ++ and -- can be used but simply call the prefix versions.
@@ -78,44 +80,46 @@ namespace DataStructures
 	*
 	* EXAMPLE:
 	* @code
-	* LinkedList<int> A;  // Creates a Linked List of integers called A
-	* CircularLinkedList<int> B;  // Creates a Circular Linked List of 
-	*          // integers called B
+	* LinkedList<int> A; /* Creates a Linked List of integers called A */
+	#if 0
 	*
-	* A.Insert(20);  // Adds 20 to A.  A: 20 - current is 20
-	* A.Insert(5);  // Adds 5 to A.  A: 5 20 - current is 5
-	* A.Insert(1);  // Adds 1 to A.  A: 1 5 20 - current is 1
+	* CircularLinkedList<int> B; /* Creates a Circular Linked List of */
+	* /* integers called B */
 	*
-	* A.IsIn1); // returns true
-	* A.IsIn200); // returns false
-	* A.Find(5);  // returns true and sets current to 5
-	* A.Peek();  // returns 5
-	* A.Find(1);  // returns true and sets current to 1
+	* A.Insert(20); /* Adds 20 to A.  A: 20 - current is 20 */
+	* A.Insert(5); /* Adds 5 to A.  A: 5 20 - current is 5 */
+	* A.Insert(1); /* Adds 1 to A.  A: 1 5 20 - current is 1 */
 	*
-	* (++A).Peek();  // Returns 5
-	* A.Peek(); // Returns 5
+	* A.IsIn1); /* 返回 true */
+	* A.IsIn200); /* 返回 false */
+	* A.Find(5); /* 返回 true and sets current to 5 */
+	* A.Peek(); /* 返回 5 */
+	* A.Find(1); /* 返回 true and sets current to 1 */
 	*
-	* A.Replace(10);  // Replaces 5 with 10.
-	* A.Peek();  // Returns 10
+	* (++A).Peek(); /* 返回 5 */
+	* A.Peek(); /* 返回 5 */
 	*
-	* A.Beginning();  // Current points to the beginning of the list at 1
+	* A.Replace(10); /* Replaces 5 with 10. */
+	* A.Peek(); /* 返回 10 */
 	*
-	* (++A).Peek();  // Returns 5
-	* A.Peek();  // Returns 10
+	* A.Beginning(); /* Current points to the beginning of the list at 1 */
 	*
-	* A.Del();  // Deletes 10.  Current points to the next element, which is 20
-	* A.Peek();  // Returns 20
+	* (++A).Peek(); /* 返回 5 */
+	* A.Peek(); /* 返回 10 */
+	*
+	* A.Del(); /* Deletes 10.  Current points to the next element, which is 20 */
+	* A.Peek(); /* 返回 20 */
 	* 
-	* A.Beginning();  // Current points to the beginning of the list at 1
+	* A.Beginning(); /* Current points to the beginning of the list at 1 */
 	*
-	* (++A).Peek();  // Returns 5
-	* A.Peek();  // Returns 20
+	* (++A).Peek(); /* 返回 5 */
+	* A.Peek(); /* 返回 20 */
 	*
-	* A.Clear(_FILE_AND_LINE_);  // Deletes all nodes in A
+	* A.Clear(_FILE_AND_LINE_); /* Deletes all nodes in A */
 	*
-	* A.Insert(5);  // A: 5 - current is 5
-	* A.Insert(6); // A: 6 5 - current is 6
-	* A.Insert(7); // A: 7 6 5 - current is 7
+	* A.Insert(5); /* A: 5 - current is 5 */
+	* A.Insert(6); /* A: 6 5 - current is 6 */
+	* A.Insert(7); /* A: 7 6 5 - current is 7 */
 	*
 	* A.Clear(_FILE_AND_LINE_);
 	* B.Clear(_FILE_AND_LINE_);
@@ -126,25 +130,26 @@ namespace DataStructures
 	* B.Add(5);
 	* B.Add(2);
 	* B.Add(25);
-	* // Sorts the numbers in the list and sets the current pointer to the 
-	* // first element
+	* /* Sorts the numbers in the list and sets the current pointer to the */
+	* /* first element */
 	* B.sort();  
 	*
-	* // Postfix ++ just calls the prefix version and has no functional 
-	* // difference.
-	* B.Peek();  // Returns 2
+	* /* Postfix ++ just calls the prefix version and has no functional */
+	* /* difference. */
+	* B.Peek(); /* 返回 2 */
 	* B++;
-	* B.Peek();  // Returns 5
+	* B.Peek(); /* 返回 5 */
 	* B++;
-	* B.Peek();  // Returns 10
+	* B.Peek(); /* 返回 10 */
 	* B++;
-	* B.Peek();  // Returns 20
+	* B.Peek(); /* 返回 20 */
 	* B++;
-	* B.Peek();  // Returns 25
+	* B.Peek(); /* 返回 25 */
 	* B++;
-	* B.Peek();  // Returns 30
+	* B.Peek(); /* 返回 30 */
 	* @endcode
 	*/
+	#endif
 	template <class CircularLinkedListType>
 
 	class CircularLinkedList
@@ -163,19 +168,19 @@ namespace DataStructures
 		CircularLinkedList();
 		~CircularLinkedList() noexcept;
 		CircularLinkedList( const CircularLinkedList& original_copy );
-		// CircularLinkedList(LinkedList<CircularLinkedListType> original_copy) {CircularLinkedList(original_copy);}  // Converts linked list to circular type
+		/* CircularLinkedList(LinkedList<CircularLinkedListType> original_copy) {CircularLinkedList(original_copy);}  // Converts linked list to circular type */
 		bool operator= ( const CircularLinkedList& original_copy );
-		CircularLinkedList& operator++();  // CircularLinkedList A; ++A;
-		CircularLinkedList& operator++( int );  // Circular_Linked List A; A++;
-		CircularLinkedList& operator--();  // CircularLinkedList A; --A;
-		CircularLinkedList& operator--( int );  // Circular_Linked List A; A--;
+		CircularLinkedList& operator++(); /* CircularLinkedList A; ++A; */
+		CircularLinkedList& operator++( int ); /* Circular_Linked List A; A++; */
+		CircularLinkedList& operator--(); /* CircularLinkedList A; --A; */
+		CircularLinkedList& operator--( int ); /* Circular_Linked List A; A--; */
 		bool IsIn( const CircularLinkedListType& input );
 		bool Find( const CircularLinkedListType& input );
 		void Insert( const CircularLinkedListType& input );
 
 		CircularLinkedListType& Add ( const CircularLinkedListType& input )
 
-			; // Adds after the current position
+			; /* Adds after the current position */
 		void Replace( const CircularLinkedListType& input );
 
 		void Del( void );
@@ -223,10 +228,10 @@ namespace DataStructures
 		LinkedList( const LinkedList& original_copy );
 		~LinkedList() noexcept;
 		bool operator= ( const LinkedList<LinkedListType>& original_copy );
-		LinkedList& operator++();  // LinkedList A; ++A;
-		LinkedList& operator++( int );  // Linked List A; A++;
-		LinkedList& operator--();  // LinkedList A; --A;
-		LinkedList& operator--( int );  // Linked List A; A--;
+		LinkedList& operator++(); /* LinkedList A; ++A; */
+		LinkedList& operator++( int ); /* Linked List A; A++; */
+		LinkedList& operator--(); /* LinkedList A; --A; */
+		LinkedList& operator--( int ); /* Linked List A; A--; */
 
 	private:
 		LinkedList Merge( LinkedList L1, LinkedList L2 );
@@ -271,23 +276,23 @@ namespace DataStructures
 				if ( original_copy.list_size == 1 )
 				{
 					this->root = RakNet::OP_NEW<typename LinkedList::node>( _FILE_AND_LINE_ );
-					// root->item = RakNet::OP_NEW<LinkedListType>( _FILE_AND_LINE_ );
+					/* root->item = RakNet::OP_NEW<LinkedListType>( _FILE_AND_LINE_ ); */
 					this->root->next = this->root;
 					this->root->previous = this->root;
 					this->list_size = 1;
 					this->position = this->root;
-					// *(root->item)=*((original_copy.root)->item);
+					/* *(root->item)=*((original_copy.root)->item); */
 					this->root->item = original_copy.root->item;
 				}
 
 				else
 				{
-					// Setup the first part of the root node
+					/* 初始化根节点的第一部分 */
 					original_copy_pointer = original_copy.root;
 					this->root = RakNet::OP_NEW<typename LinkedList::node>( _FILE_AND_LINE_ );
-					// root->item = RakNet::OP_NEW<LinkedListType>( _FILE_AND_LINE_ );
+					/* root->item = RakNet::OP_NEW<LinkedListType>( _FILE_AND_LINE_ ); */
 					this->position = this->root;
-					// *(root->item)=*((original_copy.root)->item);
+					/* *(root->item)=*((original_copy.root)->item); */
 					this->root->item = original_copy.root->item;
 
 					if ( original_copy_pointer == original_copy.position )
@@ -297,35 +302,35 @@ namespace DataStructures
 					{
 
 
-						// Save the current element
+						/* 保存当前元素 */
 						last = this->position;
 
-						// Point to the next node in the source list
+						/* 指向源列表中的下一个节点 */
 						original_copy_pointer = original_copy_pointer->next;
 
-						// Create a new node and point position to it
+						/* 创建新节点并将 position 指向它 */
 						this->position = RakNet::OP_NEW<typename LinkedList::node>( _FILE_AND_LINE_ );
-						// position->item = RakNet::OP_NEW<LinkedListType>( _FILE_AND_LINE_ );
+						/* position->item = RakNet::OP_NEW<LinkedListType>( _FILE_AND_LINE_ ); */
 
-						// Copy the item to the new node
-						// *(position->item)=*(original_copy_pointer->item);
+						/* 将元素复制到新节点 */
+						/* *(position->item)=*(original_copy_pointer->item); */
 						this->position->item = original_copy_pointer->item;
 
 						if ( original_copy_pointer == original_copy.position )
 							save_position = this->position;
 
 
-						// Set the previous pointer for the new node
+						/* 设置新节点的前驱指针 */
 						( this->position->previous ) = last;
 
-						// Set the next pointer for the old node to the new node
+						/* 将旧节点的后继指针设置为新节点 */
 						( last->next ) = this->position;
 
 					}
 
 					while ( ( original_copy_pointer->next ) != ( original_copy.root ) );
 
-					// Complete the circle.  Set the next pointer of the newest node to the root and the previous pointer of the root to the newest node
+					/* 完成环形结构。将最新节点的后继指针设置为根节点，将根节点的前驱指针设置为最新节点 */
 					this->position->next = this->root;
 
 					this->root->previous = this->position;
@@ -377,23 +382,23 @@ namespace DataStructures
 			if ( original_copy.list_size == 1 )
 			{
 				this->root = RakNet::OP_NEW<typename LinkedList::node>( _FILE_AND_LINE_ );
-				// root->item = RakNet::OP_NEW<CircularLinkedListType>( _FILE_AND_LINE_ );
+				/* root->item = RakNet::OP_NEW<CircularLinkedListType>( _FILE_AND_LINE_ ); */
 				this->root->next = this->root;
 				this->root->previous = this->root;
 				this->list_size = 1;
 				this->position = this->root;
-				// *(root->item) = *((original_copy.root)->item);
+				/* *(root->item) = *((original_copy.root)->item); */
 				this->root->item = original_copy.root->item;
 			}
 
 			else
 			{
-				// Setup the first part of the root node
+				/* 初始化根节点的第一部分 */
 				original_copy_pointer = original_copy.root;
 				this->root = RakNet::OP_NEW<typename LinkedList::node>( _FILE_AND_LINE_ );
-				// root->item = RakNet::OP_NEW<CircularLinkedListType>( _FILE_AND_LINE_ );
+				/* root->item = RakNet::OP_NEW<CircularLinkedListType>( _FILE_AND_LINE_ ); */
 				this->position = this->root;
-				// *(root->item)=*((original_copy.root)->item);
+				/* *(root->item)=*((original_copy.root)->item); */
 				this->root->item = original_copy.root->item;
 
 				if ( original_copy_pointer == original_copy.position )
@@ -401,34 +406,34 @@ namespace DataStructures
 
 				do
 				{
-					// Save the current element
+					/* 保存当前元素 */
 					last = this->position;
 
-					// Point to the next node in the source list
+					/* 指向源列表中的下一个节点 */
 					original_copy_pointer = original_copy_pointer->next;
 
-					// Create a new node and point position to it
+					/* 创建新节点并将 position 指向它 */
 					this->position = RakNet::OP_NEW<typename LinkedList::node>( _FILE_AND_LINE_ );
-					// position->item = RakNet::OP_NEW<CircularLinkedListType>( _FILE_AND_LINE_ );
+					/* position->item = RakNet::OP_NEW<CircularLinkedListType>( _FILE_AND_LINE_ ); */
 
-					// Copy the item to the new node
-					// *(position->item)=*(original_copy_pointer->item);
+					/* 将元素复制到新节点 */
+					/* *(position->item)=*(original_copy_pointer->item); */
 					this->position->item = original_copy_pointer->item;
 
 					if ( original_copy_pointer == original_copy.position )
 						save_position = this->position;
 
-					// Set the previous pointer for the new node
+					/* 设置新节点的前驱指针 */
 					( this->position->previous ) = last;
 
-					// Set the next pointer for the old node to the new node
+					/* 将旧节点的后继指针设置为新节点 */
 					( last->next ) = this->position;
 
 				}
 
 				while ( ( original_copy_pointer->next ) != ( original_copy.root ) );
 
-				// Complete the circle.  Set the next pointer of the newest node to the root and the previous pointer of the root to the newest node
+				/* 完成环形结构。将最新节点的后继指针设置为根节点，将根节点的前驱指针设置为最新节点 */
 				this->position->next = this->root;
 
 				this->root->previous = this->position;
@@ -440,7 +445,7 @@ namespace DataStructures
 	}
 
 #ifdef _MSC_VER
-#pragma warning( disable : 4701 ) // warning C4701: local variable <variable name> may be used without having been initialized
+#pragma warning( disable : 4701 ) /* warning C4701: local variable <variable name> may be used without having been initialized */
 #endif
 	template <class CircularLinkedListType>
 		CircularLinkedList<CircularLinkedListType>::CircularLinkedList( const CircularLinkedList& original_copy )
@@ -461,23 +466,23 @@ namespace DataStructures
 			if ( original_copy.list_size == 1 )
 			{
 				this->root = RakNet::OP_NEW<typename CircularLinkedList::node>( _FILE_AND_LINE_ );
-				// root->item = RakNet::OP_NEW<CircularLinkedListType>( _FILE_AND_LINE_ );
+				/* root->item = RakNet::OP_NEW<CircularLinkedListType>( _FILE_AND_LINE_ ); */
 				this->root->next = this->root;
 				this->root->previous = this->root;
 				this->list_size = 1;
 				this->position = this->root;
-				// *(root->item) = *((original_copy.root)->item);
+				/* *(root->item) = *((original_copy.root)->item); */
 				this->root->item = original_copy.root->item;
 			}
 
 			else
 			{
-				// Setup the first part of the root node
+				/* 初始化根节点的第一部分 */
 				original_copy_pointer = original_copy.root;
 				this->root = RakNet::OP_NEW<typename CircularLinkedList::node>( _FILE_AND_LINE_ );
-				// root->item = RakNet::OP_NEW<CircularLinkedListType>( _FILE_AND_LINE_ );
+				/* root->item = RakNet::OP_NEW<CircularLinkedListType>( _FILE_AND_LINE_ ); */
 				this->position = this->root;
-				// *(root->item)=*((original_copy.root)->item);
+				/* *(root->item)=*((original_copy.root)->item); */
 				this->root->item = original_copy.root->item;
 
 				if ( original_copy_pointer == original_copy.position )
@@ -487,34 +492,34 @@ namespace DataStructures
 				{
 
 
-					// Save the current element
+					/* 保存当前元素 */
 					last = this->position;
 
-					// Point to the next node in the source list
+					/* 指向源列表中的下一个节点 */
 					original_copy_pointer = original_copy_pointer->next;
 
-					// Create a new node and point position to it
+					/* 创建新节点并将 position 指向它 */
 					this->position = RakNet::OP_NEW<typename CircularLinkedList::node>( _FILE_AND_LINE_ );
-					// position->item = RakNet::OP_NEW<CircularLinkedListType>( _FILE_AND_LINE_ );
+					/* position->item = RakNet::OP_NEW<CircularLinkedListType>( _FILE_AND_LINE_ ); */
 
-					// Copy the item to the new node
-					// *(position->item)=*(original_copy_pointer->item);
+					/* 将元素复制到新节点 */
+					/* *(position->item)=*(original_copy_pointer->item); */
 					this->position->item = original_copy_pointer->item;
 
 					if ( original_copy_pointer == original_copy.position )
 						save_position = position;
 
-					// Set the previous pointer for the new node
+					/* 设置新节点的前驱指针 */
 					( this->position->previous ) = last;
 
-					// Set the next pointer for the old node to the new node
+					/* 将旧节点的后继指针设置为新节点 */
 					( last->next ) = this->position;
 
 				}
 
 				while ( ( original_copy_pointer->next ) != ( original_copy.root ) );
 
-				// Complete the circle.  Set the next pointer of the newest node to the root and the previous pointer of the root to the newest node
+				/* 完成环形结构。将最新节点的后继指针设置为根节点，将根节点的前驱指针设置为最新节点 */
 				this->position->next = this->root;
 
 				this->root->previous = position;
@@ -526,7 +531,7 @@ namespace DataStructures
 	}
 
 #ifdef _MSC_VER
-#pragma warning( disable : 4701 ) // warning C4701: local variable <variable name> may be used without having been initialized
+#pragma warning( disable : 4701 ) /* warning C4701: local variable <variable name> may be used without having been initialized */
 #endif
 	template <class CircularLinkedListType>
 		bool CircularLinkedList<CircularLinkedListType>::operator= ( const CircularLinkedList& original_copy )
@@ -552,23 +557,23 @@ namespace DataStructures
 				if ( original_copy.list_size == 1 )
 				{
 					this->root = RakNet::OP_NEW<typename CircularLinkedList::node>( _FILE_AND_LINE_ );
-					// root->item = RakNet::OP_NEW<CircularLinkedListType>( _FILE_AND_LINE_ );
+					/* root->item = RakNet::OP_NEW<CircularLinkedListType>( _FILE_AND_LINE_ ); */
 					this->root->next = this->root;
 					this->root->previous = this->root;
 					this->list_size = 1;
 					this->position = this->root;
-					// *(root->item)=*((original_copy.root)->item);
+					/* *(root->item)=*((original_copy.root)->item); */
 					this->root->item = original_copy.root->item;
 				}
 
 				else
 				{
-					// Setup the first part of the root node
+					/* 初始化根节点的第一部分 */
 					original_copy_pointer = original_copy.root;
 					this->root = RakNet::OP_NEW<typename CircularLinkedList::node>( _FILE_AND_LINE_ );
-					// root->item = RakNet::OP_NEW<CircularLinkedListType>( _FILE_AND_LINE_ );
+					/* root->item = RakNet::OP_NEW<CircularLinkedListType>( _FILE_AND_LINE_ ); */
 					this->position = this->root;
-					// *(root->item)=*((original_copy.root)->item);
+					/* *(root->item)=*((original_copy.root)->item); */
 					this->root->item = original_copy.root->item;
 
 					if ( original_copy_pointer == original_copy.position )
@@ -576,34 +581,34 @@ namespace DataStructures
 
 					do
 					{
-						// Save the current element
+						/* 保存当前元素 */
 						last = this->position;
 
-						// Point to the next node in the source list
+						/* 指向源列表中的下一个节点 */
 						original_copy_pointer = original_copy_pointer->next;
 
-						// Create a new node and point position to it
+						/* 创建新节点并将 position 指向它 */
 						this->position = RakNet::OP_NEW<typename CircularLinkedList::node>( _FILE_AND_LINE_ );
-						// position->item = RakNet::OP_NEW<CircularLinkedListType>( _FILE_AND_LINE_ );
+						/* position->item = RakNet::OP_NEW<CircularLinkedListType>( _FILE_AND_LINE_ ); */
 
-						// Copy the item to the new node
-						// *(position->item)=*(original_copy_pointer->item);
+						/* 将元素复制到新节点 */
+						/* *(position->item)=*(original_copy_pointer->item); */
 						this->position->item = original_copy_pointer->item;
 
 						if ( original_copy_pointer == original_copy.position )
 							save_position = this->position;
 
-						// Set the previous pointer for the new node
+						/* 设置新节点的前驱指针 */
 						( this->position->previous ) = last;
 
-						// Set the next pointer for the old node to the new node
+						/* 将旧节点的后继指针设置为新节点 */
 						( last->next ) = this->position;
 
 					}
 
 					while ( ( original_copy_pointer->next ) != ( original_copy.root ) );
 
-					// Complete the circle.  Set the next pointer of the newest node to the root and the previous pointer of the root to the newest node
+					/* 完成环形结构。将最新节点的后继指针设置为根节点，将根节点的前驱指针设置为最新节点 */
 					this->position->next = this->root;
 
 					this->root->previous = this->position;
@@ -625,8 +630,8 @@ namespace DataStructures
 		if ( list_size == 0 )
 		{
 			this->root = RakNet::OP_NEW<typename CircularLinkedList::node>( _FILE_AND_LINE_ );
-			// root->item = RakNet::OP_NEW<CircularLinkedListType>( _FILE_AND_LINE_ );
-			//*(root->item)=input;
+			/* root->item = RakNet::OP_NEW<CircularLinkedListType>( _FILE_AND_LINE_ ); */
+			/* *(root->item)=input; */
 			this->root->item = input;
 			this->root->next = this->root;
 			this->root->previous = this->root;
@@ -638,14 +643,14 @@ namespace DataStructures
 			if ( list_size == 1 )
 			{
 				this->position = RakNet::OP_NEW<typename CircularLinkedList::node>( _FILE_AND_LINE_ );
-				// position->item = RakNet::OP_NEW<CircularLinkedListType>( _FILE_AND_LINE_ );
+				/* position->item = RakNet::OP_NEW<CircularLinkedListType>( _FILE_AND_LINE_ ); */
 				this->root->next = this->position;
 				this->root->previous = this->position;
 				this->position->previous = this->root;
 				this->position->next = this->root;
-				// *(position->item)=input;
+				/* *(position->item)=input; */
 				this->position->item = input;
-				this->root = this->position; // Since we're inserting into a 1 element list the old root is now the second item
+				this->root = this->position; /* Since we're inserting into a 1 element list the old root is now the second item */
 				this->list_size = 2;
 			}
 
@@ -664,24 +669,24 @@ namespace DataStructures
 				Note that the order of the following statements is important  */
 
 				new_node = RakNet::OP_NEW<typename CircularLinkedList::node>( _FILE_AND_LINE_ );
-				// new_node->item = RakNet::OP_NEW<CircularLinkedListType>( _FILE_AND_LINE_ );
+				/* new_node->item = RakNet::OP_NEW<CircularLinkedListType>( _FILE_AND_LINE_ ); */
 
-				// *(new_node->item)=input;
+				/* *(new_node->item)=input; */
 				new_node->item = input;
 
-				// Point next of A to B
+				/* Point next of A to B */
 				( this->position->previous ) ->next = new_node;
 
-				// Point last of B to A
+				/* Point last of B to A */
 				new_node->previous = this->position->previous;
 
-				// Point last of C to B
+				/* Point last of C to B */
 				this->position->previous = new_node;
 
-				// Point next of B to C
+				/* Point next of B to C */
 				new_node->next = this->position;
 
-				// Since the root pointer is bound to a node rather than an index this moves it back if you insert an element at the root
+				/* Since the root pointer is bound to a node rather than an index this moves it back if you insert an element at the root */
 
 				if ( this->position == this->root )
 				{
@@ -689,7 +694,7 @@ namespace DataStructures
 					this->position = this->root;
 				}
 
-				// Increase the recorded size of the list by one
+				/* Increase the recorded size of the list by one */
 				this->list_size++;
 			}
 	}
@@ -702,14 +707,14 @@ namespace DataStructures
 		if ( this->list_size == 0 )
 		{
 			this->root = RakNet::OP_NEW<typename CircularLinkedList::node>( _FILE_AND_LINE_ );
-			// root->item = RakNet::OP_NEW<CircularLinkedListType>( _FILE_AND_LINE_ );
-			// *(root->item)=input;
+			/* root->item = RakNet::OP_NEW<CircularLinkedListType>( _FILE_AND_LINE_ ); */
+			/* *(root->item)=input; */
 			this->root->item = input;
 			this->root->next = this->root;
 			this->root->previous = this->root;
 			this->list_size = 1;
 			this->position = this->root;
-			// return *(position->item);
+			/* return *(position->item); */
 			return this->position->item;
 		}
 
@@ -717,16 +722,16 @@ namespace DataStructures
 			if ( list_size == 1 )
 			{
 				this->position = RakNet::OP_NEW<typename CircularLinkedList::node>( _FILE_AND_LINE_ );
-				// position->item = RakNet::OP_NEW<CircularLinkedListType>( _FILE_AND_LINE_ );
+				/* position->item = RakNet::OP_NEW<CircularLinkedListType>( _FILE_AND_LINE_ ); */
 				this->root->next = this->position;
 				this->root->previous = this->position;
 				this->position->previous = this->root;
 				this->position->next = this->root;
-				// *(position->item)=input;
+				/* *(position->item)=input; */
 				this->position->item = input;
 				this->list_size = 2;
-				this->position = this->root; // Don't move the position from the root
-				// return *(position->item);
+				this->position = this->root; /* Don't move the position from the root */
+				/* return *(position->item); */
 				return this->position->item;
 			}
 
@@ -745,27 +750,27 @@ namespace DataStructures
 				Note that the order of the following statements is important  */
 
 				new_node = RakNet::OP_NEW<typename CircularLinkedList::node>( _FILE_AND_LINE_ );
-				// new_node->item = RakNet::OP_NEW<CircularLinkedListType>( _FILE_AND_LINE_ );
+				/* new_node->item = RakNet::OP_NEW<CircularLinkedListType>( _FILE_AND_LINE_ ); */
 
-				// *(new_node->item)=input;
+				/* *(new_node->item)=input; */
 				new_node->item = input;
 
-				// Point last of B to A
+				/* Point last of B to A */
 				new_node->previous = this->position;
 
-				// Point next of B to C
+				/* Point next of B to C */
 				new_node->next = ( this->position->next );
 
-				// Point last of C to B
+				/* Point last of C to B */
 				( this->position->next ) ->previous = new_node;
 
-				// Point next of A to B
+				/* Point next of A to B */
 				( this->position->next ) = new_node;
 
-				// Increase the recorded size of the list by one
+				/* Increase the recorded size of the list by one */
 				this->list_size++;
 
-				// return *(new_node->item);
+				/* return *(new_node->item); */
 				return new_node->item;
 			}
 	}
@@ -774,7 +779,7 @@ namespace DataStructures
 		inline void CircularLinkedList<CircularLinkedListType>::Replace( const CircularLinkedListType& input )
 	{
 		if ( this->list_size > 0 )
-			// *(position->item)=input;
+			/* *(position->item)=input; */
 			this->position->item = input;
 	}
 
@@ -789,7 +794,7 @@ namespace DataStructures
 		else
 			if ( this->list_size == 1 )
 			{
-				// RakNet::OP_DELETE(root->item, _FILE_AND_LINE_);
+				/* RakNet::OP_DELETE(root->item, _FILE_AND_LINE_); */
 				RakNet::OP_DELETE(this->root, _FILE_AND_LINE_);
 				this->root = this->position = 0;
 				this->list_size = 0;
@@ -804,7 +809,7 @@ namespace DataStructures
 				if ( this->position == this->root )
 					this->root = new_position;
 
-				// RakNet::OP_DELETE(position->item, _FILE_AND_LINE_);
+				/* RakNet::OP_DELETE(position->item, _FILE_AND_LINE_); */
 				RakNet::OP_DELETE(this->position, _FILE_AND_LINE_);
 
 				this->position = new_position;
@@ -826,7 +831,7 @@ namespace DataStructures
 		if ( return_value != 0 )
 			return true;
 		else
-			return false; // Can't find the item don't do anything
+			return false; /* Can't find the item don't do anything */
 	}
 
 	template <class CircularLinkedListType>
@@ -843,7 +848,7 @@ namespace DataStructures
 		}
 
 		else
-			return false; // Can't find the item don't do anything
+			return false; /* Can't find the item don't do anything */
 	}
 
 	template <class CircularLinkedListType>
@@ -856,11 +861,11 @@ namespace DataStructures
 
 		current = this->root;
 
-		// Search for the item starting from the root node and incrementing the pointer after every check
-		// If you wind up pointing at the root again you looped around the list so didn't find the item, in which case return 0
+		/* Search for the item starting from the root node and incrementing the pointer after every check */
+		/* If you wind up pointing at the root again you looped around the list so didn't find the item, in which case return 0 */
 		do
 		{
-			// if (*(current->item) == input) return current;
+			/* if (*(current->item) == input) return current; */
 
 			if ( current->item == input )
 				return current;
@@ -883,7 +888,7 @@ namespace DataStructures
 	template <class CircularLinkedListType>
 		inline CircularLinkedListType& CircularLinkedList<CircularLinkedListType>::Peek( void )
 	{
-		// return *(position->item);
+		/* return *(position->item); */
 		return this->position->item;
 	}
 
@@ -893,10 +898,10 @@ namespace DataStructures
 		CircularLinkedListType element;
 		element = Peek();
 		Del();
-		return CircularLinkedListType( element ); // return temporary
+		return CircularLinkedListType( element ); /* 返回 temporary */
 	}
 
-	// Prefix
+	/* 前缀 */
 	template <class CircularLinkedListType>
 		CircularLinkedList<CircularLinkedListType>& CircularLinkedList<CircularLinkedListType>::operator++()
 	{
@@ -906,8 +911,7 @@ namespace DataStructures
 		return *this;
 	}
 
-	/*
-	// Postfix
+	/* Postfix
 	template <class CircularLinkedListType>
 	CircularLinkedList<CircularLinkedListType>& CircularLinkedList<CircularLinkedListType>::operator++(int)
 	{
@@ -924,7 +928,7 @@ namespace DataStructures
 		return this->operator++();
 	}
 
-	// Prefix
+	/* 前缀 */
 	template <class CircularLinkedListType>
 		CircularLinkedList<CircularLinkedListType>& CircularLinkedList<CircularLinkedListType>::operator--()
 	{
@@ -934,8 +938,7 @@ namespace DataStructures
 		return *this;
 	}
 
-	/*
-	// Postfix
+	/* Postfix
 	template <class CircularLinkedListType>
 	CircularLinkedList<CircularLinkedListType>& CircularLinkedList<CircularLinkedListType>::operator--(int)
 	{
@@ -958,7 +961,7 @@ namespace DataStructures
 		if ( this->list_size == 0 )
 			return ;
 		else
-			if ( this->list_size == 1 )  // {RakNet::OP_DELETE(root->item); RakNet::OP_DELETE(root, _FILE_AND_LINE_);}
+			if ( this->list_size == 1 ) /* {RakNet::OP_DELETE(root->item); RakNet::OP_DELETE(root, _FILE_AND_LINE_);} */
 			{
 				RakNet::OP_DELETE(this->root, _FILE_AND_LINE_);
 			}
@@ -974,7 +977,7 @@ namespace DataStructures
 				{
 					temp = current;
 					current = current->next;
-					// RakNet::OP_DELETE(temp->item, _FILE_AND_LINE_);
+					/* RakNet::OP_DELETE(temp->item, _FILE_AND_LINE_); */
 					RakNet::OP_DELETE(temp, _FILE_AND_LINE_);
 				}
 
@@ -1002,15 +1005,15 @@ namespace DataStructures
 
 		this->position = this->root->previous;
 
-		// Cycle through each element in L and add it to the current list
+		/* Cycle through each element in L and add it to the current list */
 		for ( counter = 0; counter < L.list_size; counter++ )
 		{
-			// Add item after the current item pointed to
-			// add(*(ptr->item));
+			/* Add item after the current item pointed to */
+			/* add(*(ptr->item)); */
 
 			Add ( ptr->item );
 
-			// Update pointers.  Moving ptr keeps the current pointer at the end of the list since the add function does not move the pointer
+			/* Update pointers.  Moving ptr keeps the current pointer at the end of the list since the add function does not move the pointer */
 			ptr = ptr->next;
 
 			this->position = this->position->next;
@@ -1023,7 +1026,7 @@ namespace DataStructures
 		if ( this->list_size <= 1 )
 			return ;
 
-		// Call equal operator to assign result of mergesort to current object
+		/* 调用赋值运算符将归并排序的结果赋给当前对象 */
 		*this = Mergesort( *this );
 
 		this->position = this->root;
@@ -1039,30 +1042,30 @@ namespace DataStructures
 
 		location = L.root;
 
-		// Split the list into two equal size sublists, L1 and L2
+		/* Split the list into two equal size sublists, L1 and L2 */
 
 		for ( counter = 0; counter < L.list_size / 2; counter++ )
 		{
-			// L1.add (*(location->item));
+			/* L1.add (*(location->item)); */
 			L1.Add ( location->item );
 			location = location->next;
 		}
 
 		for ( ;counter < L.list_size; counter++ )
 		{
-			// L2.Add(*(location->item));
+			/* L2.Add(*(location->item)); */
 			L2.Add ( location->item );
 			location = location->next;
 		}
 
-		// Recursively sort the sublists
+		/* Recursively sort the sublists */
 		if ( L1.list_size > 1 )
 			L1 = Mergesort( L1 );
 
 		if ( L2.list_size > 1 )
 			L2 = Mergesort( L2 );
 
-		// Merge the two sublists
+		/* Merge the two sublists */
 		return Merge( L1, L2 );
 	}
 
@@ -1074,34 +1077,34 @@ namespace DataStructures
 		L1.position = L1.root;
 		L2.position = L2.root;
 
-		// While neither list is empty
+		/* While neither list is empty */
 
 		while ( ( L1.list_size != 0 ) && ( L2.list_size != 0 ) )
 		{
-			// Compare the first items of L1 and L2
-			// Remove the smaller of the two items from the list
+			/* Compare the first items of L1 and L2 */
+			/* Remove the smaller of the two items from the list */
 
 			if ( ( ( L1.root ) ->item ) < ( ( L2.root ) ->item ) )
-				// if ((*((L1.root)->item)) < (*((L2.root)->item)))
+				/* if ((*((L1.root)->item)) < (*((L2.root)->item))) */
 			{
-				// element = *((L1.root)->item);
+				/* element = *((L1.root)->item); */
 				element = ( L1.root ) ->item;
 				L1.Del();
 			}
 			else
 			{
-				// element = *((L2.root)->item);
+				/* element = *((L2.root)->item); */
 				element = ( L2.root ) ->item;
 				L2.Del();
 			}
 
-			// Add this item to the end of X
+			/* Add this item to the end of X */
 			X.Add( element );
 
 			X++;
 		}
 
-		// Add the remaining list to X
+		/* Add the remaining list to X */
 		if ( L1.list_size != 0 )
 			X.Concatenate( L1 );
 		else
@@ -1120,30 +1123,30 @@ namespace DataStructures
 
 		location = L.root;
 
-		// Split the list into two equal size sublists, L1 and L2
+		/* Split the list into two equal size sublists, L1 and L2 */
 
 		for ( counter = 0; counter < L.LinkedList_size / 2; counter++ )
 		{
-			// L1.add (*(location->item));
+			/* L1.add (*(location->item)); */
 			L1.Add ( location->item );
 			location = location->next;
 		}
 
 		for ( ;counter < L.LinkedList_size; counter++ )
 		{
-			// L2.Add(*(location->item));
+			/* L2.Add(*(location->item)); */
 			L2.Add ( location->item );
 			location = location->next;
 		}
 
-		// Recursively sort the sublists
+		/* Recursively sort the sublists */
 		if ( L1.list_size > 1 )
 			L1 = Mergesort( L1 );
 
 		if ( L2.list_size > 1 )
 			L2 = Mergesort( L2 );
 
-		// Merge the two sublists
+		/* Merge the two sublists */
 		return Merge( L1, L2 );
 	}
 
@@ -1155,32 +1158,32 @@ namespace DataStructures
 		L1.position = L1.root;
 		L2.position = L2.root;
 
-		// While neither list is empty
+		/* While neither list is empty */
 
 		while ( ( L1.LinkedList_size != 0 ) && ( L2.LinkedList_size != 0 ) )
 		{
-			// Compare the first items of L1 and L2
-			// Remove the smaller of the two items from the list
+			/* Compare the first items of L1 and L2 */
+			/* Remove the smaller of the two items from the list */
 
 			if ( ( ( L1.root ) ->item ) < ( ( L2.root ) ->item ) )
-				// if ((*((L1.root)->item)) < (*((L2.root)->item)))
+				/* if ((*((L1.root)->item)) < (*((L2.root)->item))) */
 			{
 				element = ( L1.root ) ->item;
-				// element = *((L1.root)->item);
+				/* element = *((L1.root)->item); */
 				L1.Del();
 			}
 			else
 			{
 				element = ( L2.root ) ->item;
-				// element = *((L2.root)->item);
+				/* element = *((L2.root)->item); */
 				L2.Del();
 			}
 
-			// Add this item to the end of X
+			/* Add this item to the end of X */
 			X.Add( element );
 		}
 
-		// Add the remaining list to X
+		/* Add the remaining list to X */
 		if ( L1.LinkedList_size != 0 )
 			X.concatenate( L1 );
 		else
@@ -1190,7 +1193,7 @@ namespace DataStructures
 	}
 
 
-	// Prefix
+	/* 前缀 */
 	template <class LinkedListType>
 		LinkedList<LinkedListType>& LinkedList<LinkedListType>::operator++()
 	{
@@ -1200,8 +1203,7 @@ namespace DataStructures
 		return *this;
 	}
 
-	/*
-	// Postfix
+	/* Postfix
 	template <class LinkedListType>
 	LinkedList<LinkedListType>& LinkedList<LinkedListType>::operator++(int)
 	{
@@ -1211,14 +1213,14 @@ namespace DataStructures
 	return before;
 	}
 	*/ 
-	// Postfix
+	/* 后缀 */
 	template <class LinkedListType>
 		LinkedList<LinkedListType>& LinkedList<LinkedListType>::operator++( int )
 	{
 		return this->operator++();
 	}
 
-	// Prefix
+	/* 前缀 */
 	template <class LinkedListType>
 		LinkedList<LinkedListType>& LinkedList<LinkedListType>::operator--()
 	{
@@ -1228,8 +1230,7 @@ namespace DataStructures
 		return *this;
 	}
 
-	/*
-	// Postfix
+	/* Postfix
 	template <class LinkedListType>
 	LinkedList<LinkedListType>& LinkedList<LinkedListType>::operator--(int)
 	{
@@ -1240,14 +1241,14 @@ namespace DataStructures
 	}
 	*/
 
-	// Postfix
+	/* 后缀 */
 	template <class LinkedListType>
 		LinkedList<LinkedListType>& LinkedList<LinkedListType>::operator--( int )
 	{
 		return this->operator--();
 	}
 
-} // End namespace
+} /* 命名空间结束 */
 
 #ifdef _MSC_VER
 #pragma warning( pop )

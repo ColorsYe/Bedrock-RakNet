@@ -3,14 +3,16 @@
  *  All rights reserved.
  *
  *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant 
+ *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  *
  */
 
-/// \file
-/// \brief Contains the NAT-punchthrough plugin for the server.
-///
+/*
+ *
+ * 包含服务器端 NAT 穿透插件。
+ *
+ */
 
 
 #include "NativeFeatureIncludes.h"
@@ -27,19 +29,20 @@
 
 namespace RakNet
 {
-/// Forward declarations
+/* 前向声明 */
 class RakPeerInterface;
 struct Packet;
 #if _RAKNET_SUPPORT_PacketLogger==1
 class PacketLogger;
 #endif
 
-/// \defgroup NAT_PUNCHTHROUGH_GROUP NatPunchthrough
-/// \brief Connect systems despite both systems being behind a router
-/// \details
-/// \ingroup PLUGINS_GROUP
+/*
+ * \defgroup NAT_PUNCHTHROUGH_GROUP NatPunchthrough
+ * 使两个均位于路由器后面的系统能够相互连接
+ * * \ingroup PLUGINS_GROUP
+ */
 
-/// \ingroup NAT_PUNCHTHROUGH_GROUP
+/* \ingroup NAT_PUNCHTHROUGH_GROUP */
 struct RAK_DLL_EXPORT NatPunchthroughServerDebugInterface
 {
 	NatPunchthroughServerDebugInterface() {}
@@ -47,17 +50,17 @@ struct RAK_DLL_EXPORT NatPunchthroughServerDebugInterface
 	virtual void OnServerMessage(const char *msg)=0;
 };
 
-/// \ingroup NAT_PUNCHTHROUGH_GROUP
+/* \ingroup NAT_PUNCHTHROUGH_GROUP */
 struct RAK_DLL_EXPORT NatPunchthroughServerDebugInterface_Printf : public NatPunchthroughServerDebugInterface
 {
 	virtual void OnServerMessage(const char *msg);
 };
 
 #if _RAKNET_SUPPORT_PacketLogger==1
-/// \ingroup NAT_PUNCHTHROUGH_GROUP
+/* \ingroup NAT_PUNCHTHROUGH_GROUP */
 struct RAK_DLL_EXPORT NatPunchthroughServerDebugInterface_PacketLogger : public NatPunchthroughServerDebugInterface
 {
-	// Set to non-zero to write to the packetlogger!
+	/* 设置为非零值以写入数据包日志记录器！ */
 	PacketLogger *pl;
 
 	NatPunchthroughServerDebugInterface_PacketLogger() {pl=0;}
@@ -66,40 +69,44 @@ struct RAK_DLL_EXPORT NatPunchthroughServerDebugInterface_PacketLogger : public 
 };
 #endif
 
-/// \brief Server code for NATPunchthrough
-/// \details Maintain connection to NatPunchthroughServer to process incoming connection attempts through NatPunchthroughClient<BR>
-/// Server maintains two sockets clients can connect to so as to estimate the next port choice<BR>
-/// Server tells other client about port estimate, current public port to the server, and a time to start connection attempts
-/// \sa NatTypeDetectionClient
-/// See also http://www.jenkinssoftware.com/raknet/manual/natpunchthrough.html
-/// \ingroup NAT_PUNCHTHROUGH_GROUP
+/*
+ * NAT 穿透的服务器端代码
+ * 保持与 NatPunchthroughServer 的连接，以处理通过 NatPunchthroughClient 发起的传入连接请求<BR>
+ * 服务器维护两个客户端可连接的套接字，以便估算下一个端口选择<BR>
+ * 服务器将端口估算值、当前与服务器通信的公共端口，以及开始连接尝试的时间告知另一个客户端
+ * 另见 NatTypeDetectionClient
+ * 另见 http://www.jenkinssoftware.com/raknet/manual/natpunchthrough.html
+ * \ingroup NAT_PUNCHTHROUGH_GROUP
+ */
 class RAK_DLL_EXPORT NatPunchthroughServer : public PluginInterface2
 {
 public:
 
 	STATIC_FACTORY_DECLARATIONS(NatPunchthroughServer)
 
-	// Constructor
+	/* 构造函数 */
 	NatPunchthroughServer();
 
-	// Destructor
+	/* 析构函数 */
 	virtual ~NatPunchthroughServer();
 
-	/// Sets a callback to be called with debug messages
-	/// \param[in] i Pointer to an interface. The pointer is stored, so don't delete it while in progress. Pass 0 to clear.
+	/*
+	 * 设置用于接收调试消息的回调
+	 * 参数[输入] i 指向接口的指针。该指针会被存储，因此在进行中不要删除它。传入 0 以清除。
+	 */
 	void SetDebugInterface(NatPunchthroughServerDebugInterface *i);
 
-	/// \internal For plugin handling
+	/* 内部使用 用于插件处理 */
 	void Update() override;
 
-	/// \internal For plugin handling
+	/* 内部使用 用于插件处理 */
 	PluginReceiveResult OnReceive(Packet *packet) override;
 
-	/// \internal For plugin handling
+	/* 内部使用 用于插件处理 */
 	void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason ) override;
 	void OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming) override;
 
-	// Each connected user has a ready state. Ready means ready for nat punchthrough.
+	/* 每个已连接的用户都有一个就绪状态。就绪表示准备好进行 NAT 穿透。 */
 	struct User;
 	struct ConnectionAttempt
 	{
@@ -147,6 +154,6 @@ protected:
 
 };
 
-} // namespace RakNet
+} /* RakNet 命名空间 */
 
 #endif

@@ -3,14 +3,16 @@
  *  All rights reserved.
  *
  *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant 
+ *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  *
  */
 
-/// \file
-/// \brief Contains the NAT-punchthrough plugin for the client.
-///
+/*
+ *
+ * 包含客户端 NAT 穿透插件。
+ *
+ */
 
 #include "NativeFeatureIncludes.h"
 #if _RAKNET_SUPPORT_NatPunchthroughClient==1
@@ -25,36 +27,38 @@
 #include "RakString.h"
 #include "DS_Queue.h"
 
-// Trendnet TEW-632BRP sometimes starts at port 1024 and increments sequentially.
-// Zonnet zsr1134we. Replies go out on the net, but are always absorbed by the remote router??
-// Dlink ebr2310 to Trendnet ok
-// Trendnet TEW-652BRP to Trendnet 632BRP OK
-// Trendnet TEW-632BRP to Trendnet 632BRP OK
-// Buffalo WHR-HP-G54 OK
-// Netgear WGR614 ok
+/* Trendnet TEW-632BRP 有时从端口 1024 开始并顺序递增。 */
+/* Zonnet zsr1134we. 回复发出到网络，但总是被远程路由器吸收？？ */
+/* Dlink ebr2310 到 Trendnet 正常 */
+/* Trendnet TEW-652BRP 到 Trendnet 632BRP 正常 */
+/* Trendnet TEW-632BRP 到 Trendnet 632BRP 正常 */
+/* Buffalo WHR-HP-G54 正常 */
+/* Netgear WGR614 正常 */
 
 namespace RakNet
 {
-/// Forward declarations
+/* 前向声明 */
 class RakPeerInterface;
 struct Packet;
 #if _RAKNET_SUPPORT_PacketLogger==1
 class PacketLogger;
 #endif
 
-/// \ingroup NAT_PUNCHTHROUGH_GROUP
+/* \ingroup NAT_PUNCHTHROUGH_GROUP */
 struct RAK_DLL_EXPORT PunchthroughConfiguration
 {
-	/// internal: (15 ms * 2 tries + 30 wait) * 5 ports * 8 players = 2.4 seconds
-	/// external: (50 ms * 8 sends + 200 wait) * 2 port * 8 players = 9.6 seconds
-	/// Total: 8 seconds
+	/*
+	 * 内部使用: (15 ms * 2 次尝试 + 30 等待) * 5 端口 * 8 玩家 = 2.4 秒
+	 * 外部: (50 ms * 8 次发送 + 200 等待) * 2 端口 * 8 玩家 = 9.6 秒
+	 * 总计: 8 秒
+	 */
 	PunchthroughConfiguration() {
 		TIME_BETWEEN_PUNCH_ATTEMPTS_INTERNAL=15;
 		TIME_BETWEEN_PUNCH_ATTEMPTS_EXTERNAL=50;
 		UDP_SENDS_PER_PORT_INTERNAL=2;
 		UDP_SENDS_PER_PORT_EXTERNAL=8;
 		INTERNAL_IP_WAIT_AFTER_ATTEMPTS=30;
-		MAXIMUM_NUMBER_OF_INTERNAL_IDS_TO_CHECK=5; /// set to 0 to not do lan connects
+		MAXIMUM_NUMBER_OF_INTERNAL_IDS_TO_CHECK=5; /* / 设为 0 以不进行局域网连接 */
 		MAX_PREDICTIVE_PORT_RANGE=2;
 		EXTERNAL_IP_WAIT_BETWEEN_PORTS=200;
 		EXTERNAL_IP_WAIT_AFTER_FIRST_TTL=100;
@@ -62,40 +66,44 @@ struct RAK_DLL_EXPORT PunchthroughConfiguration
 		retryOnFailure=false;
 	}
 
-	/// How much time between each UDP send
+	/* 每次 UDP 发送之间的时间间隔 */
 	RakNet::Time TIME_BETWEEN_PUNCH_ATTEMPTS_INTERNAL;
 	RakNet::Time TIME_BETWEEN_PUNCH_ATTEMPTS_EXTERNAL;
 
-	/// How many tries for one port before giving up and going to the next port
+	/* 在放弃并转到下一个端口之前，对一个端口的尝试次数 */
 	int UDP_SENDS_PER_PORT_INTERNAL;
 	int UDP_SENDS_PER_PORT_EXTERNAL;
 
-	/// After giving up on one internal port, how long to wait before trying the next port
+	/* 放弃一个内部端口后，等待多久再尝试下一个端口 */
 	int INTERNAL_IP_WAIT_AFTER_ATTEMPTS;
 
-	/// How many external ports to try past the last known starting port
+	/* 在最后已知起始端口之后，尝试多少个外部端口 */
 	int MAX_PREDICTIVE_PORT_RANGE;
 
-	/// After sending TTL, how long to wait until first punch attempt
+	/* 发送 TTL 后，等待多久才开始第一次穿透尝试 */
 	int EXTERNAL_IP_WAIT_AFTER_FIRST_TTL;
 
-	/// After giving up on one external  port, how long to wait before trying the next port
+	/* 放弃一个外部端口后，等待多久再尝试下一个端口 */
 	int EXTERNAL_IP_WAIT_BETWEEN_PORTS;
 
-	/// After trying all external ports, how long to wait before returning ID_NAT_PUNCHTHROUGH_FAILED
+	/* 尝试所有外部端口后，等待多久才返回 ID_NAT_PUNCHTHROUGH_FAILED */
 	int EXTERNAL_IP_WAIT_AFTER_ALL_ATTEMPTS;
 
-	/// Maximum number of internal IP address to try to connect to.
-	/// Cannot be greater than MAXIMUM_NUMBER_OF_INTERNAL_IDS
-	/// Should be high enough to try all internal IP addresses on the majority of computers
+	/*
+	 * 尝试连接的最大内部 IP 地址数。
+	 * 不能大于 MAXIMUM_NUMBER_OF_INTERNAL_IDS
+	 * 应足够高以尝试大多数计算机上的所有内部 IP 地址
+	 */
 	int MAXIMUM_NUMBER_OF_INTERNAL_IDS_TO_CHECK;
 
-	/// If the first punchthrough attempt fails, try again
-	/// This sometimes works because the remote router was looking for an incoming message on a higher numbered port before responding to a lower numbered port from the other system
+	/*
+	 * 若第一次穿透尝试失败，则再试一次
+	 * 这有时会成功，因为远程路由器在响应来自另一系统的较低编号端口之前，先等待较高编号端口上的传入消息
+	 */
 	bool retryOnFailure;
 };
 
-/// \ingroup NAT_PUNCHTHROUGH_GROUP
+/* \ingroup NAT_PUNCHTHROUGH_GROUP */
 struct RAK_DLL_EXPORT NatPunchthroughDebugInterface
 {
 	NatPunchthroughDebugInterface() {}
@@ -103,17 +111,17 @@ struct RAK_DLL_EXPORT NatPunchthroughDebugInterface
 	virtual void OnClientMessage(const char *msg)=0;
 };
 
-/// \ingroup NAT_PUNCHTHROUGH_GROUP
+/* \ingroup NAT_PUNCHTHROUGH_GROUP */
 struct RAK_DLL_EXPORT NatPunchthroughDebugInterface_Printf : public NatPunchthroughDebugInterface
 {
 	virtual void OnClientMessage(const char *msg);
 };
 
 #if _RAKNET_SUPPORT_PacketLogger==1
-/// \ingroup NAT_PUNCHTHROUGH_GROUP
+/* \ingroup NAT_PUNCHTHROUGH_GROUP */
 struct RAK_DLL_EXPORT NatPunchthroughDebugInterface_PacketLogger : public NatPunchthroughDebugInterface
 {
-	// Set to non-zero to write to the packetlogger!
+	/* 设置为非零值以写入数据包日志记录器！ */
 	PacketLogger *pl;
 
 	NatPunchthroughDebugInterface_PacketLogger() {pl=0;}
@@ -122,70 +130,81 @@ struct RAK_DLL_EXPORT NatPunchthroughDebugInterface_PacketLogger : public NatPun
 };
 #endif
 
-/// \brief Client code for NATPunchthrough
-/// \details Maintain connection to NatPunchthroughServer to process incoming connection attempts through NatPunchthroughClient<BR>
-/// Client will send datagrams to port to estimate next port<BR>
-/// Will simultaneously connect with another client once ports are estimated.
-/// \sa NatTypeDetectionClient
-/// See also http://www.jenkinssoftware.com/raknet/manual/natpunchthrough.html
-/// \ingroup NAT_PUNCHTHROUGH_GROUP
+/*
+ * NAT 穿透的客户端代码
+ * 保持与 NatPunchthroughServer 的连接，以处理通过 NatPunchthroughClient 发起的传入连接请求<BR>
+ * 客户端将向端口发送数据报以估算下一个端口<BR>
+ * 估算端口后，将同时与另一个客户端建立连接。
+ * 另见 NatTypeDetectionClient
+ * 另见 http://www.jenkinssoftware.com/raknet/manual/natpunchthrough.html
+ * \ingroup NAT_PUNCHTHROUGH_GROUP
+ */
 class RAK_DLL_EXPORT NatPunchthroughClient : public PluginInterface2
 {
 public:
 
-	// GetInstance() and DestroyInstance(instance*)
+	/* 获取单例 GetInstance() 和销毁单例 DestroyInstance(instance*) */
 	STATIC_FACTORY_DECLARATIONS(NatPunchthroughClient)
 
 	NatPunchthroughClient();
 	~NatPunchthroughClient() noexcept;
 
-	/// If the instance of RakPeer running NATPunchthroughServer was bound to two IP addresses, then you can call FindRouterPortStride()
-	/// This will determine the stride that your router uses when assigning ports, if your router is full-cone
-	/// This function is also called automatically when you call OpenNAT - however, calling it earlier when you are connected to the facilitator will speed up the process
-	/// \param[in] destination The system to punch. Must already be connected to \a facilitator
+	/*
+	 * 若运行 NATPunchthroughServer 的 RakPeer 实例绑定到两个 IP 地址，则可调用 FindRouterPortStride()
+	 * 这将确定你的路由器在分配端口时使用的步长（前提是路由器为全锥型）
+	 * 此函数也会在调用 OpenNAT 时自动调用——但如果在连接到中介时更早调用，可以加快过程
+	 * 参数[输入] destination 要穿透的系统。必须已连接到中介
+	 */
 	void FindRouterPortStride(const SystemAddress &facilitator);
 
-	/// Punchthrough a NAT. Doesn't connect, just tries to setup the routing table
-	/// \param[in] destination The system to punch. Must already be connected to \a facilitator
-	/// \param[in] facilitator A system we are already connected to running the NatPunchthroughServer plugin
-	/// \sa OpenNATGroup()
-	/// You will get ID_NAT_PUNCHTHROUGH_SUCCEEDED on success
-	/// You will get ID_NAT_TARGET_NOT_CONNECTED, ID_NAT_TARGET_UNRESPONSIVE, ID_NAT_CONNECTION_TO_TARGET_LOST, ID_NAT_ALREADY_IN_PROGRESS, or ID_NAT_PUNCHTHROUGH_FAILED on failures of various types
-	/// However, if you lose connection to the facilitator, you may not necessarily get above
+	/*
+	 * 穿透 NAT。不连接，只尝试设置路由表
+	 * 参数[输入] destination 要穿透的系统。必须已连接到中介
+	 * 参数[输入] facilitator 我们已连接到的运行 NatPunchthroughServer 插件的系统
+	 * 另见 OpenNATGroup()
+	 * 成功时将收到 ID_NAT_PUNCHTHROUGH_SUCCEEDED
+	 * 各种类型的失败将收到 ID_NAT_TARGET_NOT_CONNECTED、ID_NAT_TARGET_UNRESPONSIVE、ID_NAT_CONNECTION_TO_TARGET_LOST、ID_NAT_ALREADY_IN_PROGRESS 或 ID_NAT_PUNCHTHROUGH_FAILED
+	 * 但是，如果你失去与中介的连接，可能不一定会收到上述消息
+	 */
 	bool OpenNAT(RakNetGUID destination, const SystemAddress &facilitator);
 
 	/*
-	/// \deprecated See FullyConnectedMesh2::StartVerifiedJoin() which is more flexible
-	/// Same as calling OpenNAT for a list of systems, but reply is delayed until all systems pass.
-	/// This is useful for peer to peer games where you want to connect to every system in the remote session, not just one particular system
-	/// \note For cloud computing, all systems in the group must be connected to the same facilitator since we're only specifying one
-	/// You will get ID_NAT_GROUP_PUNCH_SUCCEEDED on success
-	/// You will get ID_NAT_TARGET_NOT_CONNECTED, ID_NAT_ALREADY_IN_PROGRESS, or ID_NAT_GROUP_PUNCH_FAILED on failures of various types
-	/// However, if you lose connection to the facilitator, you may not necessarily get above
+	 * 已废弃 请参阅更灵活的 FullyConnectedMesh2::StartVerifiedJoin()
+	 * 与为系统列表调用 OpenNAT 相同，但回复会延迟到所有系统均通过为止。
+	 * 这对于点对点游戏非常有用，你希望连接到远程会话中的每个系统，而不仅仅是某个特定系统
+	 * 注意: 对于云计算，组中的所有系统必须连接到同一个中介，因为我们只指定一个
+	 * 成功时将收到 ID_NAT_GROUP_PUNCH_SUCCEEDED
+	 * 各种类型的失败将收到 ID_NAT_TARGET_NOT_CONNECTED、ID_NAT_ALREADY_IN_PROGRESS 或 ID_NAT_GROUP_PUNCH_FAILED
+	 * 但是，如果你失去与中介的连接，可能不一定会收到上述消息
+	 *
 	bool OpenNATGroup(DataStructures::List<RakNetGUID> destinationSystems, const SystemAddress &facilitator);
 	*/
 
-	/// Modify the system configuration if desired
-	/// Don't modify the variables in the structure while punchthrough is in progress
+	/*
+	 * 如需修改系统配置
+	 * 穿透进行中时不要修改结构体中的变量
+	 */
 	PunchthroughConfiguration* GetPunchthroughConfiguration();
 
-	/// Sets a callback to be called with debug messages
-	/// \param[in] i Pointer to an interface. The pointer is stored, so don't delete it while in progress. Pass 0 to clear.
+	/*
+	 * 设置用于接收调试消息的回调
+	 * 参数[输入] i 指向接口的指针。该指针会被存储，因此在进行中不要删除它。传入 0 以清除。
+	 */
 	void SetDebugInterface(NatPunchthroughDebugInterface *i);
 
-	/// Get the port mappings you should pass to UPNP (for miniupnpc-1.6.20120410, for the function UPNP_AddPortMapping)
+	/* 获取应传递给 UPNP 的端口映射（适用于 miniupnpc-1.6.20120410，用于函数 UPNP_AddPortMapping） */
 	void GetUPNPPortMappings(char *externalPort, char *internalPort, const SystemAddress &natPunchthroughServerAddress);
 
-	/// \internal For plugin handling
+	/* 内部使用 用于插件处理 */
 	void Update() override;
 
-	/// \internal For plugin handling
+	/* 内部使用 用于插件处理 */
 	PluginReceiveResult OnReceive(Packet *packet) override;
 
-	/// \internal For plugin handling
+	/* 内部使用 用于插件处理 */
 	void OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming) override;
 
-	/// \internal For plugin handling
+	/* 内部使用 用于插件处理 */
 	void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason ) override;
 
 	void OnAttach() override;
@@ -203,34 +222,34 @@ public:
 		bool weAreSender;
 		int attemptCount;
 		int retryCount;
-		int punchingFixedPortAttempts; // only used for TestMode::PUNCHING_FIXED_PORT
+		int punchingFixedPortAttempts; /* 仅用于 TestMode::PUNCHING_FIXED_PORT */
 		uint16_t sessionId;
 		bool sentTTL;
-		// Give priority to internal IP addresses because if we are on a LAN, we don't want to try to connect through the internet
+		/* 优先使用内部 IP 地址，因为如果我们在局域网上，不希望尝试通过互联网连接 */
 		enum TestMode
 		{
 			TESTING_INTERNAL_IPS,
 			WAITING_FOR_INTERNAL_IPS_RESPONSE,
-			//SEND_WITH_TTL,
+			/* SEND_WITH_TTL, */
 			TESTING_EXTERNAL_IPS_FACILITATOR_PORT_TO_FACILITATOR_PORT,
 			TESTING_EXTERNAL_IPS_1024_TO_FACILITATOR_PORT,
 			TESTING_EXTERNAL_IPS_FACILITATOR_PORT_TO_1024,
 			TESTING_EXTERNAL_IPS_1024_TO_1024,
 			WAITING_AFTER_ALL_ATTEMPTS,
 
-			// The trendnet remaps the remote port to 1024.
-			// If you continue punching on a different port for the same IP it bans you and the communication becomes unidirectioal
+			/* Trendnet 将远程端口重映射到 1024。 */
+			/* 如果你继续在同一 IP 的不同端口上穿透，它会封禁你，通信变成单向的 */
 			PUNCHING_FIXED_PORT,
 
-			// try port 1024-1028
+			/* 尝试端口 1024-1028 */
 		} testMode;
 	} sp;
 
 protected:
 	unsigned short mostRecentExternalPort;
-	//void OnNatGroupPunchthroughRequest(Packet *packet);
+	/* void OnNatGroupPunchthroughRequest(Packet *packet); */
 	void OnFailureNotification(Packet *packet);
-	//void OnNatGroupPunchthroughReply(Packet *packet);
+	/* void OnNatGroupPunchthroughReply(Packet *packet); */
 	void OnGetMostRecentPort(Packet *packet);
 	void OnConnectAtTime(Packet *packet);
 	unsigned int GetPendingOpenNATIndex(RakNetGUID destination, const SystemAddress &facilitator);
@@ -248,8 +267,8 @@ protected:
 	PunchthroughConfiguration pc;
 	NatPunchthroughDebugInterface *natPunchthroughDebugInterface;
 
-	// The first time we fail a NAT attempt, we add it to failedAttemptList and try again, since sometimes trying again later fixes the problem
-	// The second time we fail, we return ID_NAT_PUNCHTHROUGH_FAILED
+	/* 第一次 NAT 尝试失败时，将其添加到 failedAttemptList 并稍后重试，因为有时稍后重试可以解决问题 */
+	/* 第二次失败时，返回 ID_NAT_PUNCHTHROUGH_FAILED */
 	struct AddrAndGuid
 	{
 		SystemAddress addr;
@@ -293,10 +312,10 @@ protected:
 		DataStructures::List<RakNetGUID> ignoredList;
 	};
 	DataStructures::List<GroupPunchRequest*> groupPunchRequests;
-	void UpdateGroupPunchOnNatResult(SystemAddress facilitator, RakNetGUID targetSystem, SystemAddress targetSystemAddress, int result); // 0=failed, 1=success, 2=ignore
+	void UpdateGroupPunchOnNatResult(SystemAddress facilitator, RakNetGUID targetSystem, SystemAddress targetSystemAddress, int result); // 0=失败, 1=成功, 2=忽略
 	*/
 };
 
-} // namespace RakNet
+} /* RakNet 命名空间 */
 
 #endif

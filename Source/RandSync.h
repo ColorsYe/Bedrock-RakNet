@@ -8,9 +8,11 @@
  *
  */
 
-/// \file
-/// \brief \b [Internal] Random number generator
-///
+/*
+ * 
+ * \b [内部使用] Random number generator
+ *
+ */
 
 
 
@@ -50,4 +52,4 @@ protected:
 	uint32_t usedValueBufferCount;
 	RakNetRandom rnr;
 };
-} // namespace RakNet
+} /* RakNet 命名空间 */

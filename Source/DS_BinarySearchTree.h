@@ -8,10 +8,12 @@
  *
  */
 
-/// \file DS_BinarySearchTree.h
-/// \internal
-/// \brief A binary search tree, and an AVL balanced BST derivation.
-///
+/*
+ *  DS_BinarySearchTree.h
+ * 内部使用
+ * A binary search tree, and an AVL balanced BST derivation.
+ *
+ */
 
 
 #pragma once
@@ -24,14 +26,15 @@
 #pragma warning( push )
 #endif
 
-/// The namespace DataStructures was only added to avoid compiler errors for commonly named data structures
-/// As these data structures are stand-alone, you can use them outside of RakNet for your own projects if you wish.
+/*
+ * DataStructures 命名空间的添加仅是为了避免常见数据结构名称导致的编译器错误
+ * 由于这些数据结构是独立的，如果需要，你可以在 RakNet 之外将它们用于自己的项目。
+ */
 namespace DataStructures
 {
 	/**
-	 * \brief A binary search tree and an AVL balanced binary search tree.
-	 * \details
-	 * Initilize with the following structure
+	 * A binary search tree and an AVL balanced binary search tree.
+	 * * Initilize with the following structure
 	 *
 	 * BinarySearchTree<TYPE>
 	 *
@@ -45,7 +48,7 @@ namespace DataStructures
 	 * balanced binary tree is O (log n) irregardless of input.
 	 *
 	 * Has the following member functions
-	 * unsigned int Height(<index>) - Returns the height of the tree at the optional specified starting index.  Default is the root
+	 * unsigned int Height(<index>) - Returns the height of the tree at the 可选 specified starting index.  Default is the root
 	 * add(element) - adds an element to the BinarySearchTree
 	 * bool del(element) - deletes the node containing element if the element is in the tree as defined by a comparison with the == operator.  Returns true on success, false if the element is not found
 	 * bool IsInelement) - returns true if element is in the tree as defined by a comparison with the == operator.  Otherwise returns false
@@ -53,7 +56,7 @@ namespace DataStructures
 	 * DisplayPreorder(array) - Fills an array with an preorder search of the elements in the tree.  USER IS REPONSIBLE FOR ALLOCATING THE ARRAY!.
 	 * DisplayPostorder(array) - Fills an array with an postorder search of the elements in the tree. USER IS REPONSIBLE FOR ALLOCATING THE ARRAY!.
 	 * DisplayBreadthFirstSearch(array) - Fills an array with a breadth first search of the elements in the tree.  USER IS REPONSIBLE FOR ALLOCATING THE ARRAY!.
-	 * clear - Destroys the tree.  Same as calling the destructor
+	 * clear - Destroys the tree.  Same as calling the 析构函数
 	 * unsigned int Height() - Returns the height of the tree
 	 * unsigned int size() - returns the size of the BinarySearchTree
 	 * GetPointerToNode(element) - returns a pointer to the comparision element in the tree, allowing for direct modification when necessary with complex data types.
@@ -68,28 +71,31 @@ namespace DataStructures
 	 * A.Add(5);
 	 * int* array = RakNet::OP_NEW<int >(A.Size(), _FILE_AND_LINE_ );
 	 * A.DisplayInorder(array);
-	 * array[0]; // returns 5
-	 * array[1]; // returns 10
-	 * array[2]; // returns 15
+	 * array[0]; /* 返回 5 */
+	 #if 0
+	 * array[1]; /* 返回 10 */
+	 * array[2]; /* 返回 15 */
 	 * @endcode 
 	 * compress - reallocates memory to fit the number of elements.  Best used when the number of elements decreases
 	 *
 	 * clear - empties the BinarySearchTree and returns storage
-	 * The assignment and copy constructors are defined
+	 * The assignment and copy 构造函数 are defined
 	 *
-	 * \note The template type must have the copy constructor and
-	 * assignment operator defined and must work with >, <, and == All
-	 * elements in the tree MUST be distinct The assignment operator is
+	 * 注意: The template type must have the copy 构造函数 and
+	 * 赋值运算符 defined and must work with >, <, and == All
+	 * elements in the tree MUST be distinct The 赋值运算符 is
 	 * defined between BinarySearchTree and AVLBalancedBinarySearchTree
 	 * as long as they are of the same template type. However, passing a
 	 * BinarySearchTree to an AVLBalancedBinarySearchTree will lose its
 	 * structure unless it happened to be AVL balanced to begin with
 	 * Requires queue_linked_list.cpp for the breadth first search used
-	 * in the copy constructor, overloaded assignment operator, and
+	 * in the copy 构造函数, overloaded 赋值运算符, and
 	 * display_breadth_first_search.
 	 *
 	 *
 	 */
+	 #endif
+	 
 	template <class BinarySearchTreeType>
 	class RAK_DLL_EXPORT BinarySearchTree
 	{
@@ -136,7 +142,7 @@ namespace DataStructures
 		
 	};
 	
-	/// An AVLBalancedBinarySearchTree is a binary tree that is always balanced
+	/* An AVLBalancedBinarySearchTree is a binary tree that is always balanced */
 	template <class BinarySearchTreeType>
 	class RAK_DLL_EXPORT AVLBalancedBinarySearchTree : public BinarySearchTree<BinarySearchTreeType>
 	{
@@ -283,7 +289,7 @@ namespace DataStructures
 		
 		if ( A )
 		{
-			// Direction was set by the last find_parent call
+			/* Direction was set by the last find_parent call */
 			
 			if ( this->direction == this->LEFT )
 				A->left = C;
@@ -292,7 +298,7 @@ namespace DataStructures
 		}
 		
 		else
-			this->root = C;  // If B has no parent parent then B must have been the root node
+			this->root = C; /* If B has no parent parent then B must have been the root node */
 			
 		B->left = D;
 		
@@ -302,7 +308,7 @@ namespace DataStructures
 	template <class BinarySearchTreeType>
 	void AVLBalancedBinarySearchTree<BinarySearchTreeType>::DoubleRotateRight( typename BinarySearchTree<BinarySearchTreeType>::node *A )
 	{
-		// The left side of the left child must be higher for the tree to balance with a right rotation.  If it isn't, rotate it left before the normal rotation so it is.
+		/* The left side of the left child must be higher for the tree to balance with a right rotation.  If it isn't, rotate it left before the normal rotation so it is. */
 		RotateLeft( A->left->right );
 		RotateRight( A->left );
 	}
@@ -347,7 +353,7 @@ namespace DataStructures
 		
 		if ( A )
 		{
-			// Direction was set by the last find_parent call
+			/* Direction was set by the last find_parent call */
 			
 			if ( this->direction == this->LEFT )
 				A->left = C;
@@ -356,7 +362,7 @@ namespace DataStructures
 		}
 		
 		else
-			this->root = C;  // If B has no parent parent then B must have been the root node
+			this->root = C; /* If B has no parent parent then B must have been the root node */
 			
 		B->right = D;
 		
@@ -366,7 +372,7 @@ namespace DataStructures
 	template <class BinarySearchTreeType>
 	void AVLBalancedBinarySearchTree<BinarySearchTreeType>::DoubleRotateLeft( typename BinarySearchTree<BinarySearchTreeType>::node *A )
 	{
-		// The left side of the right child must be higher for the tree to balance with a left rotation.  If it isn't, rotate it right before the normal rotation so it is.
+		/* The left side of the right child must be higher for the tree to balance with a left rotation.  If it isn't, rotate it right before the normal rotation so it is. */
 		RotateRight( A->right->left );
 		RotateLeft( A->right );
 	}
@@ -392,14 +398,14 @@ namespace DataStructures
 			return HeightRecursive( starting_node );
 	}
 	
-	// Recursively return the height of a binary tree
+	/* Recursively return the height of a binary tree */
 	template <class BinarySearchTreeType>
 	unsigned int BinarySearchTree<BinarySearchTreeType>::HeightRecursive( typename BinarySearchTree::node* current )
 	{
 		unsigned int left_height = 0, right_height = 0;
 		
 		if ( ( current->left == 0 ) && ( current->right == 0 ) )
-			return 1; // Leaf
+			return 1; /* Leaf */
 			
 		if ( current->left != 0 )
 			left_height = 1 + HeightRecursive( current->left );
@@ -454,7 +460,7 @@ namespace DataStructures
 			return current = 0;
 		}
 		
-		// Check if the item is at the root
+		/* 检查 the item is at the root */
 		if ( element == *( current->item ) )
 		{
 			this->direction = this->ROOT;
@@ -462,11 +468,11 @@ namespace DataStructures
 		}
 
 #ifdef _MSC_VER
-#pragma warning( disable : 4127 ) // warning C4127: conditional expression is constant
+#pragma warning( disable : 4127 ) /* 警告 C4127：条件表达式是常量 */
 #endif
 		while ( true )
 		{
-			// Move pointer
+			/* Move pointer */
 			
 			if ( element < *( current->item ) )
 			{
@@ -486,7 +492,7 @@ namespace DataStructures
 			if ( current == 0 )
 				break;
 				
-			// Check if new position holds the item
+			/* 检查 new position holds the item */
 			if ( element == *( current->item ) )
 			{
 				return current;
@@ -506,7 +512,7 @@ namespace DataStructures
 		return parent;
 	}
 	
-	// Performs a series of value swaps starting with current to fix the tree if needed
+	/* Performs a series of value swaps starting with current to fix the tree if needed */
 	template <class BinarySearchTreeType>
 	void BinarySearchTree<BinarySearchTreeType>::FixTree( typename BinarySearchTree::node* current )
 	{
@@ -516,7 +522,7 @@ namespace DataStructures
 		{
 			if ( ( ( current->left ) != 0 ) && ( *( current->item ) < *( current->left->item ) ) )
 			{
-				// Swap the current value with the one to the left
+				/* Swap the current value with the one to the left */
 				temp = *( current->left->item );
 				*( current->left->item ) = *( current->item );
 				*( current->item ) = temp;
@@ -526,7 +532,7 @@ namespace DataStructures
 			else
 				if ( ( ( current->right ) != 0 ) && ( *( current->item ) > *( current->right->item ) ) )
 				{
-					// Swap the current value with the one to the right
+					/* Swap the current value with the one to the right */
 					temp = *( current->right->item );
 					*( current->right->item ) = *( current->item );
 					*( current->item ) = temp;
@@ -534,7 +540,7 @@ namespace DataStructures
 				}
 				
 				else
-					break;  // current points to the right place so quit
+					break; /* current points to the right place so quit */
 		}
 	}
 	
@@ -555,12 +561,12 @@ namespace DataStructures
 		node_to_delete = Find( input, &parent );
 		
 		if ( direction == NOT_FOUND )
-			return 0;  // Couldn't find the element
+			return 0; /* Couldn't find the element */
 			
 		current = node_to_delete;
 		
-		// Replace the deleted node with the appropriate value
-		if ( ( current->right ) == 0 && ( current->left ) == 0 )    // Leaf node, just remove it
+		/* Replace the deleted node with the appropriate value */
+		if ( ( current->right ) == 0 && ( current->left ) == 0 ) /* Leaf node, just remove it */
 		{
 		
 			if ( parent )
@@ -577,7 +583,7 @@ namespace DataStructures
 			return parent;
 		}
 		else
-			if ( ( current->right ) != 0 && ( current->left ) == 0 )   // Node has only one child, delete it and cause the parent to point to that child
+			if ( ( current->right ) != 0 && ( current->left ) == 0 ) /* Node has only one child, delete it and cause the parent to point to that child */
 			{
 			
 				if ( parent )
@@ -589,7 +595,7 @@ namespace DataStructures
 				}
 				
 				else
-					root = current->right; // Without a parent this must be the root node
+					root = current->right; /* Without a parent this must be the root node */
 					
 				RakNet::OP_DELETE(node_to_delete->item, file, line);
 				
@@ -600,7 +606,7 @@ namespace DataStructures
 				return parent;
 			}
 			else
-				if ( ( current->right ) == 0 && ( current->left ) != 0 )   // Node has only one child, delete it and cause the parent to point to that child
+				if ( ( current->right ) == 0 && ( current->left ) != 0 ) /* Node has only one child, delete it and cause the parent to point to that child */
 				{
 				
 					if ( parent )
@@ -612,7 +618,7 @@ namespace DataStructures
 					}
 					
 					else
-						root = current->left; // Without a parent this must be the root node
+						root = current->left; /* Without a parent this must be the root node */
 						
 					RakNet::OP_DELETE(node_to_delete->item, file, line);
 					
@@ -622,11 +628,11 @@ namespace DataStructures
 					
 					return parent;
 				}
-				else // Go right, then as left as far as you can
+				else /* Go right, then as left as far as you can */
 				{
 					parent = current;
 					direction = RIGHT;
-					current = current->right; // Must have a right branch because the if statements above indicated that it has 2 branches
+					current = current->right; /* Must have a right branch because the if statements above indicated that it has 2 branches */
 					
 					while ( current->left )
 					{
@@ -635,11 +641,11 @@ namespace DataStructures
 						current = current->left;
 					}
 					
-					// Replace the value held by the node to RakNet::OP_DELETE(with the value pointed to by current, _FILE_AND_LINE_);
+					/* Replace the value held by the node to RakNet::OP_DELETE(with the value pointed to by current, _FILE_AND_LINE_); */
 					*( node_to_delete->item ) = *( current->item );
 					
-					// Delete current.
-					// If it is a leaf node just delete it
+					/* 删除 current */
+					/* If it is a leaf node just delete it */
 					if ( current->right == 0 )
 					{
 						if ( direction == RIGHT )
@@ -658,7 +664,7 @@ namespace DataStructures
 					
 					else
 					{
-						// Skip this node and make its parent point to its right branch
+						/* Skip this node and make its parent point to its right branch */
 						
 						if ( direction == RIGHT )
 							parent->right = current->right;
@@ -681,10 +687,10 @@ namespace DataStructures
 	{
 		typename BinarySearchTree::node * current;
 		
-		// Add the new element to the tree according to the following alogrithm:
-		// 1.  If the current node is empty add the new leaf
-		// 2.  If the element is less than the current node then go down the left branch
-		// 3.  If the element is greater than the current node then go down the right branch
+		/* Add the new element to the tree according to the following alogrithm: */
+		/* 1. 如果当前节点为空，则添加新叶子节点 */
+		/* 2. 如果元素小于当前节点，则沿左分支向下 */
+		/* 3. 如果元素大于当前节点，则沿右分支向下 */
 		
 		if ( BinarySearchTree_size == 0 )
 		{
@@ -700,13 +706,13 @@ namespace DataStructures
 		
 		else
 		{
-			// start at the root
+			/* 启动 at the root */
 			current = root;
 
 #ifdef _MSC_VER
-#pragma warning( disable : 4127 ) // warning C4127: conditional expression is constant
+#pragma warning( disable : 4127 ) /* 警告 C4127：条件表达式是常量 */
 #endif
-			while ( true )    // This loop traverses the tree to find a spot for insertion
+			while ( true ) /* This loop traverses the tree to find a spot for insertion */
 			{
 			
 				if ( input < *( current->item ) )
@@ -753,7 +759,7 @@ namespace DataStructures
 					}
 					
 					else
-						return 0; // ((input == current->item) == true) which is not allowed since the tree only takes discrete values.  Do nothing
+						return 0; /* ((input == current->item) == true) which is not allowed since the tree only takes discrete values.  Do nothing */
 			}
 		}
 	}
@@ -782,7 +788,7 @@ namespace DataStructures
 		current = root;
 		
 		if ( BinarySearchTree_size == 0 )
-			return ; // Do nothing for an empty tree
+			return ; /* 空树不执行任何操作 */
 			
 		else
 			if ( BinarySearchTree_size == 1 )
@@ -792,29 +798,29 @@ namespace DataStructures
 			}
 			
 			
-		direction = ROOT;  // Reset the direction
+		direction = ROOT; /* 重置方向 */
 		
 		while ( index != BinarySearchTree_size )
 		{
-			// direction is set by the find function and holds the direction of the parent to the last node visited.  It is used to prevent revisiting nodes
+			/* direction is set by the find function and holds the direction of the parent to the last node visited.  It is used to prevent revisiting nodes */
 			
 			if ( ( current->left != 0 ) && ( direction != LEFT ) && ( direction != RIGHT ) )
 			{
-				//  Go left if the following 2 conditions are true
-				//  I can go left
-				//  I did not just move up from a right child
-				//  I did not just move up from a left child
+				/*  Go left if the following 2 conditions are true */
+				/*  I can go left */
+				/*  我不是刚从右子节点上移 */
+				/*  I did not just move up from a left child */
 				
 				current = current->left;
-				direction = ROOT;  // Reset the direction
+				direction = ROOT; /* 重置方向 */
 			}
 			
 			else
 				if ( ( direction != RIGHT ) && ( just_printed == false ) )
 				{
-					// Otherwise, print the current node if the following 3 conditions are true:
-					// I did not just move up from a right child
-					// I did not print this ndoe last cycle
+					/* Otherwise, print the current node if the following 3 conditions are true: */
+					/* 我不是刚从右子节点上移 */
+					/* I did not print this ndoe last cycle */
 					
 					return_array[ index++ ] = *( current->item );
 					just_printed = true;
@@ -823,18 +829,18 @@ namespace DataStructures
 				else
 					if ( ( current->right != 0 ) && ( direction != RIGHT ) )
 					{
-						// Otherwise, go right if the following 2 conditions are true
-						// I did not just move up from a right child
-						// I can go right
+						/* Otherwise, go right if the following 2 conditions are true */
+						/* 我不是刚从右子节点上移 */
+						/* I can go right */
 						
 						current = current->right;
-						direction = ROOT;  // Reset the direction
+						direction = ROOT; /* 重置方向 */
 						just_printed = false;
 					}
 					
 					else
 					{
-						//  Otherwise I've done everything I can.  Move up the tree one node
+						/*  Otherwise I've done everything I can.  Move up the tree one node */
 						parent = FindParent( *( current->item ) );
 						current = parent;
 						just_printed = false;
@@ -852,7 +858,7 @@ namespace DataStructures
 		current = root;
 		
 		if ( BinarySearchTree_size == 0 )
-			return ; // Do nothing for an empty tree
+			return ; /* 空树不执行任何操作 */
 			
 		else
 			if ( BinarySearchTree_size == 1 )
@@ -862,12 +868,12 @@ namespace DataStructures
 			}
 			
 			
-		direction = ROOT;  // Reset the direction
+		direction = ROOT; /* 重置方向 */
 		return_array[ index++ ] = *( current->item );
 		
 		while ( index != BinarySearchTree_size )
 		{
-			// direction is set by the find function and holds the direction of the parent to the last node visited.  It is used to prevent revisiting nodes
+			/* direction is set by the find function and holds the direction of the parent to the last node visited.  It is used to prevent revisiting nodes */
 			
 			if ( ( current->left != 0 ) && ( direction != LEFT ) && ( direction != RIGHT ) )
 			{
@@ -875,7 +881,7 @@ namespace DataStructures
 				current = current->left;
 				direction = ROOT;
 				
-				// Everytime you move a node print it
+				/* Everytime you move a node print it */
 				return_array[ index++ ] = *( current->item );
 			}
 			
@@ -885,13 +891,13 @@ namespace DataStructures
 					current = current->right;
 					direction = ROOT;
 					
-					// Everytime you move a node print it
+					/* Everytime you move a node print it */
 					return_array[ index++ ] = *( current->item );
 				}
 				
 				else
 				{
-					//  Otherwise I've done everything I can.  Move up the tree one node
+					/*  Otherwise I've done everything I can.  Move up the tree one node */
 					parent = FindParent( *( current->item ) );
 					current = parent;
 				}
@@ -904,7 +910,7 @@ namespace DataStructures
 		unsigned int index = 0;
 		
 		if ( BinarySearchTree_size == 0 )
-			return ; // Do nothing for an empty tree
+			return ; /* 空树不执行任何操作 */
 			
 		else
 			if ( BinarySearchTree_size == 1 )
@@ -917,7 +923,7 @@ namespace DataStructures
 	}
 	
 	
-	// Recursively do a postorder traversal
+	/* Recursively do a postorder traversal */
 	template <class BinarySearchTreeType>
 	void BinarySearchTree<BinarySearchTreeType>::DisplayPostorderRecursive( typename BinarySearchTree::node* current, BinarySearchTreeType* return_array, unsigned int& index )
 	{
@@ -938,12 +944,12 @@ namespace DataStructures
 		typename BinarySearchTree::node * current;
 		unsigned int index = 0;
 		
-		// Display the tree using a breadth first search
-		// Put the children of the current node into the queue
-		// Pop the queue, put its children into the queue, repeat until queue is empty
+		/* Display the tree using a breadth first search */
+		/* 将当前节点的子节点放入队列 */
+		/* 弹出队列，将其子节点放入队列，重复直到队列为空 */
 		
 		if ( BinarySearchTree_size == 0 )
-			return ; // Do nothing for an empty tree
+			return ; /* 空树不执行任何操作 */
 			
 		else
 			if ( BinarySearchTree_size == 1 )
@@ -956,7 +962,7 @@ namespace DataStructures
 			{
 				DataStructures::QueueLinkedList<node *> tree_queue;
 				
-				// Add the root of the tree I am copying from
+				/* Add the root of the tree I am copying from */
 				tree_queue.Push( root );
 				
 				do
@@ -964,7 +970,7 @@ namespace DataStructures
 					current = tree_queue.Pop();
 					return_array[ index++ ] = *( current->item );
 					
-					// Add the child or children of the tree I am copying from to the queue
+					/* 将正在复制的树的子节点添加到队列中 */
 					
 					if ( current->left != 0 )
 						tree_queue.Push( current->left );
@@ -983,11 +989,11 @@ namespace DataStructures
 	BinarySearchTree<BinarySearchTreeType>::BinarySearchTree( const BinarySearchTree& original_copy )
 	{
 		typename BinarySearchTree::node * current;
-		// Copy the tree using a breadth first search
-		// Put the children of the current node into the queue
-		// Pop the queue, put its children into the queue, repeat until queue is empty
+		/* Copy the tree using a breadth first search */
+		/* 将当前节点的子节点放入队列 */
+		/* 弹出队列，将其子节点放入队列，重复直到队列为空 */
 		
-		// This is a copy of the constructor.  A bug in Visual C++ made it so if I just put the constructor call here the variable assignments were ignored.
+		/* This is a copy of the 构造函数.  A bug in Visual C++ made it so if I just put the 构造函数 call here the variable assignments were ignored. */
 		BinarySearchTree_size = 0;
 		root = 0;
 		
@@ -1000,7 +1006,7 @@ namespace DataStructures
 		{
 			DataStructures::QueueLinkedList<node *> tree_queue;
 			
-			// Add the root of the tree I am copying from
+			/* Add the root of the tree I am copying from */
 			tree_queue.Push( original_copy.root );
 			
 			do
@@ -1011,7 +1017,7 @@ namespace DataStructures
 				
 				;
 				
-				// Add the child or children of the tree I am copying from to the queue
+				/* 将正在复制的树的子节点添加到队列中 */
 				if ( current->left != 0 )
 					tree_queue.Push( current->left );
 					
@@ -1032,17 +1038,17 @@ namespace DataStructures
 		if ( ( &original_copy ) == this )
 			return *this;
 			
-		Clear( _FILE_AND_LINE_ );  // Remove the current tree
+		Clear( _FILE_AND_LINE_ ); /* 移除 current tree */
 		
-		// This is a copy of the constructor.  A bug in Visual C++ made it so if I just put the constructor call here the variable assignments were ignored.
+		/* This is a copy of the 构造函数.  A bug in Visual C++ made it so if I just put the 构造函数 call here the variable assignments were ignored. */
 		BinarySearchTree_size = 0;
 		
 		root = 0;
 		
 		
-		// Copy the tree using a breadth first search
-		// Put the children of the current node into the queue
-		// Pop the queue, put its children into the queue, repeat until queue is empty
+		/* Copy the tree using a breadth first search */
+		/* 将当前节点的子节点放入队列 */
+		/* 弹出队列，将其子节点放入队列，重复直到队列为空 */
 		if ( original_copy.BinarySearchTree_size == 0 )
 		{
 			BinarySearchTree_size = 0;
@@ -1052,7 +1058,7 @@ namespace DataStructures
 		{
 			DataStructures::QueueLinkedList<node *> tree_queue;
 			
-			// Add the root of the tree I am copying from
+			/* Add the root of the tree I am copying from */
 			tree_queue.Push( original_copy.root );
 			
 			do
@@ -1063,7 +1069,7 @@ namespace DataStructures
 				
 				;
 				
-				// Add the child or children of the tree I am copying from to the queue
+				/* 将正在复制的树的子节点添加到队列中 */
 				if ( current->left != 0 )
 					tree_queue.Push( current->left );
 					
@@ -1108,9 +1114,9 @@ namespace DataStructures
 						current = current->right;
 					}
 					
-					else // leaf
+					else /* leaf */
 					{
-						// Not root node so must have a parent
+						/* Not root node so must have a parent */
 						parent = FindParent( *( current->item ) );
 						
 						if ( ( parent->left ) == current )
@@ -1130,9 +1136,8 @@ namespace DataStructures
 		}
 	}
 	
-} // End namespace
-
-#endif
+} /* 命名空间结束 */
 
 #ifdef _MSC_VER
 #pragma warning( pop )
+#endif

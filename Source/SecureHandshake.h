@@ -2,14 +2,13 @@
  *  Copyright (c) 2014, Oculus VR, Inc.
  *  All rights reserved.
  *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant 
- *  of patent rights can be found in the PATENTS file in the same directory.
+ *  本源代码使用 BSD 风格许可证授权，
+ *  许可证文件位于源码树根目录的 LICENSE 文件中。
+ *  同目录下的 PATENTS 文件中还包含额外的专利授权。
  *
  */
 
-/// \file
-///
+/* 安全握手加密支持 */
 
 
 #pragma once
@@ -17,14 +16,14 @@
 
 #if LIBCAT_SECURITY==1
 
-// If building a RakNet DLL, be sure to tweak the CAT_EXPORT macro meaning
+/* 如果构建 RakNet DLL，请确保调整 CAT_EXPORT 宏的含义 */
 #if !defined(_RAKNET_LIB) && defined(_RAKNET_DLL)
 # define CAT_BUILD_DLL
 #else
 # define CAT_NEUTER_EXPORT
 #endif
 
-// Include DependentExtensions in your path to include this
+/* 将 DependentExtensions 添加到您的包含路径中以包含此文件 */
 #include "cat/AllTunnel.hpp"
 
-#endif // LIBCAT_SECURITY
+#endif /* LIBCAT_SECURITY */

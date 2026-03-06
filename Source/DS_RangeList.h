@@ -8,10 +8,12 @@
  *
  */
 
-/// \file DS_RangeList.h
-/// \internal
-/// \brief A queue implemented as a linked list.
-///
+/*
+ *  DS_RangeList.h
+ * 内部使用
+ * A queue implemented as a linked list.
+ *
+ */
 
 
 #pragma once
@@ -78,7 +80,7 @@ namespace DataStructures
 				minEqualsMax=1;
 			else
 				minEqualsMax=0;
-			tempBS.Write(minEqualsMax); // Use one byte, intead of one bit, for speed, as this is done a lot
+			tempBS.Write(minEqualsMax); /* Use one byte, intead of one bit, for speed, as this is done a lot */
 			tempBS.Write(ranges[i].minIndex);
 			bitsWritten+=sizeof(range_type)*8+8;
 			if (ranges[i].minIndex!=ranges[i].maxIndex)
@@ -93,9 +95,9 @@ namespace DataStructures
 		RakNet::BitSize_t before=in->GetWriteOffset();
 		in->Write(countWritten);
 		bitsWritten+=in->GetWriteOffset()-before;
-	//	RAKNET_DEBUG_PRINTF("%i ", in->GetNumberOfBitsUsed());
+	/* RAKNET_DEBUG_PRINTF("%i ", in->GetNumberOfBitsUsed()); */
 		in->Write(&tempBS, tempBS.GetNumberOfBitsUsed());
-	//	RAKNET_DEBUG_PRINTF("%i %i \n", tempBS.GetNumberOfBitsUsed(),in->GetNumberOfBitsUsed());
+	/* RAKNET_DEBUG_PRINTF("%i %i \n", tempBS.GetNumberOfBitsUsed(),in->GetNumberOfBitsUsed()); */
 
 		if (clearSerialized && countWritten)
 		{
@@ -170,7 +172,7 @@ namespace DataStructures
 				ranges[insertionIndex-1].maxIndex++;
 			else if (index > ranges[insertionIndex-1].maxIndex+(range_type)1)
 			{
-				// Insert at end
+				/* 插入 at end */
 				ranges.Insert(index, RangeNode<range_type>(index, index), true, _FILE_AND_LINE_);
 			}
 
@@ -179,14 +181,14 @@ namespace DataStructures
 
 		if (index < ranges[insertionIndex].minIndex-(range_type)1)
 		{
-			// Insert here
+			/* 插入 here */
 			ranges.InsertAtIndex(RangeNode<range_type>(index, index), insertionIndex, _FILE_AND_LINE_);
 
 			return;
 		}
 		else if (index == ranges[insertionIndex].minIndex-(range_type)1)
 		{
-			// Decrease minIndex and join left
+			/* Decrease minIndex and join left */
 			ranges[insertionIndex].minIndex--;
 			if (insertionIndex>0 && ranges[insertionIndex-1].maxIndex+(range_type)1==ranges[insertionIndex].minIndex)
 			{
@@ -198,12 +200,12 @@ namespace DataStructures
 		}
 		else if (index >= ranges[insertionIndex].minIndex && index <= ranges[insertionIndex].maxIndex)
 		{
-			// Already exists
+			/* 已存在 */
 			return;
 		}
 		else if (index == ranges[insertionIndex].maxIndex+(range_type)1)
 		{
-			// Increase maxIndex and join right
+			/* Increase maxIndex and join right */
 			ranges[insertionIndex].maxIndex++;
 			if (insertionIndex<ranges.Size()-1 && ranges[insertionIndex+(range_type)1].minIndex==ranges[insertionIndex].maxIndex+(range_type)1)
 			{

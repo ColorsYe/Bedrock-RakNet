@@ -8,10 +8,12 @@
  *
  */
 
-/// \file DS_Tree.h
-/// \internal
-/// \brief Just a regular tree
-///
+/*
+ *  DS_Tree.h
+ * 内部使用
+ * Just a regular tree
+ *
+ */
 
 
 
@@ -21,8 +23,10 @@
 #include "DS_Queue.h"
 #include "RakMemoryOverride.h"
 
-/// The namespace DataStructures was only added to avoid compiler errors for commonly named data structures
-/// As these data structures are stand-alone, you can use them outside of RakNet for your own projects if you wish.
+/*
+ * DataStructures 命名空间的添加仅是为了避免常见数据结构名称导致的编译器错误
+ * 由于这些数据结构是独立的，如果需要，你可以在 RakNet 之外将它们用于自己的项目。
+ */
 namespace DataStructures
 {
 	template <class TreeType>
@@ -94,7 +98,7 @@ namespace DataStructures
 			RakNet::OP_DELETE(output[i], _FILE_AND_LINE_);
 */
 
-		// Already recursive to do this
+		/* Already recursive to do this */
 		unsigned int i;
 		for (i=0; i < children.Size(); i++)
 			RakNet::OP_DELETE(children[i], _FILE_AND_LINE_);

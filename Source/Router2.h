@@ -8,9 +8,11 @@
  *
  */
 
-/// \file
-/// \brief Router2 plugin. Allows you to connect to a system by routing packets through another system that is connected to both you and the destination. Useful for getting around NATs.
-///
+/*
+ * 
+ * Router2 plugin. Allows you to connect to a system by routing packets through another system that is connected to both you and the destination. Useful for getting around NATs.
+ *
+ */
 
 
 #include "NativeFeatureIncludes.h"
@@ -28,7 +30,7 @@
 
 namespace RakNet
 {
-/// Forward declarations
+/* 前向声明 */
 class RakPeerInterface;
 
 struct Router2DebugInterface
@@ -39,62 +41,71 @@ struct Router2DebugInterface
 	virtual void ShowDiagnostic(const char *message);
 };
 
-/// \defgroup ROUTER_2_GROUP Router2
-/// \brief Part of the NAT punchthrough solution, allowing you to connect to systems by routing through a shared connection.
-/// \details Router2 routes datagrams between two systems that are not directly connected by using the bandwidth of a third system, to which the other two systems were connected
-/// It is of benefit when a fully connected mesh topology is desired, but could not be completely established due to routers and/or firewalls
-/// As the system address of a remote system will be the system address of the intermediary, it is necessary to use the RakNetGUID object to refer to systems, including with other plugins
-/// \ingroup PLUGINS_GROUP
+/*
+ * \defgroup ROUTER_2_GROUP Router2
+ * Part of the NAT punchthrough solution, allowing you to connect to systems by routing through a shared connection.
+ * Router2 routes datagrams between two systems that are not directly connected by using the bandwidth of a third system, to which the other two systems were connected
+ * It is of benefit when a fully connected mesh topology is desired, but could not be completely established due to routers and/or firewalls
+ * As the system address of a remote system will be the system address of the intermediary, it is necessary to use the RakNetGUID object to refer to systems, including with other plugins
+ * \ingroup PLUGINS_GROUP
+ */
 
-/// \ingroup ROUTER_2_GROUP
-/// \brief Class interface for the Router2 system
-/// \details
+/*
+ * \ingroup ROUTER_2_GROUP
+ * Class interface for the Router2 system
+ * */
 class RAK_DLL_EXPORT Router2 : public PluginInterface2
 {
 public:
-	// GetInstance() and DestroyInstance(instance*)
+	/* 获取单例 GetInstance() 和销毁单例 DestroyInstance(instance*) */
 	STATIC_FACTORY_DECLARATIONS(Router2)
 
 	Router2();
 	virtual ~Router2();
 
-	/// Sets the socket family to use, either IPV4 or IPV6
-	/// \param[in] socketFamily For IPV4, use AF_INET (default). For IPV6, use AF_INET6. To autoselect, use AF_UNSPEC.
+	/*
+	 * 将socket family设置为use, either IPV4 or IPV6
+	 * 参数[输入] socketFamily For IPV4, use AF_INET (default). For IPV6, use AF_INET6. To autoselect, use AF_UNSPEC.
+	 */
 	void SetSocketFamily(unsigned short _socketFamily);
 
-	/// \brief Query all connected systems to connect through them to a third system.
-	/// System will return ID_ROUTER_2_FORWARDING_NO_PATH if unable to connect.
-	/// Else you will get ID_ROUTER_2_FORWARDING_ESTABLISHED
-	///
-	/// On ID_ROUTER_2_FORWARDING_ESTABLISHED, EstablishRouting as follows:
-	///
-	/// RakNet::BitStream bs(packet->data, packet->length, false);
-	/// bs.IgnoreBytes(sizeof(MessageID));
-	/// RakNetGUID endpointGuid;
-	/// bs.Read(endpointGuid);
-	/// unsigned short sourceToDestPort;
-	/// bs.Read(sourceToDestPort);
-	/// char ipAddressString[32];
-	/// packet->systemAddress.ToString(false, ipAddressString);
-	/// rakPeerInterface->EstablishRouting(ipAddressString, sourceToDestPort, 0,0);
-	///
-	/// \note The SystemAddress for a connection should not be used - always use RakNetGuid as the address can change at any time.
-	/// When the address changes, you will get ID_ROUTER_2_REROUTED
+	/*
+	 * Query all connected systems to connect through them to a third system.
+	 * System will return ID_ROUTER_2_FORWARDING_NO_PATH if unable to connect.
+	 * Else you will get ID_ROUTER_2_FORWARDING_ESTABLISHED
+	 *
+	 * On ID_ROUTER_2_FORWARDING_ESTABLISHED, EstablishRouting as follows:
+	 *
+	 * RakNet::BitStream bs(packet->data, packet->length, false);
+	 * bs.IgnoreBytes(sizeof(MessageID));
+	 * RakNetGUID endpointGuid;
+	 * bs.Read(endpointGuid);
+	 * unsigned short sourceToDestPort;
+	 * bs.Read(sourceToDestPort);
+	 * char ipAddressString[32];
+	 * packet->systemAddress.ToString(false, ipAddressString);
+	 * rakPeerInterface->EstablishRouting(ipAddressString, sourceToDestPort, 0,0);
+	 *
+	 * 注意: The SystemAddress for a connection should not be used - always use RakNetGuid as the address can change at any time.
+	 * When the address changes, you will get ID_ROUTER_2_REROUTED
+	 */
 	void EstablishRouting(RakNetGUID endpointGuid);
 
-	/// Set the maximum number of bidirectional connections this system will support
-	/// Defaults to 0
+	/*
+	 * 设置 maximum number of bidirectional connections this system will support
+	 * Defaults to 0
+	 */
 	void SetMaximumForwardingRequests(int max);
 
-	/// For testing and debugging
+	/* For testing and debugging */
 	void SetDebugInterface(Router2DebugInterface *_debugInterface);
 
-	/// Get the pointer passed to SetDebugInterface()
+	/* 获取 pointer passed to SetDebugInterface()*/
 	Router2DebugInterface *GetDebugInterface(void) const;
 
-	// --------------------------------------------------------------------------------------------
-	// Packet handling functions
-	// --------------------------------------------------------------------------------------------
+	/* -------------------------------------------------------------------------------------------- */
+	/* 数据包处理函数 */
+	/* -------------------------------------------------------------------------------------------- */
 	PluginReceiveResult OnReceive(Packet *packet) override;
 	void Update() override;
 	void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason ) override;
@@ -176,7 +187,7 @@ protected:
 	SimpleMutex connectionRequestsMutex, miniPunchesInProgressMutex, forwardedConnectionListMutex;
 	DataStructures::List<ConnnectRequest*> connectionRequests;
 	DataStructures::List<MiniPunchRequest> miniPunchesInProgress;
-	// Forwarding we have initiated
+	/* Forwarding we have initiated */
 	DataStructures::List<ForwardedConnection> forwardedConnectionList;
 
 	void ClearConnectionRequests();

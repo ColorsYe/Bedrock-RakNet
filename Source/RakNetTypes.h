@@ -3,14 +3,12 @@
  *  All rights reserved.
  *
  *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant 
+ *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  *
  */
 
-/// \file
-/// \brief Types used by RakNet, most of which involve user code.
-///
+/* 文件说明: RakNet 使用的类型定义，大部分与用户代码相关。 */
 
 
 #pragma once
@@ -19,15 +17,13 @@
 #include "RakNetTime.h"
 #include "Export.h"
 #include "WindowsIncludes.h"
-#include "XBox360Includes.h"
 #include "SocketIncludes.h"
 
 
 
 
-
 namespace RakNet {
-/// Forward declarations
+/* 前向声明 */
 class RakPeerInterface;
 class BitStream;
 struct Packet;
@@ -59,37 +55,37 @@ enum class ConnectionAttemptResult
 	SECURITY_INITIALIZATION_FAILED
 };
 
-/// Returned from RakPeerInterface::GetConnectionState()
+/* 由 RakPeerInterface::GetConnectionState() 返回的连接状态枚举 */
 enum ConnectionState
 {
-	/// Connect() was called, but the process hasn't started yet
+	/* 已调用 Connect()，但处理流程尚未开始 */
 	IS_PENDING,
-	/// Processing the connection attempt
+	/* 正在处理连接尝试 */
 	IS_CONNECTING,
-	/// Is connected and able to communicate
+	/* 已连接，可以正常通信 */
 	IS_CONNECTED,
-	/// Was connected, but will disconnect as soon as the remaining messages are delivered
+	/* 已连接，但将在剩余消息传递完毕后断开连接 */
 	IS_DISCONNECTING,
-	/// A connection attempt failed and will be aborted
+	/* 连接尝试失败，即将中止 */
 	IS_SILENTLY_DISCONNECTING,
-	/// No longer connected
+	/* 连接已断开 */
 	IS_DISCONNECTED,
-	/// Was never connected, or else was disconnected long enough ago that the entry has been discarded
+	/* 从未建立过连接，或断开连接已久条目已被丢弃 */
 	IS_NOT_CONNECTED
 };
 
-/// Given a number of bits, return how many bytes are needed to represent that.
+/* 给定比特数，返回表示该比特数所需的字节数。 */
 #define BITS_TO_BYTES(x) (((x)+7)>>3)
 #define BYTES_TO_BITS(x) ((x)<<3)
 
-/// \sa NetworkIDObject.h
+/* 另见 NetworkIDObject.h */
 using UniqueIDType = unsigned char;
 using SystemIndex = unsigned short;
 using RPCIndex = unsigned char;
 const int MAX_RPC_MAP_SIZE=((RPCIndex)-1)-1;
 const int UNDEFINED_RPC_INDEX=((RPCIndex)-1);
 
-/// First byte of a network message
+/* 网络消息的第一个字节（消息类型标识符） */
 using MessageID = unsigned char;
 
 using BitSize_t = uint32_t;
@@ -100,109 +96,111 @@ using BitSize_t = uint32_t;
 #define PRINTF_64_BIT_MODIFIER "ll"
 #endif
 
-/// Used with the PublicKey structure
+/* 与 PublicKey 结构体配合使用的公钥模式枚举 */
 enum PublicKeyMode
 {
-	/// The connection is insecure. You can also just pass 0 for the pointer to PublicKey in RakPeerInterface::Connect()
+	/* 连接不使用加密。也可以在 RakPeerInterface::Connect() 中将 PublicKey 指针直接传 0。 */
 	PKM_INSECURE_CONNECTION,
 
-	/// Accept whatever public key the server gives us. This is vulnerable to man in the middle, but does not require
-	/// distribution of the public key in advance of connecting.
+	/*
+	 * 接受服务器提供的任意公钥。此模式容易受到中间人攻击，
+	 * 但无需在连接前预先分发公钥。
+	 */
 	PKM_ACCEPT_ANY_PUBLIC_KEY,
 
-	/// Use a known remote server public key. PublicKey::remoteServerPublicKey must be non-zero.
-	/// This is the recommended mode for secure connections.
+	/*
+	 * 使用已知的远程服务器公钥。PublicKey::remoteServerPublicKey 必须非零。
+	 * 这是安全连接的推荐模式。
+	 */
 	PKM_USE_KNOWN_PUBLIC_KEY,
 
-	/// Use a known remote server public key AND provide a public key for the connecting client.
-	/// PublicKey::remoteServerPublicKey, myPublicKey and myPrivateKey must be all be non-zero.
-	/// The server must cooperate for this mode to work.
-	/// I recommend not using this mode except for server-to-server communication as it significantly increases the CPU requirements during connections for both sides.
-	/// Furthermore, when it is used, a connection password should be used as well to avoid DoS attacks.
+	/*
+	 * 同时使用已知的远程服务器公钥，并为连接客户端提供自身的公钥。
+	 * PublicKey::remoteServerPublicKey、myPublicKey 和 myPrivateKey 均必须非零。
+	 * 服务器必须配合才能使此模式正常工作。
+	 * 建议仅用于服务器间通信，因为此模式会显著增加双方连接期间的 CPU 开销。
+	 * 此外，使用此模式时应同时设置连接密码，以防范 DoS 攻击。
+	 */
 	PKM_USE_TWO_WAY_AUTHENTICATION
 };
 
-/// Passed to RakPeerInterface::Connect()
+/* 传递给 RakPeerInterface::Connect() 的公钥结构体 */
 struct RAK_DLL_EXPORT PublicKey
 {
-	/// How to interpret the public key, see above
+	/* 指定公钥的解释方式，参见上方枚举 */
 	PublicKeyMode publicKeyMode;
 
-	/// Pointer to a public key of length cat::EasyHandshake::PUBLIC_KEY_BYTES. See the Encryption sample.
+	/* 指向长度为 cat::EasyHandshake::PUBLIC_KEY_BYTES 的公钥指针。参见加密示例。 */
 	char *remoteServerPublicKey;
 
-	/// (Optional) Pointer to a public key of length cat::EasyHandshake::PUBLIC_KEY_BYTES
+	/* （可选）指向长度为 cat::EasyHandshake::PUBLIC_KEY_BYTES 的公钥指针 */
 	char *myPublicKey;
 
-	/// (Optional) Pointer to a private key of length cat::EasyHandshake::PRIVATE_KEY_BYTES
+	/* （可选）指向长度为 cat::EasyHandshake::PRIVATE_KEY_BYTES 的私钥指针 */
 	char *myPrivateKey;
 };
 
-/// Describes the local socket to use for RakPeer::Startup
+/* 描述 RakPeer::Startup 使用的本地套接字 */
 struct RAK_DLL_EXPORT SocketDescriptor
 {
 	SocketDescriptor();
 	SocketDescriptor(unsigned short _port, const char *_hostAddress);
 
-	/// The local port to bind to.  Pass 0 to have the OS autoassign a port.
+	/* 要绑定的本地端口。传 0 则由操作系统自动分配端口。 */
 	unsigned short port;
 
-	/// The local network card address to bind to, such as "127.0.0.1".  Pass an empty string to use INADDR_ANY.
+	/* 要绑定的本地网卡地址，例如 "127.0.0.1"。传空字符串则使用 INADDR_ANY。 */
 	char hostAddress[32];
 
-	/// IP version: For IPV4, use AF_INET (default). For IPV6, use AF_INET6. To autoselect, use AF_UNSPEC.
-	/// IPV6 is the newer internet protocol. Instead of addresses such as natpunch.jenkinssoftware.com, you may have an address such as fe80::7c:31f7:fec4:27de%14.
-	/// Encoding takes 16 bytes instead of 4, so IPV6 is less efficient for bandwidth.
-	/// On the positive side, NAT Punchthrough is not needed and should not be used with IPV6 because there are enough addresses that routers do not need to create address mappings.
-	/// RakPeer::Startup() will fail if this IP version is not supported.
-	/// \pre RAKNET_SUPPORT_IPV6 must be set to 1 in RakNetDefines.h for AF_INET6
+	/*
+	 * IP 版本：IPv4 使用 AF_INET（默认），IPv6 使用 AF_INET6，自动选择使用 AF_UNSPEC。
+	 * IPv6 是较新的互联网协议，地址形如 fe80::7c:31f7:fec4:27de%14 而非 natpunch.jenkinssoftware.com。
+	 * IPv6 地址编码占 16 字节（IPv4 仅 4 字节），因此带宽效率较低。
+	 * 不过 IPv6 的优势在于：地址空间充足，路由器无需创建地址映射，因此无需 NAT 穿透，也不应使用 NAT 穿透。
+	 * 若系统不支持所指定的 IP 版本，RakPeer::Startup() 将失败。
+	 * 前提条件: 若使用 AF_INET6，需在 RakNetDefines.h 中将 RAKNET_SUPPORT_IPV6 设为 1。
+	 */
 	short socketFamily;
-
-
-
-
-
 
 
 
 
 	unsigned short remotePortRakNetWasStartedOn_PS3_PSP2;
 
-	// Required for Google chrome
+	/* Google Chrome 平台所需 */
 	_PP_Instance_ chromeInstance;
 
-	// Set to true to use a blocking socket (default, do not change unless you have a reason to)
+	/* 设为 true 使用阻塞套接字（默认，无特殊需求请勿修改） */
 	bool blockingSocket;
 
-	/// XBOX only: set IPPROTO_VDP if you want to use VDP. If enabled, this socket does not support broadcast to 255.255.255.255
+	/* 仅 XBOX 平台：若需使用 VDP 协议，设置 IPPROTO_VDP。启用后该套接字不支持向 255.255.255.255 广播。 */
 	unsigned int extraSocketOptions;
 };
 
 extern bool NonNumericHostString( const char *host );
 
-/// \brief Network address for a system
-/// \details Corresponds to a network address<BR>
-/// This is not necessarily a unique identifier. For example, if a system has both LAN and internet connections, the system may be identified by either one, depending on who is communicating<BR>
-/// Therefore, you should not transmit the SystemAddress over the network and expect it to identify a system, or use it to connect to that system, except in the case where that system is not behind a NAT (such as with a dedciated server)
-/// Use RakNetGUID for a unique per-instance of RakPeer to identify systems
+/*
+ * 系统的网络地址。
+ * 对应一个网络地址，但不一定是唯一标识符。
+ * 例如，若某系统同时拥有局域网和互联网连接，
+ * 根据通信方的不同，可能通过不同地址标识该系统。
+ * 因此，不应将 SystemAddress 通过网络传输后用于标识或连接某系统，
+ * 除非该系统不在 NAT 之后（如专用服务器）。
+ * 若需要唯一标识每个 RakPeer 实例，请使用 RakNetGUID。
+ */
 struct RAK_DLL_EXPORT SystemAddress
 {
-	/// Constructors
+	/* 构造函数 */
 	SystemAddress();
 	SystemAddress(const char *str);
 	SystemAddress(const char *str, unsigned short port);
+	SystemAddress(const SystemAddress& other) = default;
 
 
 
 
-
-
-
-
-
-
-	/// SystemAddress, with RAKNET_SUPPORT_IPV6 defined, holds both an sockaddr_in6 and a sockaddr_in
-	union// In6OrIn4
+	/* 当 RAKNET_SUPPORT_IPV6 已定义时，SystemAddress 同时持有 sockaddr_in6 和 sockaddr_in */
+	union/* In6OrIn4 */
 	{
 #if RAKNET_SUPPORT_IPV6==1
 		struct sockaddr_storage sa_stor;
@@ -212,82 +210,94 @@ struct RAK_DLL_EXPORT SystemAddress
 		sockaddr_in addr4;
 	} address;
 
-	/// This is not used internally, but holds a copy of the port held in the address union, so for debugging it's easier to check what port is being held
+	/* 内部不使用此字段，但它保存了 address 联合体中的端口副本，便于调试时快速查看当前端口值 */
 	unsigned short debugPort;
 
-	/// \internal Return the size to write to a bitStream
+	/* 内部使用: 返回写入位流时所需的字节大小 */
 	static int size();
 
-	/// Hash the system address
+	/* 对系统地址进行哈希运算 */
 	static unsigned long ToInteger( const SystemAddress &sa );
 
-	/// Return the IP version, either IPV4 or IPV6
-	/// \return Either 4 or 6
+	/*
+	 * 返回 IP 版本，IPv4 或 IPv6。
+	 * 返回值: 4 或 6
+	 */
 	unsigned char GetIPVersion(void) const;
 
-	/// \internal Returns either IPPROTO_IP or IPPROTO_IPV6
-	/// \sa GetIPVersion
+	/*
+	 * 内部使用: 返回 IPPROTO_IP 或 IPPROTO_IPV6。
+	 * 另见 GetIPVersion
+	 */
 	unsigned int GetIPPROTO(void) const;
 
-	/// Call SetToLoopback(), with whatever IP version is currently held. Defaults to IPV4
+	/* 使用当前持有的 IP 版本调用 SetToLoopback()，默认为 IPv4 */
 	void SetToLoopback();
 
-	/// Call SetToLoopback() with a specific IP version
-	/// \param[in] ipVersion Either 4 for IPV4 or 6 for IPV6
+	/*
+	 * 使用指定 IP 版本调用 SetToLoopback()。
+	 * 参数[in] ipVersion: IPv4 传 4，IPv6 传 6
+	 */
 	void SetToLoopback(unsigned char ipVersion);
 
-	/// \return If was set to 127.0.0.1 or ::1
+	/* 返回值: 是否已设置为 127.0.0.1 或 ::1（回环地址） */
 	bool IsLoopback(void) const;
 
-	// Return the systemAddress as a string in the format <IP>|<Port>
-	// Returns a static string
-	// NOT THREADSAFE
-	// portDelineator should not be '.', ':', '%', '-', '/', a number, or a-f
+	/*
+	 * 以 <IP>|<Port> 格式将系统地址以字符串形式返回。
+	 * 返回一个静态字符串（非线程安全）。
+	 * portDelineator 不能为 '.'、':'、'%'、'-'、'/'、数字或 a-f。
+	 */
 	const char *ToString(bool writePort=true, char portDelineator='|') const;
 
-	// Return the systemAddress as a string in the format <IP>|<Port>
-	// dest must be large enough to hold the output
-	// portDelineator should not be '.', ':', '%', '-', '/', a number, or a-f
-	// THREADSAFE
+	/*
+	 * 以 <IP>|<Port> 格式将系统地址写入字符串。
+	 * dest 必须足够大以容纳输出结果（线程安全）。
+	 * portDelineator 不能为 '.'、':'、'%'、'-'、'/'、数字或 a-f。
+	 */
 	void ToString(bool writePort, char *dest, char portDelineator='|') const;
 
-	/// Set the system address from a printable IP string, for example "192.0.2.1" or "2001:db8:63b3:1::3490"
-	/// You can write the port as well, using the portDelineator, for example "192.0.2.1|1234"
-	/// \param[in] str A printable IP string, for example "192.0.2.1" or "2001:db8:63b3:1::3490". Pass 0 for \a str to set to UNASSIGNED_SYSTEM_ADDRESS
-	/// \param[in] portDelineator if \a str contains a port, delineate the port with this character. portDelineator should not be '.', ':', '%', '-', '/', a number, or a-f
-	/// \param[in] ipVersion Only used if str is a pre-defined address in the wrong format, such as 127.0.0.1 but you want ip version 6, so you can pass 6 here to do the conversion
-	/// \note The current port is unchanged if a port is not specified in \a str
-	/// \return True on success, false on ipVersion does not match type of passed string
+	/*
+	 * 从可打印的 IP 字符串中设置系统地址，例如 "192.0.2.1" 或 "2001:db8:63b3:1::3490"。
+	 * 也可以通过 portDelineator 同时指定端口，例如 "192.0.2.1|1234"。
+	 * 参数[in] str:             可打印的 IP 字符串，传 0 则设置为 UNASSIGNED_SYSTEM_ADDRESS。
+	 * 参数[in] portDelineator:  若 str 中包含端口，使用此字符作为分隔符，不能为 '.'、':'、'%'、'-'、'/'、数字或 a-f。
+	 * 参数[in] ipVersion:       仅在 str 为预定义地址但格式不匹配时使用，例如希望将 127.0.0.1 转换为 IPv6，可传 6。
+	 * 注意: 若 str 中未指定端口，则当前端口保持不变。
+	 * 返回值: 成功返回 true，ipVersion 与传入字符串类型不匹配时返回 false。
+	 */
 	bool FromString(const char *str, char portDelineator='|', int ipVersion=0);
 
-	/// Same as FromString(), but you explicitly set a port at the same time
+	/* 与 FromString() 相同，但同时显式设置端口 */
 	bool FromStringExplicitPort(const char *str, unsigned short port, int ipVersion=0);
 
-	/// Copy the port from another SystemAddress structure
+	/* 从另一个 SystemAddress 结构体复制端口 */
 	void CopyPort( const SystemAddress& right );
 
-	/// Returns if two system addresses have the same IP (port is not checked)
+	/* 判断两个系统地址的 IP 是否相同（不检查端口） */
 	bool EqualsExcludingPort( const SystemAddress& right ) const;
 
-	/// Returns the port in host order (this is what you normally use)
+	/* 以主机字节序返回端口（通常使用此函数） */
 	unsigned short GetPort(void) const;
 
-	/// \internal Returns the port in network order
+	/* 内部使用: 以网络字节序返回端口 */
 	unsigned short GetPortNetworkOrder(void) const;
 
-	/// Sets the port. The port value should be in host order (this is what you normally use)
-	/// Renamed from SetPort because of winspool.h http://edn.embarcadero.com/article/21494
+	/*
+	 * 设置端口，端口值应为主机字节序（通常使用此函数）。
+	 * 因与 winspool.h 冲突而从 SetPort 重命名，参见 http://edn.embarcadero.com/article/21494
+	 */
 	void SetPortHostOrder(unsigned short s);
 
-	/// \internal Sets the port. The port value should already be in network order.
+	/* 内部使用: 设置端口，端口值应已为网络字节序。 */
 	void SetPortNetworkOrder(unsigned short s);
 
-	/// Old version, for crap platforms that don't support newer socket functions
+	/* 旧版接口，用于不支持新版套接字函数的平台 */
 	bool SetBinaryAddress(const char *str, char portDelineator=':');
-	/// Old version, for crap platforms that don't support newer socket functions
+	/* 旧版接口，用于不支持新版套接字函数的平台 */
 	void ToString_Old(bool writePort, char *dest, char portDelineator=':') const;
 
-	/// \internal sockaddr_in6 requires extra data beyond just the IP and port. Copy that extra data from an existing SystemAddress that already has it
+	/* 内部使用: sockaddr_in6 除 IP 和端口外还需要额外数据，从已有 SystemAddress 中复制该额外数据 */
 	void FixForIPVersion(const SystemAddress &boundAddressToSocket);
 
 	bool IsLANAddress();
@@ -298,7 +308,7 @@ struct RAK_DLL_EXPORT SystemAddress
 	bool operator > ( const SystemAddress& right ) const;
 	bool operator < ( const SystemAddress& right ) const;
 
-	/// \internal Used internally for fast lookup. Optional (use -1 to do regular lookup). Don't transmit this.
+	/* 内部使用: 用于快速查找，可选（使用 -1 则进行常规查找），不要传输此字段。 */
 	SystemIndex systemIndex;
 
 	private:
@@ -308,23 +318,28 @@ struct RAK_DLL_EXPORT SystemAddress
 #endif
 };
 
-/// Uniquely identifies an instance of RakPeer. Use RakPeer::GetGuidFromSystemAddress() and RakPeer::GetSystemAddressFromGuid() to go between SystemAddress and RakNetGUID
-/// Use RakPeer::GetGuidFromSystemAddress(UNASSIGNED_SYSTEM_ADDRESS) to get your own GUID
+/*
+ * 唯一标识一个 RakPeer 实例。
+ * 使用 RakPeer::GetGuidFromSystemAddress() 和 RakPeer::GetSystemAddressFromGuid() 在 SystemAddress 与 RakNetGUID 之间转换。
+ * 使用 RakPeer::GetGuidFromSystemAddress(UNASSIGNED_SYSTEM_ADDRESS) 获取自身的 GUID。
+ */
 struct RAK_DLL_EXPORT RakNetGUID
 {
 	RakNetGUID();
 	explicit RakNetGUID(uint64_t _g) {g=_g; systemIndex=(SystemIndex)-1;}
-//	uint32_t g[6];
+/* uint32_t g[6]; */
 	uint64_t g;
 
-	// Return the GUID as a string
-	// Returns a static string
-	// NOT THREADSAFE
+	/*
+	 * 以字符串形式返回 GUID。
+	 * 返回一个静态字符串（非线程安全）。
+	 */
 	const char *ToString(void) const;
 
-	// Return the GUID as a string
-	// dest must be large enough to hold the output
-	// THREADSAFE
+	/*
+	 * 以字符串形式返回 GUID，写入 dest（线程安全）。
+	 * dest 必须足够大以容纳输出结果。
+	 */
 	void ToString(char *dest) const;
 
 	bool FromString(const char *source);
@@ -338,7 +353,7 @@ struct RAK_DLL_EXPORT RakNetGUID
 		return *this;
 	}
 
-	// Used internally for fast lookup. Optional (use -1 to do regular lookup). Don't transmit this.
+	/* 内部使用: 用于快速查找，可选（使用 -1 则进行常规查找），不要传输此字段。 */
 	SystemIndex systemIndex;
 	static int size() {return static_cast<int>(sizeof(uint64_t));}
 
@@ -348,19 +363,23 @@ struct RAK_DLL_EXPORT RakNetGUID
 	bool operator < ( const RakNetGUID& right ) const;
 };
 
-/// Index of an invalid SystemAddress
-//const SystemAddress UNASSIGNED_SYSTEM_ADDRESS =
-//{
-//	0xFFFFFFFF, 0xFFFF
-//};
+/* 无效 SystemAddress 的索引值 */
+/*
+const SystemAddress UNASSIGNED_SYSTEM_ADDRESS =
+{
+	0xFFFFFFFF, 0xFFFF
+};
+*/
 #ifndef SWIG
 const SystemAddress UNASSIGNED_SYSTEM_ADDRESS;
 const RakNetGUID UNASSIGNED_RAKNET_GUID((uint64_t)-1);
 #endif
-//{
-//	{0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF}
-//	0xFFFFFFFFFFFFFFFF
-//};
+/*
+{
+	{0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF}
+	0xFFFFFFFFFFFFFFFF
+};
+*/
 
 
 struct RAK_DLL_EXPORT AddressOrGUID
@@ -418,39 +437,45 @@ struct RAK_DLL_EXPORT AddressOrGUID
 
 using NetworkID = uint64_t;
 
-/// This represents a user message from another system.
+/* 表示来自其他系统的一条用户消息。 */
 struct Packet
 {
-	/// The system that send this packet.
+	/* 发送此数据包的系统地址。 */
 	SystemAddress systemAddress;
 
-	/// A unique identifier for the system that sent this packet, regardless of IP address (internal / external / remote system)
-	/// Only valid once a connection has been established (ID_CONNECTION_REQUEST_ACCEPTED, or ID_NEW_INCOMING_CONNECTION)
-	/// Until that time, will be UNASSIGNED_RAKNET_GUID
+	/*
+	 * 发送此数据包的系统的唯一标识符，与 IP 地址无关（适用于内网/外网/远程系统）。
+	 * 仅在连接建立后有效（收到 ID_CONNECTION_REQUEST_ACCEPTED 或 ID_NEW_INCOMING_CONNECTION 后）。
+	 * 在此之前值为 UNASSIGNED_RAKNET_GUID。
+	 */
 	RakNetGUID guid;
 
-	/// The length of the data in bytes
+	/* 数据的字节长度 */
 	unsigned int length;
 
-	/// The length of the data in bits
+	/* 数据的比特长度 */
 	BitSize_t bitSize;
 
-	/// The data from the sender
+	/* 发送方的数据内容 */
 	unsigned char* data;
 
-	/// @internal
-	/// Indicates whether to delete the data, or to simply delete the packet.
+	/*
+	 * 内部使用:
+	 * 指示是否需要删除 data，或仅删除数据包本身。
+	 */
 	bool deleteData;
 
-	/// @internal
-	/// If true, this message is meant for the user, not for the plugins, so do not process it through plugins
+	/*
+	 * 内部使用:
+	 * 若为 true，此消息面向用户而非插件，不应通过插件处理。
+	 */
 	bool wasGeneratedLocally;
 };
 
-///  Index of an unassigned player
+/* 未分配玩家的索引值 */
 const SystemIndex UNASSIGNED_PLAYER_INDEX = 65535;
 
-/// Unassigned object ID
+/* 未分配对象的 ID */
 const NetworkID UNASSIGNED_NETWORK_ID = (uint64_t) -1;
 
 const int PING_TIMES_ARRAY_SIZE = 5;
@@ -496,4 +521,4 @@ struct RAK_DLL_EXPORT uint24_t
 	inline const uint24_t operator*( const uint32_t &other ) const { return uint24_t(val*other); }
 };
 
-} // namespace RakNet
+} /* RakNet 命名空间 */

@@ -8,10 +8,12 @@
  *
  */
 
-/// \file DS_OrderedChannelHeap.h
-/// \internal
-/// \brief Ordered Channel Heap .  This is a heap where you add to it on multiple ordered channels, with each channel having a different weight.
-///
+/*
+ *  DS_OrderedChannelHeap.h
+ * 内部使用
+ * Ordered Channel Heap .  This is a heap where you add to it on multiple ordered channels, with each channel having a different weight.
+ *
+ */
 
 
 #pragma once
@@ -22,8 +24,10 @@
 #include "RakAssert.h"
 #include "Rand.h"
 
-/// The namespace DataStructures was only added to avoid compiler errors for commonly named data structures
-/// As these data structures are stand-alone, you can use them outside of RakNet for your own projects if you wish.
+/*
+ * DataStructures 命名空间的添加仅是为了避免常见数据结构名称导致的编译器错误
+ * 由于这些数据结构是独立的，如果需要，你可以在 RakNet 之外将它们用于自己的项目。
+ */
 namespace DataStructures
 {
 	template <class channel_key_type, class heap_data_type, int (*channel_key_comparison_func)(const channel_key_type&, const channel_key_type&)=defaultMapKeyComparison<channel_key_type> >
@@ -63,7 +67,7 @@ namespace DataStructures
 	protected:
 		DataStructures::Map<channel_key_type, QueueAndWeight*, channel_key_comparison_func> map;
 		DataStructures::Heap<double, HeapChannelAndData, true> heap;
-		void GreatestRandResult();
+		double GreatestRandResult();
 	};
 
 	template <class channel_key_type, class heap_data_type, int (*channel_key_comparison_func)(const channel_key_type&, const channel_key_type&)>
@@ -72,7 +76,7 @@ namespace DataStructures
 	}
 
 	template <class channel_key_type, class heap_data_type, int (*channel_key_comparison_func)(const channel_key_type&, const channel_key_type&)>
-		OrderedChannelHeap<channel_key_type, heap_data_type, channel_key_comparison_func>::~OrderedChannelHeap()
+		OrderedChannelHeap<channel_key_type, heap_data_type, channel_key_comparison_func>::~OrderedChannelHeap() noexcept
 	{
 		Clear();
 	}
@@ -84,7 +88,7 @@ namespace DataStructures
 	}
 
 	template <class channel_key_type, class heap_data_type, int (*channel_key_comparison_func)(const channel_key_type&, const channel_key_type&)>
-	void OrderedChannelHeap<channel_key_type, heap_data_type, channel_key_comparison_func>::GreatestRandResult()
+	double OrderedChannelHeap<channel_key_type, heap_data_type, channel_key_comparison_func>::GreatestRandResult()
 	{
 		double greatest;
 		unsigned i;
@@ -100,15 +104,15 @@ namespace DataStructures
 	template <class channel_key_type, class heap_data_type, int (*channel_key_comparison_func)(const channel_key_type&, const channel_key_type&)>
 	void OrderedChannelHeap<channel_key_type, heap_data_type, channel_key_comparison_func>::PushAtHead(const unsigned index, const channel_key_type &channelID, const heap_data_type &data)
 	{
-		// If an assert hits here then this is an unknown channel.  Call AddChannel first.
+		/* If an assert hits here then this is an unknown channel.  Call AddChannel first. */
 		QueueAndWeight *queueAndWeight=map.Get(channelID);
 		double maxRange, minRange, rnd;
 		if (queueAndWeight->randResultQueue.Size()==0)
 		{
-			// Set maxRange to the greatest random number waiting to be returned, rather than 1.0 necessarily
-			// This is so weights are scaled similarly among channels.  For example, if the head weight for a used channel was .25
-			// and then we added another channel, the new channel would need to choose between .25 and 0
-			// If we chose between 1.0 and 0, it would be 1/.25 (4x) more likely to be at the head of the heap than it should be
+			/* 将maxRange设置为the greatest random number waiting to be returned, rather than 1.0 necessarily */
+			/* This is so weights are scaled similarly among channels.  For example, if the head weight for a used channel was .25 */
+			/* and then we added another channel, the new channel would need to choose between .25 and 0 */
+			/* If we chose between 1.0 and 0, it would be 1/.25 (4x) more likely to be at the head of the heap than it should be */
 			maxRange=GreatestRandResult();
 			if (maxRange==0.0)
 				maxRange=1.0;
@@ -158,7 +162,7 @@ namespace DataStructures
 		QueueAndWeight *queueAndWeight=map.Get(heap[startingIndex].channel);
 		if (startingIndex!=0)
 		{
-			// Ugly - have to count in the heap how many nodes have the same channel, so we know where to delete from in the queue
+			/* Ugly - have to count in the heap how many nodes have the same channel, so we know where to delete from in the queue */
 			unsigned indiceCount=0;
 			unsigned i;
 			for (i=0; i < startingIndex; i++)
@@ -168,11 +172,11 @@ namespace DataStructures
 		}
 		else
 		{
-			// TODO - ordered channel heap uses progressively lower values as items are inserted.  But this won't give relative ordering among channels.  I have to renormalize after every pop.
+			/* TODO - ordered channel heap uses progressively lower values as items are inserted.  But this won't give relative ordering among channels.  I have to renormalize after every pop. */
 			queueAndWeight->randResultQueue.Pop();
 		}
 
-		// Try to remove the channel after every pop, because doing so is not valid while there are elements in the list.
+		/* Try to remove the channel after every pop, because doing so is not valid while there are elements in the list. */
 		if (queueAndWeight->signalDeletion)
 			RemoveChannel(heap[startingIndex].channel);
 
@@ -209,7 +213,7 @@ namespace DataStructures
 			}
 			else
 			{
-				// Signal this channel for deletion later, because the heap has nodes with this channel right now
+				/* Signal this channel for deletion later, because the heap has nodes with this channel right now */
 				map[i]->signalDeletion=true;
 			}
 		}

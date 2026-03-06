@@ -8,53 +8,67 @@
  *
  */
 
-/// \file DS_HuffmanEncodingTreeFactory.h
-/// \internal
-/// \brief Creates instances of the class HuffmanEncodingTree
-///
+/*
+ *  DS_HuffmanEncodingTreeFactory.h
+ * 内部使用
+ * Creates instances of the class HuffmanEncodingTree
+ *
+ */
 
  
 #pragma once
 #include "RakMemoryOverride.h"
 
 namespace RakNet {
-/// Forward declarations
+/* 前向声明 */
 class HuffmanEncodingTree;
 
-/// \brief Creates instances of the class HuffmanEncodingTree
-/// \details This class takes a frequency table and given that frequence table, will generate an instance of HuffmanEncodingTree
+/*
+ * Creates instances of the class HuffmanEncodingTree
+ * This class takes a frequency table and given that frequence table, will generate an instance of HuffmanEncodingTree
+ */
 class HuffmanEncodingTreeFactory
 {
 public:
-	/// Default constructor
+	/* 默认构造函数 */
 	HuffmanEncodingTreeFactory();
 	
-	/// \brief Reset the frequency table. 
-	/// \details You don't need to call this unless you want to reuse the class for a new tree
+	/*
+	 * 重置 frequency table
+	 * You don't need to call this unless you want to reuse the class for a new tree
+	 */
 	void Reset( void );
 	
-	/// \brief Pass an array of bytes to this to add those elements to the frequency table.
-	/// \param[in] array the data to insert into the frequency table 
-	/// \param[in] size the size of the data to insert 
+	/*
+	 * Pass an array of bytes to this to add those elements to the frequency table.
+	 * 参数[输入] array the data to insert into the frequency table
+	 * 参数[输入] size the size of the data to insert
+	 */
 	void AddToFrequencyTable( unsigned char *array, int size );
 	
-	/// \brief Copies the frequency table to the array passed. Retrieve the frequency table.
-	/// \param[in] _frequency The frequency table used currently
+	/*
+	 * Copies the frequency table to the array passed. Retrieve the frequency table.
+	 * 参数[输入] _frequency The frequency table used currently
+	 */
 	void GetFrequencyTable( unsigned int _frequency[ 256 ] );
 	
-	/// \brief Returns the frequency table as a pointer.
-	/// \return the address of the frenquency table 
+	/*
+	 * 返回 frequency table as a pointer
+	 * 返回值: the address of the frenquency table
+	 */
 	unsigned int * GetFrequencyTable( void );
 	
-	/// \brief Generate a HuffmanEncodingTree.
-	/// \details You can also use GetFrequencyTable and GenerateFromFrequencyTable in the tree itself
-	/// \return The generated instance of HuffmanEncodingTree
+	/*
+	 * Generate a HuffmanEncodingTree.
+	 * You can also use GetFrequencyTable and GenerateFromFrequencyTable in the tree itself
+	 * 返回值: The generated instance of HuffmanEncodingTree
+	 */
 	HuffmanEncodingTree * GenerateTree( void );
 	
 private:
 
-	/// Frequency table
+	/* Frequency table */
 	unsigned int frequency[ 256 ];
 };
 
-} // namespace RakNet
+} /* RakNet 命名空间 */

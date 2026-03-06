@@ -8,9 +8,11 @@
  *
  */
 
-/// \file
-/// \brief Contains TelnetTransport , used to supports the telnet transport protocol.  Insecure
-///
+/*
+ * 
+ * Contains TelnetTransport , used to supports the telnet transport protocol.  Insecure
+ *
+ */
 
 
 #include "NativeFeatureIncludes.h"
@@ -23,18 +25,20 @@
 
 namespace RakNet
 {
-/// Forward declarations
+/* 前向声明 */
 class TCPInterface;
 struct TelnetClient;
 
-/// \brief Use TelnetTransport to easily allow windows telnet to connect to your ConsoleServer
-/// \details To run Windows telnet, go to your start menu, click run, and in the edit box type "telnet <IP>" where <IP> is the ip address.<BR>
-/// of your ConsoleServer (most likely the same IP as your game).<BR>
-/// This implementation always echos commands.
+/*
+ * Use TelnetTransport to easily allow windows telnet to connect to your ConsoleServer
+ * To run Windows telnet, go to your start menu, click run, and in the edit box type "telnet <IP>" where <IP> is the ip address.<BR>
+ * of your ConsoleServer (most likely the same IP as your game).<BR>
+ * This implementation always echos commands.
+ */
 class RAK_DLL_EXPORT TelnetTransport : public TransportInterface
 {
 public:
-	// GetInstance() and DestroyInstance(instance*)
+	/* 获取单例 GetInstance() 和销毁单例 DestroyInstance(instance*) */
 	STATIC_FACTORY_DECLARATIONS(TelnetTransport)
 
 	TelnetTransport();
@@ -64,13 +68,13 @@ protected:
 	void AutoAllocate();
 	bool ReassembleLine(TelnetTransport::TelnetClient* telnetClient, unsigned char c);
 
-	// Crap this sucks but because windows telnet won't send line at a time, I have to reconstruct the lines at the server per player
+	/* Crap this sucks but because windows telnet won't send line at a time, I have to reconstruct the lines at the server per player */
 	DataStructures::List<TelnetClient*> remoteClients;
 
 	char *sendSuffix, *sendPrefix;
 
 };
 
-} // namespace RakNet
+} /* RakNet 命名空间 */
 
 #endif

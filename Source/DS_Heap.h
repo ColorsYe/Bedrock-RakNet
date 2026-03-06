@@ -8,10 +8,12 @@
  *
  */
 
-/// \file DS_Heap.h
-/// \internal
-/// \brief Heap (Also serves as a priority queue)
-///
+/*
+ *  DS_Heap.h
+ * 内部使用
+ * Heap (Also serves as a priority queue)
+ *
+ */
 
 
 
@@ -25,8 +27,10 @@
 #pragma warning( push )
 #endif
 
-/// The namespace DataStructures was only added to avoid compiler errors for commonly named data structures
-/// As these data structures are stand-alone, you can use them outside of RakNet for your own projects if you wish.
+/*
+ * DataStructures 命名空间的添加仅是为了避免常见数据结构名称导致的编译器错误
+ * 由于这些数据结构是独立的，如果需要，你可以在 RakNet 之外将它们用于自己的项目。
+ */
 namespace DataStructures
 {
 	template <class weight_type, class data_type, bool isMaxHeap>
@@ -37,16 +41,16 @@ namespace DataStructures
 		{
 			HeapNode() {}
 			HeapNode(const weight_type &w, const data_type &d) : weight(w), data(d) {}
-			weight_type weight; // I'm assuming key is a native numerical type - float or int
+			weight_type weight; /* I'm assuming key is a native numerical type - float or int */
 			data_type data;
 		};
 
 		Heap();
 		~Heap() noexcept;
 		void Push(const weight_type &weight, const data_type &data, const char *file, unsigned int line);
-		/// Call before calling PushSeries, for a new series of items
+		/* Call before calling PushSeries, for a new series of items */
 		void StartSeries() {optimizeNextSeriesPush=false;}
-		/// If you are going to push a list of items, where the weights of the items on the list are in order and follow the heap order, PushSeries is faster than Push()
+		/* If you are going to push a list of items, where the weights of the items on the list are in order and follow the heap order, PushSeries is faster than Push() */
 		void PushSeries(const weight_type &weight, const data_type &data, const char *file, unsigned int line);
 		data_type Pop(const unsigned startingIndex);
 		data_type Peek(const unsigned startingIndex=0) const;
@@ -73,7 +77,7 @@ namespace DataStructures
 	template  <class weight_type, class data_type, bool isMaxHeap>
 		Heap<weight_type, data_type, isMaxHeap>::~Heap() noexcept
 	{
-		//Clear(true, _FILE_AND_LINE_);
+		/* Clear(true, _FILE_AND_LINE_); */
 	}
 
 	template  <class weight_type, class data_type, bool isMaxHeap>
@@ -81,7 +85,7 @@ namespace DataStructures
 	{
 		if (optimizeNextSeriesPush==false)
 		{
-			// If the weight of what we are inserting is greater than / less than in order of the heap of every sibling and sibling of parent, then can optimize next push
+			/* If the weight of what we are inserting is greater than / less than in order of the heap of every sibling and sibling of parent, then can optimize next push */
 			unsigned currentIndex = heap.Size();
 			unsigned parentIndex;
 			if (currentIndex>0)
@@ -89,24 +93,24 @@ namespace DataStructures
 				for (parentIndex = Parent(currentIndex); parentIndex < currentIndex; parentIndex++)
 				{
 #ifdef _MSC_VER
-#pragma warning(disable:4127)   // conditional expression is constant
+#pragma warning(disable:4127) /* 条件表达式是常量 */
 #endif
 					if (isMaxHeap)
 					{
-						// Every child is less than its parent
+						/* Every child is less than its parent */
 						if (weight>heap[parentIndex].weight)
 						{
-							// Can't optimize
+							/* Can't optimize */
 							Push(weight,data,file,line);
 							return;
 						}
 					}
 					else
 					{
-						// Every child is greater than than its parent
+						/* Every child is greater than than its parent */
 						if (weight<heap[parentIndex].weight)
 						{
-							// Can't optimize
+							/* Can't optimize */
 							Push(weight,data,file,line);
 							return;
 						}
@@ -114,7 +118,7 @@ namespace DataStructures
 				}
 			}
 
-			// Parent's subsequent siblings and this row's siblings all are less than / greater than inserted element. Can insert all further elements straight to the end
+			/* Parent's subsequent siblings and this row's siblings all are less than / greater than inserted element. Can insert all further elements straight to the end */
 			heap.Insert(HeapNode(weight, data), file, line);
 			optimizeNextSeriesPush=true;
 		}
@@ -134,7 +138,7 @@ namespace DataStructures
 		{
 			parentIndex = Parent(currentIndex);
 #ifdef _MSC_VER
-#pragma warning( disable : 4127 ) // warning C4127: conditional expression is constant
+#pragma warning( disable : 4127 ) /* 警告 C4127：条件表达式是常量 */
 #endif
 			if (isMaxHeap)
 			{
@@ -162,12 +166,12 @@ namespace DataStructures
 	template  <class weight_type, class data_type, bool isMaxHeap>
 	data_type Heap<weight_type, data_type, isMaxHeap>::Pop(const unsigned startingIndex)
 	{
-		// While we have children, swap out with the larger of the two children.
+		/* While we have children, swap out with the larger of the two children. */
 
-		// This line will assert on an empty heap
+		/* This line will assert on an empty heap */
 		data_type returnValue=heap[startingIndex].data;
 
-		// Move the last element to the head, and re-heapify
+		/* Move the last element to the head, and re-heapify */
 		heap[startingIndex]=heap[heap.Size()-1];
 
 		unsigned currentIndex,leftChild,rightChild;
@@ -177,7 +181,7 @@ namespace DataStructures
 		heap.RemoveFromEnd();
 
 #ifdef _MSC_VER
-#pragma warning( disable : 4127 ) // warning C4127: conditional expression is constant
+#pragma warning( disable : 4127 ) /* 警告 C4127：条件表达式是常量 */
 #endif
 		while (1)
 		{
@@ -185,12 +189,12 @@ namespace DataStructures
 			rightChild=RightChild(currentIndex);
 			if (leftChild >= heap.Size())
 			{
-				// Done
+				/* Done */
 				return returnValue;
 			}
 			if (rightChild >= heap.Size())
 			{
-				// Only left node.
+				/* Only left node. */
 				if ((isMaxHeap==true && currentWeight < heap[leftChild].weight) ||
 					(isMaxHeap==false && currentWeight > heap[leftChild].weight))
 						Swap(leftChild, currentIndex);
@@ -199,7 +203,7 @@ namespace DataStructures
 			}
 			else
 			{
-				// Swap with the bigger/smaller of the two children and continue
+				/* Swap with the bigger/smaller of the two children and continue */
 				if (isMaxHeap)
 				{
 					if (heap[leftChild].weight <= currentWeight && heap[rightChild].weight <= currentWeight)

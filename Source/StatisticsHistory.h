@@ -8,8 +8,10 @@
  *
  */
 
-/// \file StatisticsHistory.h
-/// \brief Input numerical values over time. Get sum, average, highest, lowest, standard deviation on recent or all-time values
+/*
+ *  StatisticsHistory.h
+ * 随时间输入数值。获取近期或所有时间值的总和、平均值、最高值、最低值和标准差
+ */
 
 
 #include "NativeFeatureIncludes.h"
@@ -29,18 +31,18 @@
 
 namespace RakNet
 {
-/// Forward declarations
+/* 前向声明 */
 class RakPeerInterface;
 
-// Type used to track values. If needed, change to double and recompile
+/* Type used to track values. If needed, change to double and recompile */
 using SHValueType = double;
 #define SH_TYPE_MAX DBL_MAX
 
-/// \brief Input numerical values over time. Get sum, average, highest, lowest, standard deviation on recent or all-time values
+/* 随时间输入数值。获取近期或所有时间值的总和、平均值、最高值、最低值和标准差 */
 class RAK_DLL_EXPORT StatisticsHistory
 {
 public:
-	// GetInstance() and DestroyInstance(instance*)
+	/* 获取单例 GetInstance() 和销毁单例 DestroyInstance(instance*) */
 	STATIC_FACTORY_DECLARATIONS(StatisticsHistory)
 
 	enum SHErrorCode
@@ -77,15 +79,19 @@ public:
 
 	enum SHDataCategory
 	{
-		/// Insert values from one set into the other set, in time order
-		/// Values at the same time end up in the final set twice
-		/// Use when you have additional data points to add to a graph
+		/*
+		 * Insert values from one set into the other set, in time order
+		 * Values at the same time end up in the final set twice
+		 * Use when you have additional data points to add to a graph
+		 */
 		DC_DISCRETE,
 
-		/// Add values from one set to values from the other set, at corresponding times
-		/// If value at time t does not exist in the other set, linearly extrapolate value for other set based on nearest two data points
-		/// longTerm* values are unknown using this method
-		/// Use to add two graphs together
+		/*
+		 * Add values from one set to values from the other set, at corresponding times
+		 * If value at time t does not exist in the other set, linearly extrapolate value for other set based on nearest two data points
+		 * longTerm* values are unknown using this method
+		 * Use to add two graphs together
+		 */
 		DC_CONTINUOUS
 	};
 
@@ -157,23 +163,23 @@ public:
 		SHValueType GetSumSinceTime(Time t) const;
 		Time GetTimeRange(void) const;
 
-		// Merge two sets to output
+		/* Merge two sets to output */
 		static void MergeSets( const TimeAndValueQueue *lhs, SHDataCategory lhsDataCategory, const TimeAndValueQueue *rhs, SHDataCategory rhsDataCategory, TimeAndValueQueue *output );
 
-		// Shrink or expand a sample set to the approximate number given
-		// DC_DISCRETE will produce a histogram (sum) while DC_CONTINUOUS will produce an average
+		/* Shrink or expand a sample set to the approximate number given */
+		/* DC_DISCRETE will produce a histogram (sum) while DC_CONTINUOUS will produce an average */
 		void ResizeSampleSet( int approximateSamples, DataStructures::Queue<StatisticsHistory::TimeAndValue> &blendedSamples, SHDataCategory dataCategory, Time timeClipStart=0, Time timeClipEnd=0 );
 
-		// Clear out all values
+		/* 清空 out all values */
 		void Clear();
 
 		TimeAndValueQueue& operator = ( const TimeAndValueQueue& input );
 
-		/// \internal
+		/* 内部使用 */
 		void CullExpiredValues(Time curTime);
-		/// \internal
+		/* 内部使用 */
 		static SHValueType Interpolate(TimeAndValue t1, TimeAndValue t2, Time time);
-		/// \internal
+		/* 内部使用 */
 		SHValueType sortValue;
 	};
 
@@ -196,12 +202,14 @@ protected:
 	Time timeToTrack;
 };
 
-/// \brief Input numerical values over time. Get sum, average, highest, lowest, standard deviation on recent or all-time values
-/// \ingroup PLUGINS_GROUP
+/*
+ * 随时间输入数值。获取近期或所有时间值的总和、平均值、最高值、最低值和标准差
+ * \ingroup PLUGINS_GROUP
+ */
 class RAK_DLL_EXPORT StatisticsHistoryPlugin : public PluginInterface2
 {
 public:
-	// GetInstance() and DestroyInstance(instance*)
+	/* 获取单例 GetInstance() 和销毁单例 DestroyInstance(instance*) */
 	STATIC_FACTORY_DECLARATIONS(StatisticsHistoryPlugin)
 
 	StatisticsHistory statistics;
@@ -215,10 +223,10 @@ protected:
 	void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason ) override;
 	void OnNewConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, bool isIncoming) override;
 
-	// Too slow
-// 	virtual bool UsesReliabilityLayer(void) const {return true;}
-// 	virtual void OnDirectSocketSend(const char *data, const BitSize_t bitsUsed, SystemAddress remoteSystemAddress);
-// 	virtual void OnDirectSocketReceive(const char *data, const BitSize_t bitsUsed, SystemAddress remoteSystemAddress);
+	/* Too slow */
+/* 	virtual bool UsesReliabilityLayer(void) const {return true;} */
+/* 	virtual void OnDirectSocketSend(const char *data, const BitSize_t bitsUsed, SystemAddress remoteSystemAddress); */
+/* 	virtual void OnDirectSocketReceive(const char *data, const BitSize_t bitsUsed, SystemAddress remoteSystemAddress); */
 
 
 	bool addNewConnections;
@@ -226,6 +234,6 @@ protected:
 	int newConnectionsObjectType;
 };
 
-} // namespace RakNet
+} /* RakNet 命名空间 */
 
-#endif // __STATISTICS_HISTORY_H
+#endif /* __STATISTICS_HISTORY_H */

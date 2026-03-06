@@ -8,23 +8,27 @@
  *
  */
 
-/// \file DS_Queue.h
-/// \internal
-/// \brief A queue used by RakNet.
-///
+/*
+ *  DS_Queue.h
+ * 内部使用
+ * A queue used by RakNet.
+ *
+ */
 
 
 #pragma once
-// Template classes have to have all the code in the header file
+/* Template classes have to have all the code in the header file */
 #include "RakAssert.h"
 #include "Export.h"
 #include "RakMemoryOverride.h"
 
-/// The namespace DataStructures was only added to avoid compiler errors for commonly named data structures
-/// As these data structures are stand-alone, you can use them outside of RakNet for your own projects if you wish.
+/*
+ * DataStructures 命名空间的添加仅是为了避免常见数据结构名称导致的编译器错误
+ * 由于这些数据结构是独立的，如果需要，你可以在 RakNet 之外将它们用于自己的项目。
+ */
 namespace DataStructures
 {
-	/// \brief A queue implemented as an array with a read and write index.
+	/* 以数组实现的队列，带有读取和写入索引。*/
 	template <class queue_type>
 	class RAK_DLL_EXPORT Queue
 	{
@@ -35,13 +39,13 @@ namespace DataStructures
 		bool operator= ( const Queue& original_copy );
 		void Push( const queue_type& input, const char *file, unsigned int line );
 		void PushAtHead( const queue_type& input, unsigned index, const char *file, unsigned int line );
-		queue_type& operator[] ( unsigned int position ) const; // Not a normal thing you do with a queue but can be used for efficiency
-		void RemoveAtIndex( unsigned int position ); // Not a normal thing you do with a queue but can be used for efficiency
+		queue_type& operator[] ( unsigned int position ) const; /* Not a normal thing you do with a queue but can be used for efficiency */
+		void RemoveAtIndex( unsigned int position ); /* Not a normal thing you do with a queue but can be used for efficiency */
 		inline queue_type Peek( void ) const;
 		inline queue_type PeekTail( void ) const;
 		inline queue_type Pop( void );
 		inline queue_type PopTail( void );
-		// Debug: Set pointer to 0, for memory leak detection
+		/* Debug: Set pointer to 0, for memory leak detection */
 		inline queue_type PopDeref( void );
 		inline unsigned int Size( void ) const;
 		inline bool IsEmpty(void) const;
@@ -49,12 +53,12 @@ namespace DataStructures
 		inline void Clear( const char *file, unsigned int line );
 		void Compress( const char *file, unsigned int line );
 		bool Find ( const queue_type& q );
-		void ClearAndForceAllocation( int size, const char *file, unsigned int line ); // Force a memory allocation to a certain larger size
+		void ClearAndForceAllocation( int size, const char *file, unsigned int line ); /* Force a memory allocation to a certain larger size */
 
 	private:
 		queue_type* array;
-		unsigned int head;  // Array index for the head of the queue
-		unsigned int tail; // Array index for the tail of the queue
+		unsigned int head; /* Array index for the head of the queue */
+		unsigned int tail; /* Array index for the tail of the queue */
 		unsigned int allocation_size;
 	};
 
@@ -83,8 +87,8 @@ namespace DataStructures
 	template <class queue_type>
 		Queue<queue_type>::Queue()
 	{
-		//allocation_size = 16;
-		//array = RakNet::OP_NEW_ARRAY<queue_type>(allocation_size, _FILE_AND_LINE_ );
+		/* allocation_size = 16; */
+		/* array = RakNet::OP_NEW_ARRAY<queue_type>(allocation_size, _FILE_AND_LINE_ ); */
 		allocation_size = 0;
 		array=0;
 		head = 0;
@@ -104,7 +108,7 @@ namespace DataStructures
 #ifdef _DEBUG
 		RakAssert( head != tail);
 #endif
-		//head=(head+1) % allocation_size;
+		/* head=(head+1) % allocation_size; */
 
 		if ( ++head == allocation_size )
 			head = 0;
@@ -157,7 +161,7 @@ namespace DataStructures
 	{
 		RakAssert(index <= Size());
 
-		// Just force a reallocation, will be overwritten
+		/* Just force a reallocation, will be overwritten */
 		Push(input, file, line );
 
 		if (Size()==1)
@@ -237,9 +241,9 @@ namespace DataStructures
 
 		if ( tail == head )
 		{
-			//  unsigned int index=tail;
+			/*  unsigned int index=tail; */
 
-			// Need to allocate more memory.
+			/* Need to allocate more memory. */
 			queue_type * new_array;
 			new_array = RakNet::OP_NEW_ARRAY<queue_type>(static_cast<int>(allocation_size) * 2, file, line );
 #ifdef _DEBUG
@@ -257,7 +261,7 @@ namespace DataStructures
 
 			allocation_size *= 2;
 
-			// Delete the old array and move the pointer to the new array
+			/* Delete the old array and move the pointer to the new array */
 			RakNet::OP_DELETE_ARRAY(array, file, line);
 
 			array = new_array;
@@ -268,7 +272,7 @@ namespace DataStructures
 	template <class queue_type>
 		Queue<queue_type>::Queue( Queue& original_copy )
 	{
-		// Allocate memory for copy
+		/* 为拷贝分配内存 */
 
 		if ( original_copy.Size() == 0 )
 		{
@@ -298,7 +302,7 @@ namespace DataStructures
 
 		Clear(_FILE_AND_LINE_);
 
-		// Allocate memory for copy
+		/* 为拷贝分配内存 */
 		if ( original_copy.Size() == 0 )
 		{
 			allocation_size = 0;
@@ -347,7 +351,7 @@ namespace DataStructures
 
 		newAllocationSize=1;
 		while (newAllocationSize <= Size())
-			newAllocationSize<<=1; // Must be a better way to do this but I'm too dumb to figure it out quickly :)
+			newAllocationSize<<=1; /* Must be a better way to do this but I'm too dumb to figure it out quickly :) */
 
 		new_array = RakNet::OP_NEW_ARRAY<queue_type >(newAllocationSize, file, line );
 
@@ -358,7 +362,7 @@ namespace DataStructures
 		allocation_size=newAllocationSize;
 		head=0;
 
-		// Delete the old array and move the pointer to the new array
+		/* Delete the old array and move the pointer to the new array */
 		RakNet::OP_DELETE_ARRAY(array, file, line);
 		array=new_array;
 	}
@@ -401,7 +405,7 @@ namespace DataStructures
 #ifdef _DEBUG
 		RakAssert( position < Size() );
 #endif
-		//return array[(head + position) % allocation_size];
+		/* return array[(head + position) % allocation_size]; */
 
 		if ( head + position >= allocation_size )
 			return array[ head + position - allocation_size ];
@@ -424,13 +428,13 @@ namespace DataStructures
 
 		unsigned int next;
 
-		//index  = (head + position) % allocation_size;
+		/* index  = (head + position) % allocation_size; */
 		if ( head + position >= allocation_size )
 			index = head + position - allocation_size;
 		else
 			index = head + position;
 
-		//next = (index + 1) % allocation_size;
+		/* next = (index + 1) % allocation_size; */
 		next = index + 1;
 
 		if ( next == allocation_size )
@@ -438,19 +442,19 @@ namespace DataStructures
 
 		while ( next != tail )
 		{
-			// Overwrite the previous element
+			/* Overwrite the previous element */
 			array[ index ] = array[ next ];
 			index = next;
-			//next = (next + 1) % allocation_size;
+			/* next = (next + 1) % allocation_size; */
 
 			if ( ++next == allocation_size )
 				next = 0;
 		}
 
-		// Move the tail back
+		/* Move the tail back */
 		if ( tail == 0 )
 			tail = allocation_size - 1;
 		else
 			--tail;
 	}
-} // End namespace
+} /* 命名空间结束 */

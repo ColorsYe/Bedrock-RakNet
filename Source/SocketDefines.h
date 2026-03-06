@@ -2,47 +2,14 @@
  *  Copyright (c) 2014, Oculus VR, Inc.
  *  All rights reserved.
  *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant 
- *  of patent rights can be found in the PATENTS file in the same directory.
+ *  本源代码使用 BSD 风格许可证授权，
+ *  许可证文件位于源码树根目录的 LICENSE 文件中。
+ *  同目录下的 PATENTS 文件中还包含额外的专利授权。
  *
  */
 
+/* 套接字函数跨平台宏定义（内部使用） */
 #pragma once
-/// Internal
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 #if   defined(WINDOWS_STORE_RT)
@@ -67,17 +34,12 @@
 	#define WSASendTo__ WinRTSendTo
 #else
 
-
-
-
-
-
 	#if   defined(_WIN32)
 		#define closesocket__ closesocket
 		#define select__ select
 	#elif defined(__native_client__)
-		// namespace RakNet { void CloseSocket(SOCKET s); }
-		// #define closesocket__ RakNet::CloseSocket
+		/* namespace RakNet { void CloseSocket(SOCKET s); } */
+		/* #define closesocket__ RakNet::CloseSocket */
 		#define select__ select
 	#else
 		#define closesocket__ close

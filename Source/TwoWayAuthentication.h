@@ -8,27 +8,29 @@
  *
  */
 
-/// \file TwoWayAuthentication.h
-/// \brief Implements two way authentication
-/// \details Given two systems, each of whom known a common password, verify the password without transmitting it
-/// This can be used to determine what permissions are should be allowed to the other system
-///
+/*
+ *  TwoWayAuthentication.h
+ * 实现 two way authentication
+ * Given two systems, each of whom known a common password, verify the password without transmitting it
+ * 可用于确定应对另一个系统授予哪些权限
+ *
+ */
 
 
 #include "NativeFeatureIncludes.h"
 #if _RAKNET_SUPPORT_TwoWayAuthentication==1
 
 #pragma once
-// How often to change the nonce.
+/* How often to change the nonce. */
 #define NONCE_TIMEOUT_MS 10000
-// How often to check for ID_TWO_WAY_AUTHENTICATION_OUTGOING_CHALLENGE_TIMEOUT, and the minimum timeout time. Maximum is double this value.
+/* How often to check for ID_TWO_WAY_AUTHENTICATION_OUTGOING_CHALLENGE_TIMEOUT, and the minimum timeout time. Maximum is double this value. */
 #define CHALLENGE_MINIMUM_TIMEOUT 3000
 
 #if LIBCAT_SECURITY==1
-// From CPP FILE:
-// static constexpr int HASH_BITS = 256;
-// static constexpr int HASH_BYTES = HASH_BITS / 8;
-// static constexpr int STRENGTHENING_FACTOR = 1000;
+/* From CPP FILE: */
+/* static constexpr int HASH_BITS = 256; */
+/* static constexpr int HASH_BYTES = HASH_BITS / 8; */
+/* static constexpr int STRENGTHENING_FACTOR = 1000; */
 #define TWO_WAY_AUTHENTICATION_NONCE_LENGTH 32
 #define HASHED_NONCE_AND_PW_LENGTH 32
 #else
@@ -48,53 +50,59 @@ using FCM2Guid = int64_t;
 
 namespace RakNet
 {
-/// Forward declarations
+/* 前向声明 */
 class RakPeerInterface;
 
-/// \brief Implements two way authentication
-/// \details Given two systems, each of whom known a common password / identifier pair, verify the password without transmitting it
-/// This can be used to determine what permissions are should be allowed to the other system
-/// If the other system should not send any data until authentication passes, you can use the MessageFilter plugin for this. Call MessageFilter::SetAllowMessageID() including ID_TWO_WAY_AUTHENTICATION_NEGOTIATION when doing so. Also attach MessageFilter first in the list of plugins
-/// \note If other systems challenges us, and fails, you will get ID_TWO_WAY_AUTHENTICATION_INCOMING_CHALLENGE_FAILED.
-/// \ingroup PLUGINS_GROUP
+/*
+ * 实现 two way authentication
+ * Given two systems, each of whom known a common password / identifier pair, verify the password without transmitting it
+ * 可用于确定应对另一个系统授予哪些权限
+ * If the other system should not send any data until authentication passes, you can use the MessageFilter plugin for this. Call MessageFilter::SetAllowMessageID() including ID_TWO_WAY_AUTHENTICATION_NEGOTIATION when doing so. Also attach MessageFilter first in the list of plugins
+ * 注意: If other systems challenges us, and fails, you will get ID_TWO_WAY_AUTHENTICATION_INCOMING_CHALLENGE_FAILED.
+ * \ingroup PLUGINS_GROUP
+ */
 class RAK_DLL_EXPORT TwoWayAuthentication : public PluginInterface2
 {
 public:
-	// GetInstance() and DestroyInstance(instance*)
+	/* 获取单例 GetInstance() 和销毁单例 DestroyInstance(instance*) */
 	STATIC_FACTORY_DECLARATIONS(TwoWayAuthentication)
 
 	TwoWayAuthentication();
 	virtual ~TwoWayAuthentication();
 
-	/// \brief Adds a password to the list of passwords the system will accept
-	/// \details Each password, which is secret and not transmitted, is identified by \a identifier.
-	/// \a identifier is transmitted in plaintext with the request. It is only needed because the system supports multiple password.
-	/// It is used to only hash against once password on the remote system, rather than having to hash against every known password.
-	/// \param[in] identifier A unique identifier representing this password. This is transmitted in plaintext and should be considered insecure
-	/// \param[in] password The password to add
-	/// \return True on success, false on identifier==password, either identifier or password is blank, or identifier is already in use
+	/*
+	 * Adds a password to the list of passwords the system will accept
+	 * Each password, which is secret and not transmitted, is identified by identifier.
+	 * identifier is transmitted in plaintext with the request. It is only needed because the system supports multiple password.
+	 * It is used to only hash against once password on the remote system, rather than having to hash against every known password.
+	 * 参数[输入] identifier A unique identifier representing this password. This is transmitted in plaintext and should be considered insecure
+	 * 参数[输入] password The password to add
+	 * 返回值: True on success, false on identifier==password, either identifier or password is blank, or identifier is already in use
+	 */
 	bool AddPassword(RakNet::RakString identifier, RakNet::RakString password);
 
-	/// \brief Challenge another system for the specified identifier
-	/// \details After calling Challenge, you will get back ID_TWO_WAY_AUTHENTICATION_SUCCESS, ID_TWO_WAY_AUTHENTICATION_OUTGOING_CHALLENGE_TIMEOUT, or ID_TWO_WAY_AUTHENTICATION_OUTGOING_CHALLENGE_FAILED
-	/// ID_TWO_WAY_AUTHENTICATION_SUCCESS will be returned if and only if the other system has called AddPassword() with the same identifier\password pair as this system.
-	/// \param[in] identifier A unique identifier representing this password. This is transmitted in plaintext and should be considered insecure
-	/// \return True on success, false on remote system not connected, or identifier not previously added with AddPassword()
+	/*
+	 * Challenge another system for the specified identifier
+	 * After calling Challenge, you will get back ID_TWO_WAY_AUTHENTICATION_SUCCESS, ID_TWO_WAY_AUTHENTICATION_OUTGOING_CHALLENGE_TIMEOUT, or ID_TWO_WAY_AUTHENTICATION_OUTGOING_CHALLENGE_FAILED
+	 * ID_TWO_WAY_AUTHENTICATION_SUCCESS will be returned if and only if the other system has called AddPassword() with the same identifier\password pair as this system.
+	 * 参数[输入] identifier A unique identifier representing this password. This is transmitted in plaintext and should be considered insecure
+	 * 返回值: True on success, false on remote system not connected, or identifier not previously added with AddPassword()
+	 */
 	bool Challenge(RakNet::RakString identifier, AddressOrGUID remoteSystem);
 
-	/// \brief Free all memory
+	/* 释放 all memory */
 	void Clear();
 
-	/// \internal
+	/* 内部使用 */
 	void Update() override;
-	/// \internal
+	/* 内部使用 */
 	PluginReceiveResult OnReceive(Packet *packet) override;
-	/// \internal
+	/* 内部使用 */
 	void OnRakPeerShutdown() override;
-	/// \internal
+	/* 内部使用 */
 	void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason ) override;
 
-	/// \internal
+	/* 内部使用 */
 	struct PendingChallenge
 	{
 		RakNet::RakString identifier;
@@ -105,7 +113,7 @@ public:
 
 	DataStructures::Queue<PendingChallenge> outgoingChallenges;
 
-	/// \internal
+	/* 内部使用 */
 	struct NonceAndRemoteSystemRequest
 	{
 		char nonce[TWO_WAY_AUTHENTICATION_NONCE_LENGTH];
@@ -113,7 +121,7 @@ public:
 		unsigned short requestId;
 		RakNet::Time whenGenerated;
 	};
-	/// \internal
+	/* 内部使用 */
 	struct RAK_DLL_EXPORT NonceGenerator
 	{
 		NonceGenerator();
@@ -131,7 +139,7 @@ public:
 
 protected:
 	void PushToUser(MessageID messageId, RakNet::RakString password, RakNet::AddressOrGUID remoteSystem);
-	// Key is identifier, data is password
+	/* Key is identifier, data is password */
 	DataStructures::Hash<RakNet::RakString, RakNet::RakString, 16, RakNet::RakString::ToInteger > passwords;
 
 	RakNet::Time whenLastTimeoutCheck;
@@ -145,6 +153,6 @@ protected:
 	void Hash(char thierNonce[TWO_WAY_AUTHENTICATION_NONCE_LENGTH], RakNet::RakString password, char out[HASHED_NONCE_AND_PW_LENGTH]);
 };
 
-} // namespace RakNet
+} /* RakNet 命名空间 */
 
 #endif

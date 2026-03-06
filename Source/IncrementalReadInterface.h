@@ -21,14 +21,16 @@ public:
 	IncrementalReadInterface() {}
 	virtual ~IncrementalReadInterface() {}
 
-	/// Read part of a file into \a destination
-	/// Return the number of bytes written. Return 0 when file is done.
-	/// \param[in] filename Filename to read
-	/// \param[in] startReadBytes What offset from the start of the file to read from
-	/// \param[in] numBytesToRead How many bytes to read. This is also how many bytes have been allocated to preallocatedDestination
-	/// \param[out] preallocatedDestination Write your data here
-	/// \return The number of bytes read, or 0 if none
+	/*
+	 * Read part of a file into destination
+	 * 返回 number of bytes written. Return 0 when file is done
+	 * 参数[输入] filename Filename to read
+	 * 参数[输入] startReadBytes What offset from the start of the file to read from
+	 * 参数[输入] numBytesToRead How many bytes to read. This is also how many bytes have been allocated to preallocatedDestination
+	 * 参数[输出] preallocatedDestination 写入 your data here
+	 * 返回值: The number of bytes read, or 0 if 无
+	 */
 	virtual unsigned int GetFilePart( const char *filename, unsigned int startReadBytes, unsigned int numBytesToRead, void *preallocatedDestination, FileListNodeContext context);
 };
 
-} // namespace RakNet
+} /* RakNet 命名空间 */

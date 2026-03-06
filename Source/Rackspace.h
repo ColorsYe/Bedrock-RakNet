@@ -8,9 +8,11 @@
  *
  */
 
-/// \file Rackspace.h
-/// \brief Helper to class to manage Rackspace servers
-///
+/*
+ *  Rackspace.h
+ * Helper to class to manage Rackspace servers
+ *
+ */
 
 
 #include "NativeFeatureIncludes.h"
@@ -30,8 +32,10 @@ namespace RakNet
 	class TCPInterface;
 	struct Packet;
 
-	/// \brief Result codes for Rackspace commands
-	/// /sa Rackspace::EventTypeToString()
+	/*
+	 * Result codes for Rackspace commands
+	 * /sa Rackspace::EventTypeToString()
+	 */
 	enum RackspaceEventType
 	{
 		RET_Success_200,
@@ -52,7 +56,7 @@ namespace RakNet
 		RET_Unknown_Failure,
 	};
 
-	/// \internal
+	/* 内部使用 */
 	enum RackspaceOperationType
 	{
 		RO_CONNECT_AND_AUTHENTICATE,
@@ -85,7 +89,7 @@ namespace RakNet
 		RO_NONE,
 	};
 
-	/// \brief Callback interface to receive the results of operations
+	/* Callback interface to receive the results of operations */
 	class RAK_DLL_EXPORT Rackspace2EventCallback
 	{
 	public:
@@ -121,7 +125,7 @@ namespace RakNet
 		virtual void OnConnectionAttemptFailure(RackspaceOperationType operationType, const char *url)=0;
 	};
 
-	/// \brief Callback interface to receive the results of operations, with a default result
+	/* Callback interface to receive the results of operations, with a default result */
 	class RAK_DLL_EXPORT RackspaceEventCallback_Default : public Rackspace2EventCallback
 	{
 	public:
@@ -157,205 +161,259 @@ namespace RakNet
 		virtual void OnConnectionAttemptFailure(RackspaceOperationType operationType, const char *url) {(void) operationType; (void) url;}
 	};
 
-	/// \brief Code that uses the TCPInterface class to communicate with the Rackspace API servers
-	/// \pre Compile RakNet with OPEN_SSL_CLIENT_SUPPORT set to 1
-	/// \pre Packets returned from TCPInterface::OnReceive() must be passed to Rackspace::OnReceive()
-	/// \pre Packets returned from TCPInterface::HasLostConnection() must be passed to Rackspace::OnClosedConnection()
+	/*
+	 * Code that uses the TCPInterface class to communicate with the Rackspace API servers
+	 * 前提条件: Compile RakNet with OPEN_SSL_CLIENT_SUPPORT set to 1
+	 * 前提条件: Packets returned from TCPInterface::OnReceive() must be passed to Rackspace::OnReceive()
+	 * 前提条件: Packets returned from TCPInterface::HasLostConnection() must be passed to Rackspace::OnClosedConnection()
+	 */
 	class RAK_DLL_EXPORT Rackspace
 	{
 	public:
 		Rackspace();
 		~Rackspace() noexcept;
 
-		/// \brief Authenticate with Rackspace servers, required before executing any commands.
-		/// \details All requests to authenticate and operate against Cloud Servers are performed using SSL over HTTP (HTTPS) on TCP port 443.
-		/// Times out after 24 hours - if you get RET_Authenticate_Unauthorized in the RackspaceEventCallback callback, call again
-		/// \sa RackspaceEventCallback::OnAuthenticationResult()
-		/// \param[in] _tcpInterface An instance of TCPInterface, build with OPEN_SSL_CLIENT_SUPPORT 1 and already started
-		/// \param[in] _authenticationURL See http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf . US-based accounts authenticate through auth.api.rackspacecloud.com. UK-based accounts authenticate through lon.auth.api.rackspacecloud.com
-		/// \param[in] _rackspaceCloudUsername Username you registered with Rackspace on their website
-		/// \param[in] _apiAccessKey Obtain your API access key from the Rackspace Cloud Control Panel in the Your Account API Access section.
-		/// \return The address of the authentication server, or UNASSIGNED_SYSTEM_ADDRESS if the connection attempt failed
+		/*
+		 * Authenticate with Rackspace servers, 必须 before executing any commands.
+		 * All requests to authenticate and operate against Cloud Servers are performed using SSL over HTTP (HTTPS) on TCP port 443.
+		 * Times out after 24 hours - if you get RET_Authenticate_Unauthorized in the RackspaceEventCallback callback, call again
+		 * 另见 RackspaceEventCallback::OnAuthenticationResult()
+		 * 参数[输入] _tcpInterface An instance of TCPInterface, build with OPEN_SSL_CLIENT_SUPPORT 1 and already started
+		 * 参数[输入] _authenticationURL See http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf . US-based accounts authenticate through auth.api.rackspacecloud.com. UK-based accounts authenticate through lon.auth.api.rackspacecloud.com
+		 * 参数[输入] _rackspaceCloudUsername Username you registered with Rackspace on their website
+		 * 参数[输入] _apiAccessKey Obtain your API access key from the Rackspace Cloud Control Panel in the Your Account API Access section.
+		 * 返回值: The address of the authentication server, or UNASSIGNED_SYSTEM_ADDRESS if the connection attempt failed
+		 */
 		SystemAddress Authenticate(TCPInterface *_tcpInterface, const char *_authenticationURL, const char *_rackspaceCloudUsername, const char *_apiAccessKey);
 
-		/// \brief Get a list of running servers
-		/// \sa http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
-		/// \sa RackspaceEventCallback::OnListServersResult()
+		/*
+		 * 获取 a list of running servers
+		 * 另见 http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
+		 * 另见 RackspaceEventCallback::OnListServersResult()
+		 */
 		void ListServers();
 
-		/// \brief Get a list of running servers, with extended details on each server
-		/// \sa GetServerDetails()
-		/// \sa http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
-		/// \sa RackspaceEventCallback::OnListServersWithDetailsResult()
+		/*
+		 * 获取 a list of running servers, with extended details on each server
+		 * 另见 GetServerDetails()
+		 * 另见 http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
+		 * 另见 RackspaceEventCallback::OnListServersWithDetailsResult()
+		 */
 		void ListServersWithDetails();
 
-		/// \brief Create a server
-		/// \details Create a server with a given image (harddrive contents) and flavor (hardware configuration)
-		/// Get the available images with ListImages()
-		/// Get the available flavors with ListFlavors()
-		/// It is possible to configure the server in more detail. See the XML schema at http://docs.rackspacecloud.com/servers/api/v1.0
-		/// You can execute such a custom command by calling AddOperation() manually. See the implementation of CreateServer for how to do so.
-		/// The server takes a while to build. Call GetServerDetails() to get the current build status. Server id to pass to GetServerDetails() is returned in the field <server ... id="1234">
-		/// \sa http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
-		/// \sa RackspaceEventCallback::OnCreateServerResult()
-		/// \param[in] name Name of the server. Only alphanumeric characters, periods, and hyphens are valid. Server Name cannot start or end with a period or hyphen.
-		/// \param[in] imageId Which image (harddrive contents, including OS) to use
-		/// \param[in] flavorId Which flavor (hardware config) to use, primarily how much memory is available.
+		/*
+		 * 创建 server
+		 * Create a server with a given image (harddrive contents) and flavor (hardware configuration)
+		 * 获取 available images with ListImages()
+		 * 获取 available flavors with ListFlavors()
+		 * It is possible to configure the server in more detail. See the XML schema at http://docs.rackspacecloud.com/servers/api/v1.0
+		 * You can execute such a custom command by calling AddOperation() manually. See the implementation of CreateServer for how to do so.
+		 * The server takes a while to build. Call GetServerDetails() to get the current build status. Server id to pass to GetServerDetails() is returned in the field <server ... id="1234">
+		 * 另见 http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
+		 * 另见 RackspaceEventCallback::OnCreateServerResult()
+		 * 参数[输入] name Name of the server. Only alphanumeric characters, periods, and hyphens are valid. Server Name cannot start or end with a period or hyphen.
+		 * 参数[输入] imageId Which image (harddrive contents, including OS) to use
+		 * 参数[输入] flavorId Which flavor (hardware config) to use, primarily how much memory is available.
+		 */
 		void CreateServer(RakNet::RakString name, RakNet::RakString imageId, RakNet::RakString flavorId);
 
-		/// \brief Get details on a particular server
-		/// \sa http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
-		/// \sa RackspaceEventCallback::OnGetServerDetailsResult()
-		/// \param[in] serverId Which server to get details on. You can call ListServers() to get the list of active servers.
+		/*
+		 * 获取 details on a particular server
+		 * 另见 http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
+		 * 另见 RackspaceEventCallback::OnGetServerDetailsResult()
+		 * 参数[输入] serverId Which server to get details on. You can call ListServers() to get the list of active servers.
+		 */
 		void GetServerDetails(RakNet::RakString serverId);
 
-		/// \brief Changes the name or password for a server
-		/// \sa http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
-		/// \sa RackspaceEventCallback::OnUpdateServerNameOrPasswordResult()
-		/// \param[in] serverId Which server to get details on. You can call ListServers() to get the list of active servers.
-		/// \param[in] newName The new server name. Leave blank to leave unchanged. Only alphanumeric characters, periods, and hyphens are valid. Server Name cannot start or end with a period or hyphen.
-		/// \param[in] newPassword The new server password. Leave blank to leave unchanged.
+		/*
+		 * Changes the name or password for a server
+		 * 另见 http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
+		 * 另见 RackspaceEventCallback::OnUpdateServerNameOrPasswordResult()
+		 * 参数[输入] serverId Which server to get details on. You can call ListServers() to get the list of active servers.
+		 * 参数[输入] newName The new server name. Leave blank to leave unchanged. Only alphanumeric characters, periods, and hyphens are valid. Server Name cannot start or end with a period or hyphen.
+		 * 参数[输入] newPassword The new server password. Leave blank to leave unchanged.
+		 */
 		void UpdateServerNameOrPassword(RakNet::RakString serverId, RakNet::RakString newName, RakNet::RakString newPassword);
 
-		/// \brief Deletes a server
-		/// \sa http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
-		/// \sa RackspaceEventCallback::OnDeleteServerResult()
-		/// \param[in] serverId Which server to get details on. You can call ListServers() to get the list of active servers.
+		/*
+		 * 删除 server
+		 * 另见 http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
+		 * 另见 RackspaceEventCallback::OnDeleteServerResult()
+		 * 参数[输入] serverId Which server to get details on. You can call ListServers() to get the list of active servers.
+		 */
 		void DeleteServer(RakNet::RakString serverId);
 		
-		/// \brief Lists the IP addresses available to a server
-		/// \sa http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
-		/// \sa RackspaceEventCallback::OnListServerAddressesResult()
-		/// \param[in] serverId Which server to operate on. You can call ListServers() to get the list of active servers.
+		/*
+		 * Lists the IP addresses available to a server
+		 * 另见 http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
+		 * 另见 RackspaceEventCallback::OnListServerAddressesResult()
+		 * 参数[输入] serverId Which server to operate on. You can call ListServers() to get the list of active servers.
+		 */
 		void ListServerAddresses(RakNet::RakString serverId);
 
-		/// \brief Shares an IP address with a server
-		/// \sa http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
-		/// \sa RackspaceEventCallback::OnShareServerAddressResult()
-		/// \param[in] serverId Which server to operate on. You can call ListServers() to get the list of active servers.
-		/// \param[in] ipAddress Which IP address. You can call ListServerAddresses() to get the list of addresses for the specified server
+		/*
+		 * Shares an IP address with a server
+		 * 另见 http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
+		 * 另见 RackspaceEventCallback::OnShareServerAddressResult()
+		 * 参数[输入] serverId Which server to operate on. You can call ListServers() to get the list of active servers.
+		 * 参数[输入] ipAddress Which IP address. You can call ListServerAddresses() to get the list of addresses for the specified server
+		 */
 		void ShareServerAddress(RakNet::RakString serverId, RakNet::RakString ipAddress);
 
-		/// \brief Stops sharing an IP address with a server
-		/// \sa http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
-		/// \sa RackspaceEventCallback::OnDeleteServerAddressResult()
-		/// \param[in] serverId Which server to operate on. You can call ListServers() to get the list of active servers.
-		/// \param[in] ipAddress Which IP address. You can call ListServerAddresses() to get the list of addresses for the specified server
+		/*
+		 * Stops sharing an IP address with a server
+		 * 另见 http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
+		 * 另见 RackspaceEventCallback::OnDeleteServerAddressResult()
+		 * 参数[输入] serverId Which server to operate on. You can call ListServers() to get the list of active servers.
+		 * 参数[输入] ipAddress Which IP address. You can call ListServerAddresses() to get the list of addresses for the specified server
+		 */
 		void DeleteServerAddress(RakNet::RakString serverId, RakNet::RakString ipAddress);
 
-		/// \brief Reboots a server
-		/// \sa http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
-		/// \sa RackspaceEventCallback::OnRebootServerResult()
-		/// \param[in] serverId Which server to operate on. You can call ListServers() to get the list of active servers.
-		/// \param[in] rebootType Should be either "HARD" or "SOFT"
+		/*
+		 * Reboots a server
+		 * 另见 http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
+		 * 另见 RackspaceEventCallback::OnRebootServerResult()
+		 * 参数[输入] serverId Which server to operate on. You can call ListServers() to get the list of active servers.
+		 * 参数[输入] rebootType Should be either "HARD" or "SOFT"
+		 */
 		void RebootServer(RakNet::RakString serverId, RakNet::RakString rebootType);
 
-		/// \brief Rebuilds a server with a different image (harddrive contents)
-		/// \sa http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
-		/// \sa RackspaceEventCallback::OnRebuildServerResult()
-		/// \param[in] serverId Which server to operate on. You can call ListServers() to get the list of active servers.
-		/// \param[in] imageId Which image (harddrive contents, including OS) to use
+		/*
+		 * Rebuilds a server with a different image (harddrive contents)
+		 * 另见 http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
+		 * 另见 RackspaceEventCallback::OnRebuildServerResult()
+		 * 参数[输入] serverId Which server to operate on. You can call ListServers() to get the list of active servers.
+		 * 参数[输入] imageId Which image (harddrive contents, including OS) to use
+		 */
 		void RebuildServer(RakNet::RakString serverId, RakNet::RakString imageId);
 
-		/// \brief Changes the hardware configuration of a server. This does not take effect until you call ConfirmResizedServer()
-		/// \sa http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
-		/// \sa RackspaceEventCallback::OnResizeServerResult()
-		/// \sa RevertResizedServer()
-		/// \param[in] serverId Which server to operate on. You can call ListServers() to get the list of active servers.
-		/// \param[in] flavorId Which flavor (hardware config) to use, primarily how much memory is available.
+		/*
+		 * Changes the hardware configuration of a server. This does not take effect until you call ConfirmResizedServer()
+		 * 另见 http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
+		 * 另见 RackspaceEventCallback::OnResizeServerResult()
+		 * 另见 RevertResizedServer()
+		 * 参数[输入] serverId Which server to operate on. You can call ListServers() to get the list of active servers.
+		 * 参数[输入] flavorId Which flavor (hardware config) to use, primarily how much memory is available.
+		 */
 		void ResizeServer(RakNet::RakString serverId, RakNet::RakString flavorId);
 
-		/// \brief Confirm a resize for the specified server
-		/// \sa http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
-		/// \sa RackspaceEventCallback::OnConfirmResizedServerResult()
-		/// \sa ResizeServer()
-		/// \param[in] serverId Which server to operate on. You can call ListServers() to get the list of active servers.
+		/*
+		 * Confirm a resize for the specified server
+		 * 另见 http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
+		 * 另见 RackspaceEventCallback::OnConfirmResizedServerResult()
+		 * 另见 ResizeServer()
+		 * 参数[输入] serverId Which server to operate on. You can call ListServers() to get the list of active servers.
+		 */
 		void ConfirmResizedServer(RakNet::RakString serverId);
 
-		/// \brief Reverts a resize for the specified server
-		/// \sa http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
-		/// \sa RackspaceEventCallback::OnRevertResizedServerResult()
-		/// \sa ResizeServer()
-		/// \param[in] serverId Which server to operate on. You can call ListServers() to get the list of active servers.
+		/*
+		 * Reverts a resize for the specified server
+		 * 另见 http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
+		 * 另见 RackspaceEventCallback::OnRevertResizedServerResult()
+		 * 另见 ResizeServer()
+		 * 参数[输入] serverId Which server to operate on. You can call ListServers() to get the list of active servers.
+		 */
 		void RevertResizedServer(RakNet::RakString serverId);
 
-		/// \brief List all flavors (hardware configs, primarily memory)
-		/// \sa http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
-		/// \sa RackspaceEventCallback::OnListFlavorsResult()
+		/*
+		 * List all flavors (hardware configs, primarily memory)
+		 * 另见 http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
+		 * 另见 RackspaceEventCallback::OnListFlavorsResult()
+		 */
 		void ListFlavors();
 
-		/// \brief Get extended details about a specific flavor
-		/// \sa http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
-		/// \sa RackspaceEventCallback::OnGetFlavorDetailsResult()
-		/// \sa ListFlavors()
-		/// \param[in] flavorId Which flavor (hardware config)
+		/*
+		 * 获取 extended details about a specific flavor
+		 * 另见 http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
+		 * 另见 RackspaceEventCallback::OnGetFlavorDetailsResult()
+		 * 另见 ListFlavors()
+		 * 参数[输入] flavorId Which flavor (hardware config)
+		 */
 		void GetFlavorDetails(RakNet::RakString flavorId);
 
-		/// \brief List all images (software configs, including operating systems), which includes images you create yourself
-		/// \sa http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
-		/// \sa RackspaceEventCallback::OnListImagesResult()
-		/// \sa CreateImage()
+		/*
+		 * List all images (software configs, including operating systems), which includes images you create yourself
+		 * 另见 http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
+		 * 另见 RackspaceEventCallback::OnListImagesResult()
+		 * 另见 CreateImage()
+		 */
 		void ListImages();
 
-		/// \brief Images a running server. This essentially copies the harddrive, and lets you start a server with the same harddrive contents later
-		/// \sa http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
-		/// \sa RackspaceEventCallback::OnCreateImageResult()
-		/// \sa ListImages()
-		/// \param[in] serverId Which server to operate on. You can call ListServers() to get the list of active servers.
-		/// \param[in] imageName What to call this image
+		/*
+		 * Images a running server. This essentially copies the harddrive, and lets you start a server with the same harddrive contents later
+		 * 另见 http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
+		 * 另见 RackspaceEventCallback::OnCreateImageResult()
+		 * 另见 ListImages()
+		 * 参数[输入] serverId Which server to operate on. You can call ListServers() to get the list of active servers.
+		 * 参数[输入] imageName What to call this image
+		 */
 		void CreateImage(RakNet::RakString serverId, RakNet::RakString imageName);
 
-		/// \brief Get extended details about a particular image
-		/// \sa http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
-		/// \sa RackspaceEventCallback::OnGetImageDetailsResult()
-		/// \sa ListImages()
-		/// \param[in] imageId Which image
+		/*
+		 * 获取 extended details about a particular image
+		 * 另见 http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
+		 * 另见 RackspaceEventCallback::OnGetImageDetailsResult()
+		 * 另见 ListImages()
+		 * 参数[输入] imageId Which image
+		 */
 		void GetImageDetails(RakNet::RakString imageId);
 
-		/// \brief Delete a custom image created with CreateImage()
-		/// \sa http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
-		/// \sa RackspaceEventCallback::OnDeleteImageResult()
-		/// \sa ListImages()
-		/// \param[in] imageId Which image
+		/*
+		 * Delete a custom image created with CreateImage()
+		 * 另见 http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
+		 * 另见 RackspaceEventCallback::OnDeleteImageResult()
+		 * 另见 ListImages()
+		 * 参数[输入] imageId Which image
+		 */
 		void DeleteImage(RakNet::RakString imageId);
 
-		/// \brief List IP groups
-		/// \sa http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
-		/// \sa RackspaceEventCallback::OnListSharedIPGroupsResult()
+		/*
+		 * List IP groups
+		 * 另见 http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
+		 * 另见 RackspaceEventCallback::OnListSharedIPGroupsResult()
+		 */
 		void ListSharedIPGroups();
 
-		/// \brief List IP groups with extended details
-		/// \sa http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
-		/// \sa RackspaceEventCallback::OnListSharedIPGroupsWithDetailsResult()
+		/*
+		 * List IP groups with extended details
+		 * 另见 http://docs.rackspacecloud.com/servers/api/v1.0/cs-devguide-20110112.pdf
+		 * 另见 RackspaceEventCallback::OnListSharedIPGroupsWithDetailsResult()
+		 */
 		void ListSharedIPGroupsWithDetails();
 
-		// I don't know what this does
+		/* 我不知道这个是做什么的 */
 		void CreateSharedIPGroup(RakNet::RakString name, RakNet::RakString optionalServerId);
-		// I don't know what this does
+		/* 我不知道这个是做什么的 */
 		void GetSharedIPGroupDetails(RakNet::RakString groupId);
-		// I don't know what this does
+		/* 我不知道这个是做什么的 */
 		void DeleteSharedIPGroup(RakNet::RakString groupId);
 
-		/// \brief Adds a callback to the list of callbacks to be called when any of the above functions finish executing
-		/// The callbacks are called in the order they are added
+		/*
+		 * Adds a callback to the list of callbacks to be called when any of the above functions finish executing
+		 * The callbacks are called in the order they are added
+		 */
 		void AddEventCallback(Rackspace2EventCallback *callback);
-		/// \brief Removes a callback from the list of callbacks to be called when any of the above functions finish executing
-		/// The callbacks are called in the order they are added
+		/*
+		 * Removes a callback from the list of callbacks to be called when any of the above functions finish executing
+		 * The callbacks are called in the order they are added
+		 */
 		void RemoveEventCallback(Rackspace2EventCallback *callback);
-		/// \brief Removes all callbacks
+		/* 移除 all callbacks */
 		void ClearEventCallbacks();
 
-		/// Call this anytime TCPInterface returns a packet
+		/* Call this anytime TCPInterface returns a packet */
 		void OnReceive(Packet *packet);
 
-		/// Call this when TCPInterface returns something other than UNASSIGNED_SYSTEM_ADDRESS from HasLostConnection()
+		/* Call this when TCPInterface returns something other than UNASSIGNED_SYSTEM_ADDRESS from HasLostConnection() */
 		void OnClosedConnection(SystemAddress systemAddress);
 
-		/// String representation of each RackspaceEventType
+		/* String representation of each RackspaceEventType */
 		static const char * EventTypeToString(RackspaceEventType eventType);
 
-		/// \brief Mostly for internal use, but you can use it to execute an operation with more complex xml if desired
-		/// See the Rackspace.cpp on how to use it
+		/*
+		 * Mostly for internal use, but you can use it to execute an operation with more complex xml if desired
+		 * 参见 the Rackspace.cpp on how to use it
+		 */
 		void AddOperation(RackspaceOperationType type, RakNet::RakString httpCommand, RakNet::RakString operation, RakNet::RakString xml);
 	protected:
 
@@ -364,7 +422,7 @@ namespace RakNet
 		struct RackspaceOperation
 		{
 			RackspaceOperationType type;
-		//	RakNet::RakString stringInfo;
+		/* RakNet::RakString stringInfo; */
 			SystemAddress connectionAddress;
 			bool isPendingAuthentication;
 			RakNet::RakString incomingStream;
@@ -375,8 +433,8 @@ namespace RakNet
 
 		TCPInterface *tcpInterface;
 
-		// RackspaceOperationType currentOperation;
-		// DataStructures::Queue<RackspaceOperation> nextOperationQueue;
+		/* RackspaceOperationType currentOperation; */
+		/* DataStructures::Queue<RackspaceOperation> nextOperationQueue; */
 
 		DataStructures::List<RackspaceOperation> operations;
 		bool HasOperationOfType(RackspaceOperationType t);
@@ -404,6 +462,6 @@ namespace RakNet
 
 	};
 
-} // namespace RakNet
+} /* RakNet 命名空间 */
 
-#endif // __RACKSPACE_API_H
+#endif /* __RACKSPACE_API_H */

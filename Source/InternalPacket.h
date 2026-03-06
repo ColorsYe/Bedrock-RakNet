@@ -8,9 +8,11 @@
  *
  */
 
-/// \file
-/// \brief \b [Internal] A class which stores a user message, and all information associated with sending and receiving that message.
-///
+/*
+ * 
+ * \b [内部使用] A class which stores a user message, and all information associated with sending and receiving that message.
+ *
+ */
 
 #pragma once
 #include "PacketPriority.h"
@@ -30,96 +32,106 @@ namespace RakNet {
 using SplitPacketIdType = uint16_t;
 using SplitPacketIndexType = uint32_t;
 
-/// This is the counter used for holding packet numbers, so we can detect duplicate packets.  It should be large enough that if the variables
-/// Internally assumed to be 4 bytes, but written as 3 bytes in ReliabilityLayer::WriteToBitStreamFromInternalPacket
+/*
+ * This is the counter used for holding packet numbers, so we can detect duplicate packets.  It should be large enough that if the variables
+ * Internally assumed to be 4 bytes, but written as 3 bytes in ReliabilityLayer::WriteToBitStreamFromInternalPacket
+ */
 using MessageNumberType = uint24_t;
 
-/// This is the counter used for holding ordered packet numbers, so we can detect out-of-order packets.  It should be large enough that if the variables
-/// were to wrap, the newly wrapped values would no longer be in use.  Warning: Too large of a value wastes bandwidth!
+/*
+ * This is the counter used for holding ordered packet numbers, so we can detect out-of-order packets.  It should be large enough that if the variables
+ * were to wrap, the newly wrapped values would no longer be in use.  Warning: Too large of a value wastes bandwidth!
+ */
 using OrderingIndexType = MessageNumberType;
 
 using RemoteSystemTimeType = RakNet::TimeUS;
 
 struct InternalPacketFixedSizeTransmissionHeader
 {
-	/// A unique numerical identifier given to this user message. Used to identify reliable messages on the network
+	/* A unique numerical identifier given to this user message. Used to identify reliable messages on the network */
 	MessageNumberType reliableMessageNumber;
-	///The ID used as identification for ordering messages. Also included in sequenced messages
+	/* The ID used as identification for ordering messages. Also included in sequenced messages */
 	OrderingIndexType orderingIndex;
-	// Used only with sequenced messages
+	/* Used only with sequenced messages */
 	OrderingIndexType sequencingIndex;
-	///What ordering channel this packet is on, if the reliability type uses ordering channels
+	/* What ordering channel this packet is on, if the reliability type uses ordering channels */
 	unsigned char orderingChannel;
-	///The ID of the split packet, if we have split packets.  This is the maximum number of split messages we can send simultaneously per connection.
+	/* The ID of the split packet, if we have split packets.  This is the maximum number of split messages we can send simultaneously per connection. */
 	SplitPacketIdType splitPacketId;
-	///If this is a split packet, the index into the array of subsplit packets
+	/* If this is a split packet, the index into the array of subsplit packets */
 	SplitPacketIndexType splitPacketIndex;
-	///The size of the array of subsplit packets
+	/* The size of the array of subsplit packets */
 	SplitPacketIndexType splitPacketCount;;
-	///How many bits long the data is
+	/* How many bits long the data is */
 	BitSize_t dataBitLength;
-	///What type of reliability algorithm to use with this packet
+	/* What type of reliability algorithm to use with this packet */
 	PacketReliability reliability;
-	// Not endian safe
-	// unsigned char priority : 3;
-	// unsigned char reliability : 5;
+	/* Not endian safe */
+	/* unsigned char priority : 3; */
+	/* unsigned char reliability : 5; */
 };
 
-/// Used in InternalPacket when pointing to sharedDataBlock, rather than allocating itself
+/* Used in InternalPacket when pointing to sharedDataBlock, rather than allocating itself */
 struct InternalPacketRefCountedData
 {
 	unsigned char *sharedDataBlock;
 	unsigned int refCount;
 };
 
-/// Holds a user message, and related information
-/// Don't use a constructor or destructor, due to the memory pool I am using
+/*
+ * Holds a user message, and related information
+ * Don't use a 构造函数 or 析构函数, due to the memory pool I am using
+ */
 struct InternalPacket : public InternalPacketFixedSizeTransmissionHeader
 {
-	/// Identifies the order in which this number was sent. Used locally
+	/* Identifies the order in which this number was sent. Used locally */
 	MessageNumberType messageInternalOrder;
-	/// Has this message number been assigned yet?  We don't assign until the message is actually sent.
-	/// This fixes a bug where pre-determining message numbers and then sending a message on a different channel creates a huge gap.
-	/// This causes performance problems and causes those messages to timeout.
+	/*
+	 * Has this message number been assigned yet?  We don't assign until the message is actually sent.
+	 * This fixes a bug where pre-determining message numbers and then sending a message on a different channel creates a huge gap.
+	 * This causes performance problems and causes those messages to timeout.
+	 */
 	bool messageNumberAssigned;
-	/// Was this packet number used this update to track windowing drops or increases?  Each packet number is only used once per update.
-//	bool allowWindowUpdate;
-	///When this packet was created
+	/* Was this packet number used this update to track windowing drops or increases?  Each packet number is only used once per update. */
+/* bool allowWindowUpdate; */
+	/* When this packet was created */
 	RakNet::TimeUS creationTime;
-	///The resendNext time to take action on this packet
+	/* The resendNext time to take action on this packet */
 	RakNet::TimeUS nextActionTime;
-	// For debugging
+	/* For debugging */
 	RakNet::TimeUS retransmissionTime;
-	// Size of the header when encoded into a bitstream
+	/* Size of the header when encoded into a bitstream */
 	BitSize_t headerLength;
-	/// Buffer is a pointer to the actual data, assuming this packet has data at all
+	/* Buffer is a pointer to the actual data, assuming this packet has data at all */
 	unsigned char *data;
-	/// How to alloc and delete the data member
+	/* How to alloc and delete the data member */
 	enum AllocationScheme
 	{
-		/// Data is allocated using rakMalloc. Just free it
+		/* Data is allocated using rakMalloc. Just free it */
 		NORMAL,
 
-		/// data points to a larger block of data, where the larger block is reference counted. internalPacketRefCountedData is used in this case
+		/* data points to a larger block of data, where the larger block is reference counted. internalPacketRefCountedData is used in this case */
 		REF_COUNTED,
 	
-		/// If allocation scheme is STACK, data points to stackData and should not be deallocated
-		/// This is only used when sending. Received packets are deallocated in RakPeer
+		/*
+		 * If allocation scheme is STACK, data points to stackData and should not be deallocated
+		 * This is only used when sending. Received packets are deallocated in RakPeer
+		 */
 		STACK
 	} allocationScheme;
 	InternalPacketRefCountedData *refCountedData;
-	/// How many attempts we made at sending this message
+	/* How many attempts we made at sending this message */
 	unsigned char timesSent;
-	/// The priority level of this packet
+	/* The priority level of this packet */
 	PacketPriority priority;
-	/// If the reliability type requires a receipt, then return this number with it
+	/* If the reliability type requires a receipt, then return this number with it */
 	uint32_t sendReceiptSerial;
 
-	// Used for the resend queue
-	// Linked list implementation so I can remove from the list via a pointer, without finding it in the list
+	/* 用于the resend queue */
+	/* Linked list implementation so I can remove from the list via a pointer, without finding it in the list */
 	InternalPacket *resendPrev, *resendNext,*unreliablePrev,*unreliableNext;
 
 	unsigned char stackData[128];
 };
 
-} // namespace RakNet
+} /* RakNet 命名空间 */

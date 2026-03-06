@@ -10,7 +10,7 @@
 
 #pragma once
 #include "Export.h"
-#include "RakNetTypes.h" // int64_t
+#include "RakNetTypes.h" /* int64_t */
 #include "RakString.h"
 
 #ifdef _WIN32
@@ -22,11 +22,11 @@
 
 namespace RakNet
 {
-	/// \brief String class for Unicode
+	/* String class for Unicode */
 	class RAK_DLL_EXPORT RakWString
 	{
 	public:
-		// Constructors
+		/* 构造函数 */
 		RakWString();
 		RakWString( const RakString &right );
 		RakWString( const wchar_t *input );
@@ -34,13 +34,13 @@ namespace RakNet
 		RakWString( const char *input );
 		~RakWString() noexcept;
 
-		/// Implicit return of wchar_t*
+		/* Implicit return of wchar_t* */
 		operator wchar_t* () const {if (c_str) return c_str; return (wchar_t*) L"";}
 
-		/// Same as std::string::c_str
+		/* 与 std::string::c_str 相同 */
 		const wchar_t* C_String(void) const {if (c_str) return c_str; return (const wchar_t*) L"";}
 
-		/// Assignment operators
+		/* 赋值运算符s */
 		RakWString& operator = ( const RakWString& right );
 		RakWString& operator = ( const RakString& right );
 		RakWString& operator = ( const wchar_t * const str );
@@ -48,63 +48,67 @@ namespace RakNet
 		RakWString& operator = ( const char * const str );
 		RakWString& operator = ( char *str );
 
-		/// Concatenation
+		/* Concatenation */
 		RakWString& operator +=( const RakWString& right);
 		RakWString& operator += ( const wchar_t * const right );
 		RakWString& operator += ( wchar_t *right );
 
-		/// Equality
+		/* Equality */
 		bool operator==(const RakWString &right) const;
 
-		// Comparison
+		/* Comparison */
 		bool operator < ( const RakWString& right ) const;
 		bool operator <= ( const RakWString& right ) const;
 		bool operator > ( const RakWString& right ) const;
 		bool operator >= ( const RakWString& right ) const;
 
-		/// Inequality
+		/* Inequality */
 		bool operator!=(const RakWString &right) const;
 
-		/// Set the value of the string
+		/* 设置 value of the string */
 		void Set( wchar_t *str );
 
-		/// Returns if the string is empty. Also, C_String() would return ""
+		/* Returns if the string is empty. Also, C_String() would return "" */
 		bool IsEmpty(void) const;
 
-		/// Returns the length of the string
+		/* 返回 length of the string */
 		[[nodiscard]] size_t GetLength(void) const;
 
-		/// Has the string into an unsigned int
+		/* Has the string into an unsigned int */
 		static unsigned long ToInteger(const RakWString &rs);
 
-		/// Compare strings (case sensitive)
+		/* Compare strings (case sensitive) */
 		int StrCmp(const RakWString &right) const;
 
-		/// Compare strings (not case sensitive)
+		/* Compare strings (not case sensitive) */
 		int StrICmp(const RakWString &right) const;
 
-		/// Clear the string
+		/* 清空 string */
 		void Clear();
 
-		/// Print the string to the screen
+		/* Print the string to the screen */
 		void Printf();
 
-		/// Print the string to a file
+		/* Print the string to a file */
 		void FPrintf(FILE *fp);
 
-		/// Serialize to a bitstream, uncompressed (slightly faster)
-		/// \param[out] bs Bitstream to serialize to
+		/*
+		 * Serialize to a bitstream, uncompressed (slightly faster)
+		 * 参数[输出] bs Bitstream to serialize to
+		 */
 		void Serialize(BitStream *bs) const;
 
-		/// Static version of the Serialize function
+		/* Static version of the Serialize function */
 		static void Serialize(const wchar_t * const str, BitStream *bs);
 
-		/// Deserialize what was written by Serialize
-		/// \param[in] bs Bitstream to serialize from
-		/// \return true if the deserialization was successful
+		/*
+		 * Deserialize what was written by Serialize
+		 * 参数[输入] bs Bitstream to serialize from
+		 * 返回值: true if the deserialization was successful
+		 */
 		bool Deserialize(BitStream *bs);
 
-		/// Static version of the Deserialize() function
+		/* Static version of the Deserialize() function */
 		static bool Deserialize(wchar_t *str, BitStream *bs);
 
 

@@ -2,15 +2,17 @@
  *  Copyright (c) 2014, Oculus VR, Inc.
  *  All rights reserved.
  *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant 
- *  of patent rights can be found in the PATENTS file in the same directory.
+ *  本源代码使用 BSD 风格许可证授权，
+ *  许可证文件位于源码树根目录的 LICENSE 文件中。
+ *  同目录下的 PATENTS 文件中还包含额外的专利授权。
  *
  */
 
-/// \file
-/// \brief If _USE_RAK_MEMORY_OVERRIDE is defined, memory allocations go through rakMalloc, rakRealloc, and rakFree
-///
+/*
+ * 
+ * 如果定义了 _USE_RAK_MEMORY_OVERRIDE，内存分配将通过 rakMalloc、rakRealloc 和 rakFree 进行
+ *
+ */
 
 
 
@@ -27,18 +29,18 @@
 
 #include "RakAlloca.h"
 
-// #if _USE_RAK_MEMORY_OVERRIDE==1
-// 	#if defined(new)
-// 		#pragma push_macro("new")
-// 		#undef new
-// 		#define RMO_NEW_UNDEF
-// 	#endif
-// #endif
+/* #if _USE_RAK_MEMORY_OVERRIDE==1 */
+/* 	#if defined(new) */
+/* 		#pragma push_macro("new") */
+/* 		#undef new */
+/* 		#define RMO_NEW_UNDEF */
+/* 	#endif */
+/* #endif */
 
 
-// These pointers are statically and globally defined in RakMemoryOverride.cpp
-// Change them to point to your own allocators if you want.
-// Use the functions for a DLL, or just reassign the variable if using source
+/* 这些指针在 RakMemoryOverride.cpp 中被静态和全局定义 */
+/* 如果需要，可以将它们指向您自己的分配器 */
+/* 使用 DLL 时通过函数修改，使用源码时可直接重新赋值 */
 extern RAK_DLL_EXPORT void * (*rakMalloc) (size_t size);
 extern RAK_DLL_EXPORT void * (*rakRealloc) (void *p, size_t size);
 extern RAK_DLL_EXPORT void (*rakFree) (void *p);
@@ -50,14 +52,14 @@ extern RAK_DLL_EXPORT void * (*dlMallocMMap) (size_t size);
 extern RAK_DLL_EXPORT void * (*dlMallocDirectMMap) (size_t size);
 extern RAK_DLL_EXPORT int (*dlMallocMUnmap) (void* ptr, size_t size);
 
-// Change to a user defined allocation function
+/* 更改为用户自定义的内存分配函数 */
 void RAK_DLL_EXPORT SetMalloc( void* (*userFunction)(size_t size) );
 void RAK_DLL_EXPORT SetRealloc( void* (*userFunction)(void *p, size_t size) );
 void RAK_DLL_EXPORT SetFree( void (*userFunction)(void *p) );
 void RAK_DLL_EXPORT SetMalloc_Ex( void* (*userFunction)(size_t size, const char *file, unsigned int line) );
 void RAK_DLL_EXPORT SetRealloc_Ex( void* (*userFunction)(void *p, size_t size, const char *file, unsigned int line) );
 void RAK_DLL_EXPORT SetFree_Ex( void (*userFunction)(void *p, const char *file, unsigned int line) );
-// Change to a user defined out of memory function
+/* 更改为用户自定义的内存不足回调函数 */
 void RAK_DLL_EXPORT SetNotifyOutOfMemory( void (*userFunction)(const char *file, const long line) );
 void RAK_DLL_EXPORT SetDLMallocMMap( void* (*userFunction)(size_t size) );
 void RAK_DLL_EXPORT SetDLMallocDirectMMap( void* (*userFunction)(size_t size) );
@@ -154,12 +156,12 @@ namespace RakNet
 			return 0;
 
 #if _USE_RAK_MEMORY_OVERRIDE==1
-//		Type *t;
+/* 	Type *t; */
 		char *buffer = (char *) (GetMalloc_Ex())(sizeof(int)+sizeof(Type)*count, file, line);
 		((int*)buffer)[0]=count;
 		for (int i=0; i<count; i++)
 		{
-			//t = 
+			/* t = */
 				new(buffer+sizeof(int)+i*sizeof(Type)) Type;
 		}
 		return (Type *) (buffer+sizeof(int));
@@ -221,20 +223,20 @@ namespace RakNet
 
 }
 
-// Call to make RakNet allocate a large block of memory, and do all subsequent allocations in that memory block
-// Initial and reallocations will be done through whatever function is pointed to by yourMMapFunction, and yourDirectMMapFunction (default is malloc)
-// Allocations will be freed through whatever function is pointed to by yourMUnmapFunction (default free)
+/* 调用此函数使 RakNet 分配一大块内存，后续所有分配都在该内存块中进行 */
+/* 初始分配和重新分配将通过 yourMMapFunction 和 yourDirectMMapFunction 指向的函数完成（默认为 malloc） */
+/* 释放将通过 yourMUnmapFunction 指向的函数完成（默认为 free） */
 void UseRaknetFixedHeap(size_t initialCapacity,
 						void * (*yourMMapFunction) (size_t size) = RakNet::_DLMallocMMap,
 						void * (*yourDirectMMapFunction) (size_t size) = RakNet::_DLMallocDirectMMap,
 						int (*yourMUnmapFunction) (void *p, size_t size) = RakNet::_DLMallocMUnmap);
 
-// Free memory allocated from UseRaknetFixedHeap
+/* 释放由 UseRaknetFixedHeap 分配的内存 */
 void FreeRakNetFixedHeap();
 
-// #if _USE_RAK_MEMORY_OVERRIDE==1
-// 	#if defined(RMO_NEW_UNDEF)
-// 	#pragma pop_macro("new")
-// 	#undef RMO_NEW_UNDEF
-// 	#endif
-// #endif
+/* #if _USE_RAK_MEMORY_OVERRIDE==1 */
+/* 	#if defined(RMO_NEW_UNDEF) */
+/* 	#pragma pop_macro("new") */
+/* 	#undef RMO_NEW_UNDEF */
+/* 	#endif */
+/* #endif */

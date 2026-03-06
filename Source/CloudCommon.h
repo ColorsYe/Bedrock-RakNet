@@ -21,126 +21,138 @@ namespace RakNet
 class BitStream;
 struct CloudQueryRow;
 
-/// Allocates CloudQueryRow and the row data. Override to use derived classes or different allocators
-/// \ingroup CLOUD_GROUP
+/*
+ * Allocates CloudQueryRow and the row data. Override to use derived classes or different allocators
+ * \ingroup CLOUD_GROUP
+ */
 class RAK_DLL_EXPORT CloudAllocator
 {
 public:
 	CloudAllocator() {}
 	virtual ~CloudAllocator() {}
 
-	/// \brief Allocate a row
+	/* 分配 row */
 	virtual CloudQueryRow* AllocateCloudQueryRow();
-	/// \brief Free a row
+	/* 释放 row */
 	virtual void DeallocateCloudQueryRow(CloudQueryRow *row);
-	/// \brief Allocate CloudQueryRow::data
+	/* 分配 CloudQueryRow::data */
 	virtual unsigned char *AllocateRowData(uint32_t bytesNeededForData);
-	/// \brief Free CloudQueryRow::data
+	/* 释放 CloudQueryRow::data */
 	virtual void DeallocateRowData(void *data);
 };
 
-/// Serves as a key to identify data uploaded to or queried from the server.
-/// \ingroup CLOUD_GROUP
+/*
+ * Serves as a key to identify data uploaded to or queried from the server.
+ * \ingroup CLOUD_GROUP
+ */
 struct RAK_DLL_EXPORT CloudKey
 {
 	CloudKey() {}
 	CloudKey(RakNet::RakString _primaryKey, uint32_t _secondaryKey) : primaryKey(_primaryKey), secondaryKey(_secondaryKey) {}
 	~CloudKey() {}
 
-	/// Identifies the primary key. This is intended to be a major category, such as the name of the application
-	/// Must be non-empty
+	/*
+	 * 标识主键.这是一个主要类别,例如应用程序的名称
+	 * 必须非空
+	 */
 	RakNet::RakString primaryKey;
 
-	/// Identifies the secondary key. This is intended to be a subcategory enumeration, such as PLAYER_LIST or RUNNING_SCORES
+	/* Identifies the secondary key. This is intended to be a subcategory enumeration, such as PLAYER_LIST or RUNNING_SCORES */
 	uint32_t secondaryKey;
 
-	/// \internal
+	/* 内部使用 */
 	void Serialize(bool writeToBitstream, BitStream *bitStream);
 };
 
-/// \internal
+/* 内部使用 */
 int CloudKeyComp(const CloudKey &key, const CloudKey &data);
 
-/// Data members used to query the cloud
-/// \ingroup CLOUD_GROUP
+/*
+ * 用于查询云的数据成员
+ * \ingroup CLOUD_GROUP
+ */
 struct RAK_DLL_EXPORT CloudQuery
 {
 	CloudQuery() {startingRowIndex=0; maxRowsToReturn=0; subscribeToResults=false;}
 
-	/// List of keys to query. Must be at least of length 1.
-	/// This query is run on uploads from all clients, and those that match the combination of primaryKey and secondaryKey are potentially returned
-	/// If you pass more than one key at a time, the results are concatenated so if you need to differentiate between queries then send two different queries
+	/*
+	 * List of keys to query. Must be at least of length 1.
+	 * This query is run on uploads from all clients, and those that match the combination of primaryKey and secondaryKey are potentially returned
+	 * If you pass more than one key at a time, the results are concatenated so if you need to differentiate between queries then send two different queries
+	 */
 	DataStructures::List<CloudKey> keys;
 
-	/// If limiting the number of rows to return, this is the starting offset into the list. Has no effect unless maxRowsToReturn is > 0
+	/* If limiting the number of rows to return, this is the starting offset into the list. Has no effect unless maxRowsToReturn is > 0 */
 	uint32_t startingRowIndex;
 
-	/// Maximum number of rows to return. Actual number may still be less than this. Pass 0 to mean no-limit.
+	/* 要返回的最大行数实际数字可能仍小于此值传递0表示没有限制 */
 	uint32_t maxRowsToReturn;
 
-	/// If true, automatically get updates as the results returned to you change. Unsubscribe with CloudMemoryClient::Unsubscribe()
+	/* 如果为真当返回给您的结果发生变化时会自动获取更新取消订阅 CloudMemoryClient::Unsubscribe() */
 	bool subscribeToResults;
 
-	/// \internal
+	/* 内部使用 */
 	void Serialize(bool writeToBitstream, BitStream *bitStream);
 };
 
-/// \ingroup CLOUD_GROUP
+/* \ingroup CLOUD_GROUP */
 struct RAK_DLL_EXPORT CloudQueryRow
 {
-	/// Key used to identify this data
+	/* Key used to identify this data */
 	CloudKey key;
 
-	/// Data uploaded
+	/* Data uploaded */
 	unsigned char *data;
 
-	/// Length of data uploaded
+	/* Length of data uploaded */
 	uint32_t length;
 
-	/// System address of server that is holding this data, and the client is connected to
+	/* 持有此数据的服务器的系统地址（客户端已连接）*/
 	SystemAddress serverSystemAddress;
 
-	/// System address of client that uploaded this data
+	/* 上传此数据的客户端的系统地址 */
 	SystemAddress clientSystemAddress;
 
-	/// RakNetGUID of server that is holding this data, and the client is connected to
+	/* 持有此数据的服务器的 RakNetGUID（客户端已连接）*/
 	RakNetGUID serverGUID;
 
-	/// RakNetGUID of client that uploaded this data
+	/* 上传此数据的客户端的 RakNetGUID */
 	RakNetGUID clientGUID;
 
-	/// \internal
+	/* 内部使用 */
 	void Serialize(bool writeToBitstream, BitStream *bitStream, CloudAllocator *allocator);
 };
 
-/// \ingroup CLOUD_GROUP
+/* \ingroup CLOUD_GROUP */
 struct RAK_DLL_EXPORT CloudQueryResult
 {
-	/// Query originally passed to Download()
+	/* Query originally passed to Download() */
 	CloudQuery cloudQuery;
 
-	/// Results returned from query. If there were multiple keys in CloudQuery::keys then see resultKeyIndices
+	/* Results returned from query. If there were multiple keys in CloudQuery::keys then see resultKeyIndices */
 	DataStructures::List<CloudQueryRow*> rowsReturned;
 
-	/// If there were multiple keys in CloudQuery::keys, then each key is processed in order and the result concatenated to rowsReturned
-	/// The starting index of each query is written to resultKeyIndices
-	/// For example, if CloudQuery::keys had 4 keys, returning 3 rows, 0, rows, 5 rows, and 12 rows then
-	/// resultKeyIndices would be 0, 3, 3, 8
+	/*
+	 * If there were multiple keys in CloudQuery::keys, then each key is processed in order and the result concatenated to rowsReturned
+	 * 每个查询的起始索引被写入 resultKeyIndices
+	 * 例如，如果 CloudQuery::keys 有 4 个键，返回 3 行、0 行、5 行和 12 行，则
+	 * resultKeyIndices would be 0, 3, 3, 8
+	 */
 	DataStructures::List<uint32_t> resultKeyIndices;
 
-	/// Whatever was passed to CloudClient::Get() as CloudQuery::subscribeToResults
+	/* Whatever was passed to CloudClient::Get() as CloudQuery::subscribeToResults */
 	bool subscribeToResults;
 
-	/// \internal
+	/* 内部使用 */
 	void Serialize(bool writeToBitstream, BitStream *bitStream, CloudAllocator *allocator);
-	/// \internal
+	/* 内部使用 */
 	void SerializeHeader(bool writeToBitstream, BitStream *bitStream);
-	/// \internal
+	/* 内部使用 */
 	void SerializeNumRows(bool writeToBitstream, uint32_t &numRows, BitStream *bitStream);
-	/// \internal
+	/* 内部使用 */
 	void SerializeCloudQueryRows(bool writeToBitstream, uint32_t &numRows, BitStream *bitStream, CloudAllocator *allocator);
 };
 
-} // Namespace RakNet
+} /* Namespace RakNet */
 
-#endif // __CLOUD_COMMON_H
+#endif /* __CLOUD_COMMON_H */

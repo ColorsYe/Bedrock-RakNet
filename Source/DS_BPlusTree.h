@@ -8,8 +8,7 @@
  *
  */
 
-/// \file DS_BPlusTree.h
-///
+/*  DS_BPlusTree.h */
 
 
 #pragma once
@@ -18,14 +17,14 @@
 #include <cstdio>
 #include "Export.h"
 
-// Java
-// http://www.seanster.com/BplusTree/BplusTree.html
+/* Java */
+/* http://www.seanster.com/BplusTree/BplusTree.html */
 
-// Overview
-// http://babbage.clarku.edu/~achou/cs160/B+Trees/B+Trees.htm
+/* Overview */
+/* http://babbage.clarku.edu/~achou/cs160/B+Trees/B+Trees.htm */
 
-// Deletion
-// http://dbpubs.stanford.edu:8090/pub/1995-19
+/* Deletion */
+/* http://dbpubs.stanford.edu:8090/pub/1995-19 */
 
 #ifdef _MSC_VER
 #pragma warning( push )
@@ -33,39 +32,45 @@
 
 #include "RakMemoryOverride.h"
 
-/// The namespace DataStructures was only added to avoid compiler errors for commonly named data structures
-/// As these data structures are stand-alone, you can use them outside of RakNet for your own projects if you wish.
+/*
+ * DataStructures 命名空间的添加仅是为了避免常见数据结构名称导致的编译器错误
+ * 由于这些数据结构是独立的，如果需要，你可以在 RakNet 之外将它们用于自己的项目。
+ */
 namespace DataStructures
 {
-	/// Used in the BPlusTree.  Used for both leaf and index nodes.
-	/// Don't use a constructor or destructor, due to the memory pool I am using
+	/*
+	 * Used in the BPlusTree.  Used for both leaf and index nodes.
+	 * Don't use a 构造函数 or 析构函数, due to the memory pool I am using
+	 */
 	template <class KeyType, class DataType, int order>
 	struct RAK_DLL_EXPORT Page
 	{
-		// We use the same data structure for both leaf and index nodes.  
-		// It uses a little more memory for index nodes but reduces
-		// memory fragmentation, allocations, and deallocations.
+		/* We use the same data structure for both leaf and index nodes. */
+		/* 它在索引节点上使用了稍多的内存，但减少了 */
+		/* memory fragmentation, allocations, and deallocations. */
 		bool isLeaf;
 
-		// Used for both leaf and index nodes.
-		// For a leaf it means the number of elements in data
-		// For an index it means the number of keys and is one less than the number of children pointers.
+		/* 用于both leaf and index nodes */
+		/* For a leaf it means the number of elements in data */
+		/* For an index it means the number of keys and is one less than the number of children pointers. */
 		int size;
 
-		// Used for both leaf and index nodes.
+		/* 用于both leaf and index nodes */
 		KeyType keys[order];
 
-		// Used only for leaf nodes.  Data is the actual data, while next is the pointer to the next leaf (for B+)
+		/* Used only for leaf nodes.  Data is the actual data, while next is the pointer to the next leaf (for B+) */
 		DataType data[order];
 		Page<KeyType, DataType, order> *next;
 		Page<KeyType, DataType, order> *previous;
 
-		// Used only for index nodes.  Pointers to the children of this node.
+		/* Used only for index nodes.  Pointers to the children of this node. */
 		Page *children[order+1];
 	};
 
-	/// A BPlus tree
-	/// Written with efficiency and speed in mind.
+	/*
+	 * B+ 树
+	 * 以效率和速度为设计目标。
+	 */
 	template <class KeyType, class DataType, int order>
 	class RAK_DLL_EXPORT BPlusTree
 	{
@@ -80,12 +85,12 @@ namespace DataStructures
 				REPLACE_KEY1_WITH_KEY2,
 				PUSH_KEY_TO_PARENT,
 				SET_BRANCH_KEY,
-			} action; // 0=none, 1=replace key1 with key2
+			} action; /* 0=无，1=用 key2 替换 key1 */
 		};
 
 		BPlusTree();
 		~BPlusTree() noexcept;
-		void SetPoolPageSize(int size); // Set the page size for the memory pool.  Optionsl
+		void SetPoolPageSize(int size); /* 设置 page size for the memory pool.  Optionsl */
 		bool Get(const KeyType key, DataType &out) const;
 		bool Delete(const KeyType key);
 		bool Delete(const KeyType key, DataType &out);
@@ -206,15 +211,15 @@ namespace DataStructures
 		else if (FindDeleteRebalance(key, root, &underflow,root->keys[0], &returnAction, out)==false)
 			return false;
 
-//		RakAssert(returnAction.action==ReturnAction::NO_ACTION);
+/* 	RakAssert(returnAction.action==ReturnAction::NO_ACTION); */
 
 		if (underflow && root->size==0)
 		{
-			// Move the root down.
+			/* Move the root down. */
 			Page<KeyType, DataType, order> *oldRoot=root;
 			root=root->children[0];
 			pagePool.Release(oldRoot, _FILE_AND_LINE_);
-			// memset(oldRoot,0,sizeof(root));
+			/* memset(oldRoot,0,sizeof(root)); */
 		}		
 	
 		return true;
@@ -222,29 +227,29 @@ namespace DataStructures
 	template<class KeyType, class DataType, int order>
 	bool BPlusTree<KeyType, DataType, order>::FindDeleteRebalance(const KeyType key, Page<KeyType, DataType, order> *cur, bool *underflow, KeyType rightRootKey, ReturnAction *returnAction, DataType &out)
 	{
-		// Get index of child to follow.
+		/* 获取 index of child to follow */
 		int branchIndex, childIndex;
 		if (GetIndexOf(key, cur, &childIndex))
 			branchIndex=childIndex+1;
 		else
 			branchIndex=childIndex;
 
-		// If child is not a leaf, call recursively
+		/* 如果child is not a leaf，则call recursively */
 		if (cur->children[branchIndex]->isLeaf==false)
 		{
 			if (branchIndex<cur->size)
-				rightRootKey=cur->keys[branchIndex]; // Shift right to left
+				rightRootKey=cur->keys[branchIndex]; /* 从右向左移动 */
 			else
-				rightRootKey=cur->keys[branchIndex-1]; // Shift center to left
+				rightRootKey=cur->keys[branchIndex-1]; /* 从中间向左移动 */
 
 			if (FindDeleteRebalance(key, cur->children[branchIndex], underflow, rightRootKey, returnAction, out)==false)
 				return false;
 
-			// Call again in case the root key changed
+			/* Call again in case the root key changed */
 			if (branchIndex<cur->size)
-				rightRootKey=cur->keys[branchIndex]; // Shift right to left
+				rightRootKey=cur->keys[branchIndex]; /* 从右向左移动 */
 			else
-				rightRootKey=cur->keys[branchIndex-1]; // Shift center to left
+				rightRootKey=cur->keys[branchIndex-1]; /* 从中间向左移动 */
 
 			if (returnAction->action==ReturnAction::SET_BRANCH_KEY && branchIndex!=childIndex)
 			{
@@ -252,19 +257,19 @@ namespace DataStructures
 				cur->keys[childIndex]=returnAction->key1;
 
 				if (branchIndex<cur->size)
-					rightRootKey=cur->keys[branchIndex]; // Shift right to left
+					rightRootKey=cur->keys[branchIndex]; /* 从右向左移动 */
 				else
-					rightRootKey=cur->keys[branchIndex-1]; // Shift center to left
+					rightRootKey=cur->keys[branchIndex-1]; /* 从中间向左移动 */
 			}
 		}
 		else
 		{
-			// If child is a leaf, get the index of the key.  If the item is not found, cancel delete.
+			/* If child is a leaf, get the index of the key.  If the item is not found, cancel delete. */
 			if (GetIndexOf(key, cur->children[branchIndex], &childIndex)==false)
 				return false;
 
-			// Delete:
-			// Remove childIndex from the child at branchIndex
+			/* Delete: */
+			/* Remove childIndex from the child at branchIndex */
 			out=cur->children[branchIndex]->data[childIndex];
 			DeleteFromPageAtIndex(childIndex, cur->children[branchIndex]);
 
@@ -286,7 +291,7 @@ namespace DataStructures
 				*underflow=false;
 		}
 
-		// Fix underflow:
+		/* Fix underflow: */
 		if (*underflow)
 		{
 			*underflow=FixUnderflow(branchIndex, cur, rightRootKey, returnAction);
@@ -297,7 +302,7 @@ namespace DataStructures
 	template<class KeyType, class DataType, int order>
 	bool BPlusTree<KeyType, DataType, order>::FixUnderflow(int branchIndex, Page<KeyType, DataType, order> *cur, KeyType rightRootKey, ReturnAction *returnAction)
 	{
-		// Borrow from a neighbor that has excess.
+		/* Borrow from a neighbor that has excess. */
 		Page<KeyType, DataType, order> *source;
 		Page<KeyType, DataType, order> *dest;
 
@@ -306,7 +311,7 @@ namespace DataStructures
 			dest=cur->children[branchIndex];
 			source=cur->children[branchIndex-1];
 
-			// Left has excess
+			/* Left has excess */
 			ShiftNodeRight(dest);
 			if (dest->isLeaf)
 			{
@@ -318,17 +323,17 @@ namespace DataStructures
 				dest->children[0]=source->children[source->size];
 				dest->keys[0]=cur->keys[branchIndex-1];
 			}
-			// Update the parent key for the child (middle)
+			/* Update the parent key for the child (middle) */
 			cur->keys[branchIndex-1]=source->keys[source->size-1];
 			source->size--;
 
-	//		if (branchIndex==0)
-	//		{
-	//			returnAction->action=ReturnAction::SET_BRANCH_KEY;
-	//			returnAction->key1=dest->keys[0];
-	//		}
+	/* 	if (branchIndex==0) */
+	/* 	{ */
+	/* 		returnAction->action=ReturnAction::SET_BRANCH_KEY; */
+	/* 		returnAction->key1=dest->keys[0]; */
+	/* 	} */
 
-			// No underflow
+			/* No underflow */
 			return false;
 		}
 		else if (branchIndex<cur->size && cur->children[branchIndex+1]->size > order/2)
@@ -336,17 +341,17 @@ namespace DataStructures
 			dest=cur->children[branchIndex];
 			source=cur->children[branchIndex+1];
 
-			// Right has excess
+			/* Right has excess */
 			if (dest->isLeaf)
 			{
 				dest->keys[dest->size]=source->keys[0];
 				dest->data[dest->size]=source->data[0];
 
-				// The first key in the leaf after shifting is the parent key for the right branch
+				/* The first key in the leaf after shifting is the parent key for the right branch */
 				cur->keys[branchIndex]=source->keys[1];
 
 #ifdef _MSC_VER
-#pragma warning( disable : 4127 ) // warning C4127: conditional expression is constant
+#pragma warning( disable : 4127 ) /* 警告 C4127：条件表达式是常量 */
 #endif
 				if (order<=3 && dest->size==0)
 				{
@@ -370,7 +375,7 @@ namespace DataStructures
 				dest->keys[dest->size]=rightRootKey;
 				dest->children[dest->size+1]=source->children[0];
 
-				// The shifted off key is the leftmost key for a node
+				/* The shifted off key is the leftmost key for a node */
 				cur->keys[branchIndex]=source->keys[0];
 			}
 
@@ -378,37 +383,37 @@ namespace DataStructures
 			dest->size++;
 			ShiftNodeLeft(source);
 
-			//cur->keys[branchIndex]=source->keys[0];
+			/* cur->keys[branchIndex]=source->keys[0]; */
 
-//			returnAction->action=ReturnAction::SET_BRANCH_KEY;
-//			returnAction->key1=dest->keys[dest->size-1];
+/* 		returnAction->action=ReturnAction::SET_BRANCH_KEY; */
+/* 		returnAction->key1=dest->keys[dest->size-1]; */
 
-			// No underflow
+			/* No underflow */
 			return false;
 		}
 		else
 		{
 			int sourceIndex;
 
-			// If no neighbors have excess, merge two branches.
-			//
-			// To merge two leaves, just copy the data and keys over.
-			//
-			// To merge two branches, copy the pointers and keys over, using rightRootKey as the key for the extra pointer
+			/* If no neighbors have excess, merge two branches. */
+
+			/* To merge two leaves, just copy the data and keys over. */
+
+			/* To merge two branches, copy the pointers and keys over, using rightRootKey as the key for the extra pointer */
 			if (branchIndex<cur->size)
 			{
-				// Merge right child to current child and delete right child.
+				/* Merge right child to current child and delete right child. */
 				dest=cur->children[branchIndex];
 				source=cur->children[branchIndex+1];
 			}
 			else
 			{
-				// Move current child to left and delete current child
+				/* Move current child to left and delete current child */
 				dest=cur->children[branchIndex-1];
 				source=cur->children[branchIndex];
 			}
 
-			// Merge
+			/* Merge */
 			if (dest->isLeaf)
 			{
 				for (sourceIndex=0; sourceIndex<source->size; sourceIndex++)
@@ -419,7 +424,7 @@ namespace DataStructures
 			}
 			else
 			{
-				// We want the tree root key of the source, not the current.
+				/* We want the tree root key of the source, not the current. */
 				dest->keys[dest->size]=rightRootKey;
 				dest->children[dest->size++ + 1]=source->children[0];
 				for (sourceIndex=0; sourceIndex<source->size; sourceIndex++)
@@ -430,21 +435,21 @@ namespace DataStructures
 			}
 
 #ifdef _MSC_VER
-#pragma warning( disable : 4127 ) // warning C4127: conditional expression is constant
+#pragma warning( disable : 4127 ) /* 警告 C4127：条件表达式是常量 */
 #endif
-			if (order<=3 && branchIndex>0 && cur->children[branchIndex]->isLeaf) // With order==2 it is possible to delete data[0], which is not possible with higher orders.
+			if (order<=3 && branchIndex>0 && cur->children[branchIndex]->isLeaf) /* With order==2 it is possible to delete data[0], which is not possible with higher orders. */
 				cur->keys[branchIndex-1]=cur->children[branchIndex]->keys[0];
 
 			if (branchIndex<cur->size)
 			{
-				// Update the parent key, removing the source (right)
+				/* Update the parent key, removing the source (right) */
 				DeleteFromPageAtIndex(branchIndex, cur);
 			}
 			else
 			{
 				if (branchIndex>0)
 				{
-					// Update parent key, removing the source (current)
+					/* Update parent key, removing the source (current) */
 					DeleteFromPageAtIndex(branchIndex-1, cur);
 				}
 			}
@@ -466,11 +471,11 @@ namespace DataStructures
 					source->next->previous=source->previous;
 			}			
 
-			// Free the source node
+			/* 释放 source node */
 			pagePool.Release(source, _FILE_AND_LINE_);
-			// memset(source,0,sizeof(root));
+			/* memset(source,0,sizeof(root)); */
 
-			// Return underflow or not of parent.
+			/* 返回 underflow or not of parent */
 			return cur->size < order/2;
 		}
 	}
@@ -590,14 +595,14 @@ namespace DataStructures
 					}
 					newPage->children[destIndex++]=nodeData;
 
-					// sourceIndex+1 is sort of a hack but it works - because there is one extra child than keys
-					// skip past the last child for cur
+					/* sourceIndex+1 is sort of a hack but it works - because there is one extra child than keys */
+					/* skip past the last child for cur */
 					for (; sourceIndex+1 < cur->size+1; sourceIndex++, destIndex++)
 					{
 						newPage->children[destIndex]=cur->children[sourceIndex+1];
 					}
 
-					// the first key is the middle key.  Remove it from the page and push it to the parent
+					/* the first key is the middle key.  Remove it from the page and push it to the parent */
 					returnAction->action=ReturnAction::PUSH_KEY_TO_PARENT;
 					returnAction->key1=newPage->keys[0];
 					for (int j=0; j < destIndex-1; j++)
@@ -625,7 +630,7 @@ namespace DataStructures
 					for (; sourceIndex < order+1; sourceIndex++, destIndex++)
 						newPage->children[destIndex]=cur->children[sourceIndex];
 
-					// the first key is the middle key.  Remove it from the page and push it to the parent
+					/* the first key is the middle key.  Remove it from the page and push it to the parent */
 					returnAction->action=ReturnAction::PUSH_KEY_TO_PARENT;
 					returnAction->key1=newPage->keys[0];
 					for (int j=0; j < destIndex-1; j++)
@@ -708,7 +713,7 @@ namespace DataStructures
 		int childIndex;
 		while (cur->isLeaf==false)
 		{
-			// When searching, if we match the exact key we go down the pointer after that index
+			/* 搜索时，如果精确匹配键，则沿该索引之后的指针向下 */
 			if (GetIndexOf(key, cur, &childIndex))
 				childIndex++;
 			cur = cur->children[childIndex];
@@ -733,7 +738,7 @@ namespace DataStructures
 				if (branchIndex==childIndex+1)
 				{
 					*success=false;
-					return 0; // Already exists
+					return 0; /* 已存在 */
 				}
 
 				if (CanRotateLeft(cur, branchIndex))
@@ -749,7 +754,7 @@ namespace DataStructures
 					}
 					else
 					{
-						// Move head element to left and replace it with key,data
+						/* Move head element to left and replace it with key,data */
 						Page<KeyType, DataType, order>* dest=cur->children[branchIndex-1];
 						Page<KeyType, DataType, order>* source=cur->children[branchIndex];
 						returnAction->key1=source->keys[0];
@@ -779,7 +784,7 @@ namespace DataStructures
 					}
 					else
 					{
-						// Insert to the head of the right leaf instead and change our key
+						/* Insert to the head of the right leaf instead and change our key */
 						returnAction->key1=cur->children[branchIndex+1]->keys[0];
 						InsertIntoNode(key, data, 0, 0, cur->children[branchIndex+1], 0);						
 						returnAction->key2=key;
@@ -814,7 +819,7 @@ namespace DataStructures
 			if (branchIndex==childIndex+1)
 			{
 				*success=false;
-				return 0; // Already exists				
+				return 0; /* 已存在 */
 			}
 			else
 			{
@@ -829,7 +834,7 @@ namespace DataStructures
 	{
 		if (root==0)
 		{
-			// Allocate root and make root a leaf
+			/* Allocate root and make root a leaf */
 			root = pagePool.Allocate( _FILE_AND_LINE_ );
 			root->isLeaf=true;
 			leftmostLeaf=root;
@@ -852,14 +857,14 @@ namespace DataStructures
 				KeyType newKey;
 				if (newPage->isLeaf==false)
 				{
-					// One key is pushed up through the stack.  I store that at keys[0] but it has to be removed for the page to be correct
+					/* One key is pushed up through the stack.  I store that at keys[0] but it has to be removed for the page to be correct */
 					RakAssert(returnAction.action==ReturnAction::PUSH_KEY_TO_PARENT);
 					newKey=returnAction.key1;
 					newPage->size--;
 				}
 				else
 					 newKey = newPage->keys[0];
-				// propagate the root
+				/* propagate the root */
 				Page<KeyType, DataType, order>* newRoot = pagePool.Allocate( _FILE_AND_LINE_ );
 				newRoot->isLeaf=false;
 				newRoot->size=1;
@@ -917,7 +922,7 @@ namespace DataStructures
 		index = page->size/2;
 
 #ifdef _MSC_VER
-#pragma warning( disable : 4127 ) // warning C4127: conditional expression is constant
+#pragma warning( disable : 4127 ) /* 警告 C4127：条件表达式是常量 */
 #endif
 		while (1)
 		{
@@ -936,7 +941,7 @@ namespace DataStructures
 			if (lowerBound>upperBound)
 			{
 				*out=lowerBound;
-				return false; // No match
+				return false; /* 无匹配 */
 			}
 		}
 	}
@@ -956,7 +961,7 @@ namespace DataStructures
 					queue.Push(ptr->children[i], _FILE_AND_LINE_ );
 			}			
 			pagePool.Release(ptr, _FILE_AND_LINE_);
-		//	memset(ptr,0,sizeof(root));
+		/* memset(ptr,0,sizeof(root)); */
 		};
 	}
 	template<class KeyType, class DataType, int order>
@@ -1054,7 +1059,7 @@ namespace DataStructures
 				for (i=0; i < ptr->size+1; i++)
 				{
 					RAKNET_DEBUG_PRINTF("%p(", ptr->children[i]);
-					//RAKNET_DEBUG_PRINTF("(", ptr->children[i]);
+					/* RAKNET_DEBUG_PRINTF("(", ptr->children[i]); */
 					for (j=0; j < ptr->children[i]->size; j++)
 						RAKNET_DEBUG_PRINTF("%i ", ptr->children[i]->keys[j]);
 					RAKNET_DEBUG_PRINTF(") ");

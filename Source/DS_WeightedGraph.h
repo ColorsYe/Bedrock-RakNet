@@ -3,16 +3,18 @@
  *  All rights reserved.
  *
  *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant 
+ *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  *
  */
 
-/// \file DS_WeightedGraph.h
-/// \internal
-/// \brief Weighted graph.  
-/// \details I'm assuming the indices are complex map types, rather than sequential numbers (which could be implemented much more efficiently).
-///
+/*
+ *  DS_WeightedGraph.h
+ * 内部使用
+ * 加权图。
+ * 假设索引为复杂的映射类型，而非顺序数字（顺序数字可以更高效地实现）。
+ *
+ */
 
 
 #pragma once
@@ -31,8 +33,10 @@
 #pragma warning( push )
 #endif
 
-/// The namespace DataStructures was only added to avoid compiler errors for commonly named data structures
-/// As these data structures are stand-alone, you can use them outside of RakNet for your own projects if you wish.
+/*
+ * 命名空间 DataStructures 仅为避免常见数据结构名称的编译器错误而添加
+ * 由于这些数据结构是独立的，如有需要，你可以在 RakNet 之外的项目中使用它们。
+ */
 namespace DataStructures
 {
 	template <class node_type, class weight_type, bool allow_unlinkedNodes>
@@ -65,16 +69,16 @@ namespace DataStructures
 
 		DataStructures::Map<node_type, DataStructures::Map<node_type, weight_type> *> adjacencyLists;
 
-		// All these variables are for path finding with Dijkstra
-		// 08/23/06 Won't compile as a DLL inside this struct
-	//	struct  
-	//	{
+		/* 以下所有变量用于 Dijkstra 寻路 */
+		/* 08/23/06 在此结构体内部作为 DLL 无法编译 */
+	/* struct */
+	/* { */
 			bool isValidPath;
 			node_type rootNode;
 			DataStructures::OrderedList<node_type, node_type> costMatrixIndices;
 			weight_type *costMatrix;
 			node_type *leastNodeArray;
-	//	} dijkstra;
+	/* } dijkstra; */
 
 		struct NodeAndParent
 		{
@@ -100,7 +104,7 @@ namespace DataStructures
 	WeightedGraph<node_type, weight_type, allow_unlinkedNodes>::WeightedGraph( const WeightedGraph& original_copy )
 	{
 		adjacencyLists=original_copy.adjacencyLists;
-		
+
 		isValidPath=original_copy.isValidPath;
 		if (isValidPath)
 		{
@@ -149,13 +153,13 @@ namespace DataStructures
 		{
 			RakNet::OP_DELETE(adjacencyLists.Pop(removeNodeQueue.Pop()), _FILE_AND_LINE_);
 
-			// Remove this node from all of the other lists as well
+			/* 同时从所有其他列表中删除此节点 */
 			for (i=0; i < adjacencyLists.Size(); i++)
 			{
 				adjacencyLists[i]->Delete(node);
 
 #ifdef _MSC_VER
-#pragma warning( disable : 4127 ) // warning C4127: conditional expression is constant
+#pragma warning( disable : 4127 ) /* 警告 C4127：条件表达式是常量 */
 #endif
 				if (allow_unlinkedNodes==false && adjacencyLists[i]->Size()==0)
 					removeNodeQueue.Push(adjacencyLists.GetKeyAtIndex(i), _FILE_AND_LINE_ );
@@ -196,12 +200,12 @@ namespace DataStructures
 		adjacencyLists.Get(node1)->Delete(node2);
 
 #ifdef _MSC_VER
-#pragma warning( disable : 4127 ) // warning C4127: conditional expression is constant
+#pragma warning( disable : 4127 ) /* 警告 C4127：条件表达式是常量 */
 #endif
-		if (allow_unlinkedNodes==false) // If we do not allow _unlinked nodes, then if there are no connections, remove the node
+		if (allow_unlinkedNodes==false) /* 若不允许孤立节点，则当没有连接时删除该节点 */
 		{
 			if (adjacencyLists.Get(node1)->Size()==0)
-				RemoveNode(node1); // Will also remove node1 from the adjacency list of node2
+				RemoveNode(node1); /* 也会从 node2 的邻接列表中删除 node1 */
 			if (adjacencyLists.Has(node2) && adjacencyLists.Get(node2)->Size()==0)
 				RemoveNode(node2);
 		}
@@ -236,8 +240,8 @@ namespace DataStructures
 			ClearDijkstra();
 			GenerateDisjktraMatrix(startNode, INFINITE_WEIGHT);
 		}
-		
-		// return the results
+
+		/* 返回结果 */
 		bool objectExists;
 		unsigned col,row;
 		weight_type currentWeight;
@@ -262,14 +266,14 @@ namespace DataStructures
 		currentWeight=costMatrix[row*adjacencyLists.Size() + col];
 		if (currentWeight==INFINITE_WEIGHT)
 		{
-			// No path
+			/* 无路径 */
 			return true;
 		}
 		vertex=endNode;
 		outputQueue.PushAtHead(vertex, 0, _FILE_AND_LINE_);
 		row--;
 #ifdef _MSC_VER
-#pragma warning( disable : 4127 ) // warning C4127: conditional expression is constant
+#pragma warning( disable : 4127 ) /* 警告 C4127：条件表达式是常量 */
 #endif
 		while (1)
 		{
@@ -325,9 +329,9 @@ namespace DataStructures
 	}
 
 	template <class node_type, class weight_type, bool allow_unlinkedNodes>
-	bool WeightedGraph<node_type, weight_type, allow_unlinkedNodes>::GetSpanningTree(DataStructures::Tree<node_type> &outTree, DataStructures::List<node_type> *inputNodes, node_type startNode, weight_type INFINITE_WEIGHT )
+		bool WeightedGraph<node_type, weight_type, allow_unlinkedNodes>::GetSpanningTree(DataStructures::Tree<node_type> &outTree, DataStructures::List<node_type> *inputNodes, node_type startNode, weight_type INFINITE_WEIGHT )
 	{
-		// Find the shortest path from the start node to each of the input nodes.  Add this path to a new WeightedGraph if the result is reachable
+		/* 找到从起始节点到每个输入节点的最短路径。若结果可达，则将此路径添加到新的加权图中 */
 		DataStructures::List<node_type> path;
 		DataStructures::WeightedGraph<node_type, weight_type, allow_unlinkedNodes> outGraph;
 		bool res;
@@ -339,13 +343,13 @@ namespace DataStructures
 			{
 				for (j=0; j < path.Size()-1; j++)
 				{
-					// Don't bother looking up the weight
+					/* 不必查找权重 */
  					outGraph.AddConnection(path[j], path[j+1], INFINITE_WEIGHT);
 				}
 			}
 		}
 
-		// Copy the graph to a tree.
+		/* 将图复制为树。 */
 		DataStructures::Queue<NodeAndParent> nodesToProcess;
 		DataStructures::Tree<node_type> *current;
 		DataStructures::Map<node_type, weight_type> *adjacencyList;
@@ -383,7 +387,7 @@ namespace DataStructures
 					nap2.parent=current;
 					nodesToProcess.Push(nap2, _FILE_AND_LINE_ );
 					current->children.Insert(nap2.node, _FILE_AND_LINE_);
-				}				
+				}
 			}
 		}
 
@@ -410,7 +414,7 @@ namespace DataStructures
 
 		for (col=0; col < adjacencyLists.Size(); col++)
 		{
-			// This should be already sorted, so it's a bit inefficient to do an insertion sort, but what the heck
+			/* 这应该已经排序，因此插入排序有点低效，但无所谓 */
 			costMatrixIndices.Insert(adjacencyLists.GetKeyAtIndex(col),adjacencyLists.GetKeyAtIndex(col), true, _FILE_AND_LINE_);
 		}
 		for (col=0; col < adjacencyLists.Size() * adjacencyLists.Size(); col++)
@@ -420,7 +424,7 @@ namespace DataStructures
 		currentNodeWeight=0;
 		rootNode=startNode;
 
-		// Clear the starting node column
+		/* 清除起始节点列 */
 		if (adjacencyLists.Size())
 		{
 			adjacentIndex=adjacencyLists.GetIndexAtKey(startNode);
@@ -431,7 +435,7 @@ namespace DataStructures
 		while (row < adjacencyLists.Size()-1)
 		{
 			adjacencyList = adjacencyLists.Get(currentNode);
-			// Go through all connections from the current node.  If the new weight is less than the current weight, then update that weight.
+			/* 遍历当前节点的所有连接。若新权重小于当前权重，则更新该权重。 */
 			for (col=0; col < adjacencyList->Size(); col++)
 			{
 				edgeWeight=(*adjacencyList)[col];
@@ -441,14 +445,14 @@ namespace DataStructures
 
 				if (currentNodeWeight + edgeWeight < adjacentNodeWeight)
 				{
-					// Update the weight for the adjacent node
+					/* 更新相邻节点的权重 */
 					for (row2=row; row2 < adjacencyLists.Size(); row2++)
 						costMatrix[row2*adjacencyLists.Size() + adjacentIndex]=currentNodeWeight + edgeWeight;
 					openSet.Set(adjacentKey, currentNodeWeight + edgeWeight);
 				}
 			}
 
-			// Find the lowest in the open set
+			/* 在开放集中找到最小值 */
 			minHeap.Clear(true,_FILE_AND_LINE_);
 			for (openSetIndex=0; openSetIndex < openSet.Size(); openSetIndex++)
 				minHeap.Push(openSet[openSetIndex], openSet.GetKeyAtIndex(openSetIndex),_FILE_AND_LINE_);
@@ -468,7 +472,7 @@ namespace DataStructures
 
 			if (minHeap.Size()==0)
 			{
-				// Unreachable nodes
+				/* 不可达节点 */
 				isValidPath=true;
 				return;
 			}
@@ -476,7 +480,7 @@ namespace DataStructures
 			currentNodeWeight=minHeap.PeekWeight(0);
 			leastNodeArray[row]=minHeap.Pop(0);
 			currentNode=leastNodeArray[row];
-			openSet.Delete(currentNode);		
+			openSet.Delete(currentNode);
 			row++;
 		}
 
@@ -517,7 +521,7 @@ namespace DataStructures
 		unsigned i,j;
 		for (i=0; i < adjacencyLists.Size(); i++)
 		{
-			//RAKNET_DEBUG_PRINTF("%i connected to ", i);
+			/* RAKNET_DEBUG_PRINTF("%i connected to ", i); */
 			RAKNET_DEBUG_PRINTF("%s connected to ", adjacencyLists.GetKeyAtIndex(i).systemAddress.ToString());
 
 			if (adjacencyLists[i]->Size()==0)
@@ -525,7 +529,7 @@ namespace DataStructures
 			else
 			{
 				for (j=0; j < adjacencyLists[i]->Size(); j++)
-				//	RAKNET_DEBUG_PRINTF("%i (%.2f) ", adjacencyLists.GetIndexAtKey(adjacencyLists[i]->GetKeyAtIndex(j)), (float) adjacencyLists[i]->operator[](j) );
+				/* RAKNET_DEBUG_PRINTF("%i (%.2f) ", adjacencyLists.GetIndexAtKey(adjacencyLists[i]->GetKeyAtIndex(j)), (float) adjacencyLists[i]->operator[](j) ); */
 					RAKNET_DEBUG_PRINTF("%s (%.2f) ", adjacencyLists[i]->GetKeyAtIndex(j).systemAddress.ToString(), (float) adjacencyLists[i]->operator[](j) );
 			}
 

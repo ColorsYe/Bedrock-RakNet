@@ -8,8 +8,7 @@
  *
  */
 
-/// \file
-///
+/*  */
 
 
 #pragma once
@@ -22,26 +21,32 @@
 namespace RakNet
 {
 
-/// Increase this value if you plan to have many persistent objects
-/// This value must match on all systems
+/*
+ * Increase this value if you plan to have many persistent objects
+ * This value must match on all systems
+ */
 #define NETWORK_ID_MANAGER_HASH_LENGTH 1024
 
-/// This class is simply used to generate a unique number for a group of instances of NetworkIDObject
-/// An instance of this class is required to use the ObjectID to pointer lookup system
-/// You should have one instance of this class per game instance.
-/// Call SetIsNetworkIDAuthority before using any functions of this class, or of NetworkIDObject
+/*
+ * This class is simply used to generate a unique number for a group of instances of NetworkIDObject
+ * An instance of this class is 必须 to use the ObjectID to pointer lookup system
+ * You should have one instance of this class per game instance.
+ * Call SetIsNetworkIDAuthority before using any functions of this class, or of NetworkIDObject
+ */
 class RAK_DLL_EXPORT NetworkIDManager
 {
 public:
-	// GetInstance() and DestroyInstance(instance*)
+	/* 获取单例 GetInstance() 和销毁单例 DestroyInstance(instance*) */
 	STATIC_FACTORY_DECLARATIONS(NetworkIDManager)
 
 	NetworkIDManager();
 	virtual ~NetworkIDManager();
 
-	/// Returns the parent object, or this instance if you don't use a parent.
-	/// Supports NetworkIDObject anywhere in the inheritance hierarchy
-	/// \pre You must first call SetNetworkIDManager before using this function
+	/*
+	 * 返回 parent object, or this instance if you don't use a parent
+	 * Supports NetworkIDObject anywhere in the inheritance hierarchy
+	 * 前提条件: You must first call SetNetworkIDManager before using this function
+	 */
 	template <class returnType>
 	returnType GET_OBJECT_FROM_ID(NetworkID x) {
 		NetworkIDObject *nio = GET_BASE_OBJECT_FROM_ID(x);
@@ -52,14 +57,14 @@ public:
 		return (returnType) nio;
 	}
 
-	// Stop tracking all NetworkID objects
+	/* Stop tracking all NetworkID objects */
 	void Clear();
 
-	/// \internal
+	/* 内部使用 */
 	NetworkIDObject *GET_BASE_OBJECT_FROM_ID(NetworkID x);
 
 protected:
-	/// \internal
+	/* 内部使用 */
 	void TrackNetworkIDObject(NetworkIDObject *networkIdObject);
 	void StopTrackingNetworkIDObject(NetworkIDObject *networkIdObject);
 
@@ -68,9 +73,9 @@ protected:
 	NetworkIDObject *networkIdHash[NETWORK_ID_MANAGER_HASH_LENGTH];
 	unsigned int NetworkIDToHashIndex(NetworkID networkId);
 	uint64_t startingOffset;
-	/// \internal
+	/* 内部使用 */
 	NetworkID GetNewNetworkID();
 
 };
 
-} // namespace RakNet
+} /* RakNet 命名空间 */

@@ -8,9 +8,11 @@
  *
  */
 
-/// \file
-/// \brief \b [Internal] Encapsulates a mutex
-///
+/*
+ * 
+ * \b [内部使用] Encapsulates a mutex
+ *
+ */
 
 
 
@@ -31,24 +33,26 @@
 namespace RakNet
 {
 
-/// \brief An easy to use mutex.
-/// 
-/// I wrote this because the version that comes with Windows is too complicated and requires too much code to use.
-/// @remark Previously I used this everywhere, and in fact for a year or two RakNet was totally threadsafe.  While doing profiling, I saw that this function was incredibly slow compared to the blazing performance of everything else, so switched to single producer / consumer everywhere.  Now the user thread of RakNet is not threadsafe, but it's 100X faster than before.
+/*
+ * An easy to use mutex.
+ *
+ * I wrote this because the version that comes with Windows is too complicated and requires too much code to use.
+ * @remark Previously I used this everywhere, and in fact for a year or two RakNet was totally 线程安全.  While doing profiling, I saw that this function was incredibly slow compared to the blazing performance of everything else, so switched to single producer / consumer everywhere.  Now the user thread of RakNet is 非线程安全, but it's 100X faster than before.
+ */
 class RAK_DLL_EXPORT SimpleMutex
 {
 public:
 
-	// Constructor
+	/* 构造函数 */
 	SimpleMutex();
 
-	// Destructor
+	/* 析构函数 */
 	~SimpleMutex() noexcept;
 
-	// Locks the mutex.  Slow!
+	/* Locks the mutex.  Slow! */
 	void Lock();
 
-	// Unlocks the mutex.
+	/* Unlocks the mutex. */
 	void Unlock();
 
 
@@ -60,14 +64,14 @@ public:
 private:
 	void Init();
 #ifdef _WIN32
-	CRITICAL_SECTION criticalSection; /// Docs say this is faster than a mutex for single process access
+	CRITICAL_SECTION criticalSection; /* / Docs say this is faster than a mutex for single process access */
 
 
 #else
 	pthread_mutex_t hMutex;
 #endif
-	// Not threadsafe
-	//	bool isInitialized;
+	/* 非线程安全 */
+	/* bool isInitialized; */
 };
 
-} // namespace RakNet
+} /* RakNet 命名空间 */

@@ -1,11 +1,12 @@
 #pragma once
-// All this crap just to include type SOCKET
+/* 此文件仅为包含 SOCKET 类型而存在的各种平台头文件 */
 
 #ifdef __native_client__
 #define _PP_Instance_ PP_Instance
 #else
 #define _PP_Instance_ int
 #endif
+
 
 
 
@@ -35,14 +36,14 @@
 	#define FORMAT_MESSAGE_ALLOCATE_BUFFER 0
 	#define FIONBIO 0
 	#define LocalFree(x)
-	// using Windows.Networking;
-	// using Windows.Networking.Sockets;
-	// See http://msdn.microsoft.com/en-us/library/windows/apps/windows.networking.sockets.datagramsocketcontrol
+	/* using Windows.Networking; */
+	/* using Windows.Networking.Sockets; */
+	/* 参见 http://msdn.microsoft.com/en-us/library/windows/apps/windows.networking.sockets.datagramsocketcontrol */
 #elif defined(_WIN32)
-	// IP_DONTFRAGMENT is different between winsock 1 and winsock 2.  Therefore, Winsock2.h must be linked againt Ws2_32.lib
-	// winsock.h must be linked against WSock32.lib.  If these two are mixed up the flag won't work correctly
-	// WinRT: http://msdn.microsoft.com/en-us/library/windows/apps/windows.networking.sockets
-	// Sample code: http://stackoverflow.com/questions/10290945/correct-use-of-udp-datagramsocket
+	/* IP_DONTFRAGMENT 在 winsock 1 和 winsock 2 之间不同。因此 Winsock2.h 必须链接 Ws2_32.lib */
+	/* winsock.h 必须链接 WSock32.lib。如果混淆这两者，标志将无法正确工作 */
+	/* WinRT: http://msdn.microsoft.com/en-us/library/windows/apps/windows.networking.sockets */
+	/* 示例代码: http://stackoverflow.com/questions/10290945/correct-use-of-udp-datagramsocket */
 	#include <winsock2.h>
 	using __UDPSOCKET__ = SOCKET;
 	using __TCPSOCKET__ = SOCKET;
@@ -79,14 +80,14 @@
 		#include "ppapi/c/ppp_messaging.h"
 		#include "ppapi/c/pp_input_event.h"
 		#include "ppapi/c/pp_completion_callback.h"
-		//UDP specific - the 'private' folder was copied from the chromium src/ppapi/c headers folder
+		/* UDP 专用 - 'private' 文件夹复制自 chromium src/ppapi/c 头文件目录 */
 		#include "ppapi/c/private/ppb_udp_socket_private.h"
 		#include "ppapi/cpp/private/net_address_private.h"
 		using __UDPSOCKET__ = PP_Resource;
 		using __TCPSOCKET__ = PP_Resource;
 	#else
-		//#include "RakMemoryOverride.h"
-		/// Unix/Linux uses ints for sockets
+		/* #include "RakMemoryOverride.h" */
+		/* Unix/Linux 使用 int 作为套接字类型 */
 		using __UDPSOCKET__ = int;
 		using __TCPSOCKET__ = int;
 #endif

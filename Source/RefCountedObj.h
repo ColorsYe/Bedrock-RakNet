@@ -8,16 +8,18 @@
  *
  */
 
-/// \file
-/// \brief \b Reference counted object. Very simple class for quick and dirty uses.
-///
+/*
+ * 
+ * \b 引用计数对象。非常简单的类，适用于快速简单的用途。
+ *
+ */
 
 
 
 #pragma once
 #include "RakMemoryOverride.h"
 
-/// World's simplest class :)
+/* World's simplest class :) */
 class RefCountedObj
 {
 	public:

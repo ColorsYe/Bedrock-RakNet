@@ -8,13 +8,15 @@
  *
  */
 
-/// \file BitStream.h
-/// \brief This class allows you to write and read native types as a string of bits.  
-/// \details BitStream is used extensively throughout RakNet and is designed to be used by users as well.
-///
+/*
+ * 文件: BitStream.h
+ * 此类允许将原生类型以位串形式进行读写。
+ * BitStream 在 RakNet 中被广泛使用，同时也面向用户开放使用。
+ *
+ */
 
 
-#if defined(_MSC_VER) && _MSC_VER < 1299 // VC6 doesn't support template specialization
+#if defined(_MSC_VER) && _MSC_VER < 1299 /* VC6 不支持模板特化 */
 #include "BitStream_NoTemplate.h"
 #else
 
@@ -33,608 +35,740 @@
 #pragma warning( push )
 #endif
 
-// MSWin uses _copysign, others use copysign...
+/* MSWin 使用 _copysign，其他平台使用 copysign...*/
 #ifndef _WIN32
 #define _copysign copysign
 #endif
 
 namespace RakNet
 {
-	/// This class allows you to write and read native types as a string of bits.  BitStream is used extensively throughout RakNet and is designed to be used by users as well.
-	/// \sa BitStreamSample.txt
+	/*
+	 * 此类允许将原生类型以位串形式进行读写。BitStream 在 RakNet 中被广泛使用，同时也面向用户开放使用。
+	 * 另见 BitStreamSample.txt
+	 */
 	class RAK_DLL_EXPORT BitStream
 	{
 
 	public:
-		// GetInstance() and DestroyInstance(instance*)
+		/* 获取单例 GetInstance() 和销毁单例 DestroyInstance(instance*) */
 		STATIC_FACTORY_DECLARATIONS(BitStream)
 
-		/// Default Constructor
+		/* 默认构造函数 */
 		BitStream();
 
-		/// \brief Create the bitstream, with some number of bytes to immediately allocate.
-		/// \details There is no benefit to calling this, unless you know exactly how many bytes you need and it is greater than BITSTREAM_STACK_ALLOCATION_SIZE.
-		/// In that case all it does is save you one or more realloc calls.
-		/// \param[in] initialBytesToAllocate the number of bytes to pre-allocate.
+		/*
+		 * 创建位流，立即分配指定数量的字节。
+		 * 仅当明确知道所需字节数且大于 BITSTREAM_STACK_ALLOCATION_SIZE 时才有必要调用，否则调用此构造函数没有额外收益。
+		 * 在该情况下，此函数的作用是减少一次或多次 realloc 调用。
+		 * 参数[输入] initialBytesToAllocate 预分配的字节数。
+		 */
 		BitStream( const unsigned int initialBytesToAllocate );
 
-		/// \brief Initialize the BitStream, immediately setting the data it contains to a predefined pointer.
-		/// \details Set \a _copyData to true if you want to make an internal copy of the data you are passing. Set it to false to just save a pointer to the data.
-		/// You shouldn't call Write functions with \a _copyData as false, as this will write to unallocated memory
-		/// 99% of the time you will use this function to cast Packet::data to a bitstream for reading, in which case you should write something as follows:
-		/// \code
-		/// RakNet::BitStream bs(packet->data, packet->length, false);
-		/// \endcode
-		/// \param[in] _data An array of bytes.
-		/// \param[in] lengthInBytes Size of the \a _data.
-		/// \param[in] _copyData true or false to make a copy of \a _data or not.
+		/*
+		 * 初始化 BitStream，立即将其包含的数据设置为一个预定义的指针。
+		 * Set _copyData to true if you want to make an internal copy of the data you are passing. Set it to false to just save a pointer to the data.
+		 * 在 _copyData 为 false 时不应调用 Write 函数，因为这会写入未分配的内存
+		 * 99% 的情况下，此函数用于将 Packet::data 转换为位流进行读取, in which case you should write something as follows:
+		 * 
+		 * RakNet::BitStream bs(packet->data, packet->length, false);
+		 * 
+		 * 参数[输入] _data 字节数组。
+		 * 参数[输入] lengthInBytes Size of the _data.
+		 * 参数[输入] _copyData true or false to make a copy of _data or not.
+		 */
 		BitStream( unsigned char* _data, const unsigned int lengthInBytes, bool _copyData );
 
-		// Destructor
+		/* 析构函数 */
 		~BitStream() noexcept;
 
-		/// Resets the bitstream for reuse.
+		/* 重置位流以便复用。 */
 		void Reset( void );
 
-		/// \brief Bidirectional serialize/deserialize any integral type to/from a bitstream.  
-		/// \details Undefine __BITSTREAM_NATIVE_END if you need endian swapping.
-		/// \param[in] writeToBitstream true to write from your data to this bitstream.  False to read from this bitstream and write to your data
-		/// \param[in] inOutTemplateVar The value to write
-		/// \return true if \a writeToBitstream is true.  true if \a writeToBitstream is false and the read was successful.  false if \a writeToBitstream is false and the read was not successful.
+		/*
+		 * 对任意整型数据进行双向序列化/反序列化（位流读写）。
+		 * 若需要字节序转换，请取消定义 __BITSTREAM_NATIVE_END。
+		 * 参数[输入] writeToBitstream true 表示将数据写入位流；false 表示从位流读取数据写入变量
+		 * 参数[输入] inOutTemplateVar 要写入的值
+		 * 返回值: true if writeToBitstream is true.  true if writeToBitstream is false and the read was successful.  false if writeToBitstream is false and the read was not successful.
+		 */
 		template <class templateType>
 			bool Serialize(bool writeToBitstream, templateType &inOutTemplateVar);
 
-		/// \brief Bidirectional serialize/deserialize any integral type to/from a bitstream. 
-		/// \details If the current value is different from the last value
-		/// the current value will be written.  Otherwise, a single bit will be written
-		/// \param[in] writeToBitstream true to write from your data to this bitstream.  False to read from this bitstream and write to your data
-		/// \param[in] inOutCurrentValue The current value to write
-		/// \param[in] lastValue The last value to compare against.  Only used if \a writeToBitstream is true.
-		/// \return true if \a writeToBitstream is true.  true if \a writeToBitstream is false and the read was successful.  false if \a writeToBitstream is false and the read was not successful.
+		/*
+		 * 对任意整型数据进行双向序列化/反序列化（位流读写）。
+		 * 若当前值与上一次的值不同
+		 * 则写入当前值；否则仅写入一个比特
+		 * 参数[输入] writeToBitstream true 表示将数据写入位流；false 表示从位流读取数据写入变量
+		 * 参数[输入] inOutCurrentValue 要写入的当前值
+		 * 参数[输入] lastValue The last value to compare against.  Only used if writeToBitstream is true.
+		 * 返回值: true if writeToBitstream is true.  true if writeToBitstream is false and the read was successful.  false if writeToBitstream is false and the read was not successful.
+		 */
 		template <class templateType>
 			bool SerializeDelta(bool writeToBitstream, templateType &inOutCurrentValue, const templateType &lastValue);
 
-		/// \brief Bidirectional version of SerializeDelta when you don't know what the last value is, or there is no last value.
-		/// \param[in] writeToBitstream true to write from your data to this bitstream.  False to read from this bitstream and write to your data
-		/// \param[in] inOutCurrentValue The current value to write
-		/// \return true if \a writeToBitstream is true.  true if \a writeToBitstream is false and the read was successful.  false if \a writeToBitstream is false and the read was not successful.
+		/*
+		 * 当不知道上一次值或没有上一次值时使用的 SerializeDelta 双向版本。
+		 * 参数[输入] writeToBitstream true 表示将数据写入位流；false 表示从位流读取数据写入变量
+		 * 参数[输入] inOutCurrentValue 要写入的当前值
+		 * 返回值: true if writeToBitstream is true.  true if writeToBitstream is false and the read was successful.  false if writeToBitstream is false and the read was not successful.
+		 */
 		template <class templateType>
 			bool SerializeDelta(bool writeToBitstream, templateType &inOutCurrentValue);
 
-		/// \brief Bidirectional serialize/deserialize any integral type to/from a bitstream.
-		/// \details Undefine __BITSTREAM_NATIVE_END if you need endian swapping.
-		/// If you are not using __BITSTREAM_NATIVE_END the opposite is true for types larger than 1 byte
-		/// For floating point, this is lossy, using 2 bytes for a float and 4 for a double.  The range must be between -1 and +1.
-		/// For non-floating point, this is lossless, but only has benefit if you use less than half the bits of the type
-		/// \param[in] writeToBitstream true to write from your data to this bitstream.  False to read from this bitstream and write to your data
-		/// \param[in] inOutTemplateVar The value to write
-		/// \return true if \a writeToBitstream is true.  true if \a writeToBitstream is false and the read was successful.  false if \a writeToBitstream is false and the read was not successful.
+		/*
+		 * 对任意整型数据进行双向序列化/反序列化（位流读写）。
+		 * 若需要字节序转换，请取消定义 __BITSTREAM_NATIVE_END。
+		 * 如果未使用 __BITSTREAM_NATIVE_END，则对于大于 1 字节的类型，情况相反
+		 * 对于浮点数，这是有损的，float 使用 2 字节，double 使用 4 字节。范围必须在 -1 到 +1 之间。
+		 * 对于非浮点数，这是无损的，但仅在使用不到该类型一半位数时才有收益
+		 * 参数[输入] writeToBitstream true 表示将数据写入位流；false 表示从位流读取数据写入变量
+		 * 参数[输入] inOutTemplateVar 要写入的值
+		 * 返回值: true if writeToBitstream is true.  true if writeToBitstream is false and the read was successful.  false if writeToBitstream is false and the read was not successful.
+		 */
 		template <class templateType>
 			bool SerializeCompressed(bool writeToBitstream, templateType &inOutTemplateVar);
 
-		/// \brief Bidirectional serialize/deserialize any integral type to/from a bitstream.  
-		/// \details If the current value is different from the last value
-		/// the current value will be written.  Otherwise, a single bit will be written
-		/// For floating point, this is lossy, using 2 bytes for a float and 4 for a double.  The range must be between -1 and +1.
-		/// For non-floating point, this is lossless, but only has benefit if you use less than half the bits of the type
-		/// If you are not using __BITSTREAM_NATIVE_END the opposite is true for types larger than 1 byte
-		/// \param[in] writeToBitstream true to write from your data to this bitstream.  False to read from this bitstream and write to your data
-		/// \param[in] inOutCurrentValue The current value to write
-		/// \param[in] lastValue The last value to compare against.  Only used if \a writeToBitstream is true.
-		/// \return true if \a writeToBitstream is true.  true if \a writeToBitstream is false and the read was successful.  false if \a writeToBitstream is false and the read was not successful.
+		/*
+		 * 对任意整型数据进行双向序列化/反序列化（位流读写）。
+		 * 若当前值与上一次的值不同
+		 * 则写入当前值；否则仅写入一个比特
+		 * 对于浮点数，这是有损的，float 使用 2 字节，double 使用 4 字节。范围必须在 -1 到 +1 之间。
+		 * 对于非浮点数，这是无损的，但仅在使用不到该类型一半位数时才有收益
+		 * 如果未使用 __BITSTREAM_NATIVE_END，则对于大于 1 字节的类型，情况相反
+		 * 参数[输入] writeToBitstream true 表示将数据写入位流；false 表示从位流读取数据写入变量
+		 * 参数[输入] inOutCurrentValue 要写入的当前值
+		 * 参数[输入] lastValue The last value to compare against.  Only used if writeToBitstream is true.
+		 * 返回值: true if writeToBitstream is true.  true if writeToBitstream is false and the read was successful.  false if writeToBitstream is false and the read was not successful.
+		 */
 		template <class templateType>
 			bool SerializeCompressedDelta(bool writeToBitstream, templateType &inOutCurrentValue, const templateType &lastValue);
 
-		/// \brief Save as SerializeCompressedDelta(templateType &currentValue, const templateType &lastValue) when we have an unknown second parameter
-		/// \return true on data read. False on insufficient data in bitstream
+		/*
+		 * Save as SerializeCompressedDelta(templateType &currentValue, const templateType &lastValue) when we have an unknown second parameter
+		 * 返回值: true on data read. False on insufficient data in bitstream
+		 */
 		template <class templateType>
 			bool SerializeCompressedDelta(bool writeToBitstream, templateType &inOutTemplateVar);
 
-		/// \brief Bidirectional serialize/deserialize an array or casted stream or raw data.  This does NOT do endian swapping.
-		/// \param[in] writeToBitstream true to write from your data to this bitstream.  False to read from this bitstream and write to your data
-		/// \param[in] inOutByteArray a byte buffer
-		/// \param[in] numberOfBytes the size of \a input in bytes
-		/// \return true if \a writeToBitstream is true.  true if \a writeToBitstream is false and the read was successful.  false if \a writeToBitstream is false and the read was not successful.
+		/*
+		 * Bidirectional serialize/deserialize an array or casted stream or raw data.  This does NOT do endian swapping.
+		 * 参数[输入] writeToBitstream true 表示将数据写入位流；false 表示从位流读取数据写入变量
+		 * 参数[输入] inOutByteArray a byte buffer
+		 * 参数[输入] numberOfBytes the size of input in bytes
+		 * 返回值: true if writeToBitstream is true.  true if writeToBitstream is false and the read was successful.  false if writeToBitstream is false and the read was not successful.
+		 */
 		bool Serialize(bool writeToBitstream,  char* inOutByteArray, const unsigned int numberOfBytes );
 
-		/// \brief Serialize a float into 2 bytes, spanning the range between \a floatMin and \a floatMax
-		/// \param[in] writeToBitstream true to write from your data to this bitstream.  False to read from this bitstream and write to your data
-		/// \param[in] inOutFloat The float to write
-		/// \param[in] floatMin Predetermined minimum value of f
-		/// \param[in] floatMax Predetermined maximum value of f
+		/*
+		 * Serialize a float into 2 bytes, spanning the range between floatMin and floatMax
+		 * 参数[输入] writeToBitstream true 表示将数据写入位流；false 表示从位流读取数据写入变量
+		 * 参数[输入] inOutFloat The float to write
+		 * 参数[输入] floatMin Predetermined minimum value of f
+		 * 参数[输入] floatMax Predetermined maximum value of f
+		 */
 		bool SerializeFloat16(bool writeToBitstream, float &inOutFloat, float floatMin, float floatMax);
 
-		/// Serialize one type casted to another (smaller) type, to save bandwidth
-		/// serializationType should be uint8_t, uint16_t, uint24_t, or uint32_t
-		/// Example: int num=53; SerializeCasted<uint8_t>(true, num); would use 1 byte to write what would otherwise be an integer (4 or 8 bytes)
-		/// \param[in] writeToBitstream true to write from your data to this bitstream.  False to read from this bitstream and write to your data
-		/// \param[in] value The value to serialize
+		/*
+		 * Serialize one type casted to another (smaller) type, to save bandwidth
+		 * serializationType 应为 uint8_t、uint16_t、uint24_t 或 uint32_t
+		 * Example: int num=53; SerializeCasted<uint8_t>(true, num); would use 1 byte to write what would otherwise be an integer (4 or 8 bytes)
+		 * 参数[输入] writeToBitstream true 表示将数据写入位流；false 表示从位流读取数据写入变量
+		 * 参数[输入] value The value to serialize
+		 */
 		template <class serializationType, class sourceType >
 		bool SerializeCasted( bool writeToBitstream, sourceType &value );
 
-		/// Given the minimum and maximum values for an integer type, figure out the minimum number of bits to represent the range
-		/// Then serialize only those bits
-		/// \note A static is used so that the required number of bits for (maximum-minimum) is only calculated once. This does require that \a minimum and \maximum are fixed values for a given line of code for the life of the program
-		/// \param[in] writeToBitstream true to write from your data to this bitstream.  False to read from this bitstream and write to your data
-		/// \param[in] value Integer value to write, which should be between \a minimum and \a maximum
-		/// \param[in] minimum Minimum value of \a value
-		/// \param[in] maximum Maximum value of \a value
-		/// \param[in] allowOutsideRange If true, all sends will take an extra bit, however value can deviate from outside \a minimum and \a maximum. If false, will assert if the value deviates
+		/*
+		 * 给定整数类型的最小值和最大值，计算表示该范围所需的最少位数
+		 * Then serialize only those bits
+		 * 注意: A static is used so that the required number of bits for (maximum-minimum) is only calculated once. This does require that minimum and \maximum are fixed values for a given line of code for the life of the program
+		 * 参数[输入] writeToBitstream true 表示将数据写入位流；false 表示从位流读取数据写入变量
+		 * 参数[输入] value Integer value to write, which should be between minimum and maximum
+		 * 参数[输入] minimum Minimum value of value
+		 * 参数[输入] maximum Maximum value of value
+		 * 参数[输入] allowOutsideRange If true, all sends will take an extra bit, however value can deviate from outside minimum and maximum. If false, will assert if the value deviates
+		 */
 		template <class templateType>
 		bool SerializeBitsFromIntegerRange( bool writeToBitstream, templateType &value, const templateType minimum, const templateType maximum, bool allowOutsideRange=false );
-		/// \param[in] requiredBits Primarily for internal use, called from above function() after calculating number of bits needed to represent maximum-minimum
+		/* 参数[输入] requiredBits Primarily for internal use, called from above function() after calculating number of bits needed to represent maximum-minimum */
 		template <class templateType>
 		bool SerializeBitsFromIntegerRange( bool writeToBitstream, templateType &value, const templateType minimum, const templateType maximum, const int requiredBits, bool allowOutsideRange=false );
 
-		/// \brief Bidirectional serialize/deserialize a normalized 3D vector, using (at most) 4 bytes + 3 bits instead of 12-24 bytes.  
-		/// \details Will further compress y or z axis aligned vectors.
-		/// Accurate to 1/32767.5.
-		/// \param[in] writeToBitstream true to write from your data to this bitstream.  False to read from this bitstream and write to your data
-		/// \param[in] x x
-		/// \param[in] y y
-		/// \param[in] z z
-		/// \return true if \a writeToBitstream is true.  true if \a writeToBitstream is false and the read was successful.  false if \a writeToBitstream is false and the read was not successful.
-		template <class templateType> // templateType for this function must be a float or double
+		/*
+		 * Bidirectional serialize/deserialize a normalized 3D vector, using (at most) 4 bytes + 3 bits instead of 12-24 bytes.
+		 * 将进一步压缩沿 y 或 z 轴对齐的向量。
+		 * 精度为 1/32767.5。
+		 * 参数[输入] writeToBitstream true 表示将数据写入位流；false 表示从位流读取数据写入变量
+		 * 参数[输入] x x
+		 * 参数[输入] y y
+		 * 参数[输入] z z
+		 * 返回值: true if writeToBitstream is true.  true if writeToBitstream is false and the read was successful.  false if writeToBitstream is false and the read was not successful.
+		 */
+		template <class templateType> /* 此函数的 templateType 必须为 float 或 double 类型 */
 			bool SerializeNormVector(bool writeToBitstream,  templateType &x, templateType &y, templateType &z );
 
-		/// \brief Bidirectional serialize/deserialize a vector, using 10 bytes instead of 12.
-		/// \details Loses accuracy to about 3/10ths and only saves 2 bytes, so only use if accuracy is not important.
-		/// \param[in] writeToBitstream true to write from your data to this bitstream.  False to read from this bitstream and write to your data
-		/// \param[in] x x
-		/// \param[in] y y
-		/// \param[in] z z
-		/// \return true if \a writeToBitstream is true.  true if \a writeToBitstream is false and the read was successful.  false if \a writeToBitstream is false and the read was not successful.
-		template <class templateType> // templateType for this function must be a float or double
+		/*
+		 * Bidirectional serialize/deserialize a vector, using 10 bytes instead of 12.
+		 * Loses accuracy to about 3/10ths and only saves 2 bytes, so only use if accuracy is not important.
+		 * 参数[输入] writeToBitstream true 表示将数据写入位流；false 表示从位流读取数据写入变量
+		 * 参数[输入] x x
+		 * 参数[输入] y y
+		 * 参数[输入] z z
+		 * 返回值: true if writeToBitstream is true.  true if writeToBitstream is false and the read was successful.  false if writeToBitstream is false and the read was not successful.
+		 */
+		template <class templateType> /* 此函数的 templateType 必须为 float 或 double 类型 */
 			bool SerializeVector(bool writeToBitstream,  templateType &x, templateType &y, templateType &z );
 
-		/// \brief Bidirectional serialize/deserialize a normalized quaternion in 6 bytes + 4 bits instead of 16 bytes. Slightly lossy.
-		/// \param[in] writeToBitstream true to write from your data to this bitstream.  False to read from this bitstream and write to your data
-		/// \param[in] w w
-		/// \param[in] x x
-		/// \param[in] y y
-		/// \param[in] z z
-		/// \return true if \a writeToBitstream is true.  true if \a writeToBitstream is false and the read was successful.  false if \a writeToBitstream is false and the read was not successful.
-		template <class templateType> // templateType for this function must be a float or double
+		/*
+		 * Bidirectional serialize/deserialize a normalized quaternion in 6 bytes + 4 bits instead of 16 bytes. Slightly lossy.
+		 * 参数[输入] writeToBitstream true 表示将数据写入位流；false 表示从位流读取数据写入变量
+		 * 参数[输入] w w
+		 * 参数[输入] x x
+		 * 参数[输入] y y
+		 * 参数[输入] z z
+		 * 返回值: true if writeToBitstream is true.  true if writeToBitstream is false and the read was successful.  false if writeToBitstream is false and the read was not successful.
+		 */
+		template <class templateType> /* 此函数的 templateType 必须为 float 或 double 类型 */
 			bool SerializeNormQuat(bool writeToBitstream,  templateType &w, templateType &x, templateType &y, templateType &z);
 
-		/// \brief Bidirectional serialize/deserialize an orthogonal matrix by creating a quaternion, and writing 3 components of the quaternion in 2 bytes each.
-		/// \details Use 6 bytes instead of 36
-		/// Lossy, although the result is renormalized
-		/// \return true on success, false on failure.
-		template <class templateType> // templateType for this function must be a float or double
+		/*
+		 * Bidirectional serialize/deserialize an orthogonal matrix by creating a quaternion, and writing 3 components of the quaternion in 2 bytes each.
+		 * 使用 6 字节代替 36 字节
+		 * 虽然有损，但结果会被重新归一化
+		 * 返回值: 成功返回 true，失败返回 false。
+		 */
+		template <class templateType> /* 此函数的 templateType 必须为 float 或 double 类型 */
 			bool SerializeOrthMatrix(
 			bool writeToBitstream,
 			templateType &m00, templateType &m01, templateType &m02,
 			templateType &m10, templateType &m11, templateType &m12,
 			templateType &m20, templateType &m21, templateType &m22 );
 
-		/// \brief Bidirectional serialize/deserialize numberToSerialize bits to/from the input. 
-		/// \details Right aligned data means in the case of a partial byte, the bits are aligned
-		/// from the right (bit 0) rather than the left (as in the normal
-		/// internal representation) You would set this to true when
-		/// writing user data, and false when copying bitstream data, such
-		/// as writing one bitstream to another
-		/// \param[in] writeToBitstream true to write from your data to this bitstream.  False to read from this bitstream and write to your data
-		/// \param[in] inOutByteArray The data
-		/// \param[in] numberOfBitsToSerialize The number of bits to write
-		/// \param[in] rightAlignedBits if true data will be right aligned
-		/// \return true if \a writeToBitstream is true.  true if \a writeToBitstream is false and the read was successful.  false if \a writeToBitstream is false and the read was not successful.
+		/*
+		 * Bidirectional serialize/deserialize numberToSerialize bits to/from the input.
+		 * 右对齐数据表示在不完整字节的情况下，位从右侧（位 0）对齐
+		 * 而不是从左侧对齐（如常规
+		 * 内部使用 representation) You would set this to true when
+		 * 写入用户数据时），复制位流数据时应为 false，例如
+		 * as writing one bitstream to another
+		 * 参数[输入] writeToBitstream true 表示将数据写入位流；false 表示从位流读取数据写入变量
+		 * 参数[输入] inOutByteArray The data
+		 * 参数[输入] numberOfBitsToSerialize The number of bits to write
+		 * 参数[输入] rightAlignedBits if true data will be right aligned
+		 * 返回值: true if writeToBitstream is true.  true if writeToBitstream is false and the read was successful.  false if writeToBitstream is false and the read was not successful.
+		 */
 		bool SerializeBits(bool writeToBitstream, unsigned char* inOutByteArray, const BitSize_t numberOfBitsToSerialize, const bool rightAlignedBits = true );
 
-		/// \brief Write any integral type to a bitstream.  
-		/// \details Undefine __BITSTREAM_NATIVE_END if you need endian swapping.
-		/// \param[in] inTemplateVar The value to write
+		/*
+		 * 将任意整数类型写入位流。
+		 * 若需要字节序转换，请取消定义 __BITSTREAM_NATIVE_END。
+		 * 参数[输入] inTemplateVar 要写入的值
+		 */
 		template <class templateType>
 			void Write(const templateType &inTemplateVar);
 
-		/// \brief Write the dereferenced pointer to any integral type to a bitstream.  
-		/// \details Undefine __BITSTREAM_NATIVE_END if you need endian swapping.
-		/// \param[in] inTemplateVar The value to write
+		/*
+		 * Write the dereferenced pointer to any integral type to a bitstream.
+		 * 若需要字节序转换，请取消定义 __BITSTREAM_NATIVE_END。
+		 * 参数[输入] inTemplateVar 要写入的值
+		 */
 		template <class templateType>
 			void WritePtr(templateType *inTemplateVar);
 
-		/// \brief Write any integral type to a bitstream.  
-		/// \details If the current value is different from the last value
-		/// the current value will be written.  Otherwise, a single bit will be written
-		/// \param[in] currentValue The current value to write
-		/// \param[in] lastValue The last value to compare against
+		/*
+		 * 将任意整数类型写入位流。
+		 * 若当前值与上一次的值不同
+		 * 则写入当前值；否则仅写入一个比特
+		 * 参数[输入] currentValue 要写入的当前值
+		 * 参数[输入] lastValue The last value to compare against
+		 */
 		template <class templateType>
 			void WriteDelta(const templateType &currentValue, const templateType &lastValue);
 
-		/// \brief WriteDelta when you don't know what the last value is, or there is no last value.
-		/// \param[in] currentValue The current value to write
+		/*
+		 * 当你不知道上一次的值是什么或没有上一次的值时，使用 WriteDelta。
+		 * 参数[输入] currentValue 要写入的当前值
+		 */
 		template <class templateType>
 			void WriteDelta(const templateType &currentValue);
 
-		/// \brief Write any integral type to a bitstream.  
-		/// \details Undefine __BITSTREAM_NATIVE_END if you need endian swapping.
-		/// If you are not using __BITSTREAM_NATIVE_END the opposite is true for types larger than 1 byte
-		/// For floating point, this is lossy, using 2 bytes for a float and 4 for a double.  The range must be between -1 and +1.
-		/// For non-floating point, this is lossless, but only has benefit if you use less than half the bits of the type
-		/// \param[in] inTemplateVar The value to write
+		/*
+		 * 将任意整数类型写入位流。
+		 * 若需要字节序转换，请取消定义 __BITSTREAM_NATIVE_END。
+		 * 如果未使用 __BITSTREAM_NATIVE_END，则对于大于 1 字节的类型，情况相反
+		 * 对于浮点数，这是有损的，float 使用 2 字节，double 使用 4 字节。范围必须在 -1 到 +1 之间。
+		 * 对于非浮点数，这是无损的，但仅在使用不到该类型一半位数时才有收益
+		 * 参数[输入] inTemplateVar 要写入的值
+		 */
 		template <class templateType>
 			void WriteCompressed(const templateType &inTemplateVar);
 
-		/// \brief Write any integral type to a bitstream.  
-		/// \details If the current value is different from the last value
-		/// the current value will be written.  Otherwise, a single bit will be written
-		/// For floating point, this is lossy, using 2 bytes for a float and 4 for a double.  The range must be between -1 and +1.
-		/// For non-floating point, this is lossless, but only has benefit if you use less than half the bits of the type
-		/// If you are not using __BITSTREAM_NATIVE_END the opposite is true for types larger than 1 byte
-		/// \param[in] currentValue The current value to write
-		/// \param[in] lastValue The last value to compare against
+		/*
+		 * 将任意整数类型写入位流。
+		 * 若当前值与上一次的值不同
+		 * 则写入当前值；否则仅写入一个比特
+		 * 对于浮点数，这是有损的，float 使用 2 字节，double 使用 4 字节。范围必须在 -1 到 +1 之间。
+		 * 对于非浮点数，这是无损的，但仅在使用不到该类型一半位数时才有收益
+		 * 如果未使用 __BITSTREAM_NATIVE_END，则对于大于 1 字节的类型，情况相反
+		 * 参数[输入] currentValue 要写入的当前值
+		 * 参数[输入] lastValue The last value to compare against
+		 */
 		template <class templateType>
 			void WriteCompressedDelta(const templateType &currentValue, const templateType &lastValue);
 
-		/// \brief Save as WriteCompressedDelta(const templateType &currentValue, const templateType &lastValue) when we have an unknown second parameter
+		/* 当第二个参数未知时，与 WriteCompressedDelta(const templateType &currentValue, const templateType &lastValue) 功能相同 */
 		template <class templateType>
 			void WriteCompressedDelta(const templateType &currentValue);
 
-		/// \brief Read any integral type from a bitstream.  
-		/// \details Define __BITSTREAM_NATIVE_END if you need endian swapping.
-		/// \param[in] outTemplateVar The value to read
-		/// \return true on success, false on failure.
+		/*
+		 * 从位流中读取任意整数类型。
+		 * Define __BITSTREAM_NATIVE_END if you need endian swapping.
+		 * 参数[输入] outTemplateVar The value to read
+		 * 返回值: 成功返回 true，失败返回 false。
+		 */
 		template <class templateType>
 			bool Read(templateType &outTemplateVar);
 
-		/// \brief Read any integral type from a bitstream.  
-		/// \details If the written value differed from the value compared against in the write function,
-		/// var will be updated.  Otherwise it will retain the current value.
-		/// ReadDelta is only valid from a previous call to WriteDelta
-		/// \param[in] outTemplateVar The value to read
-		/// \return true on success, false on failure.
+		/*
+		 * 从位流中读取任意整数类型。
+		 * 如果写入的值与写入函数中用于比较的值不同，
+		 * var 将被更新。否则将保留当前值。
+		 * ReadDelta 仅在之前调用过 WriteDelta 后才有效
+		 * 参数[输入] outTemplateVar The value to read
+		 * 返回值: 成功返回 true，失败返回 false。
+		 */
 		template <class templateType>
 			bool ReadDelta(templateType &outTemplateVar);
 
-		/// \brief Read any integral type from a bitstream.  
-		/// \details Undefine __BITSTREAM_NATIVE_END if you need endian swapping.
-		/// For floating point, this is lossy, using 2 bytes for a float and 4 for a double.  The range must be between -1 and +1.
-		/// For non-floating point, this is lossless, but only has benefit if you use less than half the bits of the type
-		/// If you are not using __BITSTREAM_NATIVE_END the opposite is true for types larger than 1 byte
-		/// \param[in] outTemplateVar The value to read
-		/// \return true on success, false on failure.
+		/*
+		 * 从位流中读取任意整数类型。
+		 * 若需要字节序转换，请取消定义 __BITSTREAM_NATIVE_END。
+		 * 对于浮点数，这是有损的，float 使用 2 字节，double 使用 4 字节。范围必须在 -1 到 +1 之间。
+		 * 对于非浮点数，这是无损的，但仅在使用不到该类型一半位数时才有收益
+		 * 如果未使用 __BITSTREAM_NATIVE_END，则对于大于 1 字节的类型，情况相反
+		 * 参数[输入] outTemplateVar The value to read
+		 * 返回值: 成功返回 true，失败返回 false。
+		 */
 		template <class templateType>
 			bool ReadCompressed(templateType &outTemplateVar);
 
-		/// \brief Read any integral type from a bitstream.  
-		/// \details If the written value differed from the value compared against in the write function,
-		/// var will be updated.  Otherwise it will retain the current value.
-		/// the current value will be updated.
-		/// For floating point, this is lossy, using 2 bytes for a float and 4 for a double.  The range must be between -1 and +1.
-		/// For non-floating point, this is lossless, but only has benefit if you use less than half the bits of the type
-		/// If you are not using __BITSTREAM_NATIVE_END the opposite is true for types larger than 1 byte
-		/// ReadCompressedDelta is only valid from a previous call to WriteDelta
-		/// \param[in] outTemplateVar The value to read
-		/// \return true on success, false on failure.
+		/*
+		 * 从位流中读取任意整数类型。
+		 * 如果写入的值与写入函数中用于比较的值不同，
+		 * var 将被更新。否则将保留当前值。
+		 * 当前值将被更新。
+		 * 对于浮点数，这是有损的，float 使用 2 字节，double 使用 4 字节。范围必须在 -1 到 +1 之间。
+		 * 对于非浮点数，这是无损的，但仅在使用不到该类型一半位数时才有收益
+		 * 如果未使用 __BITSTREAM_NATIVE_END，则对于大于 1 字节的类型，情况相反
+		 * ReadCompressedDelta 仅在之前调用过 WriteDelta 后才有效
+		 * 参数[输入] outTemplateVar The value to read
+		 * 返回值: 成功返回 true，失败返回 false。
+		 */
 		template <class templateType>
 			bool ReadCompressedDelta(templateType &outTemplateVar);
 
-		/// \brief Read one bitstream to another.
-		/// \param[in] numberOfBits bits to read
-		/// \param bitStream the bitstream to read into from
-		/// \return true on success, false on failure.
+		/*
+		 * Read one bitstream to another.
+		 * 参数[输入] numberOfBits bits to read
+		 * 参数 bitStream the bitstream to read into from
+		 * 返回值: 成功返回 true，失败返回 false。
+		 */
 		bool Read( BitStream *bitStream, BitSize_t numberOfBits );
 		bool Read( BitStream *bitStream );
 		bool Read( BitStream &bitStream, BitSize_t numberOfBits );
 		bool Read( BitStream &bitStream );
 
-		/// \brief Write an array or casted stream or raw data.  This does NOT do endian swapping.
-		/// \param[in] inputByteArray a byte buffer
-		/// \param[in] numberOfBytes the size of \a input in bytes
+		/*
+		 * Write an array or casted stream or raw data.  This does NOT do endian swapping.
+		 * 参数[输入] inputByteArray a byte buffer
+		 * 参数[输入] numberOfBytes the size of input in bytes
+		 */
 		void Write( const char* inputByteArray, const unsigned int numberOfBytes );
 
-		/// \brief Write one bitstream to another.
-		/// \param[in] numberOfBits bits to write
-		/// \param bitStream the bitstream to copy from
+		/*
+		 * Write one bitstream to another.
+		 * 参数[输入] numberOfBits bits to write
+		 * 参数 bitStream the bitstream to copy from
+		 */
 		void Write( BitStream *bitStream, BitSize_t numberOfBits );
 		void Write( BitStream *bitStream );
 		void Write( BitStream &bitStream, BitSize_t numberOfBits );
 		void Write( BitStream &bitStream );\
 		
-		/// \brief Write a float into 2 bytes, spanning the range between \a floatMin and \a floatMax
-		/// \param[in] x The float to write
-		/// \param[in] floatMin Predetermined minimum value of f
-		/// \param[in] floatMax Predetermined maximum value of f
+		/*
+		 * Write a float into 2 bytes, spanning the range between floatMin and floatMax
+		 * 参数[输入] x The float to write
+		 * 参数[输入] floatMin Predetermined minimum value of f
+		 * 参数[输入] floatMax Predetermined maximum value of f
+		 */
 		void WriteFloat16( float x, float floatMin, float floatMax );
 
-		/// Write one type serialized as another (smaller) type, to save bandwidth
-		/// serializationType should be uint8_t, uint16_t, uint24_t, or uint32_t
-		/// Example: int num=53; WriteCasted<uint8_t>(num); would use 1 byte to write what would otherwise be an integer (4 or 8 bytes)
-		/// \param[in] value The value to write
+		/*
+		 * Write one type serialized as another (smaller) type, to save bandwidth
+		 * serializationType 应为 uint8_t、uint16_t、uint24_t 或 uint32_t
+		 * Example: int num=53; WriteCasted<uint8_t>(num); would use 1 byte to write what would otherwise be an integer (4 or 8 bytes)
+		 * 参数[输入] value 要写入的值
+		 */
 		template <class serializationType, class sourceType >
 		void WriteCasted( const sourceType &value );
 
-		/// Given the minimum and maximum values for an integer type, figure out the minimum number of bits to represent the range
-		/// Then write only those bits
-		/// \note A static is used so that the required number of bits for (maximum-minimum) is only calculated once. This does require that \a minimum and \maximum are fixed values for a given line of code for the life of the program
-		/// \param[in] value Integer value to write, which should be between \a minimum and \a maximum
-		/// \param[in] minimum Minimum value of \a value
-		/// \param[in] maximum Maximum value of \a value
-		/// \param[in] allowOutsideRange If true, all sends will take an extra bit, however value can deviate from outside \a minimum and \a maximum. If false, will assert if the value deviates. This should match the corresponding value passed to Read().
+		/*
+		 * 给定整数类型的最小值和最大值，计算表示该范围所需的最少位数
+		 * Then write only those bits
+		 * 注意: A static is used so that the required number of bits for (maximum-minimum) is only calculated once. This does require that minimum and \maximum are fixed values for a given line of code for the life of the program
+		 * 参数[输入] value Integer value to write, which should be between minimum and maximum
+		 * 参数[输入] minimum Minimum value of value
+		 * 参数[输入] maximum Maximum value of value
+		 * 参数[输入] allowOutsideRange If true, all sends will take an extra bit, however value can deviate from outside minimum and maximum. If false, will assert if the value deviates. This should match the corresponding value passed to Read().
+		 */
 		template <class templateType>
 		void WriteBitsFromIntegerRange( const templateType value, const templateType minimum, const templateType maximum, bool allowOutsideRange=false );
-		/// \param[in] requiredBits Primarily for internal use, called from above function() after calculating number of bits needed to represent maximum-minimum
+		/* 参数[输入] requiredBits Primarily for internal use, called from above function() after calculating number of bits needed to represent maximum-minimum */
 		template <class templateType>
 		void WriteBitsFromIntegerRange( const templateType value, const templateType minimum, const templateType maximum, const int requiredBits, bool allowOutsideRange=false );
 
-		/// \brief Write a normalized 3D vector, using (at most) 4 bytes + 3 bits instead of 12-24 bytes.  
-		/// \details Will further compress y or z axis aligned vectors.
-		/// Accurate to 1/32767.5.
-		/// \param[in] x x
-		/// \param[in] y y
-		/// \param[in] z z
-		template <class templateType> // templateType for this function must be a float or double
+		/*
+		 * Write a normalized 3D vector, using (at most) 4 bytes + 3 bits instead of 12-24 bytes.
+		 * 将进一步压缩沿 y 或 z 轴对齐的向量。
+		 * 精度为 1/32767.5。
+		 * 参数[输入] x x
+		 * 参数[输入] y y
+		 * 参数[输入] z z
+		 */
+		template <class templateType> /* 此函数的 templateType 必须为 float 或 double 类型 */
 		void WriteNormVector( templateType x, templateType y, templateType z );
 
-		/// \brief Write a vector, using 10 bytes instead of 12.
-		/// \details Loses accuracy to about 3/10ths and only saves 2 bytes, 
-		/// so only use if accuracy is not important.
-		/// \param[in] x x
-		/// \param[in] y y
-		/// \param[in] z z
-		template <class templateType> // templateType for this function must be a float or double
+		/*
+		 * Write a vector, using 10 bytes instead of 12.
+		 * 精度损失约为 3/10，且仅节省 2 字节，
+		 * 因此仅在精度不重要时使用。
+		 * 参数[输入] x x
+		 * 参数[输入] y y
+		 * 参数[输入] z z
+		 */
+		template <class templateType> /* 此函数的 templateType 必须为 float 或 double 类型 */
 		void WriteVector( templateType x, templateType y, templateType z );
 
-		/// \brief Write a normalized quaternion in 6 bytes + 4 bits instead of 16 bytes.  Slightly lossy.
-		/// \param[in] w w
-		/// \param[in] x x
-		/// \param[in] y y
-		/// \param[in] z z
-		template <class templateType> // templateType for this function must be a float or double
+		/*
+		 * Write a normalized quaternion in 6 bytes + 4 bits instead of 16 bytes.  Slightly lossy.
+		 * 参数[输入] w w
+		 * 参数[输入] x x
+		 * 参数[输入] y y
+		 * 参数[输入] z z
+		 */
+		template <class templateType> /* 此函数的 templateType 必须为 float 或 double 类型 */
 		void WriteNormQuat( templateType w, templateType x, templateType y, templateType z);
 
-		/// \brief Write an orthogonal matrix by creating a quaternion, and writing 3 components of the quaternion in 2 bytes each.
-		/// \details Use 6 bytes instead of 36
-		/// Lossy, although the result is renormalized
-		template <class templateType> // templateType for this function must be a float or double
+		/*
+		 * Write an orthogonal matrix by creating a quaternion, and writing 3 components of the quaternion in 2 bytes each.
+		 * 使用 6 字节代替 36 字节
+		 * 虽然有损，但结果会被重新归一化
+		 */
+		template <class templateType> /* 此函数的 templateType 必须为 float 或 double 类型 */
 		void WriteOrthMatrix(
 			templateType m00, templateType m01, templateType m02,
 			templateType m10, templateType m11, templateType m12,
 			templateType m20, templateType m21, templateType m22 );
 
-		/// \brief Read an array or casted stream of byte.
-		/// \details The array is raw data. There is no automatic endian conversion with this function
-		/// \param[in] output The result byte array. It should be larger than @em numberOfBytes.
-		/// \param[in] numberOfBytes The number of byte to read
-		/// \return true on success false if there is some missing bytes.
+		/*
+		 * Read an array or casted stream of byte.
+		 * 数组是原始数据。此函数不会进行自动字节序转换
+		 * 参数[输入] output The result byte array. It should be larger than @em numberOfBytes.
+		 * 参数[输入] numberOfBytes The number of byte to read
+		 * 返回值: true on success false if there is some missing bytes.
+		 */
 		bool Read( char* output, const unsigned int numberOfBytes );
 
-		/// \brief Read a float into 2 bytes, spanning the range between \a floatMin and \a floatMax
-		/// \param[in] outFloat The float to read
-		/// \param[in] floatMin Predetermined minimum value of f
-		/// \param[in] floatMax Predetermined maximum value of f
+		/*
+		 * Read a float into 2 bytes, spanning the range between floatMin and floatMax
+		 * 参数[输入] outFloat The float to read
+		 * 参数[输入] floatMin Predetermined minimum value of f
+		 * 参数[输入] floatMax Predetermined maximum value of f
+		 */
 		bool ReadFloat16( float &outFloat, float floatMin, float floatMax );
 
-		/// Read one type serialized to another (smaller) type, to save bandwidth
-		/// serializationType should be uint8_t, uint16_t, uint24_t, or uint32_t
-		/// Example: int num; ReadCasted<uint8_t>(num); would read 1 bytefrom the stream, and put the value in an integer
-		/// \param[in] value The value to write
+		/*
+		 * Read one type serialized to another (smaller) type, to save bandwidth
+		 * serializationType 应为 uint8_t、uint16_t、uint24_t 或 uint32_t
+		 * Example: int num; ReadCasted<uint8_t>(num); would read 1 bytefrom the stream, and put the value in an integer
+		 * 参数[输入] value 要写入的值
+		 */
 		template <class serializationType, class sourceType >
 		bool ReadCasted( sourceType &value );
 
-		/// Given the minimum and maximum values for an integer type, figure out the minimum number of bits to represent the range
-		/// Then read only those bits
-		/// \note A static is used so that the required number of bits for (maximum-minimum) is only calculated once. This does require that \a minimum and \maximum are fixed values for a given line of code for the life of the program
-		/// \param[in] value Integer value to read, which should be between \a minimum and \a maximum
-		/// \param[in] minimum Minimum value of \a value
-		/// \param[in] maximum Maximum value of \a value
-		/// \param[in] allowOutsideRange If true, all sends will take an extra bit, however value can deviate from outside \a minimum and \a maximum. If false, will assert if the value deviates. This should match the corresponding value passed to Write().
+		/*
+		 * 给定整数类型的最小值和最大值，计算表示该范围所需的最少位数
+		 * Then read only those bits
+		 * 注意: A static is used so that the required number of bits for (maximum-minimum) is only calculated once. This does require that minimum and \maximum are fixed values for a given line of code for the life of the program
+		 * 参数[输入] value Integer value to read, which should be between minimum and maximum
+		 * 参数[输入] minimum Minimum value of value
+		 * 参数[输入] maximum Maximum value of value
+		 * 参数[输入] allowOutsideRange If true, all sends will take an extra bit, however value can deviate from outside minimum and maximum. If false, will assert if the value deviates. This should match the corresponding value passed to Write().
+		 */
 		template <class templateType>
 		bool ReadBitsFromIntegerRange( templateType &value, const templateType minimum, const templateType maximum, bool allowOutsideRange=false );
-		/// \param[in] requiredBits Primarily for internal use, called from above function() after calculating number of bits needed to represent maximum-minimum
+		/* 参数[输入] requiredBits Primarily for internal use, called from above function() after calculating number of bits needed to represent maximum-minimum */
 		template <class templateType>
 		bool ReadBitsFromIntegerRange( templateType &value, const templateType minimum, const templateType maximum, const int requiredBits, bool allowOutsideRange=false );
 
-		/// \brief Read a normalized 3D vector, using (at most) 4 bytes + 3 bits instead of 12-24 bytes.  
-		/// \details Will further compress y or z axis aligned vectors.
-		/// Accurate to 1/32767.5.
-		/// \param[in] x x
-		/// \param[in] y y
-		/// \param[in] z z
-		/// \return true on success, false on failure.
-		template <class templateType> // templateType for this function must be a float or double
+		/*
+		 * Read a normalized 3D vector, using (at most) 4 bytes + 3 bits instead of 12-24 bytes.
+		 * 将进一步压缩沿 y 或 z 轴对齐的向量。
+		 * 精度为 1/32767.5。
+		 * 参数[输入] x x
+		 * 参数[输入] y y
+		 * 参数[输入] z z
+		 * 返回值: 成功返回 true，失败返回 false。
+		 */
+		template <class templateType> /* 此函数的 templateType 必须为 float 或 double 类型 */
 		bool ReadNormVector( templateType &x, templateType &y, templateType &z );
 
-		/// \brief Read 3 floats or doubles, using 10 bytes, where those float or doubles comprise a vector.
-		/// \details Loses accuracy to about 3/10ths and only saves 2 bytes, 
-		/// so only use if accuracy is not important.
-		/// \param[in] x x
-		/// \param[in] y y
-		/// \param[in] z z
-		/// \return true on success, false on failure.
-		template <class templateType> // templateType for this function must be a float or double
+		/*
+		 * Read 3 floats or doubles, using 10 bytes, where those float or doubles comprise a vector.
+		 * 精度损失约为 3/10，且仅节省 2 字节，
+		 * 因此仅在精度不重要时使用。
+		 * 参数[输入] x x
+		 * 参数[输入] y y
+		 * 参数[输入] z z
+		 * 返回值: 成功返回 true，失败返回 false。
+		 */
+		template <class templateType> /* 此函数的 templateType 必须为 float 或 double 类型 */
 		bool ReadVector( templateType &x, templateType &y, templateType &z );
 
-		/// \brief Read a normalized quaternion in 6 bytes + 4 bits instead of 16 bytes.
-		/// \param[in] w w
-		/// \param[in] x x
-		/// \param[in] y y
-		/// \param[in] z z
-		/// \return true on success, false on failure.
-		template <class templateType> // templateType for this function must be a float or double
+		/*
+		 * Read a normalized quaternion in 6 bytes + 4 bits instead of 16 bytes.
+		 * 参数[输入] w w
+		 * 参数[输入] x x
+		 * 参数[输入] y y
+		 * 参数[输入] z z
+		 * 返回值: 成功返回 true，失败返回 false。
+		 */
+		template <class templateType> /* 此函数的 templateType 必须为 float 或 double 类型 */
 		bool ReadNormQuat( templateType &w, templateType &x, templateType &y, templateType &z);
 
-		/// \brief Read an orthogonal matrix from a quaternion, reading 3 components of the quaternion in 2 bytes each and extrapolatig the 4th.
-		/// \details Use 6 bytes instead of 36
-		/// Lossy, although the result is renormalized
-		/// \return true on success, false on failure.
-		template <class templateType> // templateType for this function must be a float or double
+		/*
+		 * Read an orthogonal matrix from a quaternion, reading 3 components of the quaternion in 2 bytes each and extrapolatig the 4th.
+		 * 使用 6 字节代替 36 字节
+		 * 虽然有损，但结果会被重新归一化
+		 * 返回值: 成功返回 true，失败返回 false。
+		 */
+		template <class templateType> /* 此函数的 templateType 必须为 float 或 double 类型 */
 		bool ReadOrthMatrix(
 			templateType &m00, templateType &m01, templateType &m02,
 			templateType &m10, templateType &m11, templateType &m12,
 			templateType &m20, templateType &m21, templateType &m22 );
 
-		/// \brief Sets the read pointer back to the beginning of your data.
+		/* 将读取指针重置到数据的起始位置。*/
 		void ResetReadPointer( void );
 
-		/// \brief Sets the write pointer back to the beginning of your data.
+		/* 将写入指针重置到数据的起始位置。*/
 		void ResetWritePointer( void );
 
-		/// \brief This is good to call when you are done with the stream to make
-		/// sure you didn't leave any data left over void
+		/*
+		 * This is good to call when you are done with the stream to make
+		 * sure you didn't leave any data left over void
+		 */
 		void AssertStreamEmpty( void );
 
-		/// \brief RAKNET_DEBUG_PRINTF the bits in the stream.  Great for debugging.
+		/* 使用 RAKNET_DEBUG_PRINTF 打印流中的位数据。非常适合调试。*/
 		void PrintBits( char *out ) const;
 		void PrintBits( void ) const;
 		void PrintHex( char *out ) const;
 		void PrintHex( void ) const;
 
-		/// \brief Ignore data we don't intend to read
-		/// \param[in] numberOfBits The number of bits to ignore
+		/*
+		 * 忽略我们不打算读取的数据
+		 * 参数[输入] numberOfBits The number of bits to ignore
+		 */
 		void IgnoreBits( const BitSize_t numberOfBits );
 
-		/// \brief Ignore data we don't intend to read
-		/// \param[in] numberOfBits The number of bytes to ignore
+		/*
+		 * 忽略我们不打算读取的数据
+		 * 参数[输入] numberOfBits The number of bytes to ignore
+		 */
 		void IgnoreBytes( const unsigned int numberOfBytes );
 
-		/// \brief Move the write pointer to a position on the array.
-		/// \param[in] offset the offset from the start of the array.
-		/// \attention
-		/// \details Dangerous if you don't know what you are doing!
-		/// For efficiency reasons you can only write mid-stream if your data is byte aligned.
+		/*
+		 * Move the write pointer to a position on the array.
+		 * 参数[输入] offset the offset from the start of the array.
+		 * \attention
+		 * Dangerous if you don't know what you are doing!
+		 * 出于效率考虑，只有在数据字节对齐时才能在流的中间位置写入。
+		 */
 		void SetWriteOffset( const BitSize_t offset );
 
-		/// \brief Returns the length in bits of the stream
+		/* 返回流的长度（以位为单位）*/
 		[[nodiscard]] inline BitSize_t GetNumberOfBitsUsed( void ) const {return GetWriteOffset();}
 		[[nodiscard]] inline BitSize_t GetWriteOffset( void ) const {return numberOfBitsUsed;}
 
-		/// \brief Returns the length in bytes of the stream
+		/* 返回流的长度（以字节为单位）*/
 		[[nodiscard]] inline BitSize_t GetNumberOfBytesUsed( void ) const {return BITS_TO_BYTES( numberOfBitsUsed );}
 
-		/// \brief Returns the number of bits into the stream that we have read
+		/* 返回流中已读取的位数 */
 		[[nodiscard]] inline BitSize_t GetReadOffset( void ) const {return readOffset;}
 
-		/// \brief Sets the read bit index
+		/* 设置读取位索引 */
 		void SetReadOffset( const BitSize_t newReadOffset ) {readOffset=newReadOffset;}
 
-		/// \brief Returns the number of bits left in the stream that haven't been read
+		/* 返回流中尚未读取的剩余位数 */
 		[[nodiscard]] inline BitSize_t GetNumberOfUnreadBits( void ) const {return numberOfBitsUsed - readOffset;}
 
-		/// \brief Makes a copy of the internal data for you \a _data will point to
-		/// the stream. Partial bytes are left aligned.
-		/// \param[out] _data The allocated copy of GetData()
-		/// \return The length in bits of the stream.
+		/*
+		 * Makes a copy of the 内部使用 data for you _data will point to
+		 * the stream. Partial bytes are left aligned.
+		 * 参数[输出] _data The allocated copy of GetData()
+		 * 返回值: The length in bits of the stream.
+		 */
 		BitSize_t CopyData( unsigned char** _data ) const;
 
-		/// \internal
-		/// Set the stream to some initial data.
+		/*
+		 * 内部使用
+		 * 将stream设置为some initial data
+		 */
 		void SetData( unsigned char *inByteArray );
 
-		/// Gets the data that BitStream is writing to / reading from.
-		/// Partial bytes are left aligned.
-		/// \return A pointer to the internal state
+		/*
+		 * 获取 data that BitStream is writing to / reading from
+		 * Partial bytes are left aligned.
+		 * 返回值: A pointer to the 内部使用 state
+		 */
 		inline unsigned char* GetData( void ) const {return data;}
 
-		/// \brief Write numberToWrite bits from the input source.
-		/// \details Right aligned data means in the case of a partial byte, the bits are aligned
-		/// from the right (bit 0) rather than the left (as in the normal
-		/// internal representation) You would set this to true when
-		/// writing user data, and false when copying bitstream data, such
-		/// as writing one bitstream to another.
-		/// \param[in] inByteArray The data
-		/// \param[in] numberOfBitsToWrite The number of bits to write
-		/// \param[in] rightAlignedBits if true data will be right aligned
+		/*
+		 * Write numberToWrite bits from the input source.
+		 * 右对齐数据表示在不完整字节的情况下，位从右侧（位 0）对齐
+		 * 而不是从左侧对齐（如常规
+		 * 内部使用 representation) You would set this to true when
+		 * 写入用户数据时），复制位流数据时应为 false，例如
+		 * as writing one bitstream to another.
+		 * 参数[输入] inByteArray The data
+		 * 参数[输入] numberOfBitsToWrite The number of bits to write
+		 * 参数[输入] rightAlignedBits if true data will be right aligned
+		 */
 		void WriteBits( const unsigned char* inByteArray, BitSize_t numberOfBitsToWrite, const bool rightAlignedBits = true );
 
-		/// \brief Align the bitstream to the byte boundary and then write the
-		/// specified number of bits.  
-		/// \details This is faster than WriteBits but
-		/// wastes the bits to do the alignment and requires you to call
-		/// ReadAlignedBits at the corresponding read position.
-		/// \param[in] inByteArray The data
-		/// \param[in] numberOfBytesToWrite The size of input.
+		/*
+		 * Align the bitstream to the byte boundary and then write the
+		 * specified number of bits.
+		 * 这是faster than WriteBits but
+		 * wastes the bits to do the alignment and requires you to call
+		 * ReadAlignedBits at the corresponding read position.
+		 * 参数[输入] inByteArray The data
+		 * 参数[输入] numberOfBytesToWrite The size of input.
+		 */
 		void WriteAlignedBytes( const unsigned char *inByteArray, const unsigned int numberOfBytesToWrite );
 
-		// Endian swap bytes already in the bitstream
+		/* 对位流中已有的字节进行字节序交换 */
 		void EndianSwapBytes( int byteOffset, int length );
 
-		/// \brief Aligns the bitstream, writes inputLength, and writes input. Won't write beyond maxBytesToWrite
-		/// \param[in] inByteArray The data
-		/// \param[in] inputLength The size of input.
-		/// \param[in] maxBytesToWrite Max bytes to write
+		/*
+		 * Aligns the bitstream, writes inputLength, and writes input. Won't write beyond maxBytesToWrite
+		 * 参数[输入] inByteArray The data
+		 * 参数[输入] inputLength The size of input.
+		 * 参数[输入] maxBytesToWrite Max bytes to write
+		 */
 		void WriteAlignedBytesSafe( const char *inByteArray, const unsigned int inputLength, const unsigned int maxBytesToWrite );
 
-		/// \brief Read bits, starting at the next aligned bits. 
-		/// \details Note that the modulus 8 starting offset of the sequence must be the same as
-		/// was used with WriteBits. This will be a problem with packet
-		/// coalescence unless you byte align the coalesced packets.
-		/// \param[in] inOutByteArray The byte array larger than @em numberOfBytesToRead
-		/// \param[in] numberOfBytesToRead The number of byte to read from the internal state
-		/// \return true if there is enough byte.
+		/*
+		 * Read bits, starting at the next aligned bits.
+		 * Note that the modulus 8 starting offset of the sequence must be the same as
+		 * was used with WriteBits. This will be a problem with packet
+		 * coalescence unless you byte align the coalesced packets.
+		 * 参数[输入] inOutByteArray The byte array larger than @em numberOfBytesToRead
+		 * 参数[输入] numberOfBytesToRead The number of byte to read from the 内部使用 state
+		 * 返回值: true if there is enough byte.
+		 */
 		bool ReadAlignedBytes( unsigned char *inOutByteArray, const unsigned int numberOfBytesToRead );
 
-		/// \brief Reads what was written by WriteAlignedBytesSafe.
-		/// \param[in] inOutByteArray The data
-		/// \param[in] maxBytesToRead Maximum number of bytes to read
-		/// \return true on success, false on failure.
+		/*
+		 * Reads what was written by WriteAlignedBytesSafe.
+		 * 参数[输入] inOutByteArray The data
+		 * 参数[输入] maxBytesToRead Maximum number of bytes to read
+		 * 返回值: 成功返回 true，失败返回 false。
+		 */
 		bool ReadAlignedBytesSafe( char *inOutByteArray, int &inputLength, const int maxBytesToRead );
 		bool ReadAlignedBytesSafe( char *inOutByteArray, unsigned int &inputLength, const unsigned int maxBytesToRead );
 
-		/// \brief Same as ReadAlignedBytesSafe() but allocates the memory for you using new, rather than assuming it is safe to write to
-		/// \param[in] outByteArray outByteArray will be deleted if it is not a pointer to 0
-		/// \return true on success, false on failure.
+		/*
+		 * 与 ReadAlignedBytesSafe() but allocates the memory for you using new, rather than assuming it is safe to write to 相同
+		 * 参数[输入] outByteArray outByteArray will be deleted if it is not a pointer to 0
+		 * 返回值: 成功返回 true，失败返回 false。
+		 */
 		bool ReadAlignedBytesSafeAlloc( char **outByteArray, int &inputLength, const unsigned int maxBytesToRead );
 		bool ReadAlignedBytesSafeAlloc( char **outByteArray, unsigned int &inputLength, const unsigned int maxBytesToRead );
 
-		/// \brief Align the next write and/or read to a byte boundary.  
-		/// \details This can be used to 'waste' bits to byte align for efficiency reasons It
-		/// can also be used to force coalesced bitstreams to start on byte
-		/// boundaries so so WriteAlignedBits and ReadAlignedBits both
-		/// calculate the same offset when aligning.
+		/*
+		 * 将下一次写入和/或读取对齐到字节边界。
+		 * 可用于为了效率而'浪费'位来进行字节对齐
+		 * 也可用于强制合并的位流从字节
+		 * 边界开始，使 WriteAlignedBits 和 ReadAlignedBits
+		 * 在对齐时计算相同的偏移量。
+		 */
 		inline void AlignWriteToByteBoundary( void ) {numberOfBitsUsed += 8 - ( (( numberOfBitsUsed - 1 ) & 7) + 1 );}
 
-		/// \brief Align the next write and/or read to a byte boundary.  
-		/// \details This can be used to 'waste' bits to byte align for efficiency reasons It
-		/// can also be used to force coalesced bitstreams to start on byte
-		/// boundaries so so WriteAlignedBits and ReadAlignedBits both
-		/// calculate the same offset when aligning.
+		/*
+		 * 将下一次写入和/或读取对齐到字节边界。
+		 * 可用于为了效率而'浪费'位来进行字节对齐
+		 * 也可用于强制合并的位流从字节
+		 * 边界开始，使 WriteAlignedBits 和 ReadAlignedBits
+		 * 在对齐时计算相同的偏移量。
+		 */
 		inline void AlignReadToByteBoundary( void ) {readOffset += 8 - ( (( readOffset - 1 ) & 7 ) + 1 );}
 
-		/// \brief Read \a numberOfBitsToRead bits to the output source.
-		/// \details alignBitsToRight should be set to true to convert internal
-		/// bitstream data to userdata. It should be false if you used
-		/// WriteBits with rightAlignedBits false
-		/// \param[in] inOutByteArray The resulting bits array
-		/// \param[in] numberOfBitsToRead The number of bits to read
-		/// \param[in] alignBitsToRight if true bits will be right aligned.
-		/// \return true if there is enough bits to read
+		/*
+		 * Read numberOfBitsToRead bits to the output source.
+		 * alignBitsToRight should be set to true to convert 内部使用
+		 * bitstream data to userdata. It should be false if you used
+		 * WriteBits with rightAlignedBits false
+		 * 参数[输入] inOutByteArray The resulting bits array
+		 * 参数[输入] numberOfBitsToRead The number of bits to read
+		 * 参数[输入] alignBitsToRight if true bits will be right aligned.
+		 * 返回值: true if there is enough bits to read
+		 */
 		bool ReadBits( unsigned char *inOutByteArray, BitSize_t numberOfBitsToRead, const bool alignBitsToRight = true );
 
-		/// \brief Write a 0
+		/* 写入一个 0 */
 		void Write0( void );
 
-		/// \brief Write a 1
+		/* 写入一个 1 */
 		void Write1( void );
 
-		/// \brief Reads 1 bit and returns true if that bit is 1 and false if it is 0.
+		/* 读取 1 位，如果该位为 1 则返回 true，为 0 则返回 false。*/
 		bool ReadBit( void );
 
-		/// \brief If we used the constructor version with copy data off, this
-		/// *makes sure it is set to on and the data pointed to is copied.
+		/*
+		 * If we used the 构造函数 version with copy data off, this
+		 * *makes sure it is set to on and the data pointed to is copied.
+		 */
 		void AssertCopyData( void );
 
-		/// \brief Use this if you pass a pointer copy to the constructor
-		/// *(_copyData==false) and want to overallocate to prevent
-		/// reallocation.
+		/*
+		 * Use this if you pass a pointer copy to the 构造函数
+		 * *(_copyData==false) and want to overallocate to prevent
+		 * reallocation.
+		 */
 		void SetNumberOfBitsAllocated( const BitSize_t lengthInBits );
 
-		/// \brief Reallocates (if necessary) in preparation of writing numberOfBitsToWrite
+		/* 为写入 numberOfBitsToWrite 位数据做准备，必要时重新分配内存 */
 		void AddBitsAndReallocate( const BitSize_t numberOfBitsToWrite );
 
-		/// \internal
-		/// \return How many bits have been allocated internally
+		/*
+		 * 内部使用
+		 * 返回值: How many bits have been allocated internally
+		 */
 		BitSize_t GetNumberOfBitsAllocated(void) const;
 
-		/// \brief Read strings, non reference.
+		/* 读取字符串（非引用方式）。*/
 		bool Read(char *varString);
 		bool Read(unsigned char *varString);
 
-		/// Write zeros until the bitstream is filled up to \a bytes
+		/* 写入零直到位流填充到指定字节数 */
 		void PadWithZeroToByteLength( unsigned int bytes );
 
-		/// Get the number of leading zeros for a number
-		/// \param[in] x Number to test
+		/*
+		 * 获取 number of leading zeros for a number
+		 * 参数[输入] x Number to test
+		 */
 		static int NumberOfLeadingZeroes( uint8_t x );
 		static int NumberOfLeadingZeroes( uint16_t x );
 		static int NumberOfLeadingZeroes( uint32_t x );
@@ -644,17 +778,17 @@ namespace RakNet
 		static int NumberOfLeadingZeroes( int32_t x );
 		static int NumberOfLeadingZeroes( int64_t x );
 
-		/// \internal Unrolled inner loop, for when performance is critical
+		/* 内部使用 Unrolled inner loop, for when performance is critical */
 		void WriteAlignedVar8(const char *inByteArray);
-		/// \internal Unrolled inner loop, for when performance is critical
+		/* 内部使用 Unrolled inner loop, for when performance is critical */
 		bool ReadAlignedVar8(char *inOutByteArray);
-		/// \internal Unrolled inner loop, for when performance is critical
+		/* 内部使用 Unrolled inner loop, for when performance is critical */
 		void WriteAlignedVar16(const char *inByteArray);
-		/// \internal Unrolled inner loop, for when performance is critical
+		/* 内部使用 Unrolled inner loop, for when performance is critical */
 		bool ReadAlignedVar16(char *inOutByteArray);
-		/// \internal Unrolled inner loop, for when performance is critical
+		/* 内部使用 Unrolled inner loop, for when performance is critical */
 		void WriteAlignedVar32(const char *inByteArray);
-		/// \internal Unrolled inner loop, for when performance is critical
+		/* 内部使用 Unrolled inner loop, for when performance is critical */
 		bool ReadAlignedVar32(char *inOutByteArray);
 
 		inline void Write(const char * const inStringVar)
@@ -698,31 +832,41 @@ namespace RakNet
 			WriteCompressed((const char*) inTemplateVar);
 		}
 
-		/// ---- Member function template specialization declarations ----
-		// Used for VC7
+		/* ---- 成员函数模板特化声明 ----*/
+		/* 用于 VC7 */
 #if defined(_MSC_VER) && _MSC_VER == 1300
-		/// Write a bool to a bitstream.
-		/// \param[in] var The value to write
+		/*
+		 * Write a bool to a bitstream.
+		 * 参数[输入] var 要写入的值
+		 */
 		template <>
 			void Write(const bool &var);
 
-		/// Write a systemAddress to a bitstream
-		/// \param[in] var The value to write
+		/*
+		 * Write a systemAddress to a bitstream
+		 * 参数[输入] var 要写入的值
+		 */
 		template <>
 			void Write(const SystemAddress &var);
 
-		/// Write a uint24_t to a bitstream
-		/// \param[in] var The value to write
+		/*
+		 * Write a uint24_t to a bitstream
+		 * 参数[输入] var 要写入的值
+		 */
 		template <>
 		void Write(const uint24_t &var);
 
-		/// Write a RakNetGUID to a bitsteam
-		/// \param[in] var The value to write
+		/*
+		 * Write a RakNetGUID to a bitsteam
+		 * 参数[输入] var 要写入的值
+		 */
 		template <>
 			void Write(const RakNetGuid &var);
 
-		/// Write a string to a bitstream
-		/// \param[in] var The value to write
+		/*
+		 * Write a string to a bitstream
+		 * 参数[输入] var 要写入的值
+		 */
 		template <>
 			void Write(const char* const &var);
 		template <>
@@ -736,11 +880,13 @@ namespace RakNet
 		template <>
 			void Write(const RakWString &var);
 
-		/// \brief Write a systemAddress.  
-		/// \details If the current value is different from the last value
-		/// the current value will be written.  Otherwise, a single bit will be written
-		/// \param[in] currentValue The current value to write
-		/// \param[in] lastValue The last value to compare against
+		/*
+		 * 写入 systemAddress
+		 * 若当前值与上一次的值不同
+		 * 则写入当前值；否则仅写入一个比特
+		 * 参数[输入] currentValue 要写入的当前值
+		 * 参数[输入] lastValue The last value to compare against
+		 */
 		template <>
 			void WriteDelta(const SystemAddress &currentValue, const SystemAddress &lastValue);
 
@@ -750,10 +896,12 @@ namespace RakNet
 		template <>
 			void WriteDelta(const RakNetGUID &currentValue, const RakNetGUID &lastValue);
 
-		/// \brief Write a bool delta.  
-		/// \details Same thing as just calling Write
-		/// \param[in] currentValue The current value to write
-		/// \param[in] lastValue The last value to compare against
+		/*
+		 * 写入 bool delta
+		 * 与直接调用 Write 相同
+		 * 参数[输入] currentValue 要写入的当前值
+		 * 参数[输入] lastValue The last value to compare against
+		 */
 		template <>
 			void WriteDelta(const bool &currentValue, const bool &lastValue);
 
@@ -769,15 +917,15 @@ namespace RakNet
 		template <>
 			void WriteCompressed(const bool &var);
 
-		/// For values between -1 and 1
+		/* 用于 -1 到 1 之间的值 */
 		template <>
 			void WriteCompressed(const float &var);
 
-		/// For values between -1 and 1
+		/* 用于 -1 到 1 之间的值 */
 		template <>
 			void WriteCompressed(const double &var);
 
-		/// Compressed string
+		/* 压缩字符串 */
 		template <>
 			void WriteCompressed(const char* var);
 		template <>
@@ -791,27 +939,35 @@ namespace RakNet
 		template <>
 			void WriteCompressed(const RakWString &var);
 
-		/// \brief Write a bool delta.  
-		/// \details Same thing as just calling Write
-		/// \param[in] currentValue The current value to write
-		/// \param[in] lastValue The last value to compare against
+		/*
+		 * 写入 bool delta
+		 * 与直接调用 Write 相同
+		 * 参数[输入] currentValue 要写入的当前值
+		 * 参数[输入] lastValue The last value to compare against
+		 */
 		template <>
 			void WriteCompressedDelta(const bool &currentValue, const bool &lastValue);
 
-		/// \brief Save as WriteCompressedDelta(bool currentValue, const templateType &lastValue) 
-		/// when we have an unknown second bool
+		/*
+		 * 与 WriteCompressedDelta(bool currentValue, const templateType &lastValue) 功能相同
+		 * 当第二个布尔参数未知时
+		 */
 		template <>
 			void WriteCompressedDelta(const bool &currentValue);
 
-		/// \brief Read a bool from a bitstream.
-		/// \param[in] var The value to read
-		/// \return true on success, false on failure.
+		/*
+		 * 从位流中读取一个布尔值。
+		 * 参数[输入] var The value to read
+		 * 返回值: 成功返回 true，失败返回 false。
+		 */
 		template <>
 			bool Read(bool &var);
 
-		/// \brief Read a systemAddress from a bitstream.
-		/// \param[in] var The value to read
-		/// \return true on success, false on failure.
+		/*
+		 * Read a systemAddress from a bitstream.
+		 * 参数[输入] var The value to read
+		 * 返回值: 成功返回 true，失败返回 false。
+		 */
 		template <>
 			bool Read(SystemAddress &var);
 
@@ -821,9 +977,11 @@ namespace RakNet
 		template <>
 			bool Read(RakNetGUID &var);
 
-		/// \brief Read a String from a bitstream.
-		/// \param[in] var The value to read
-		/// \return true on success, false on failure.
+		/*
+		 * Read a String from a bitstream.
+		 * 参数[输入] var The value to read
+		 * 返回值: 成功返回 true，失败返回 false。
+		 */
 		template <>
 			bool Read(char *&var);
 		template <>
@@ -835,9 +993,11 @@ namespace RakNet
 		template <>
 			bool Read(RakWString &var);
 
-		/// \brief Read a bool from a bitstream.
-		/// \param[in] var The value to read
-		/// \return true on success, false on failure.
+		/*
+		 * 从位流中读取一个布尔值。
+		 * 参数[输入] var The value to read
+		 * 返回值: 成功返回 true，失败返回 false。
+		 */
 		template <>
 			bool ReadDelta(bool &var);
 
@@ -856,8 +1016,10 @@ namespace RakNet
 		template <>
 			bool ReadCompressed(float &var);
 
-		/// For values between -1 and 1
-		/// \return true on success, false on failure.
+		/*
+		 * 用于 -1 到 1 之间的值
+		 * 返回值: 成功返回 true，失败返回 false。
+		 */
 		template <>
 		bool ReadCompressed(double &var);
 
@@ -872,9 +1034,11 @@ namespace RakNet
 		template <>
 			bool ReadCompressed(RakWString &var);
 
-		/// \brief Read a bool from a bitstream.
-		/// \param[in] var The value to read
-		/// \return true on success, false on failure.
+		/*
+		 * 从位流中读取一个布尔值。
+		 * 参数[输入] var The value to read
+		 * 返回值: 成功返回 true，失败返回 false。
+		 */
 		template <>
 			bool ReadCompressedDelta(bool &var);
 #endif
@@ -891,7 +1055,7 @@ namespace RakNet
 			return IsNetworkOrder();
 		}
 		inline static bool IsNetworkOrder() {bool r = IsNetworkOrderInternal(); return r;}
-		// Not inline, won't compile on PC due to winsock include errors
+		/* 非内联函数，在 PC 上由于 winsock 包含错误无法编译 */
 		static bool IsNetworkOrderInternal();
 		static void ReverseBytes(unsigned char *inByteArray, unsigned char *inOutByteArray, const unsigned int length);
 		static void ReverseBytesInPlace(unsigned char *inOutData,const unsigned int length);
@@ -910,10 +1074,10 @@ namespace RakNet
 			return i;
 		}
 
-		/// \brief Assume the input source points to a native type, compress and write it.
+		/* 假设输入源指向原生类型，对其进行压缩并写入。*/
 		void WriteCompressed( const unsigned char* inByteArray, const unsigned int size, const bool unsignedData );
 
-		/// \brief Assume the input source points to a compressed native type. Decompress and read it.
+		/* 假设输入源指向已压缩的原生类型，对其进行解压缩并读取。*/
 		bool ReadCompressed( unsigned char* inOutByteArray,	const unsigned int size, const bool unsignedData );
 
 
@@ -925,10 +1089,10 @@ namespace RakNet
 
 		unsigned char *data;
 
-		/// true if the internal buffer is copy of the data passed to the constructor
+		/* true if the 内部使用 buffer is copy of the data passed to the 构造函数 */
 		bool copyData;
 
-		/// BitStreams that use less than BITSTREAM_STACK_ALLOCATION_SIZE use the stack, rather than the heap to store data.  It switches over if BITSTREAM_STACK_ALLOCATION_SIZE is exceeded
+		/* 使用不到 BITSTREAM_STACK_ALLOCATION_SIZE 的 BitStream 使用栈而非堆来存储数据。超过此大小时会切换到堆存储 */
 		unsigned char stackData[BITSTREAM_STACK_ALLOCATION_SIZE];
 	};
 
@@ -981,7 +1145,7 @@ namespace RakNet
 				return ReadCompressedDelta(inOutCurrentValue);
 			return true;
 		}
-//Stoppedhere
+/* 此处停止 */
 		template <class templateType>
 		inline bool BitStream::SerializeCompressedDelta(bool writeToBitstream, templateType &inOutCurrentValue)
 		{
@@ -1080,7 +1244,7 @@ namespace RakNet
 		inline void BitStream::Write(const templateType &inTemplateVar)
 	{
 #ifdef _MSC_VER
-#pragma warning(disable:4127)   // conditional expression is constant
+#pragma warning(disable:4127) /* 条件表达式是常量 */
 #endif
 		if (sizeof(inTemplateVar)==1)
 			WriteBits( ( unsigned char* ) & inTemplateVar, sizeof( templateType ) * 8, true );
@@ -1103,7 +1267,7 @@ namespace RakNet
 	inline void BitStream::WritePtr(templateType *inTemplateVar)
 	{
 #ifdef _MSC_VER
-#pragma warning(disable:4127)   // conditional expression is constant
+#pragma warning(disable:4127) /* 条件表达式是常量 */
 #endif
 		if (sizeof(templateType)==1)
 			WriteBits( ( unsigned char* ) inTemplateVar, sizeof( templateType ) * 8, true );
@@ -1122,8 +1286,10 @@ namespace RakNet
 		}
 	}
 
-	/// \brief Write a bool to a bitstream.
-	/// \param[in] inTemplateVar The value to write
+	/*
+	 * Write a bool to a bitstream.
+	 * 参数[输入] inTemplateVar 要写入的值
+	 */
 	template <>
 		inline void BitStream::Write(const bool &inTemplateVar)
 		{
@@ -1134,18 +1300,20 @@ namespace RakNet
 		}
 
 
-	/// \brief Write a systemAddress to a bitstream.
-	/// \param[in] inTemplateVar The value to write
+	/*
+	 * Write a systemAddress to a bitstream.
+	 * 参数[输入] inTemplateVar 要写入的值
+	 */
 	template <>
 		inline void BitStream::Write(const SystemAddress &inTemplateVar)
 	{
 		Write(inTemplateVar.GetIPVersion());
 		if (inTemplateVar.GetIPVersion()==4)
 		{
-			// Hide the address so routers don't modify it
+			/* 隐藏地址以防止路由器修改它 */
 			SystemAddress var2=inTemplateVar;
 			uint32_t binaryAddress=~inTemplateVar.address.addr4.sin_addr.s_addr;
-			// Don't endian swap the address or port
+			/* 不对地址或端口进行字节序交换 */
 			WriteBits((unsigned char*)&binaryAddress, sizeof(binaryAddress)*8, true);
 			unsigned short p = var2.GetPortNetworkOrder();
 			WriteBits((unsigned char*)&p, sizeof(unsigned short)*8, true);
@@ -1153,7 +1321,7 @@ namespace RakNet
 		else
 		{
 #if RAKNET_SUPPORT_IPV6==1
-			// Don't endian swap
+			/* 不进行字节序交换 */
 			WriteBits((const unsigned char*) &inTemplateVar.address.addr6, sizeof(inTemplateVar.address.addr6)*8, true);
 #endif
 		}
@@ -1187,8 +1355,10 @@ namespace RakNet
 			Write(inTemplateVar.g);
 		}
 
-	/// \brief Write a string to a bitstream.
-	/// \param[in] var The value to write
+	/*
+	 * Write a string to a bitstream.
+	 * 参数[输入] var 要写入的值
+	 */
 	template <>
 		inline void BitStream::Write(const RakString &inTemplateVar)
 	{
@@ -1225,11 +1395,13 @@ namespace RakNet
 		Write((const char*)inTemplateVar);
 	}
 
-	/// \brief Write any integral type to a bitstream.  
-	/// \details If the current value is different from the last value
-	/// the current value will be written.  Otherwise, a single bit will be written
-	/// \param[in] currentValue The current value to write
-	/// \param[in] lastValue The last value to compare against
+	/*
+	 * 将任意整数类型写入位流。
+	 * 若当前值与上一次的值不同
+	 * 则写入当前值；否则仅写入一个比特
+	 * 参数[输入] currentValue 要写入的当前值
+	 * 参数[输入] lastValue The last value to compare against
+	 */
 	template <class templateType>
 		inline void BitStream::WriteDelta(const templateType &currentValue, const templateType &lastValue)
 	{
@@ -1244,9 +1416,11 @@ namespace RakNet
 		}
 	}
 
-	/// \brief Write a bool delta. Same thing as just calling Write
-	/// \param[in] currentValue The current value to write
-	/// \param[in] lastValue The last value to compare against
+	/*
+	 * Write a bool delta. Same thing as just calling Write
+	 * 参数[输入] currentValue 要写入的当前值
+	 * 参数[输入] lastValue The last value to compare against
+	 */
 	template <>
 		inline void BitStream::WriteDelta(const bool &currentValue, const bool &lastValue)
 	{
@@ -1255,8 +1429,10 @@ namespace RakNet
 		Write(currentValue);
 	}
 
-	/// \brief WriteDelta when you don't know what the last value is, or there is no last value.
-	/// \param[in] currentValue The current value to write
+	/*
+	 * 当你不知道上一次的值是什么或没有上一次的值时，使用 WriteDelta。
+	 * 参数[输入] currentValue 要写入的当前值
+	 */
 	template <class templateType>
 		inline void BitStream::WriteDelta(const templateType &currentValue)
 	{
@@ -1264,17 +1440,19 @@ namespace RakNet
 		Write(currentValue);
 	}
 
-	/// \brief Write any integral type to a bitstream.  
-	/// \details Undefine __BITSTREAM_NATIVE_END if you need endian swapping.
-	/// For floating point, this is lossy, using 2 bytes for a float and 4 for a double.  The range must be between -1 and +1.
-	/// For non-floating point, this is lossless, but only has benefit if you use less than half the bits of the type
-	/// If you are not using __BITSTREAM_NATIVE_END the opposite is true for types larger than 1 byte
-	/// \param[in] inTemplateVar The value to write
+	/*
+	 * 将任意整数类型写入位流。
+	 * 若需要字节序转换，请取消定义 __BITSTREAM_NATIVE_END。
+	 * 对于浮点数，这是有损的，float 使用 2 字节，double 使用 4 字节。范围必须在 -1 到 +1 之间。
+	 * 对于非浮点数，这是无损的，但仅在使用不到该类型一半位数时才有收益
+	 * 如果未使用 __BITSTREAM_NATIVE_END，则对于大于 1 字节的类型，情况相反
+	 * 参数[输入] inTemplateVar 要写入的值
+	 */
 	template <class templateType>
 		inline void BitStream::WriteCompressed(const templateType &inTemplateVar)
 	{
 #ifdef _MSC_VER
-#pragma warning(disable:4127)   // conditional expression is constant
+#pragma warning(disable:4127) /* 条件表达式是常量 */
 #endif
 		if (sizeof(inTemplateVar)==1)
 			WriteCompressed( ( unsigned char* ) & inTemplateVar, sizeof( templateType ) * 8, true );
@@ -1282,7 +1460,7 @@ namespace RakNet
 		{
 #ifndef __BITSTREAM_NATIVE_END
 #ifdef _MSC_VER
-#pragma warning(disable:4244)   // '=' : conversion from 'unsigned long' to 'unsigned short', possible loss of data
+#pragma warning(disable:4244) /* '='：从 'unsigned long' 到 'unsigned short' 的转换，可能丢失数据 */
 #endif
 
 			if (DoEndianSwap())
@@ -1321,7 +1499,7 @@ namespace RakNet
 		Write(inTemplateVar);
 	}
 
-	/// For values between -1 and 1
+	/* 用于 -1 到 1 之间的值 */
 	template <>
 		inline void BitStream::WriteCompressed(const float &inTemplateVar)
 	{
@@ -1334,7 +1512,7 @@ namespace RakNet
 		Write(static_cast<unsigned short>((varCopy+1.0f)*32767.5f));
 	}
 
-	/// For values between -1 and 1
+	/* 用于 -1 到 1 之间的值 */
 	template <>
 		inline void BitStream::WriteCompressed(const double &inTemplateVar)
 	{
@@ -1347,7 +1525,7 @@ namespace RakNet
 		Write(static_cast<uint32_t>((varCopy+1.0)*2147483648.0));
 	}
 
-	/// Compress the string
+	/* 压缩字符串 */
 	template <>
 		inline void BitStream::WriteCompressed(const RakString &inTemplateVar)
 	{
@@ -1385,14 +1563,16 @@ namespace RakNet
 	}
 	
 
-	/// \brief Write any integral type to a bitstream.  
-	/// \details If the current value is different from the last value
-	/// the current value will be written.  Otherwise, a single bit will be written
-	/// For floating point, this is lossy, using 2 bytes for a float and 4 for a double.  The range must be between -1 and +1.
-	/// For non-floating point, this is lossless, but only has benefit if you use less than half the bits of the type
-	/// If you are not using __BITSTREAM_NATIVE_END the opposite is true for types larger than 1 byte
-	/// \param[in] currentValue The current value to write
-	/// \param[in] lastValue The last value to compare against
+	/*
+	 * 将任意整数类型写入位流。
+	 * 若当前值与上一次的值不同
+	 * 则写入当前值；否则仅写入一个比特
+	 * 对于浮点数，这是有损的，float 使用 2 字节，double 使用 4 字节。范围必须在 -1 到 +1 之间。
+	 * 对于非浮点数，这是无损的，但仅在使用不到该类型一半位数时才有收益
+	 * 如果未使用 __BITSTREAM_NATIVE_END，则对于大于 1 字节的类型，情况相反
+	 * 参数[输入] currentValue 要写入的当前值
+	 * 参数[输入] lastValue The last value to compare against
+	 */
 	template <class templateType>
 		inline void BitStream::WriteCompressedDelta(const templateType &currentValue, const templateType &lastValue)
 	{
@@ -1407,9 +1587,11 @@ namespace RakNet
 		}
 	}
 
-	/// \brief Write a bool delta.  Same thing as just calling Write
-	/// \param[in] currentValue The current value to write
-	/// \param[in] lastValue The last value to compare against
+	/*
+	 * Write a bool delta.  Same thing as just calling Write
+	 * 参数[输入] currentValue 要写入的当前值
+	 * 参数[输入] lastValue The last value to compare against
+	 */
 	template <>
 		inline void BitStream::WriteCompressedDelta(const bool &currentValue, const bool &lastValue)
 	{
@@ -1418,8 +1600,10 @@ namespace RakNet
 		Write(currentValue);
 	}
 
-	/// \brief Save as WriteCompressedDelta(const templateType &currentValue, const templateType &lastValue) 
-	/// when we have an unknown second parameter
+	/*
+	 * Save as WriteCompressedDelta(const templateType &currentValue, const templateType &lastValue)
+	 * when we have an unknown second parameter
+	 */
 	template <class templateType>
 		inline void BitStream::WriteCompressedDelta(const templateType &currentValue)
 	{
@@ -1427,21 +1611,25 @@ namespace RakNet
 		WriteCompressed(currentValue);
 	}
 
-	/// \brief Save as WriteCompressedDelta(bool currentValue, const templateType &lastValue) 
-	/// when we have an unknown second bool
+	/*
+	 * 与 WriteCompressedDelta(bool currentValue, const templateType &lastValue) 功能相同
+	 * 当第二个布尔参数未知时
+	 */
 	template <>
 		inline void BitStream::WriteCompressedDelta(const bool &currentValue)
 	{
 		Write(currentValue);
 	}
 
-	/// \brief Read any integral type from a bitstream.  Define __BITSTREAM_NATIVE_END if you need endian swapping.
-	/// \param[in] outTemplateVar The value to read
+	/*
+	 * Read any integral type from a bitstream.  Define __BITSTREAM_NATIVE_END if you need endian swapping.
+	 * 参数[输入] outTemplateVar The value to read
+	 */
 	template <class templateType>
 		inline bool BitStream::Read(templateType &outTemplateVar)
 	{
 #ifdef _MSC_VER
-#pragma warning(disable:4127)   // conditional expression is constant
+#pragma warning(disable:4127) /* 条件表达式是常量 */
 #endif
 		if (sizeof(outTemplateVar)==1)
 			return ReadBits( ( unsigned char* ) &outTemplateVar, sizeof(templateType) * 8, true );
@@ -1449,7 +1637,7 @@ namespace RakNet
 		{
 #ifndef __BITSTREAM_NATIVE_END
 #ifdef _MSC_VER
-#pragma warning(disable:4244)   // '=' : conversion from 'unsigned long' to 'unsigned short', possible loss of data
+#pragma warning(disable:4244) /* '='：从 'unsigned long' 到 'unsigned short' 的转换，可能丢失数据 */
 #endif
 			if (DoEndianSwap())
 			{
@@ -1467,27 +1655,31 @@ namespace RakNet
 		}
 	}
 
-	/// \brief Read a bool from a bitstream.
-	/// \param[in] outTemplateVar The value to read
+	/*
+	 * 从位流中读取一个布尔值。
+	 * 参数[输入] outTemplateVar The value to read
+	 */
 	template <>
 		inline bool BitStream::Read(bool &outTemplateVar)
 	{
 		if ( readOffset + 1 > numberOfBitsUsed )
 			return false;
 
-		if ( data[ readOffset >> 3 ] & ( 0x80 >> ( readOffset & 7 ) ) )   // Is it faster to just write it out here?
+		if ( data[ readOffset >> 3 ] & ( 0x80 >> ( readOffset & 7 ) ) ) /* Is it faster to just write it out here? */
 			outTemplateVar = true;
 		else
 			outTemplateVar = false;
 
-		// Has to be on a different line for Mac
+		/* 在 Mac 上必须放在不同的行 */
 		readOffset++;
 
 		return true;
 	}
 
-	/// \brief Read a systemAddress from a bitstream.
-	/// \param[in] outTemplateVar The value to read
+	/*
+	 * Read a systemAddress from a bitstream.
+	 * 参数[输入] outTemplateVar The value to read
+	 */
 	template <>
 		inline bool BitStream::Read(SystemAddress &outTemplateVar)
 	{
@@ -1496,11 +1688,11 @@ namespace RakNet
 		if (ipVersion==4)
 		{
 			outTemplateVar.address.addr4.sin_family=AF_INET;
-			// Read(var.binaryAddress);
-			// Don't endian swap the address or port
+			/* Read(var.binaryAddress); */
+			/* 不对地址或端口进行字节序交换 */
 			uint32_t binaryAddress;
 			ReadBits( ( unsigned char* ) & binaryAddress, sizeof(binaryAddress) * 8, true );
-			// Unhide the IP address, done to prevent routers from changing it
+			/* 取消隐藏 IP 地址（此操作是为了防止路由器修改它）*/
 			outTemplateVar.address.addr4.sin_addr.s_addr=~binaryAddress;
 			bool b = ReadBits(( unsigned char* ) & outTemplateVar.address.addr4.sin_port, sizeof(outTemplateVar.address.addr4.sin_port) * 8, true);
 			outTemplateVar.debugPort=ntohs(outTemplateVar.address.addr4.sin_port);
@@ -1578,11 +1770,13 @@ namespace RakNet
 		return RakString::Deserialize((char*) varString,this);
 	}
 
-	/// \brief Read any integral type from a bitstream.  
-	/// \details If the written value differed from the value compared against in the write function,
-	/// var will be updated.  Otherwise it will retain the current value.
-	/// ReadDelta is only valid from a previous call to WriteDelta
-	/// \param[in] outTemplateVar The value to read
+	/*
+	 * 从位流中读取任意整数类型。
+	 * 如果写入的值与写入函数中用于比较的值不同，
+	 * var 将被更新。否则将保留当前值。
+	 * ReadDelta 仅在之前调用过 WriteDelta 后才有效
+	 * 参数[输入] outTemplateVar The value to read
+	 */
 	template <class templateType>
 		inline bool BitStream::ReadDelta(templateType &outTemplateVar)
 	{
@@ -1594,25 +1788,29 @@ namespace RakNet
 		return success;
 	}
 
-	/// \brief Read a bool from a bitstream.
-	/// \param[in] outTemplateVar The value to read
+	/*
+	 * 从位流中读取一个布尔值。
+	 * 参数[输入] outTemplateVar The value to read
+	 */
 	template <>
 		inline bool BitStream::ReadDelta(bool &outTemplateVar)
 	{
 		return Read(outTemplateVar);
 	}
 
-	/// \brief Read any integral type from a bitstream.  
-	/// \details Undefine __BITSTREAM_NATIVE_END if you need endian swapping.
-	/// For floating point, this is lossy, using 2 bytes for a float and 4 for a double.  The range must be between -1 and +1.
-	/// For non-floating point, this is lossless, but only has benefit if you use less than half the bits of the type
-	/// If you are not using __BITSTREAM_NATIVE_END the opposite is true for types larger than 1 byte
-	/// \param[in] outTemplateVar The value to read
+	/*
+	 * 从位流中读取任意整数类型。
+	 * 若需要字节序转换，请取消定义 __BITSTREAM_NATIVE_END。
+	 * 对于浮点数，这是有损的，float 使用 2 字节，double 使用 4 字节。范围必须在 -1 到 +1 之间。
+	 * 对于非浮点数，这是无损的，但仅在使用不到该类型一半位数时才有收益
+	 * 如果未使用 __BITSTREAM_NATIVE_END，则对于大于 1 字节的类型，情况相反
+	 * 参数[输入] outTemplateVar The value to read
+	 */
 	template <class templateType>
 		inline bool BitStream::ReadCompressed(templateType &outTemplateVar)
 	{
 #ifdef _MSC_VER
-#pragma warning(disable:4127)   // conditional expression is constant
+#pragma warning(disable:4127) /* 条件表达式是常量 */
 #endif
 		if (sizeof(outTemplateVar)==1)
 			return ReadCompressed( ( unsigned char* ) &outTemplateVar, sizeof(templateType) * 8, true );
@@ -1659,7 +1857,7 @@ namespace RakNet
 		return Read(outTemplateVar);
 	}
 
-	/// For values between -1 and 1
+	/* 用于 -1 到 1 之间的值 */
 	template <>
 		inline bool BitStream::ReadCompressed(float &outTemplateVar)
 	{
@@ -1672,7 +1870,7 @@ namespace RakNet
 		return false;
 	}
 
-	/// For values between -1 and 1
+	/* 用于 -1 到 1 之间的值 */
 	template <>
 		inline bool BitStream::ReadCompressed(double &outTemplateVar)
 	{
@@ -1685,7 +1883,7 @@ namespace RakNet
 		return false;
 	}
 
-	/// For strings
+	/* 用于字符串 */
 	template <>
 		inline bool BitStream::ReadCompressed(RakString &outTemplateVar)
 	{
@@ -1712,15 +1910,17 @@ namespace RakNet
 		return RakString::DeserializeCompressed((char*) outTemplateVar,this,false);
 	}
 
-	/// \brief Read any integral type from a bitstream.  
-	/// \details If the written value differed from the value compared against in the write function,
-	/// var will be updated.  Otherwise it will retain the current value.
-	/// the current value will be updated.
-	/// For floating point, this is lossy, using 2 bytes for a float and 4 for a double.  The range must be between -1 and +1.
-	/// For non-floating point, this is lossless, but only has benefit if you use less than half the bits of the type
-	/// If you are not using __BITSTREAM_NATIVE_END the opposite is true for types larger than 1 byte
-	/// ReadCompressedDelta is only valid from a previous call to WriteDelta
-	/// \param[in] outTemplateVar The value to read
+	/*
+	 * 从位流中读取任意整数类型。
+	 * 如果写入的值与写入函数中用于比较的值不同，
+	 * var 将被更新。否则将保留当前值。
+	 * 当前值将被更新。
+	 * 对于浮点数，这是有损的，float 使用 2 字节，double 使用 4 字节。范围必须在 -1 到 +1 之间。
+	 * 对于非浮点数，这是无损的，但仅在使用不到该类型一半位数时才有收益
+	 * 如果未使用 __BITSTREAM_NATIVE_END，则对于大于 1 字节的类型，情况相反
+	 * ReadCompressedDelta 仅在之前调用过 WriteDelta 后才有效
+	 * 参数[输入] outTemplateVar The value to read
+	 */
 	template <class templateType>
 		inline bool BitStream::ReadCompressedDelta(templateType &outTemplateVar)
 	{
@@ -1732,8 +1932,10 @@ namespace RakNet
 		return success;
 	}
 
-	/// \brief Read a bool from a bitstream.
-	/// \param[in] outTemplateVar The value to read
+	/*
+	 * 从位流中读取一个布尔值。
+	 * 参数[输入] outTemplateVar The value to read
+	 */
 	template <>
 		inline bool BitStream::ReadCompressedDelta(bool &outTemplateVar)
 	{
@@ -1781,7 +1983,7 @@ namespace RakNet
 		}
 	}
 
-	template <class templateType> // templateType for this function must be a float or double
+	template <class templateType> /* 此函数的 templateType 必须为 float 或 double 类型 */
 		void BitStream::WriteNormVector( templateType x, templateType y, templateType z )
 	{
 #ifdef _DEBUG
@@ -1793,7 +1995,7 @@ namespace RakNet
 		WriteFloat16(static_cast<float>(z),-1.0f,1.0f);
 	}
 
-	template <class templateType> // templateType for this function must be a float or double
+	template <class templateType> /* 此函数的 templateType 必须为 float 或 double 类型 */
 		void BitStream::WriteVector( templateType x, templateType y, templateType z )
 	{
 		templateType magnitude = sqrt(x * x + y * y + z * z);
@@ -1803,13 +2005,13 @@ namespace RakNet
 			WriteCompressed(static_cast<float>(x/magnitude));
 			WriteCompressed(static_cast<float>(y/magnitude));
 			WriteCompressed(static_cast<float>(z/magnitude));
-			//	Write((unsigned short)((x/magnitude+1.0f)*32767.5f));
-			//	Write((unsigned short)((y/magnitude+1.0f)*32767.5f));
-			//	Write((unsigned short)((z/magnitude+1.0f)*32767.5f));
+			/* Write((unsigned short)((x/magnitude+1.0f)*32767.5f)); */
+			/* Write((unsigned short)((y/magnitude+1.0f)*32767.5f)); */
+			/* Write((unsigned short)((z/magnitude+1.0f)*32767.5f)); */
 		}
 	}
 
-	template <class templateType> // templateType for this function must be a float or double
+	template <class templateType> /* 此函数的 templateType 必须为 float 或 double 类型 */
 		void BitStream::WriteNormQuat( templateType w, templateType x, templateType y, templateType z)
 	{
 		Write(static_cast<bool>(w<0.0));
@@ -1819,10 +2021,10 @@ namespace RakNet
 		Write(static_cast<unsigned short>(fabs(x)*65535.0));
 		Write(static_cast<unsigned short>(fabs(y)*65535.0));
 		Write(static_cast<unsigned short>(fabs(z)*65535.0));
-		// Leave out w and calculate it on the target
+		/* 省略 w 并在目标端计算 */
 	}
 
-	template <class templateType> // templateType for this function must be a float or double
+	template <class templateType> /* 此函数的 templateType 必须为 float 或 double 类型 */
 		void BitStream::WriteOrthMatrix(
 		templateType m00, templateType m01, templateType m02,
 		templateType m10, templateType m11, templateType m12,
@@ -1834,8 +2036,8 @@ namespace RakNet
 		double qy;
 		double qz;
 
-		// Convert matrix to quat
-		// http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/
+		/* 将矩阵转换为四元数 */
+		/* http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/ */
 		float sum;
 		sum = 1 + m00 + m11 + m22;
 		if (sum < 0.0f) sum=0.0f;
@@ -1901,7 +2103,7 @@ namespace RakNet
 		return success;
 	}
 
-	template <class templateType> // templateType for this function must be a float or double
+	template <class templateType> /* 此函数的 templateType 必须为 float 或 double 类型 */
 		bool BitStream::ReadNormVector( templateType &x, templateType &y, templateType &z )
 	{
 		float xIn,yIn,zIn;
@@ -1914,22 +2116,22 @@ namespace RakNet
 		return true;
 	}
 
-	template <class templateType> // templateType for this function must be a float or double
+	template <class templateType> /* 此函数的 templateType 必须为 float 或 double 类型 */
 		bool BitStream::ReadVector( templateType &x, templateType &y, templateType &z )
 	{
 		float magnitude;
-		//unsigned short sx,sy,sz;
+		/* unsigned short sx,sy,sz; */
 		if (!Read(magnitude))
 			return false;
 		if (magnitude>0.00001f)
 		{
-			//	Read(sx);
-			//	Read(sy);
-			//	if (!Read(sz))
-			//		return false;
-			//	x=((float)sx / 32767.5f - 1.0f) * magnitude;
-			//	y=((float)sy / 32767.5f - 1.0f) * magnitude;
-			//	z=((float)sz / 32767.5f - 1.0f) * magnitude;
+			/* Read(sx); */
+			/* Read(sy); */
+			/* if (!Read(sz)) */
+			/* 	return false; */
+			/* x=((float)sx / 32767.5f - 1.0f) * magnitude; */
+			/* y=((float)sy / 32767.5f - 1.0f) * magnitude; */
+			/* z=((float)sz / 32767.5f - 1.0f) * magnitude; */
 			float cx=0.0f,cy=0.0f,cz=0.0f;
 			ReadCompressed(cx);
 			ReadCompressed(cy);
@@ -1951,7 +2153,7 @@ namespace RakNet
 		return true;
 	}
 
-	template <class templateType> // templateType for this function must be a float or double
+	template <class templateType> /* 此函数的 templateType 必须为 float 或 double 类型 */
 		bool BitStream::ReadNormQuat( templateType &w, templateType &x, templateType &y, templateType &z)
 	{
 		bool cwNeg=false, cxNeg=false, cyNeg=false, czNeg=false;
@@ -1965,7 +2167,7 @@ namespace RakNet
 		if (!Read(cz))
 			return false;
 
-		// Calculate w from x,y,z
+		/* 根据 x、y、z 计算 w */
 		x=(templateType)(cx/65535.0);
 		y=(templateType)(cy/65535.0);
 		z=(templateType)(cz/65535.0);
@@ -1982,7 +2184,7 @@ namespace RakNet
 		return true;
 	}
 
-	template <class templateType> // templateType for this function must be a float or double
+	template <class templateType> /* 此函数的 templateType 必须为 float 或 double 类型 */
 		bool BitStream::ReadOrthMatrix(
 		templateType &m00, templateType &m01, templateType &m02,
 		templateType &m10, templateType &m11, templateType &m12,
@@ -1992,13 +2194,13 @@ namespace RakNet
 		if (!ReadNormQuat(qw,qx,qy,qz))
 			return false;
 
-		// Quat to orthogonal rotation matrix
-		// http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToMatrix/index.htm
+		/* 四元数转正交旋转矩阵 */
+		/* http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToMatrix/index.htm */
 		double sqw = static_cast<double>(qw)*static_cast<double>(qw);
 		double sqx = static_cast<double>(qx)*static_cast<double>(qx);
 		double sqy = static_cast<double>(qy)*static_cast<double>(qy);
 		double sqz = static_cast<double>(qz)*static_cast<double>(qz);
-		m00 =  (templateType)(sqx - sqy - sqz + sqw); // since sqw + sqx + sqy + sqz =1
+		m00 =  (templateType)(sqx - sqy - sqz + sqw); /* 因为 sqw + sqx + sqy + sqz = 1 */
 		m11 = (templateType)(-sqx + sqy - sqz + sqw);
 		m22 = (templateType)(-sqx - sqy + sqz + sqw);
 

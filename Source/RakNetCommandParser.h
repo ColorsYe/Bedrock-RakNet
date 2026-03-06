@@ -8,9 +8,11 @@
  *
  */
 
-/// \file
-/// \brief Contains RakNetCommandParser , used to send commands to an instance of RakPeer
-///
+/*
+ * 
+ * 包含 RakNetCommandParser，用于向 RakPeer 实例发送命令
+ *
+ */
 
 #include "NativeFeatureIncludes.h"
 #if _RAKNET_SUPPORT_RakNetCommandParser==1
@@ -23,44 +25,52 @@ namespace RakNet
 {
 class RakPeerInterface;
 
-/// \brief This allows a console client to call most of the functions in RakPeer
+/* This allows a console client to call most of the functions in RakPeer */
 class RAK_DLL_EXPORT RakNetCommandParser : public CommandParserInterface
 {
 public:
-	// GetInstance() and DestroyInstance(instance*)
+	/* 获取单例 GetInstance() 和销毁单例 DestroyInstance(instance*) */
 	STATIC_FACTORY_DECLARATIONS(RakNetCommandParser)
 
 	RakNetCommandParser();
 	~RakNetCommandParser() noexcept;
 
-	/// Given \a command with parameters \a parameterList , do whatever processing you wish.
-	/// \param[in] command The command to process
-	/// \param[in] numParameters How many parameters were passed along with the command
-	/// \param[in] parameterList The list of parameters.  parameterList[0] is the first parameter and so on.
-	/// \param[in] transport The transport interface we can use to write to
-	/// \param[in] systemAddress The player that sent this command.
-	/// \param[in] originalString The string that was actually sent over the network, in case you want to do your own parsing
+	/*
+	 * 给定带有参数 parameterList 的命令，执行你需要的任何处理。
+	 * 参数[输入] command The command to process
+	 * 参数[输入] numParameters How many parameters were passed along with the command
+	 * 参数[输入] parameterList The list of parameters.  parameterList[0] is the first parameter and so on.
+	 * 参数[输入] transport The transport interface we can use to write to
+	 * 参数[输入] systemAddress The player that sent this command.
+	 * 参数[输入] originalString The string that was actually sent over the network, in case you want to do your own parsing
+	 */
 	bool OnCommand(const char *command, unsigned numParameters, char **parameterList, TransportInterface *transport, const SystemAddress &systemAddress, const char *originalString);
 
-	/// You are responsible for overriding this function and returning a static string, which will identifier your parser.
-	/// This should return a static string
-	/// \return The name that you return.
+	/*
+	 * 你需要重写此函数并返回一个静态字符串来标识你的解析器。
+	 * 应返回一个静态字符串
+	 * 返回值: The name that you return.
+	 */
 	const char *GetName(void) const;
 
-	/// A callback for when you are expected to send a brief description of your parser to \a systemAddress
-	/// \param[in] transport The transport interface we can use to write to
-	/// \param[in] systemAddress The player that requested help.
+	/*
+	 * 当需要向 systemAddress 发送解析器简要描述时的回调
+	 * 参数[输入] transport The transport interface we can use to write to
+	 * 参数[输入] systemAddress The player that requested help.
+	 */
 	void SendHelp(TransportInterface *transport, const SystemAddress &systemAddress);
 
-	/// Records the instance of RakPeer to perform the desired commands on
-	/// \param[in] rakPeer The RakPeer instance, or a derived class (e.g. RakPeer or RakPeer)
+	/*
+	 * Records the instance of RakPeer to perform the desired commands on
+	 * 参数[输入] rakPeer The RakPeer instance, or a derived class (e.g. RakPeer or RakPeer)
+	 */
 	void SetRakPeerInterface(RakNet::RakPeerInterface *rakPeer);
 protected:
 
-	/// Which instance of RakPeer we are working on.  Set from SetRakPeerInterface()
+	/* Which instance of RakPeer we are working on.  Set from SetRakPeerInterface() */
 	RakPeerInterface *peer;
 };
 
-} // namespace RakNet
+} /* RakNet 命名空间 */
 
 #endif

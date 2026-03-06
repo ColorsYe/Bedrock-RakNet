@@ -9,14 +9,14 @@
  */
 
 #pragma once
-// From http://www.codeproject.com/KB/cpp/SmartPointers.aspx
-// with bugs fixed
+/* From http://www.codeproject.com/KB/cpp/SmartPointers.aspx */
+/* with bugs fixed */
 
 #include "RakMemoryOverride.h"
 #include "Export.h"
 
-//static int allocCount=0;
-//static int deallocCount=0;
+/* static int allocCount=0; */
+/* static int deallocCount=0; */
 
 namespace RakNet
 {
@@ -37,13 +37,13 @@ public:
 template < typename T > class RAK_DLL_EXPORT RakNetSmartPtr
 {
 private:
-	T*    ptr;       // pointer
-	ReferenceCounter* reference; // Reference refCount
+	T*    ptr; /* pointer */
+	ReferenceCounter* reference; /* Reference refCount */
 
 public:
 	RakNetSmartPtr() : ptr(0), reference(0)
 	{
-		// Do not allocate by default, wasteful if we just have a list of preallocated and unassigend smart pointers
+		/* Do not allocate by default, wasteful if we just have a list of preallocated and unassigend smart pointers */
 	}
 
 	RakNetSmartPtr(T* pValue) : ptr(pValue)
@@ -51,8 +51,8 @@ public:
 		reference = RakNet::OP_NEW<ReferenceCounter>(_FILE_AND_LINE_);
 		reference->AddRef();
 
-//		allocCount+=2;
-//		printf("allocCount=%i deallocCount=%i Line=%i\n",allocCount, deallocCount, __LINE__);
+/* 	allocCount+=2; */
+/* 	printf("allocCount=%i deallocCount=%i Line=%i\n",allocCount, deallocCount, __LINE__); */
 	}
 
 	RakNetSmartPtr(const RakNetSmartPtr<T>& sp) : ptr(sp.ptr), reference(sp.reference)
@@ -68,8 +68,8 @@ public:
 			RakNet::OP_DELETE(ptr, _FILE_AND_LINE_);
 			RakNet::OP_DELETE(reference, _FILE_AND_LINE_);
 
-//			deallocCount+=2;
-//			printf("allocCount=%i deallocCount=%i Line=%i\n",allocCount, deallocCount, __LINE__);
+/* 		deallocCount+=2; */
+/* 		printf("allocCount=%i deallocCount=%i Line=%i\n",allocCount, deallocCount, __LINE__); */
 		}
 	}
 
@@ -85,8 +85,8 @@ public:
 			RakNet::OP_DELETE(ptr, _FILE_AND_LINE_);
 			RakNet::OP_DELETE(reference, _FILE_AND_LINE_);
 
-//			deallocCount+=2;
-//			printf("allocCount=%i deallocCount=%i Line=%i\n",allocCount, deallocCount, __LINE__);
+/* 		deallocCount+=2; */
+/* 		printf("allocCount=%i deallocCount=%i Line=%i\n",allocCount, deallocCount, __LINE__); */
 		}
 		ptr=0;
 		reference=0;
@@ -97,7 +97,7 @@ public:
 		return reference->GetRefCount()==1;
 	}
 
-	// Allow you to change the values of the internal contents of the pointer, without changing what is pointed to by other instances of the smart pointer
+	/* Allow you to change the values of the 内部使用 contents of the pointer, without changing what is pointed to by other instances of the smart pointer */
 	void Clone(bool copyContents)
 	{
 		if (IsUnique()==false)
@@ -152,17 +152,17 @@ public:
 
 	RakNetSmartPtr<T>& operator = (const RakNetSmartPtr<T>& sp)
 	{
-		// Assignment operator
+		/* 赋值运算符 */
 
-		if (this != &sp) // Avoid self assignment
+		if (this != &sp) /* Avoid self assignment */
 		{
 			if(reference && reference->Release() == 0)
 			{
 				RakNet::OP_DELETE(ptr, _FILE_AND_LINE_);
 				RakNet::OP_DELETE(reference, _FILE_AND_LINE_);
 
-//				deallocCount+=2;
-//				printf("allocCount=%i deallocCount=%i Line=%i\n",allocCount, deallocCount, __LINE__);
+/* 			deallocCount+=2; */
+/* 			printf("allocCount=%i deallocCount=%i Line=%i\n",allocCount, deallocCount, __LINE__); */
 			}
 
 			ptr = sp.ptr;
@@ -176,4 +176,4 @@ public:
 
 };
 
-} // namespace RakNet
+} /* RakNet 命名空间 */

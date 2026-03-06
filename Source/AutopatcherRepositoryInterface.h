@@ -3,15 +3,15 @@
  *  All rights reserved.
  *
  *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant 
+ *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  *
  */
- 
-///
-/// \file AutopatcherRepositoryInterface.h
-/// \brief An interface used by AutopatcherServer to get the data necessary to run an autopatcher.
-///
+
+/*
+ * 文件: AutopatcherRepositoryInterface.h
+ * 说明: AutopatcherServer 用于获取自动补丁程序运行所需数据的接口。
+ */
 
 
 #pragma once
@@ -20,39 +20,52 @@
 
 namespace RakNet
 {
-/// Forward declarations
+/* 前向声明 */
 class FileList;
 class BitStream;
 
-/// An interface used by AutopatcherServer to get the data necessary to run an autopatcher.  This is up to you to implement for custom repository solutions.
+/* AutopatcherServer 用于获取自动补丁程序运行所需数据的接口。需由用户为自定义存储库方案实现。 */
 class AutopatcherRepositoryInterface : public IncrementalReadInterface
 {
 public:
-	/// Get list of files added and deleted since a certain date.  This is used by AutopatcherServer and not usually explicitly called.
-	/// \param[in] applicationName A null terminated string identifying the application
-	/// \param[out] addedFiles A list of the current versions of filenames with hashes as their data that were created after \a sinceData
-	/// \param[out] deletedFiles A list of the current versions of filenames that were deleted after \a sinceData
-	/// \param[in] An input date, in whatever format your repository uses
-	/// \param[out] currentDate The current server date, in whatever format your repository uses
-	/// \return True on success, false on failure.
+	/*
+	 * 获取自指定日期以来已添加和已删除的文件列表。由 AutopatcherServer 调用，通常不需要直接调用。
+	 * 参数[in]  applicationName                  标识应用程序的以空字符结尾的字符串
+	 * 参数[out] addedOrModifiedFilesWithHashData  sinceDate 之后创建的文件的当前版本列表，数据字段为哈希值
+	 * 参数[out] deletedFiles                      sinceDate 之后已删除的文件的当前版本名称列表
+	 * 参数[in]  sinceDate                         输入日期，格式取决于所使用的存储库
+	 * 参数[out] currentDate                       服务器当前日期，格式取决于所使用的存储库
+	 * 返回值: 成功返回 true，失败返回 false。
+	 */
 	virtual bool GetChangelistSinceDate(const char *applicationName, FileList *addedOrModifiedFilesWithHashData, FileList *deletedFiles, double sinceDate)=0;
 
-	/// Get patches (or files) for every file in input, assuming that input has a hash for each of those files.
-	/// \param[in] applicationName A null terminated string identifying the application
-	/// \param[in] input A list of files with SHA1_LENGTH byte hashes to get from the database.
-	/// \param[out] patchList You should return list of files with either the filedata or the patch.  This is a subset of \a input.  The context data for each file will be either PatchContext::PC_WRITE_FILE (to just write the file) or PC_HASH_WITH_PATCH (to patch).  If PC_HASH_WITH_PATCH, then the file contains a SHA1_LENGTH byte patch followed by the hash.  The datalength is patchlength + SHA1_LENGTH
-	/// \param[out] currentDate The current server date, in whatever format your repository uses
-	/// \return 1 on success, 0 on database failure, -1 on tried to download original unmodified file
+	/*
+	 * 获取输入列表中每个文件的补丁（或文件本体），假定输入列表中每个文件均带有哈希值。
+	 * 参数[in]  applicationName                          标识应用程序的以空字符结尾的字符串
+	 * 参数[in]  input                                    包含 SHA1_LENGTH 字节哈希值的文件列表，用于从数据库中获取对应数据
+	 * 参数[out] patchList                                返回包含文件数据或补丁的文件列表，是 input 的子集。
+	 *                                                   每个文件的上下文数据为 PatchContext::PC_WRITE_FILE（直接写入文件）
+	 *                                                   或 PC_HASH_WITH_PATCH（应用补丁）。若为 PC_HASH_WITH_PATCH，
+	 *                                                   则文件内容为 SHA1_LENGTH 字节的补丁后跟哈希值，数据长度为补丁长度 + SHA1_LENGTH。
+	 * 参数[out] currentDate                              服务器当前日期，格式取决于所使用的存储库
+	 * 返回值: 成功返回 1，数据库失败返回 0，尝试下载原始未修改文件返回 -1。
+	 */
 	virtual int GetPatches(const char *applicationName, FileList *input, bool allowDownloadOfOriginalUnmodifiedFiles, FileList *patchList)=0;
 
-	/// For the most recent update, return files that were patched, added, or deleted. For files that were patched, return both the patch in \a patchedFiles and the current version in \a updatedFiles
-	/// \param[in,out] applicationName Name of the application to get patches for. If empty, uses the most recently updated application, and the string will be updated to reflect this name.
-	/// \param[out] patchedFiles A list of patched files with op PatchContext::PC_HASH_2_WITH_PATCH. It has 2 hashes, the priorHash and the currentHash. The currentHash is checked on the client after patching for patch success. The priorHash is checked in AutopatcherServer::OnGetPatch() to see if the client is able to hash with the version they currently have
-	/// \param[out] patchedFiles A list of new files. It contains the actual data in addition to the filename
-	/// \param[out] addedOrModifiedFileHashes A list of file hashes that were either modified or new. This is returned to the client when replying to ID_AUTOPATCHER_CREATION_LIST, which tells the client what files have changed on the server since a certain date
-	/// \param[out] deletedFiles A list of the current versions of filenames that were deleted in the most recent patch
-	/// \param[out] whenPatched time in seconds since epoch when patched. Use time() function to get this in C
-	/// \return true on success, false on failure
+	/*
+	 * 返回最近一次更新中被修补、新增或删除的文件。对于被修补的文件，同时在 patchedFiles 中返回补丁，在 updatedFiles 中返回当前版本。
+	 * 参数[in,out] applicationName            要获取补丁的应用程序名称。若为空，则使用最近更新的应用程序，并将名称更新到此字符串中。
+	 * 参数[out]    patchedFiles               操作类型为 PatchContext::PC_HASH_2_WITH_PATCH 的补丁文件列表，
+	 *                                         包含 priorHash（先前哈希）和 currentHash（当前哈希）。
+	 *                                         currentHash 用于客户端在打补丁后验证补丁是否成功；
+	 *                                         priorHash 用于 AutopatcherServer::OnGetPatch() 检查客户端是否能够对其当前版本进行哈希匹配。
+	 * 参数[out]    updatedFiles               新增文件列表，包含文件名和实际数据。
+	 * 参数[out]    addedOrModifiedFileHashes  被修改或新增文件的哈希列表，用于回复 ID_AUTOPATCHER_CREATION_LIST，
+	 *                                         告知客户端自指定日期以来服务器上哪些文件已发生变更。
+	 * 参数[out]    deletedFiles               最近一次补丁中被删除文件的当前版本名称列表。
+	 * 参数[out]    whenPatched                补丁发布时间（自纪元起的秒数），可使用 C 语言的 time() 函数获取。
+	 * 返回值: 成功返回 true，失败返回 false。
+	 */
 	virtual bool GetMostRecentChangelistWithPatches(
 		RakNet::RakString &applicationName,
 		FileList *patchedFiles,
@@ -62,11 +75,11 @@ public:
 		double *priorRowPatchTime,
 		double *mostRecentRowPatchTime)=0;
 
-	/// \return Whatever this function returns is sent from the AutopatcherServer to the AutopatcherClient when one of the above functions returns false.
+	/* 返回值将在上述任意函数返回 false 时由 AutopatcherServer 发送给 AutopatcherClient。 */
 	virtual const char *GetLastError(void) const=0;
 
-	/// \return Passed to FileListTransfer::Send() as the _chunkSize parameter.
+	/* 返回值将作为 _chunkSize 参数传递给 FileListTransfer::Send()。 */
 	virtual const int GetIncrementalReadChunkSize(void) const=0;
 };
 
-} // namespace RakNet
+} /* RakNet 命名空间 */

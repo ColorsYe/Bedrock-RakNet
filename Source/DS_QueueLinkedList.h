@@ -8,10 +8,12 @@
  *
  */
 
-/// \file DS_QueueLinkedList.h
-/// \internal
-/// \brief A queue implemented as a linked list.
-///
+/*
+ *  DS_QueueLinkedList.h
+ * 内部使用
+ * A queue implemented as a linked list.
+ *
+ */
 
 
 #pragma once
@@ -19,11 +21,13 @@
 #include "Export.h"
 #include "RakMemoryOverride.h"
 
-/// The namespace DataStructures was only added to avoid compiler errors for commonly named data structures
-/// As these data structures are stand-alone, you can use them outside of RakNet for your own projects if you wish.
+/*
+ * DataStructures 命名空间的添加仅是为了避免常见数据结构名称导致的编译器错误
+ * 由于这些数据结构是独立的，如果需要，你可以在 RakNet 之外将它们用于自己的项目。
+ */
 namespace DataStructures
 {
-	/// \brief A queue implemented using a linked list.  Rarely used.
+	/* 使用链表实现的队列。很少使用。*/
 	template <class QueueType>
 	class RAK_DLL_EXPORT QueueLinkedList
 	{
@@ -103,4 +107,4 @@ namespace DataStructures
 	{
 		data.Clear();
 	}
-} // End namespace
+} /* 命名空间结束 */
