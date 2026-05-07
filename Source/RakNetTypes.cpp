@@ -33,6 +33,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <netdb.h>
 #endif
 
 #include <cstring> // strncasecmp
@@ -345,11 +346,11 @@ void SystemAddress::ToString_New(bool writePort, char *dest, char portDelineator
 
 	if (address.addr4.sin_family==AF_INET)
 	{
-		ret=getnameinfo(reinterpret_cast<struct sockaddr*>(&address.addr4), sizeof(struct sockaddr_in), dest, 22, nullptr, 0, NI_NUMERICHOST);
+		ret=getnameinfo(reinterpret_cast<const struct sockaddr*>(&address.addr4), sizeof(struct sockaddr_in), dest, 22, nullptr, 0, NI_NUMERICHOST);
 	}
 	else
 	{
-		ret=getnameinfo(reinterpret_cast<struct sockaddr*>(&address.addr6), sizeof(struct sockaddr_in6), dest, INET6_ADDRSTRLEN, nullptr, 0, NI_NUMERICHOST);
+		ret=getnameinfo(reinterpret_cast<const struct sockaddr*>(&address.addr6), sizeof(struct sockaddr_in6), dest, INET6_ADDRSTRLEN, nullptr, 0, NI_NUMERICHOST);
 	}
 	if (ret!=0)
 	{

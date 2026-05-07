@@ -12,6 +12,7 @@
 #include "RakMemoryOverride.h"
 #include "RakAssert.h"
 #include "RakSleep.h"
+#include "LinuxStrings.h"
 #include "SocketDefines.h"
 #include "GetTime.h"
 #include <cstdio>
@@ -24,6 +25,9 @@ using namespace RakNet;
 #include <unistd.h>
 #include <fcntl.h>
 #include <arpa/inet.h>
+#if !defined(__native_client__)
+#include <netdb.h>
+#endif
 #include <cerrno>  // error numbers
 #if !defined(ANDROID)
 #include <ifaddrs.h>

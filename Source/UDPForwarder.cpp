@@ -22,6 +22,9 @@
 #include "SocketDefines.h"
 #include "VitaIncludes.h"
 #include "errno.h"
+#if (defined(__GNUC__) || defined(__GCCXML__)) && !defined(__WIN32__)
+#include <netdb.h>
+#endif
 
 #ifndef INVALID_SOCKET
 #define INVALID_SOCKET -1
